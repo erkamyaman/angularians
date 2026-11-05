@@ -4,7 +4,8 @@ import { DOCUMENT, NgTemplateOutlet } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
-import { injectServerFn, type RouteMeta } from '@analogjs/router';
+import { type RouteMeta } from '@analogjs/router';
+import { injectSeededServerFn } from '../data/seeded-server-fn';
 import { injectResponse } from '@analogjs/router/tokens';
 import { countryCode, countryName, DEFAULT_PERIOD, GITHUB_USERNAME_RE, isPeriod, periodPhrase, reposQuery, type ContributorProfile, type Period } from '@angularians/shared';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -92,7 +93,7 @@ export default class Profile {
   protected readonly username = injectParams(params => String(params['username'] ?? ''));
   private readonly requested = injectQueryParams(params => (isPeriod(params['period']) ? (params['period'] as Period) : null));
   /** Every period is in the profile: switching period needs no request. */
-  protected readonly profile = injectServerFn(getContributor, () => ({ username: this.username() }));
+  protected readonly profile = injectSeededServerFn(getContributor, () => ({ username: this.username() }));
   protected readonly loaded = loadedValue(this.profile);
   /** GitHub's rule for a username; anything else is not found, not a failed load. */
   protected readonly validUsername = computed(() => GITHUB_USERNAME_RE.test(this.username()));
