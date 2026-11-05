@@ -4,6 +4,8 @@ import { defineConfig, type Plugin } from 'vite';
 import analog from '@analogjs/platform';
 import tailwindcss from '@tailwindcss/vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import { existsSync, mkdirSync, readFileSync, renameSync, rmSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const DEV_IMAGES = '/api/__dev-images';
@@ -21,6 +23,25 @@ function forwardImagesInDev(): Plugin {
   };
 }
 
+const CLIENT_MANIFEST = fileURLToPath(new URL('./dist/client-manifest/manifest.json', import.meta.url));
+
+function keepManifestPrivate(): Plugin {
+  return {
+    name: 'keep-manifest-private',
+    apply: 'build',
+    writeBundle(options) {
+      const built = join(options.dir ?? '', '.vite');
+      const manifest = join(built, 'manifest.json');
+      if (!existsSync(manifest)) return;
+      if (!readFileSync(manifest, 'utf8').includes('"src/main.server.ts"')) {
+        mkdirSync(dirname(CLIENT_MANIFEST), { recursive: true });
+        renameSync(manifest, CLIENT_MANIFEST);
+      }
+      rmSync(built, { recursive: true });
+    },
+  };
+}
+
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
   server: {
@@ -28,12 +49,14 @@ export default defineConfig(() => ({
   },
   build: {
     target: ['es2020'],
+    manifest: true,
   },
   resolve: {
     mainFields: ['module'],
   },
   plugins: [
     forwardImagesInDev(),
+    keepManifestPrivate(),
     analog({
       // No static pages: `/` reads `?period=` and `?country=`, so a build-time `index.html` would show the
       // default board for every shared link until the browser corrected it. Every page is server-rendered.
@@ -46,6 +69,7 @@ export default defineConfig(() => ({
         // The two fonts of the Angularian card (src/server/card), inlined in the server: about 60 KB.
         // And the brand font, Norse Bold, for the word "Angularian" (public/fonts), about 30 KB.
         serverAssets: [
+          { baseName: 'client-manifest', dir: dirname(CLIENT_MANIFEST) },
           { baseName: 'card-fonts', dir: fileURLToPath(new URL('./src/server/card/fonts', import.meta.url)) },
           { baseName: 'brand-font', dir: fileURLToPath(new URL('./public/fonts', import.meta.url)) },
         ],
