@@ -5,7 +5,7 @@ import type { GitHubUser, LandedPullRequest, PullRequestType } from './types.ts'
 /**
  * Conventional commit prefixes, as angular/angular enforces them on PR titles
  * (build, ci, docs, feat, fix, perf, refactor, release, test), plus the ones other repos use.
- * Added to the Nuxters list: `release` and `revert` count as chores, so neither falls back to `feat`.
+ * Added to the Nuxters list: `release` and `revert` count as chores.
  */
 const TITLE_TYPE_PATTERNS: Array<[RegExp, PullRequestType]> = [
   [/^docs[\s(:!]/i, 'docs'],
@@ -35,15 +35,26 @@ const LABEL_TYPE_MAP: Record<string, PullRequestType> = {
   dependencies: 'chore',
 }
 
-/** Leading tags of backports and patch ports, `[Backport 21.2.x] `, `[19.2.x] `, `[PATCH] `: not part of the commit message. */
-const TAGS_RE = /^\s*(?:\[[^\]]*\]\s*)+/
+/**
+ * The first tag of a backport or patch port, as the Angular repositories write it: a release branch (`[19.2.x]`,
+ * `[Backport 21.2.X]`) or a word for it (`[PATCH]`, `[Patch port]`, `[Cherry pick]`, `[LTS port]`). Not `[WIP]`.
+ */
+const PORT_TAG_RE = /^\s*\[\s*(?:v?\d+(?:\.(?:\d+|x))+|(?:backport|patch|path port|cherry[- ]?pick|lts port)\b[^\]\n]*)\s*\]/i
+
+/** Any leading tags, `[19.2.x] `, `[WIP] `, `[PATCH] [19.2.x] `: not part of the commit message, so not of its type. */
+const TAGS_RE = /^\s*(?:\[[^\]\n]*\]\s*)+/
 
 /** A title without its leading tags: `[20.0.x] fix(core): …` → `fix(core): …`. */
 function untagged(title: string): string {
   return title.replace(TAGS_RE, '')
 }
 
-/** The type from the title prefix, then from the labels. Neither: `feat`, as in Nuxters. */
+/** Whether a title is a backport's or patch port's, by its first tag. */
+function isPort(title: string): boolean {
+  return PORT_TAG_RE.test(title)
+}
+
+/** The type from the title prefix (after any leading tags), then from the labels. Neither: `chore`. */
 export function inferPullRequestType(title: string, labels: ReadonlyArray<{ name?: string | null }> = []): PullRequestType {
   const trimmed = untagged(title).trim()
   for (const [pattern, type] of TITLE_TYPE_PATTERNS) {
@@ -53,7 +64,8 @@ export function inferPullRequestType(title: string, labels: ReadonlyArray<{ name
     const type = LABEL_TYPE_MAP[label.name?.toLowerCase() ?? '']
     if (type) return type
   }
-  return 'feat'
+  // Nuxters falls back to `feat`, the highest weight; titles without a type here are mostly version bumps and housekeeping.
+  return 'chore'
 }
 
 /** `feat(core, compiler)!: …` → `core, compiler`. */
@@ -93,7 +105,8 @@ export function canonicalPackage(name: string): string {
 function repoPackage(repo: string, scope: string): string | null {
   if (repo === 'angular/angular') return /^[a-z0-9][a-z0-9.-]*$/.test(scope) ? canonicalPackage(scope) : null
   if (repo === 'angular/components') {
-    const name = scope.split('/')[0]!
+    // `aria/grid`, or written as the npm name, `@angular/cdk/overlay`.
+    const name = scope.replace(/^@angular\//, '').split('/')[0]!
     return COMPONENTS_PACKAGES.has(name) ? `@angular/${name}` : null
   }
   if (repo === 'angular/angular-cli') return /^@[a-z0-9-]+\/[a-z0-9-]+$/.test(scope) ? scope : null
@@ -115,10 +128,11 @@ const SKILL_RE = /\bskills?\b/i
  * The packages a PR title names, lowercased: `fix(router): …` → `['router']`. Empty without a scope, except for
  * angular/angular's docs PRs without one: `skills` when the title is about a skill, else `docs` (angular.dev).
  * Every angular/domino PR belongs to its single package, regardless of the title's scope.
+ * Backports (`[19.2.x] fix(core): …`) are empty: the change already counts once, through the PR that landed it on main.
  */
 export function pullRequestScopes(title: string, repo = 'angular/angular'): string[] {
   if (repo === 'angular/domino') return ['@angular/domino']
-  title = untagged(title)
+  if (isPort(title)) return []
   const match = SCOPE_RE.exec(title)
   if (!match) {
     if (repo === 'angular/angular' && UNSCOPED_DOCS_RE.test(title)) return [SKILL_RE.test(title) ? 'skills' : 'docs']
