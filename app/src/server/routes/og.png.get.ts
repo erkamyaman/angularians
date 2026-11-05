@@ -1,3 +1,4 @@
+import { cacheFor } from '../data/http'
 import { defineEventHandler, getQuery, setResponseHeader } from 'h3'
 import { isPeriod, periodPhrase } from '@angularians/shared'
 import { avatarData, cardFonts } from '../card/assets'
@@ -22,7 +23,6 @@ export default defineEventHandler(async (event) => {
   const avatars = await Promise.all(board.items.slice(0, 8).map(item => avatarData(item.githubId, 176)))
   const png = await renderCard(homeTree({ title, description, avatars }), await cardFonts())
   setResponseHeader(event, 'content-type', 'image/png')
-  setResponseHeader(event, 'cache-control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800')
-  setResponseHeader(event, 'netlify-cdn-cache-control', 'public, durable, s-maxage=86400, stale-while-revalidate=604800')
+  cacheFor(event, { browser: 3600, shared: 86400, stale: 604800 })
   return png
 })

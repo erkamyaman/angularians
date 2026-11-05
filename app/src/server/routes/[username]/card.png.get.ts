@@ -1,3 +1,4 @@
+import { cacheFor } from '../../data/http'
 import { createError, defineEventHandler, getQuery, getRouterParam, setResponseHeader } from 'h3'
 import * as v from 'valibot'
 import { countryCode, countryName } from '@angularians/shared'
@@ -23,7 +24,6 @@ export default defineEventHandler(async (event) => {
   const png = await renderCard(cardTree(profile, period, avatar, code && flagSrc ? { src: flagSrc, name: countryName(code) } : null), fonts)
   setResponseHeader(event, 'content-type', 'image/png')
   // A day in shared caches (GitHub's image proxy too): each night's deploy clears the CDN.
-  setResponseHeader(event, 'cache-control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800')
-  setResponseHeader(event, 'netlify-cdn-cache-control', 'public, durable, s-maxage=86400, stale-while-revalidate=604800')
+  cacheFor(event, { browser: 3600, shared: 86400, stale: 604800 })
   return png
 })
