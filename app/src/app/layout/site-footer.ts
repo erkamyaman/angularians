@@ -37,11 +37,7 @@ const REPO = 'https://github.com/erkamyaman/angularians';
           @for (tool of tools; track tool.name) {
             <li>
               <a class="inline-flex items-center gap-2 font-medium text-foreground/80 transition-colors hover:text-foreground" [href]="tool.href" target="_blank" rel="noopener" [title]="tool.does">
-                <!-- A logo with a dark-theme version (ngxtension's white one, as on its site) swaps with the theme -->
-                <img [src]="tool.logo" alt="" width="18" height="18" class="size-[18px] shrink-0 object-contain" [class.dark:hidden]="!!tool.darkLogo" />
-                @if (tool.darkLogo) {
-                  <img [src]="tool.darkLogo" alt="" width="18" height="18" class="hidden size-[18px] shrink-0 object-contain dark:block" />
-                }
+                <img [src]="tool.logo" alt="" width="18" height="18" class="size-[18px] shrink-0 object-contain" />
                 {{ tool.name }}
               </a>
             </li>
@@ -63,10 +59,10 @@ const REPO = 'https://github.com/erkamyaman/angularians';
 })
 export class SiteFooter {
   protected readonly repo = REPO;
-  protected readonly tools: Array<{ name: string, href: string, does: string, logo: string, darkLogo?: string }> = [
+  protected readonly tools: Array<{ name: string, href: string, does: string, logo: string }> = [
     { name: 'AnalogJS', href: 'https://analogjs.org', does: 'The meta-framework: pages, server rendering, the API', logo: '/credits/analogjs.svg' },
     { name: 'spartan/ui', href: 'https://spartan.ng', does: 'The UI components', logo: '/credits/spartan.svg' },
     { name: 'ng-icons', href: 'https://ng-icons.github.io/ng-icons', does: 'The icons', logo: '/credits/ng-icons.svg' },
-    { name: 'ngxtension', href: 'https://ngxtension.dev', does: 'Signal utilities', logo: '/credits/ngxtension.svg', darkLogo: '/credits/ngxtension-white.svg' },
+    { name: 'ngxtension', href: 'https://ngxtension.dev', does: 'Signal utilities', logo: '/credits/ngxtension.svg' },
   ];
 }
