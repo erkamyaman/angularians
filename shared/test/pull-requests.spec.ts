@@ -25,6 +25,8 @@ describe('inferPullRequestType', () => {
     ['[PATCH] [19.2.x] build: bump', 'chore'],
     ['[WIP] feat(core): x', 'feat'],
     ['[19.2.x] Revert "feat(core): x"', 'chore'],
+    ['[13.3.x]: docs(material/tabs): x', 'docs'],
+    ['[19.2.x] - fix(core): x', 'fix'],
     // No type in the title or the labels: chore.
     ['Bump version to "v22.2.3" with changelog.', 'chore'],
     ['Forms: always use the provided injector', 'chore'],
@@ -159,10 +161,15 @@ describe('pullRequestScopes', () => {
     ['[PATCH] [19.2.x] fix(core, forms): x', []],
     ['[19.2.x] docs: a typo', []],
     ['[Patch port] fix(core): x', []],
+    ['[14.2 backport] perf(compiler-cli): x', []],
+    ['[v19.2.x] fix(core): x', []],
+    ['[1.2.3-rc.0] fix(core): x', []],
+    ['[Patch version for #29189] fix(core): x', []],
     ['  [cherry-pick] fix(core): x', []],
     ['[19.2.x] Revert "fix(core): y"', []],
-    // Other leading tags are left as they are, as before.
-    ['[WIP] fix(core): x', []],
+    // Other leading tags are skipped.
+    ['[WIP] fix(core): x', ['core']],
+    ['[skills] docs: x', ['docs']],
     ['fix(core): see [19.2.x]', ['core']],
   ] as const)('%s → %j', (title, scopes) => {
     expect(pullRequestScopes(title)).toEqual(scopes)

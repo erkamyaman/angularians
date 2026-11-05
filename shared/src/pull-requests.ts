@@ -36,22 +36,27 @@ const LABEL_TYPE_MAP: Record<string, PullRequestType> = {
 }
 
 /**
- * The first tag of a backport or patch port, as the Angular repositories write it: a release branch (`[19.2.x]`,
- * `[Backport 21.2.X]`) or a word for it (`[PATCH]`, `[Patch port]`, `[Cherry pick]`, `[LTS port]`). Not `[WIP]`.
+ * The first tag's text of a backport or patch port, as the Angular repositories write it: a release branch
+ * (`[19.2.x]`, `[Backport 21.2.X]`, `[14.2 backport]`) or a word for it (`[PATCH]`, `[Patch port]`, `[Cherry pick]`,
+ * `[LTS port]`, and the misspelt `[Path port]`). Not `[WIP]`.
  */
-const PORT_TAG_RE = /^\s*\[\s*(?:v?\d+(?:\.(?:\d+|x))+|(?:backport|patch|path port|cherry[- ]?pick|lts port)\b[^\]\n]*)\s*\]/i
+const PORT_TAG_RE = /^\s*(?:v?\d+(?:\.(?:\d+|x))+\b|.*\b(?:backport|patch|path port|cherry[- ]?pick|lts port)\b)/i
 
-/** Any leading tags, `[19.2.x] `, `[WIP] `, `[PATCH] [19.2.x] `: not part of the commit message, so not of its type. */
-const TAGS_RE = /^\s*(?:\[[^\]\n]*\]\s*)+/
+/** The text of a title's first tag: `[19.2.x] fix(core): …` → `19.2.x`. */
+const FIRST_TAG_RE = /^\s*\[([^\]\n]*)\]/
 
-/** A title without its leading tags: `[20.0.x] fix(core): …` → `fix(core): …`. */
+/** Any leading tags, `[19.2.x] `, `[WIP] `, `[PATCH] [19.2.x] `, `[13.3.x]: `: not part of the commit message. */
+const TAGS_RE = /^\s*(?:\[[^\]\n]*\]\s*[:-]?\s*)+/
+
+/** A title without its leading tags: `[20.0.x] fix(core): …` → `fix(core): …`, `[WIP] fix(core): …` → `fix(core): …`. */
 function untagged(title: string): string {
   return title.replace(TAGS_RE, '')
 }
 
 /** Whether a title is a backport's or patch port's, by its first tag. */
 function isPort(title: string): boolean {
-  return PORT_TAG_RE.test(title)
+  const tag = FIRST_TAG_RE.exec(title)
+  return tag !== null && PORT_TAG_RE.test(tag[1]!)
 }
 
 /** The type from the title prefix (after any leading tags), then from the labels. Neither: `chore`. */
@@ -129,10 +134,12 @@ const SKILL_RE = /\bskills?\b/i
  * angular/angular's docs PRs without one: `skills` when the title is about a skill, else `docs` (angular.dev).
  * Every angular/domino PR belongs to its single package, regardless of the title's scope.
  * Backports (`[19.2.x] fix(core): …`) are empty: the change already counts once, through the PR that landed it on main.
+ * Other leading tags are skipped: `[WIP] fix(core): …` → `['core']`.
  */
 export function pullRequestScopes(title: string, repo = 'angular/angular'): string[] {
   if (repo === 'angular/domino') return ['@angular/domino']
   if (isPort(title)) return []
+  title = untagged(title)
   const match = SCOPE_RE.exec(title)
   if (!match) {
     if (repo === 'angular/angular' && UNSCOPED_DOCS_RE.test(title)) return [SKILL_RE.test(title) ? 'skills' : 'docs']
