@@ -17,9 +17,7 @@
               <p class="truncate text-lg text-muted-foreground">{{ person.username }}</p>
             }
             @if (isAngularian()) {
-              <p class="my-1 inline-flex h-8 w-fit items-center gap-1.5 rounded-md bg-primary/10 px-2 text-base font-medium text-primary">
-                <app-logo-mark class="size-6" compact /><span class="brand leading-none">Angularian</span>
-              </p>
+              <app-angularian-pill class="my-1 w-fit" />
             }
             <ul class="-ml-2 flex flex-wrap items-center gap-0.5" aria-label="Links">
               @for (link of links(); track link.url) {
@@ -38,7 +36,7 @@
             <p class="brand text-7xl leading-none text-primary">#{{ number(current().rank) }}</p>
             <div class="flex min-w-0 flex-col">
               <p class="inline-flex items-center gap-1 text-lg tabular-nums">
-                <strong class="font-semibold text-primary">{{ number(current().score) }} {{ current().score === 1 ? 'pt' : 'pts' }}</strong>
+                <strong class="font-semibold text-primary">{{ points(current().score) }}</strong>
                 <app-score-dialog [stats]="current()" [phrase]="phrase(period())" />
               </p>
               <p class="text-sm text-muted-foreground">{{ phrase(period()) }}</p>
@@ -55,7 +53,7 @@
               <span class="inline-flex items-center gap-1.5"><app-angular-logo class="size-4" /><span><span class="font-medium text-foreground">Angular contributor</span> since {{ date }}</span></span>
             }
             @if (best(); as year) {
-              <a [routerLink]="[]" [queryParams]="{ period: year.period }" replaceUrl class="inline-flex items-center gap-1.5 font-medium text-[#9A6700] tabular-nums transition-opacity hover:opacity-80 dark:text-[#D29922]">
+              <a [routerLink]="[]" [queryParams]="{ period: year.period }" replaceUrl class="inline-flex items-center gap-1.5 font-medium tabular-nums transition-opacity hover:opacity-80" [class]="colors.gold">
                 <ng-icon name="vikingHelmet" size="1.25rem" aria-hidden="true" /><span class="brand relative top-[0.09em] text-base leading-none">Greatest saga</span> {{ year.period }}, #{{ number(year.rank) }} with {{ points(year.score) }}
               </a>
             }
@@ -204,7 +202,7 @@
                   @if (row.period === period() || row === best()) {
                     <span class="mb-1.5 hidden text-center text-xs tabular-nums sm:block" aria-hidden="true">
                       @if (row === best()) {
-                        <span class="flex flex-col items-center font-semibold whitespace-nowrap text-[#9A6700] dark:text-[#D29922]">
+                        <span class="flex flex-col items-center font-semibold whitespace-nowrap" [class]="colors.gold">
                           <ng-icon name="vikingHelmet" size="1.75rem" aria-hidden="true" />
                           <span class="brand text-sm">Greatest saga</span>
                         </span>

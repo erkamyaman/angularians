@@ -23,3 +23,9 @@ export function parseQuery<S extends v.GenericSchema>(event: H3Event, schema: S,
   }
   return result.output
 }
+
+export function sendPng<T extends Uint8Array>(event: H3Event, png: T): T {
+  setResponseHeader(event, 'content-type', 'image/png')
+  cacheFor(event, { browser: 3600, shared: 86400, stale: 604800 })
+  return png
+}

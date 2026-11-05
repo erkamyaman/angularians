@@ -18,6 +18,10 @@ const PERIOD_RE = /^(?:all|30d|12m|\d{4})$/
 const FILE_RE = /^contributors(?:-(30d|12m|\d{4}))?\.json$/
 
 /** `all`, `30d`, `12m`, or a year from 2014 to the current one (UTC). */
+export function periodOrNull(value: unknown): Period | null {
+  return isPeriod(value) ? value : null
+}
+
 export function isPeriod(value: unknown, now: Date = new Date()): value is Period {
   if (typeof value !== 'string' || !PERIOD_RE.test(value)) return false
   if (!/^\d{4}$/.test(value)) return true

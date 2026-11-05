@@ -1,4 +1,4 @@
-import { countrySearchNames, type Period } from '@angularians/shared'
+import { countrySearchNames, periodPhrase, type Period } from '@angularians/shared'
 
 const number = new Intl.NumberFormat('en-US')
 const date = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeZone: 'UTC' })
@@ -19,13 +19,24 @@ export function avatarUrl(githubId: number, size: number): string {
 
 /** The avatar at several widths: with `sizes`, the browser takes the smallest that fills its tile on that screen. */
 export function avatarSrcset(githubId: number): string {
-  return [64, 112, 160, 224].map(pixels => `https://avatars.githubusercontent.com/u/${githubId}?s=${pixels}&v=4 ${pixels}w`).join(', ')
+  return [64, 112, 160, 224].map(pixels => `${avatarUrl(githubId, pixels / 2)} ${pixels}w`).join(', ')
 }
 
 /** The profile opens on the period of the board it was picked from (all time is its default). */
 export function profileQuery(period: Period, country: string | null = null): Record<string, string> {
   // The country only takes the profile's back link to the board it came from.
   return { ...(period === 'all' ? {} : { period }), ...(country ? { country } : {}) }
+}
+
+/** `?period=&flag=` of a profile or card link: all time and no flag leave it out. `extra` goes first (`?v=`). */
+export function shareQuery(period?: Period, flag?: string | null, extra: Record<string, string> = {}): string {
+  const params = new URLSearchParams({ ...extra, ...(period && period !== 'all' ? { period } : {}), ...(flag ? { flag } : {}) }).toString()
+  return params ? `?${params}` : ''
+}
+
+/** A board's numbers in a sentence, for the shared board's description and its preview image. */
+export function boardDescription(board: { total: number, landedPullRequests: number, issues: number, comments: number, reviewComments: number }, period: Period): string {
+  return `${plural(board.total, 'person', 'people')} contributed to Angular ${periodPhrase(period)}: ${plural(board.landedPullRequests, 'merged pull request', 'merged pull requests')}, ${plural(board.issues, 'issue', 'issues')} and ${plural(board.comments + board.reviewComments, 'comment', 'comments')}.`
 }
 
 /** A round flag (circle-flags, copied to public/flags by scripts/copy-flags.ts). */

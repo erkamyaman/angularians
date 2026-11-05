@@ -6,15 +6,9 @@ import { remixChatHeartLine, remixFileCodeLine, remixLightbulbLine } from '@ng-i
 import { vikingAnvil, vikingBroom, vikingHammer, vikingScroll, vikingSword } from '../layout/viking-icons'
 import { HlmButton } from '@spartan-ng/helm/button'
 import { HlmDialogImports } from '@spartan-ng/helm/dialog'
+import { GITHUB_TEXT } from './github-colors'
 
-/** GitHub's colours, one for each kind of contribution. */
-const PURPLE = 'text-[#8250DF] dark:text-[#A371F7]'
-const RED = 'text-[#CF222E] dark:text-[#F85149]'
-const BLUE = 'text-[#0969DA] dark:text-[#58A6FF]'
-const GOLD = 'text-[#9A6700] dark:text-[#D29922]'
-const GREEN = 'text-[#1A7F37] dark:text-[#3FB950]'
-const PINK = 'text-[#BF3989] dark:text-[#DB61A2]'
-const ORANGE = 'text-[#BC4C00] dark:text-[#F0883E]'
+const { purple: PURPLE, red: RED, blue: BLUE, gold: GOLD, green: GREEN, pink: PINK, orange: ORANGE } = GITHUB_TEXT
 
 /** The hero's "How the score works": every rule, in a dialog (Nuxters keeps the page itself for people). */
 @Component({

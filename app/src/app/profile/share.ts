@@ -11,6 +11,7 @@ import { CountrySelect } from '../leaderboard/country-select'
 import { PeriodTabs } from '../leaderboard/period-tabs'
 import { HlmSkeleton } from '@spartan-ng/helm/skeleton'
 import { SITE_URL } from '../site'
+import { shareQuery } from '../leaderboard/format'
 
 /** The skeleton shows at least this long, so a fast card does not flicker it. */
 const MIN_LOADING_MS = 500
@@ -31,11 +32,6 @@ const SKELETON_BOXES = [
 
 /** Raise it when the card's design changes, so the preview does not show a copy the browser kept. */
 export const CARD_DESIGN = 12
-
-const query = (period?: Period, flag?: string | null) => {
-  const params = new URLSearchParams({ ...(period && period !== 'all' ? { period } : {}), ...(flag ? { flag } : {}) }).toString()
-  return params ? `?${params}` : ''
-}
 
 /** Copy the profile link, or the Markdown of the Angularian card for a GitHub profile README. */
 @Component({
@@ -72,19 +68,15 @@ export class Share {
   })
   protected readonly cardPeriods = computed(() => sortPeriods(['all', ...this.periods()]))
 
-  private readonly profileUrl = computed(() => `${SITE_URL}/${this.username()}${query(this.period())}`)
-  protected readonly cardUrl = computed(() => `${SITE_URL}/${this.username()}/card.png${query(this.cardPeriod(), this.flag())}`)
+  private readonly profileUrl = computed(() => `${SITE_URL}/${this.username()}${shareQuery(this.period())}`)
+  protected readonly cardUrl = computed(() => `${SITE_URL}/${this.username()}/card.png${shareQuery(this.cardPeriod(), this.flag())}`)
   /** The same card from this site: right on a preview deploy or locally too. The Markdown keeps the public address. */
-  protected readonly previewUrl = computed(() => {
-    const period = this.cardPeriod()
-    const flag = this.flag()
-    return `/${this.username()}/card.png?v=${CARD_DESIGN}${period === 'all' ? '' : `&period=${period}`}${flag ? `&flag=${flag}` : ''}`
-  })
+  protected readonly previewUrl = computed(() => `/${this.username()}/card.png${shareQuery(this.cardPeriod(), this.flag(), { v: String(CARD_DESIGN) })}`)
   protected readonly fileName = computed(() => `${this.username()}-angularian${this.cardPeriod() === 'all' ? '' : `-${this.cardPeriod()}`}.png`)
   /** The profile's link preview is this card, so a post only needs the link. */
   protected readonly shareLinks = computed(() => {
     const period = this.cardPeriod()
-    const url = `${SITE_URL}/${this.username()}${query(period, this.flag())}`
+    const url = `${SITE_URL}/${this.username()}${shareQuery(period, this.flag())}`
     const text = `My contributions to Angular${period === 'all' ? '' : ` ${periodPhrase(period)}`} on Angularians`
     return {
       x: `https://x.com/intent/post?${new URLSearchParams({ text, url })}`,
@@ -94,7 +86,7 @@ export class Share {
   })
   protected readonly markdown = computed(() => {
     const alt = `${this.username()}'s Angularian profile${this.cardPeriod() === 'all' ? '' : ` ${periodPhrase(this.cardPeriod())}`}`
-    return `[![${alt}](${this.cardUrl()})](${SITE_URL}/${this.username()}${query(this.cardPeriod(), this.flag())})`
+    return `[![${alt}](${this.cardUrl()})](${SITE_URL}/${this.username()}${shareQuery(this.cardPeriod(), this.flag())})`
   })
 
   private timer: ReturnType<typeof setTimeout> | undefined

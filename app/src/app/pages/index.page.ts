@@ -5,7 +5,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { type RouteMeta } from '@analogjs/router';
 import { injectResponse } from '@analogjs/router/tokens';
-import { countryCode, countryName, DEFAULT_PERIOD, isPeriod, periodPhrase, type Period } from '@angularians/shared';
+import { countryCode, countryName, DEFAULT_PERIOD, periodOrNull, periodPhrase, type Period } from '@angularians/shared';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { remixArrowRightUpLine, remixCalendarLine, remixChatHeartLine, remixGroupLine } from '@ng-icons/remixicon';
 import { octComment, octGitMerge, octIssueOpened } from '@ng-icons/octicons';
@@ -27,12 +27,13 @@ import { CountrySelect } from '../leaderboard/country-select';
 import { NextUpdate } from '../leaderboard/next-update';
 import { MeCard } from '../leaderboard/me-card';
 import { ScoreRules } from '../leaderboard/score-rules';
-import { setCanonical, SITE_URL } from '../site';
-import { formatDate, formatNumber, plural } from '../leaderboard/format';
+import { setShareMeta, SITE_URL } from '../site';
+import { boardDescription, formatDate, formatNumber, plural } from '../leaderboard/format';
 import { JoinLinks } from '../leaderboard/join-links';
 import { LeaderboardGrid } from '../leaderboard/leaderboard-grid';
 import { PeriodTabs } from '../leaderboard/period-tabs';
 import { World } from '../world/world';
+import { GITHUB_TEXT } from '../leaderboard/github-colors';
 
 const SITE_DESCRIPTION = 'Everyone who has contributed to Angular since 2014, ranked: merged pull requests, issues, comments and code reviews in angular/angular, Components, the CLI, dev-infra and Domino.';
 
@@ -59,7 +60,7 @@ export default class Home {
   private readonly document = inject(DOCUMENT);
 
   /** `?period=` and `?country=` are the state: shareable, and kept on reload. Unknown values fall back. */
-  private readonly requestedPeriod = injectQueryParams(params => (isPeriod(params['period']) ? (params['period'] as Period) : null));
+  private readonly requestedPeriod = injectQueryParams(params => periodOrNull(params['period']));
   protected readonly country = injectQueryParams(params => countryCode(params['country']));
   protected readonly period = computed(() => this.requestedPeriod() ?? DEFAULT_PERIOD);
 
@@ -77,10 +78,11 @@ export default class Home {
   protected readonly placeholders = Array.from({ length: 30 }, (_, index) => index);
   /** The three ways onto the board (Nuxters' "How to become a Nuxter"). */
   protected readonly becomeWays = [
-    { title: 'Merge a pull request', action: 'Read the guide', description: 'Fix a bug, ship a feature or improve the docs in any Angular repository.', icon: 'octGitMerge', color: 'text-[#8250DF] dark:text-[#A371F7]', url: 'https://github.com/angular/angular/blob/main/CONTRIBUTING.md' },
-    { title: 'Open a helpful issue', action: 'See the issues', description: 'An issue that gets completed, or collects 3+ reactions or 5+ comments.', icon: 'octIssueOpened', color: 'text-[#1A7F37] dark:text-[#3FB950]', url: 'https://github.com/angular/angular/issues' },
-    { title: 'Write a helpful comment', action: 'Review a pull request', description: 'Answer a question or review a PR: a comment with 3+ reactions counts.', icon: 'remixChatHeartLine', color: 'text-[#0969DA] dark:text-[#58A6FF]', url: 'https://github.com/angular/angular/pulls' },
+    { title: 'Merge a pull request', action: 'Read the guide', description: 'Fix a bug, ship a feature or improve the docs in any Angular repository.', icon: 'octGitMerge', color: GITHUB_TEXT.purple, url: 'https://github.com/angular/angular/blob/main/CONTRIBUTING.md' },
+    { title: 'Open a helpful issue', action: 'See the issues', description: 'An issue that gets completed, or collects 3+ reactions or 5+ comments.', icon: 'octIssueOpened', color: GITHUB_TEXT.green, url: 'https://github.com/angular/angular/issues' },
+    { title: 'Write a helpful comment', action: 'Review a pull request', description: 'Answer a question or review a PR: a comment with 3+ reactions counts.', icon: 'remixChatHeartLine', color: GITHUB_TEXT.blue, url: 'https://github.com/angular/angular/pulls' },
   ];
+  protected readonly colors = GITHUB_TEXT;
   protected readonly number = formatNumber;
   protected readonly phrase = periodPhrase;
   protected readonly date = formatDate;
@@ -110,22 +112,11 @@ export default class Home {
       if ((this.leaderboard.error() || this.map.error()) && this.response) markFailed(this.response);
       const shared = this.requestedPeriod() && page?.total ? page : null;
       const title = shared ? `Top Angularians ${periodPhrase(shared.period)}` : 'Angularians';
-      const description = shared
-        ? `${plural(shared.total, 'person', 'people')} contributed to Angular ${periodPhrase(shared.period)}: ${plural(shared.landedPullRequests, 'merged pull request', 'merged pull requests')}, ${plural(shared.issues, 'issue', 'issues')} and ${plural(shared.comments + shared.reviewComments, 'comment', 'comments')}.`
-        : SITE_DESCRIPTION;
+      const description = shared ? boardDescription(shared, shared.period) : SITE_DESCRIPTION;
       this.title.setTitle(title);
-      this.meta.updateTag({ name: 'description', content: description });
-      this.meta.updateTag({ property: 'og:title', content: title });
-      this.meta.updateTag({ property: 'og:description', content: description });
       // The site's card, or the card of the shared period; the canonical URL has no `?period=`.
       const query = shared ? `?period=${shared.period}` : '';
-      this.meta.updateTag({ property: 'og:url', content: `${SITE_URL}/${query}` });
-      this.meta.updateTag({ property: 'og:image', content: `${SITE_URL}/og.png${query}` });
-      this.meta.updateTag({ property: 'og:image:width', content: '2400' });
-      this.meta.updateTag({ property: 'og:image:height', content: '1260' });
-      this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
-      this.meta.updateTag({ name: 'twitter:image', content: `${SITE_URL}/og.png${query}` });
-      setCanonical(this.document, '/');
+      setShareMeta(this.meta, this.document, { title, description, url: `${SITE_URL}/${query}`, image: `${SITE_URL}/og.png${query}`, canonical: '/' });
     });
   }
 

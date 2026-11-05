@@ -1,5 +1,5 @@
-import { cacheFor } from '../../data/http'
-import { createError, defineEventHandler, getQuery, getRouterParam, setResponseHeader } from 'h3'
+import { sendPng } from '../../data/http'
+import { createError, defineEventHandler, getQuery, getRouterParam } from 'h3'
 import * as v from 'valibot'
 import { countryCode, countryName } from '@angularians/shared'
 import { avatarData, cardFonts, flagData } from '../../card/assets'
@@ -22,8 +22,6 @@ export default defineEventHandler(async (event) => {
   const code = countryCode(getQuery(event)['flag']) ?? profile.country ?? null
   const [avatar, flagSrc, fonts] = await Promise.all([avatarData(profile.githubId), code ? flagData(code) : null, cardFonts()])
   const png = await renderCard(cardTree(profile, period, avatar, code && flagSrc ? { src: flagSrc, name: countryName(code) } : null), fonts)
-  setResponseHeader(event, 'content-type', 'image/png')
   // A day in shared caches (GitHub's image proxy too): each night's deploy clears the CDN.
-  cacheFor(event, { browser: 3600, shared: 86400, stale: 604800 })
-  return png
+  return sendPng(event, png)
 })

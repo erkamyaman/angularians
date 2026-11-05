@@ -6,7 +6,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
 import { type RouteMeta } from '@analogjs/router';
 import { injectResponse } from '@analogjs/router/tokens';
-import { countryCode, countryName, DEFAULT_PERIOD, GITHUB_USERNAME_RE, isPeriod, periodPhrase, reposQuery, type ContributorProfile, type Period } from '@angularians/shared';
+import { countryCode, countryName, DEFAULT_PERIOD, GITHUB_USERNAME_RE, periodOrNull, periodPhrase, reposQuery, type ContributorProfile, type Period } from '@angularians/shared';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { remixArrowDownSLine, remixArrowLeftLine, remixArrowRightUpLine, remixArrowUpSLine, remixCloseLine, remixInformationLine, remixLinkM, remixLinkedinBoxLine, remixMedalLine, remixStarFill, remixVerifiedBadgeLine } from '@ng-icons/remixicon';
 import { vikingAxes, vikingHelmet, vikingLongship, vikingShield } from '../layout/viking-icons';
@@ -27,15 +27,16 @@ import { missingPeriod, shownPeriod } from '../profile/period-choice';
 import { getContributor } from '../data/contributors.server';
 import { AngularLogo } from '../layout/angular-logo';
 import { Container } from '../layout/container';
-import { avatarUrl, flagUrl, formatNumber, formatPoints, plural, profileQuery } from '../leaderboard/format';
+import { avatarUrl, flagUrl, formatNumber, formatPoints, plural, profileQuery, shareQuery } from '../leaderboard/format';
 import { PeriodTabs } from '../leaderboard/period-tabs';
 import { foldPackages, PACKAGE_ICONS, packageIcon, packageLabel } from '../profile/packages';
 import { CardPreview } from '../profile/card-preview';
 import { ScoreDialog } from '../profile/score-dialog';
 import { Share } from '../profile/share';
 import { AuthService } from '../auth/auth.service';
-import { LogoMark } from '../layout/logo-mark';
-import { setCanonical, SITE_URL } from '../site';
+import { AngularianPill } from '../layout/angularian-pill';
+import { setShareMeta, SITE_URL } from '../site';
+import { GITHUB_TEXT } from '../leaderboard/github-colors';
 
 export const routeMeta = {
   title: 'Contributor · Angularians',
@@ -69,9 +70,13 @@ export function yearRanges(years: readonly number[]): string {
   return parts.join(', ');
 }
 
+function githubSearch(q: string, type: 'pullrequests' | 'issues'): string {
+  return `https://github.com/search?${new URLSearchParams({ q: `${reposQuery()} ${q}`, type })}`;
+}
+
 @Component({
   selector: 'app-profile',
-  imports: [AngularLogo, CardPreview, Container, HlmButton, HlmSkeleton, HlmTooltip, LogoMark, NgIcon, NgTemplateOutlet, PeriodTabs, RouterLink, ScoreDialog, Share],
+  imports: [AngularLogo, CardPreview, Container, HlmButton, HlmSkeleton, HlmTooltip, AngularianPill, NgIcon, NgTemplateOutlet, PeriodTabs, RouterLink, ScoreDialog, Share],
   providers: [provideIcons({
     vikingAxes, vikingLongship, remixCloseLine, remixArrowLeftLine, remixArrowRightUpLine, remixMedalLine, octIssueOpened, octGitMerge, remixInformationLine,
     remixVerifiedBadgeLine, remixArrowDownSLine, remixArrowUpSLine, vikingHelmet, remixLinkM, remixLinkedinBoxLine, octComment,
@@ -91,7 +96,7 @@ export default class Profile {
   private readonly auth = inject(AuthService);
 
   protected readonly username = injectParams(params => String(params['username'] ?? ''));
-  private readonly requested = injectQueryParams(params => (isPeriod(params['period']) ? (params['period'] as Period) : null));
+  private readonly requested = injectQueryParams(params => periodOrNull(params['period']));
   /** Every period is in the profile: switching period needs no request. */
   protected readonly profile = injectSeededServerFn(getContributor, () => ({ username: this.username() }));
   protected readonly loaded = loadedValue(this.profile);
@@ -128,25 +133,24 @@ export default class Profile {
     const person = this.loaded()!;
     const n = this.current();
     const prs = n.pullRequests;
-    const search = (q: string, type: 'pullrequests' | 'issues') => `https://github.com/search?${new URLSearchParams({ q: `${reposQuery()} ${q}`, type })}`;
     return [
       {
         key: 'pullRequests', icon: 'octGitMerge', value: prs.all, name: prs.all === 1 ? 'Merged PR' : 'Merged PRs',
         detail: `${formatNumber(prs.feat)} feat · ${formatNumber(prs.fix)} fix · ${formatNumber(prs.docs)} docs · ${formatNumber(prs.chore)} chore`,
         // GitHub shows most landed PRs as closed (PR Close): this lists all of them, landed or not.
-        url: this.githubSearch(person), label: `${this.githubLabel(person)}`,
+        url: githubSearch(`is:pr author:${person.username}`, 'pullrequests'), label: `${this.githubLabel(person)}`,
         tint: 'bg-[#8250DF]/5 ring-[#8250DF] hover:bg-[#8250DF]/10 dark:ring-[#A371F7]', text: 'text-[#8250DF] dark:text-[#A371F7]',
       },
       {
         key: 'issues', icon: 'octIssueOpened', value: n.issues, name: n.issues === 1 ? 'Issue' : 'Issues', detail: `${formatNumber(n.helpfulIssues)} helpful`,
-        url: search(`is:issue author:${person.username}`, 'issues'), label: `${plural(n.issues, 'issue', 'issues')} ${periodPhrase(this.period())}. Opens ${person.username}'s issues on GitHub`,
+        url: githubSearch(`is:issue author:${person.username}`, 'issues'), label: `${plural(n.issues, 'issue', 'issues')} ${periodPhrase(this.period())}. Opens ${person.username}'s issues on GitHub`,
         tint: 'bg-[#1A7F37]/5 ring-[#1A7F37] hover:bg-[#1A7F37]/10 dark:ring-[#3FB950]', text: 'text-[#1A7F37] dark:text-[#3FB950]',
       },
       {
         key: 'comments', icon: 'octComment', value: n.comments, name: n.comments === 1 ? 'Comment' : 'Comments',
         // Inline review comments score on their own (1 pt each): their count goes with the comments.
         detail: `${formatNumber(n.helpfulComments)} helpful · ${plural(n.reviewComments, 'review comment', 'review comments')} on code`,
-        url: search(`commenter:${person.username}`, 'issues'), label: `${plural(n.comments, 'comment', 'comments')} ${periodPhrase(this.period())}. Opens the issues and pull requests ${person.username} commented on, on GitHub`,
+        url: githubSearch(`commenter:${person.username}`, 'issues'), label: `${plural(n.comments, 'comment', 'comments')} ${periodPhrase(this.period())}. Opens the issues and pull requests ${person.username} commented on, on GitHub`,
         tint: 'bg-[#0969DA]/5 ring-[#0969DA] hover:bg-[#0969DA]/10 dark:ring-[#58A6FF]', text: 'text-[#0969DA] dark:text-[#58A6FF]',
       },
       {
@@ -240,6 +244,7 @@ export default class Profile {
   }));
 
   protected readonly avatar = (person: ContributorProfile) => avatarUrl(person.githubId, 160);
+  protected readonly colors = GITHUB_TEXT;
   protected readonly number = formatNumber;
   protected readonly phrase = periodPhrase;
   protected readonly country = countryName;
@@ -270,10 +275,6 @@ export default class Profile {
     void this.router.navigate([], { queryParams: { period: period === 'all' ? null : period }, queryParamsHandling: 'merge', replaceUrl: true });
   }
 
-  protected githubSearch(person: ContributorProfile): string {
-    return `https://github.com/search?${new URLSearchParams({ q: `${reposQuery()} is:pr author:${person.username}`, type: 'pullrequests' })}`;
-  }
-
   protected githubLabel(person: ContributorProfile): string {
     const count = this.current().pullRequests.all;
     return `${plural(count, 'merged pull request', 'merged pull requests')} ${periodPhrase(this.period())}. Opens ${person.username}'s pull requests on GitHub`;
@@ -293,18 +294,12 @@ export default class Profile {
     const description = `${person.username} merged ${plural(current.pullRequests.all, 'pull request', 'pull requests')}, opened ${plural(current.issues, 'issue', 'issues')} and wrote ${plural(current.comments + current.reviewComments, 'comment', 'comments')} in Angular ${periodPhrase(this.period())}: #${formatNumber(current.rank)} with ${formatPoints(current.score)}.`;
     this.title.setTitle(`${title} · Angularians`);
     this.meta.removeTag('name="robots"');
-    this.meta.updateTag({ name: 'description', content: description });
-    this.meta.updateTag({ property: 'og:title', content: title });
-    this.meta.updateTag({ property: 'og:description', content: description });
-    // The Angularian card of the period on screen: 2400×1260, a large preview on X, LinkedIn, Slack…
-    const cardQuery = new URLSearchParams({ ...(this.period() === 'all' ? {} : { period: this.period() }), ...(this.cardFlag() ? { flag: this.cardFlag()! } : {}) }).toString();
-    const card = `${SITE_URL}/${person.username}/card.png${cardQuery ? `?${cardQuery}` : ''}`;
-    this.meta.updateTag({ property: 'og:image', content: card });
-    this.meta.updateTag({ property: 'og:image:width', content: '2400' });
-    this.meta.updateTag({ property: 'og:image:height', content: '1260' });
-    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
-    this.meta.updateTag({ name: 'twitter:image', content: card });
-    this.meta.updateTag({ property: 'og:url', content: `${SITE_URL}/${person.username}${this.period() === 'all' ? '' : `?period=${this.period()}`}` });
-    setCanonical(this.document, `/${person.username}`);
+    setShareMeta(this.meta, this.document, {
+      title,
+      description,
+      url: `${SITE_URL}/${person.username}${shareQuery(this.period())}`,
+      image: `${SITE_URL}/${person.username}/card.png${shareQuery(this.period(), this.cardFlag())}`,
+      canonical: `/${person.username}`,
+    });
   }
 }

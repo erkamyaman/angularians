@@ -40,9 +40,9 @@
   @if (board(); as page) {
     <ul class="mt-4 mb-6 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-sm text-muted-foreground" [attr.aria-label]="'Contributions ' + phrase(page.period)">
       <li class="flex items-center gap-1.5"><ng-icon name="remixGroupLine" aria-hidden="true" /><span><strong class="font-semibold text-foreground tabular-nums">{{ number(page.total) }}</strong> {{ page.total === 1 ? 'contributor' : 'contributors' }}{{ page.country ? ' from ' + countryLabel(page.country) : '' }}</span></li>
-      <li class="flex items-center gap-1.5"><ng-icon name="octGitMerge" class="text-[#8250DF] dark:text-[#A371F7]" aria-hidden="true" /><span><strong class="font-semibold text-foreground tabular-nums">{{ number(page.landedPullRequests) }}</strong> merged {{ page.landedPullRequests === 1 ? 'PR' : 'PRs' }}</span></li>
-      <li class="flex items-center gap-1.5"><ng-icon name="octIssueOpened" class="text-[#1A7F37] dark:text-[#3FB950]" aria-hidden="true" /><span><strong class="font-semibold text-foreground tabular-nums">{{ number(page.issues) }}</strong> {{ page.issues === 1 ? 'issue' : 'issues' }}</span></li>
-      <li class="flex items-center gap-1.5"><ng-icon name="octComment" class="text-[#0969DA] dark:text-[#58A6FF]" aria-hidden="true" /><span><strong class="font-semibold text-foreground tabular-nums">{{ number(page.comments + page.reviewComments) }}</strong> {{ page.comments + page.reviewComments === 1 ? 'comment' : 'comments' }}</span></li>
+      <li class="flex items-center gap-1.5"><ng-icon name="octGitMerge" [class]="colors.purple" aria-hidden="true" /><span><strong class="font-semibold text-foreground tabular-nums">{{ number(page.landedPullRequests) }}</strong> merged {{ page.landedPullRequests === 1 ? 'PR' : 'PRs' }}</span></li>
+      <li class="flex items-center gap-1.5"><ng-icon name="octIssueOpened" [class]="colors.green" aria-hidden="true" /><span><strong class="font-semibold text-foreground tabular-nums">{{ number(page.issues) }}</strong> {{ page.issues === 1 ? 'issue' : 'issues' }}</span></li>
+      <li class="flex items-center gap-1.5"><ng-icon name="octComment" [class]="colors.blue" aria-hidden="true" /><span><strong class="font-semibold text-foreground tabular-nums">{{ number(page.comments + page.reviewComments) }}</strong> {{ page.comments + page.reviewComments === 1 ? 'comment' : 'comments' }}</span></li>
       <li class="text-xs sm:ml-auto"><app-next-update [collectedAt]="page.collectedAt" /></li>
     </ul>
 

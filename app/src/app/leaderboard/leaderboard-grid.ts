@@ -10,12 +10,13 @@ import { vikingAxes, vikingHelmet, vikingShield } from '../layout/viking-icons'
 import { getLeaderboard } from '../data/contributors.server'
 import { RankShield } from './rank-shield'
 import { avatarSrcset, avatarUrl, formatNumber, formatPoints, profileQuery } from './format'
+import { GITHUB_TEXT } from './github-colors'
 
 /** The fallback for browsers without srcset: the cells are drawn at 124px at most. */
 const AVATAR_SIZE = 56
 /** Gold, silver and bronze for the top three of a period. */
 export const PODIUM: Record<number, { icon: string, ring: string, badge: string, text: string } | undefined> = {
-  1: { icon: 'vikingHelmet', ring: 'ring-2 ring-[#D29922]', badge: 'ring-[#D29922] text-[#9A6700] dark:text-[#D29922]', text: 'text-[#9A6700] dark:text-[#D29922]' },
+  1: { icon: 'vikingHelmet', ring: 'ring-2 ring-[#D29922]', badge: `ring-[#D29922] ${GITHUB_TEXT.gold}`, text: GITHUB_TEXT.gold },
   2: { icon: 'vikingShield', ring: 'ring-2 ring-[#A8B3BD]', badge: 'ring-[#A8B3BD] text-[#59636E] dark:text-[#A8B3BD]', text: 'text-[#59636E] dark:text-[#A8B3BD]' },
   3: { icon: 'vikingAxes', ring: 'ring-2 ring-[#B5561C]', badge: 'ring-[#B5561C] text-[#9A4510] dark:text-[#D2691E]', text: 'text-[#9A4510] dark:text-[#D2691E]' },
 }

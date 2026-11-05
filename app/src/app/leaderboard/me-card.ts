@@ -12,11 +12,12 @@ import { HlmSkeleton } from '@spartan-ng/helm/skeleton'
 import { HlmTooltip } from '@spartan-ng/helm/tooltip'
 import { AuthService } from '../auth/auth.service'
 import { AngularLogo } from '../layout/angular-logo'
-import { LogoMark } from '../layout/logo-mark'
+import { AngularianPill } from '../layout/angularian-pill'
 import { ScoreDialog } from '../profile/score-dialog'
 import { JoinLinks } from './join-links'
 import { Share } from '../profile/share'
 import { avatarUrl, formatNumber, formatPoints } from './format'
+import { GITHUB_TEXT } from './github-colors'
 
 const CARD = 'flex w-full flex-col rounded-xl bg-muted/40 p-6 ring-1 ring-border sm:p-8'
 /**
@@ -31,7 +32,7 @@ const SIGNED_OUT = 'max-sm:p-4 sm:min-h-64 lg:min-h-80'
 /** The signed-in Angularian, or a sign-in. */
 @Component({
   selector: 'app-me-card',
-  imports: [AngularLogo, HlmButton, HlmSkeleton, HlmTooltip, JoinLinks, LogoMark, NgIcon, RouterLink, ScoreDialog, Share],
+  imports: [AngularLogo, HlmButton, HlmSkeleton, HlmTooltip, JoinLinks, AngularianPill, NgIcon, RouterLink, ScoreDialog, Share],
   providers: [provideIcons({ vikingHead, remixMedalLine, octIssueOpened, octGitMerge, remixInformationLine, remixChatHeartLine, simpleGithub })],
   host: { class: 'block w-full' },
   templateUrl: './me-card.html',
@@ -53,9 +54,9 @@ export class MeCard {
   protected readonly unlocks = computed(() => {
     const person = this.me()?.angularian
     return [
-      { label: 'Merged PRs', one: 'Merged PR', value: person?.pullRequests.all ?? 0, hint: null, icon: 'octGitMerge', color: 'text-[#8250DF] dark:text-[#A371F7]' },
-      { label: 'Helpful issues', one: 'Helpful issue', value: person?.helpfulIssues ?? 0, hint: 'Completed, or 3+ reactions, or 5+ comments', icon: 'octIssueOpened', color: 'text-[#1A7F37] dark:text-[#3FB950]' },
-      { label: 'Helpful comments', one: 'Helpful comment', value: person?.helpfulComments ?? 0, hint: '3+ reactions', icon: 'remixChatHeartLine', color: 'text-[#0969DA] dark:text-[#58A6FF]' },
+      { label: 'Merged PRs', one: 'Merged PR', value: person?.pullRequests.all ?? 0, hint: null, icon: 'octGitMerge', color: GITHUB_TEXT.purple },
+      { label: 'Helpful issues', one: 'Helpful issue', value: person?.helpfulIssues ?? 0, hint: 'Completed, or 3+ reactions, or 5+ comments', icon: 'octIssueOpened', color: GITHUB_TEXT.green },
+      { label: 'Helpful comments', one: 'Helpful comment', value: person?.helpfulComments ?? 0, hint: '3+ reactions', icon: 'remixChatHeartLine', color: GITHUB_TEXT.blue },
     ]
   })
 

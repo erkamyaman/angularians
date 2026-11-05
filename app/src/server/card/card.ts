@@ -2,8 +2,9 @@
 // After nuxt.com's `OgImage/Nuxter.takumi.vue` (MIT, Copyright (c) 2022-2023 NuxtLabs): the same layout,
 // our colours and mark. Only the username and the period are in its URL: the numbers are read when it renders.
 import { Resvg } from '@resvg/resvg-js'
-import { isPeriod, periodPhrase, type ContributorProfile, type Period } from '@angularians/shared'
+import { periodOrNull, periodPhrase, type ContributorProfile, type Period } from '@angularians/shared'
 import satori from 'satori'
+import { formatNumber, formatPoints } from '../../app/leaderboard/format'
 
 export const CARD_WIDTH = 1200
 export const CARD_HEIGHT = 630
@@ -48,7 +49,6 @@ const statIcon = (paths: string[], color: string): Node =>
     viewBox: '0 0 16 16', width: STAT_ICON_SIZE, height: STAT_ICON_SIZE, fill: color,
   })
 
-const format = new Intl.NumberFormat('en-US').format
 const label = (value: number, one: string, many: string) => (value === 1 ? one : many)
 
 /**
@@ -65,7 +65,7 @@ function branded(text: string, style: Record<string, unknown>, brandColor?: stri
 
 /** `?period=`: a period with contributions, else all time (like the profile page). */
 export function cardPeriod(profile: ContributorProfile, requested: unknown): Period {
-  const period = typeof requested === 'string' && isPeriod(requested) ? requested : 'all'
+  const period = periodOrNull(requested) ?? 'all'
   return period !== 'all' && profile.periods.some(row => row.period === period) ? period : 'all'
 }
 
@@ -90,8 +90,8 @@ export function cardTree(profile: ContributorProfile, period: Period, avatar: st
           ? h('img', { width: 124, height: 124, borderRadius: 9999, border: '4px solid #262626' }, undefined, { src: avatar, width: 124, height: 124 })
           : h('div', { width: 124, height: 124, borderRadius: 9999, backgroundColor: '#262626' }),
         h('div', { fontSize: 44, fontWeight: 600, marginTop: 16, maxWidth: 380, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }, profile.username),
-        h('div', { fontFamily: 'Norse', fontWeight: 700, fontSize: 96, lineHeight: 1, letterSpacing: 2, color: BRAND, marginTop: 8 }, `#${format(period === 'all' ? profile.rank : stats.rank)}`),
-        h('div', { fontSize: 30, fontWeight: 600, color: BRAND, marginTop: 4 }, `${format(stats.score)} ${stats.score === 1 ? 'pt' : 'pts'}`),
+        h('div', { fontFamily: 'Norse', fontWeight: 700, fontSize: 96, lineHeight: 1, letterSpacing: 2, color: BRAND, marginTop: 8 }, `#${formatNumber(period === 'all' ? profile.rank : stats.rank)}`),
+        h('div', { fontSize: 30, fontWeight: 600, color: BRAND, marginTop: 4 }, formatPoints(stats.score)),
         ...(period !== 'all' ? [h('div', { fontSize: 24, color: '#a3a3a3', marginTop: 4 }, periodPhrase(period))] : []),
         ...(flag ? [h('div', { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: period === 'all' ? 10 : 4, fontSize: 24, color: '#a3a3a3' }, [
           h('img', { width: 30, height: 30 }, undefined, { src: flag.src, width: 30, height: 30 }),
@@ -103,7 +103,7 @@ export function cardTree(profile: ContributorProfile, period: Period, avatar: st
           h('div', { flexDirection: 'column', justifyContent: 'space-between', flex: 1, height: 196, borderRadius: 24, padding: 24, border: `2px solid ${stat.color}`, backgroundColor: `${stat.color}12` }, [
             statIcon(stat.icon, stat.color),
             h('div', { flexDirection: 'column' }, [
-              h('div', { fontSize: 58, fontWeight: 600, lineHeight: 1.1 }, format(stat.value)),
+              h('div', { fontSize: 58, fontWeight: 600, lineHeight: 1.1 }, formatNumber(stat.value)),
               h('div', { fontSize: 26, marginTop: 2, color: stat.color }, stat.label),
             ]),
           ])),
