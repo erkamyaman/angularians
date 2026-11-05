@@ -40,7 +40,7 @@ export class LeaderboardMemory {
 @Component({
   selector: 'app-leaderboard-grid',
   imports: [HlmButton, NgIcon, RankShield, RouterLink],
-  host: { '(window:scroll)': 'tip.set(null)', '(window:resize)': 'tip.set(null)' },
+  host: { '(window:scroll)': 'followFocus()', '(window:resize)': 'tip.set(null)', '(document:keydown.escape)': 'tip.set(null)' },
   providers: [provideIcons({ remixAddLine, remixLayoutGridLine, remixListUnordered, vikingAxes, vikingHelmet, vikingShield })],
   templateUrl: './leaderboard-grid.html',
 })
@@ -73,8 +73,7 @@ export class LeaderboardGrid {
   protected readonly who = (item: ContributorSummary) =>
     item.name && item.name.toLowerCase() !== item.username.toLowerCase() ? `${item.name} (${item.username})` : item.username
   protected readonly overall = (item: ContributorSummary) => formatNumber(item.rank)
-  /** One tooltip for the whole grid: one per tile cost a dozen listeners each, thousands after Show more. */
-  protected readonly tip = signal<{ item: ContributorSummary, x: number, y: number } | null>(null)
+  protected readonly tip = signal<{ item: ContributorSummary, link: HTMLElement, x: number, y: number, bottom: number } | null>(null)
   private readonly tipBox = viewChild<ElementRef<HTMLElement>>('tipBox')
 
   protected showTip(event: Event): void {
@@ -83,8 +82,18 @@ export class LeaderboardGrid {
     if (event instanceof PointerEvent && event.pointerType === 'touch') return
     if (event.type === 'focusin' && !link.matches(':focus-visible')) return
     const item = this.items()[Number(link.dataset['index'])]
+    if (item) this.placeTip(item, link)
+  }
+
+  protected followFocus(): void {
+    const shown = this.tip()
+    if (shown && shown.link === document.activeElement) this.placeTip(shown.item, shown.link)
+    else this.tip.set(null)
+  }
+
+  private placeTip(item: ContributorSummary, link: HTMLElement): void {
     const box = link.getBoundingClientRect()
-    if (item) this.tip.set({ item, x: box.left + box.width / 2, y: box.top })
+    this.tip.set({ item, link, x: box.left + box.width / 2, y: box.top, bottom: box.bottom })
   }
 
   protected hideTip(event: PointerEvent): void {
@@ -97,16 +106,27 @@ export class LeaderboardGrid {
     `${this.who(item)}, #${this.rank(item)}${item.countryRank ? ` in the country, #${formatNumber(item.rank)} overall` : ''}, ${this.points(item)}`
   protected readonly points = (item: ContributorSummary) => formatPoints(item.score)
 
-
   constructor() {
-    // Kept on screen at the edges: centred over a corner tile, a long name would be cut off.
     afterRenderEffect(() => {
       const box = this.tipBox()?.nativeElement
-      if (!box || !this.tip()) return
+      const shown = this.tip()
+      if (!box || !shown) return
+      const arrow = box.querySelector<HTMLElement>('[data-arrow]')
       box.style.marginLeft = ''
-      const { left, right } = box.getBoundingClientRect()
+      box.style.marginTop = ''
+      delete box.dataset['side']
+      if (arrow) arrow.style.marginLeft = ''
+      const { left, right, top, height } = box.getBoundingClientRect()
       const shift = left < 8 ? 8 - left : right > innerWidth - 8 ? innerWidth - 8 - right : 0
-      if (shift) box.style.marginLeft = `${shift}px`
+      if (shift) {
+        box.style.marginLeft = `${shift}px`
+        if (arrow) arrow.style.marginLeft = `${-shift}px`
+      }
+      const header = document.querySelector('app-site-header')?.getBoundingClientRect().bottom ?? 0
+      if (top < header + 8) {
+        box.style.marginTop = `${shown.bottom - shown.y + 16 + height}px`
+        box.dataset['side'] = 'bottom'
+      }
     })
   }
 
