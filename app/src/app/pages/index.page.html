@@ -20,8 +20,8 @@
   <div heroAside class="@container"><app-me-card /></div>
 </app-page-hero>
 
-<app-page-section sectionId="leaderboard" label="Leaderboard" [flush]="true">
-  <h2 class="sr-only">Leaderboard</h2>
+<app-page-section sectionId="leaderboard" [ownHeading]="true" [flush]="true">
+  <h2 id="leaderboard-title" class="sr-only">Leaderboard</h2>
   <!-- One row from lg: tabs, the country select and search do not fit side by side on a tablet -->
   <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
     <app-period-tabs [period]="period()" [periods]="board()?.periods ?? []" (periodChange)="setPeriod($event)" />
