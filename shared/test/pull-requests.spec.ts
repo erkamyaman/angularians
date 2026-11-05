@@ -27,6 +27,8 @@ describe('inferPullRequestType', () => {
     ['[19.2.x] Revert "feat(core): x"', 'chore'],
     ['[13.3.x]: docs(material/tabs): x', 'docs'],
     ['[19.2.x] - fix(core): x', 'fix'],
+    ['[WIP] -- fix(core): x', 'fix'],
+    ['[19.2.x] — fix(core): x', 'fix'],
     // No type in the title or the labels: chore.
     ['Bump version to "v22.2.3" with changelog.', 'chore'],
     ['Forms: always use the provided injector', 'chore'],
@@ -165,6 +167,11 @@ describe('pullRequestScopes', () => {
     ['[v19.2.x] fix(core): x', []],
     ['[1.2.3-rc.0] fix(core): x', []],
     ['[Patch version for #29189] fix(core): x', []],
+    ['[WIP] [19.2.x] fix(core): x', []],
+    ['[19.2.x] - fix(core): x', []],
+    ['[WIP] - fix(core): x', ['core']],
+    // A revert written with a scope names its package, as before; `Revert "…"` does not.
+    ['revert(core): x', ['core']],
     ['  [cherry-pick] fix(core): x', []],
     ['[19.2.x] Revert "fix(core): y"', []],
     // Other leading tags are skipped.
@@ -186,6 +193,9 @@ describe('pullRequestScopes in other repositories', () => {
     ['angular/components', 'fix(@angular/cdk/overlay): written as the npm name', ['@angular/cdk']],
     ['angular/components', 'fix(@angular/aria): x', ['@angular/aria']],
     ['angular/components', '[20.0.x] fix(aria/grid): a backport', []],
+    ['angular/components', 'fix(@angular/build): not a components package', []],
+    ['angular/angular-cli', '[19.2.x] fix(@angular/build): a backport', []],
+    ['angular/domino', '[19.2.x] fix(core): every domino PR counts', ['@angular/domino']],
     ['angular/angular-cli', 'fix(@angular/build): keep the base href', ['@angular/build']],
     ['angular/angular-cli', 'feat(@schematics/angular, @angular/cli): ai config', ['@schematics/angular', '@angular/cli']],
     ['angular/angular-cli', 'build: update dependency', []],

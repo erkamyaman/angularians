@@ -40,11 +40,11 @@ Bots are left out: GitHub apps, `-bot` accounts and the list in `shared/src/bots
 
 "Contributed to" groups landed PRs by the packages their titles name. In angular/components a scope's first part names the
 npm package: `fix(aria/grid)` is `@angular/aria`, `fix(material/button)` and `fix(@angular/material/button)` are
-`@angular/material`; `multiple` names none. Reverts and backports (`[19.2.x] …`, `[Backport 21.2.x] …`, `[PATCH] …`) count
-toward no package: the change counts once, through the PR that landed it on main. Other leading tags are skipped:
+`@angular/material`; `multiple` names none. Reverts written as `Revert "…"` and backports (`[19.2.x] …`, `[Backport 21.2.x] …`,
+`[PATCH] …`) count toward no package: the change counts once, through the PR that landed it on main. Other leading tags are skipped:
 `[WIP] fix(core): …` counts toward `core`. The angular/domino repository provides `@angular/domino`,
 the DOM implementation bundled with `@angular/platform-server` for server-side rendering. Every landed PR in angular/domino
-counts toward `@angular/domino`, even without a scope in its title.
+counts toward `@angular/domino`, even without a scope in its title, and even a backport.
 
 ## Periods
 

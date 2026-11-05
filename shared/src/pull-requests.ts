@@ -38,25 +38,26 @@ const LABEL_TYPE_MAP: Record<string, PullRequestType> = {
 /**
  * The first tag's text of a backport or patch port, as the Angular repositories write it: a release branch
  * (`[19.2.x]`, `[Backport 21.2.X]`, `[14.2 backport]`) or a word for it (`[PATCH]`, `[Patch port]`, `[Cherry pick]`,
- * `[LTS port]`, and the misspelt `[Path port]`). Not `[WIP]`.
+ * `[LTS port]`, the misspelt `[Path port]`, or a longer tag with one of these words, `[Patch version for #29189]`). Not `[WIP]`.
  */
 const PORT_TAG_RE = /^\s*(?:v?\d+(?:\.(?:\d+|x))+\b|.*\b(?:backport|patch|path port|cherry[- ]?pick|lts port)\b)/i
 
-/** The text of a title's first tag: `[19.2.x] fix(core): …` → `19.2.x`. */
-const FIRST_TAG_RE = /^\s*\[([^\]\n]*)\]/
+/** The text of each tag in a title's leading tags: `[WIP] [19.2.x] fix(core): …` → `WIP`, `19.2.x`. */
+const TAG_TEXT_RE = /\[([^\]\n]*)\]/g
 
-/** Any leading tags, `[19.2.x] `, `[WIP] `, `[PATCH] [19.2.x] `, `[13.3.x]: `: not part of the commit message. */
-const TAGS_RE = /^\s*(?:\[[^\]\n]*\]\s*[:-]?\s*)+/
+/** Any leading tags, `[19.2.x] `, `[WIP] `, `[PATCH] [19.2.x] `, `[13.3.x]: `, `[13.3.x] — `: not part of the commit message. */
+const TAGS_RE = /^\s*(?:\[[^\]\n]*\]\s*[:\-\u2013\u2014]*\s*)+/
 
 /** A title without its leading tags: `[20.0.x] fix(core): …` → `fix(core): …`, `[WIP] fix(core): …` → `fix(core): …`. */
 function untagged(title: string): string {
   return title.replace(TAGS_RE, '')
 }
 
-/** Whether a title is a backport's or patch port's, by its first tag. */
+/** Whether a title is a backport's or patch port's, by any of its leading tags. */
 function isPort(title: string): boolean {
-  const tag = FIRST_TAG_RE.exec(title)
-  return tag !== null && PORT_TAG_RE.test(tag[1]!)
+  const tags = TAGS_RE.exec(title)?.[0] ?? ''
+  for (const tag of tags.matchAll(TAG_TEXT_RE)) if (PORT_TAG_RE.test(tag[1]!)) return true
+  return false
 }
 
 /** The type from the title prefix (after any leading tags), then from the labels. Neither: `chore`. */
