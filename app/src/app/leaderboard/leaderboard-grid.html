@@ -27,14 +27,21 @@
   </ol>
 }
 
-<ol [class]="'grid-cols-5 gap-3 sm:grid sm:grid-cols-8 sm:gap-4 md:grid-cols-10 ' + (view() === 'list' ? 'hidden' : 'grid')" [attr.aria-label]="listLabel()">
-  @for (item of items(); track item.githubId) {
+<ol
+  [class]="'grid-cols-5 gap-3 sm:grid sm:grid-cols-8 sm:gap-4 md:grid-cols-10 ' + (view() === 'list' ? 'hidden' : 'grid')"
+  [attr.aria-label]="listLabel()"
+  (pointerover)="showTip($event)"
+  (pointerout)="hideTip($event)"
+  (focusin)="showTip($event)"
+  (focusout)="tip.set(null)"
+  (pointerdown)="tip.set(null)"
+>
+  @for (item of items(); track item.githubId; let index = $index) {
     <li class="relative">
-      <ng-template #tip><span class="brand mr-1.5 text-sm leading-none">#{{ rank(item) }}</span>{{ who(item) }} · {{ points(item) }}@if (item.countryRank) { · #{{ overall(item) }} overall }</ng-template>
       <a
         [routerLink]="['/', item.username]"
         [queryParams]="query()"
-        [hlmTooltip]="tip"
+        [attr.data-index]="index"
         [attr.aria-label]="label(item)"
         [class]="'relative block aspect-square overflow-hidden rounded-xl bg-muted transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none ' + podiumRing(item)"
       >
@@ -54,6 +61,12 @@
     </li>
   }
 </ol>
+
+@if (tip(); as shown) {
+  <div #tipBox class="pointer-events-none fixed z-50 w-max max-w-[calc(100vw-1rem)] -translate-x-1/2 -translate-y-full rounded-md bg-foreground px-3 py-1.5 text-xs text-background" [style.left.px]="shown.x" [style.top.px]="shown.y - 8" aria-hidden="true">
+    <span class="brand mr-1.5 text-sm leading-none">#{{ rank(shown.item) }}</span>{{ who(shown.item) }} · {{ points(shown.item) }}@if (shown.item.countryRank) { · #{{ overall(shown.item) }} overall }
+  </div>
+}
 
 @if (items().length < page().total) {
   <div class="mt-10 flex justify-center">

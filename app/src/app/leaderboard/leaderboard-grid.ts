@@ -1,5 +1,5 @@
 // Ported from nuxt.com `app/components/nuxters/NuxtersLeaderboard.vue` (MIT, Copyright (c) 2022-2023 NuxtLabs).
-import { Component, computed, inject, input, linkedSignal, signal, Service } from '@angular/core'
+import { afterRenderEffect, Component, computed, ElementRef, inject, input, linkedSignal, signal, Service, viewChild } from '@angular/core'
 import { RouterLink } from '@angular/router'
 import { injectServerFnMutation } from '@analogjs/router'
 import type { ContributorSummary, LeaderboardPage } from '@angularians/shared'
@@ -7,7 +7,6 @@ import { NgIcon, provideIcons } from '@ng-icons/core'
 import { remixAddLine, remixLayoutGridLine, remixListUnordered } from '@ng-icons/remixicon'
 import { HlmButton } from '@spartan-ng/helm/button'
 import { vikingAxes, vikingHelmet, vikingShield } from '../layout/viking-icons'
-import { HlmTooltip } from '@spartan-ng/helm/tooltip'
 import { getLeaderboard } from '../data/contributors.server'
 import { RankShield } from './rank-shield'
 import { avatarSrcset, avatarUrl, formatNumber, formatPoints, profileQuery } from './format'
@@ -40,7 +39,8 @@ export class LeaderboardMemory {
 
 @Component({
   selector: 'app-leaderboard-grid',
-  imports: [HlmButton, HlmTooltip, NgIcon, RankShield, RouterLink],
+  imports: [HlmButton, NgIcon, RankShield, RouterLink],
+  host: { '(window:scroll)': 'tip.set(null)', '(window:resize)': 'tip.set(null)' },
   providers: [provideIcons({ remixAddLine, remixLayoutGridLine, remixListUnordered, vikingAxes, vikingHelmet, vikingShield })],
   templateUrl: './leaderboard-grid.html',
 })
@@ -73,11 +73,42 @@ export class LeaderboardGrid {
   protected readonly who = (item: ContributorSummary) =>
     item.name && item.name.toLowerCase() !== item.username.toLowerCase() ? `${item.name} (${item.username})` : item.username
   protected readonly overall = (item: ContributorSummary) => formatNumber(item.rank)
+  /** One tooltip for the whole grid: one per tile cost a dozen listeners each, thousands after Show more. */
+  protected readonly tip = signal<{ item: ContributorSummary, x: number, y: number } | null>(null)
+  private readonly tipBox = viewChild<ElementRef<HTMLElement>>('tipBox')
+
+  protected showTip(event: Event): void {
+    const link = (event.target as Element | null)?.closest<HTMLElement>('a[data-index]')
+    if (!link) return
+    if (event instanceof PointerEvent && event.pointerType === 'touch') return
+    if (event.type === 'focusin' && !link.matches(':focus-visible')) return
+    const item = this.items()[Number(link.dataset['index'])]
+    const box = link.getBoundingClientRect()
+    if (item) this.tip.set({ item, x: box.left + box.width / 2, y: box.top })
+  }
+
+  protected hideTip(event: PointerEvent): void {
+    const link = (event.target as Element | null)?.closest('a[data-index]')
+    if (!link || !link.contains(event.relatedTarget as Node | null)) this.tip.set(null)
+  }
   protected readonly place = (item: ContributorSummary) => item.countryRank ?? item.rank
   protected readonly rank = (item: ContributorSummary) => formatNumber(this.place(item))
   protected readonly label = (item: ContributorSummary) =>
     `${this.who(item)}, #${this.rank(item)}${item.countryRank ? ` in the country, #${formatNumber(item.rank)} overall` : ''}, ${this.points(item)}`
   protected readonly points = (item: ContributorSummary) => formatPoints(item.score)
+
+
+  constructor() {
+    // Kept on screen at the edges: centred over a corner tile, a long name would be cut off.
+    afterRenderEffect(() => {
+      const box = this.tipBox()?.nativeElement
+      if (!box || !this.tip()) return
+      box.style.marginLeft = ''
+      const { left, right } = box.getBoundingClientRect()
+      const shift = left < 8 ? 8 - left : right > innerWidth - 8 ? innerWidth - 8 - right : 0
+      if (shift) box.style.marginLeft = `${shift}px`
+    })
+  }
 
   protected async showMore(): Promise<void> {
     // The period or the country can change while this loads: its items must not join the new board.
