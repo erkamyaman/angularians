@@ -66,12 +66,12 @@ export function yearRanges(years: readonly number[]): string {
 }
 
 /** By GitHub id (a username can change): the people behind the community tools in the footer, with their logos. */
-const TOOL_PEOPLE: Readonly<Record<number, { name: string, role: 'creator' | 'maintainer', logo: string }>> = {
-  42211: { name: 'AnalogJS', role: 'creator', logo: '/credits/analogjs.svg' }, // brandonroberts
-  35136007: { name: 'spartan/ui', role: 'creator', logo: '/credits/spartan.svg' }, // goetzrobin
-  20795331: { name: 'ng-icons', role: 'creator', logo: '/credits/ng-icons.svg' }, // ashley-hunter
-  25516557: { name: 'ngxtension', role: 'creator', logo: '/credits/ngxtension.svg' }, // nartc
-  25394362: { name: 'ngxtension', role: 'creator', logo: '/credits/ngxtension.svg' }, // eneajaho
+const TOOL_PEOPLE: Readonly<Record<number, { name: string, role: 'creator' | 'maintainer', logo: string, href: string }>> = {
+  42211: { name: 'AnalogJS', role: 'creator', logo: '/credits/analogjs.svg', href: 'https://analogjs.org' }, // brandonroberts
+  35136007: { name: 'spartan/ui', role: 'creator', logo: '/credits/spartan.svg', href: 'https://spartan.ng' }, // goetzrobin
+  20795331: { name: 'ng-icons', role: 'creator', logo: '/credits/ng-icons.svg', href: 'https://ng-icons.github.io/ng-icons' }, // ashley-hunter
+  25516557: { name: 'ngxtension', role: 'creator', logo: '/credits/ngxtension.svg', href: 'https://ngxtension.dev' }, // nartc
+  25394362: { name: 'ngxtension', role: 'creator', logo: '/credits/ngxtension.svg', href: 'https://ngxtension.dev' }, // eneajaho
 };
 
 @Component({
@@ -151,16 +151,33 @@ const TOOL_PEOPLE: Readonly<Record<number, { name: string, role: 'creator' | 'ma
               @if (badges().length) {
                 <ul class="flex flex-wrap gap-2" aria-label="Badges">
                   @for (badge of badges(); track badge.label) {
-                    <li [class]="'inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-sm ring-1 ' + badge.style" [hlmTooltip]="badge.title">
-                      @if (badge.icon === 'angular') {
-                        <app-angular-logo class="size-4" />
-                      } @else if (badge.logo) {
-                        <img [src]="badge.logo" alt="" width="16" height="16" class="size-4 shrink-0 object-contain" />
-                      } @else {
-                        <ng-icon [name]="badge.icon" [size]="badge.icon.startsWith('viking') ? '1.25rem' : '1em'" aria-hidden="true" />
-                      }
-                      {{ badge.label }}
-                    </li>
+                    @if (badge.href) {
+                      <!-- A tool's badge opens its site -->
+                      <li class="flex">
+                        <a [class]="'inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-sm ring-1 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none ' + badge.style" [hlmTooltip]="badge.title"
+                          [href]="badge.href" target="_blank" rel="noopener">
+                          @if (badge.icon === 'angular') {
+                            <app-angular-logo class="size-4" />
+                          } @else if (badge.logo) {
+                            <img [src]="badge.logo" alt="" width="16" height="16" class="size-4 shrink-0 object-contain" />
+                          } @else {
+                            <ng-icon [name]="badge.icon" [size]="badge.icon.startsWith('viking') ? '1.25rem' : '1em'" aria-hidden="true" />
+                          }
+                          {{ badge.label }}
+                        </a>
+                      </li>
+                    } @else {
+                      <li [class]="'inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-sm ring-1 ' + badge.style" [hlmTooltip]="badge.title">
+                        @if (badge.icon === 'angular') {
+                          <app-angular-logo class="size-4" />
+                        } @else if (badge.logo) {
+                          <img [src]="badge.logo" alt="" width="16" height="16" class="size-4 shrink-0 object-contain" />
+                        } @else {
+                          <ng-icon [name]="badge.icon" [size]="badge.icon.startsWith('viking') ? '1.25rem' : '1em'" aria-hidden="true" />
+                        }
+                        {{ badge.label }}
+                      </li>
+                    }
                   }
                 </ul>
               }
@@ -471,11 +488,11 @@ export default class Profile {
     const gold = 'bg-[#9A6700]/10 text-[#9A6700] ring-[#9A6700]/30 dark:bg-[#D29922]/10 dark:text-[#D29922] dark:ring-[#D29922]/30';
     const green = 'bg-[#1A7F37]/10 text-[#1A7F37] ring-[#1A7F37]/30 dark:bg-[#3FB950]/10 dark:text-[#3FB950] dark:ring-[#3FB950]/30';
     const blue = 'bg-[#0969DA]/10 text-[#0969DA] ring-[#0969DA]/30 dark:bg-[#58A6FF]/10 dark:text-[#58A6FF] dark:ring-[#58A6FF]/30';
-    const badges: Array<{ label: string, title: string, icon: string, style: string, logo?: string }> = [];
+    const badges: Array<{ label: string, title: string, icon: string, style: string, logo?: string, href?: string }> = [];
     // The people behind the Angular community tools this site is built on: their project's own logo.
     const tool = TOOL_PEOPLE[person.githubId];
     if (tool) {
-      badges.push({ label: `${tool.name} ${tool.role}`, title: `${tool.role === 'creator' ? 'Created' : 'Maintains'} ${tool.name}, which Angularians is built on`, icon: '', logo: tool.logo, style: 'bg-muted/60 text-foreground ring-border' });
+      badges.push({ label: `${tool.name} ${tool.role}`, title: `${tool.role === 'creator' ? 'Created' : 'Maintains'} ${tool.name}, which Angularians is built on`, icon: '', logo: tool.logo, href: tool.href, style: 'bg-muted/60 text-foreground ring-border transition-colors hover:bg-muted' });
     }
     // The gradient Angular logo of the press kit, only to say "member of the Angular team" (the site's mark stays the A).
     if (person.team) badges.push({ label: 'Angular team', title: 'A public member of the Angular organization on GitHub', icon: 'angular', style: 'bg-[#dc087d]/10 text-foreground ring-[#dc087d]/40' });
