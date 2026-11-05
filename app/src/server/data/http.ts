@@ -7,6 +7,7 @@ import * as v from 'valibot'
  */
 export function cacheJson(event: H3Event): void {
   setResponseHeader(event, 'cache-control', 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400')
+  setResponseHeader(event, 'netlify-cdn-cache-control', 'public, durable, s-maxage=3600, stale-while-revalidate=86400')
 }
 
 /** Validate the query string against a schema, or answer 400 with what is wrong. */

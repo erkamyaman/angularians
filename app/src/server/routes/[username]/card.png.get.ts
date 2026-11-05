@@ -24,5 +24,6 @@ export default defineEventHandler(async (event) => {
   setResponseHeader(event, 'content-type', 'image/png')
   // A day in shared caches (GitHub's image proxy too): each night's deploy clears the CDN.
   setResponseHeader(event, 'cache-control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800')
+  setResponseHeader(event, 'netlify-cdn-cache-control', 'public, durable, s-maxage=86400, stale-while-revalidate=604800')
   return png
 })

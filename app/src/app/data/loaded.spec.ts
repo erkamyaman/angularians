@@ -17,5 +17,6 @@ describe('loadedValue', () => {
     markFailed(response);
     expect(response.statusCode).toBe(503);
     expect(headers['cache-control']).toBe('no-store');
+    expect(headers['netlify-cdn-cache-control']).toBe('no-store');
   });
 });

@@ -23,5 +23,6 @@ export default defineEventHandler(async (event) => {
   const png = await renderCard(homeTree({ title, description, avatars }), await cardFonts())
   setResponseHeader(event, 'content-type', 'image/png')
   setResponseHeader(event, 'cache-control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800')
+  setResponseHeader(event, 'netlify-cdn-cache-control', 'public, durable, s-maxage=86400, stale-while-revalidate=604800')
   return png
 })

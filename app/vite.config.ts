@@ -53,13 +53,15 @@ export default defineConfig(() => ({
           // Pages change with the data, once a night with a new deploy (which clears the CDN): browsers revalidate,
           // the CDN keeps a page an hour and may serve a stale one for a day while it refreshes it.
           // 400s and 404s too: they only change with the data. The API routes set their own, longer browser cache.
+          // Netlify-CDN-Cache-Control: the same for Netlify's CDN, plus `durable`, a copy shared by every edge
+          // (without it, each edge renders its own, and most requests missed).
           // Netlify-Vary: a copy per parameter the routes read, or the CDN can answer with another URL's response (the wrong
           // country). Any other one (`?utm_source=`) shares the page's copy. A route reading a new parameter must add it here.
           // and per value of the signed-in hint cookie (app/src/app/auth/hint.ts), whose pages start with the signed-in
           // card's skeleton. Every other cookie is ignored by the cache.
-          '/**': { headers: { 'cache-control': 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400', 'netlify-vary': 'query=period|country|page|q|flag|v,cookie=angularians-signed-in' } },
+          '/**': { headers: { 'cache-control': 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400', 'netlify-cdn-cache-control': 'public, durable, s-maxage=3600, stale-while-revalidate=86400', 'netlify-vary': 'query=period|country|page|q|flag|v,cookie=angularians-signed-in' } },
           // Sign-in: per person, with cookies. Never in a shared cache.
-          '/api/auth/**': { headers: { 'cache-control': 'private, no-store' } },
+          '/api/auth/**': { headers: { 'cache-control': 'private, no-store', 'netlify-cdn-cache-control': 'no-store' } },
           // Hashed file names: never change.
           '/assets/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
         },
