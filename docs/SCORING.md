@@ -5,7 +5,8 @@ plus review comments. The rules live in `shared/src/scoring.ts` and `shared/src/
 
 ## Merged pull requests, by type
 
-The type comes from the PR title, the convention the Angular repositories already enforce.
+The type comes from the PR title, the convention the Angular repositories already enforce. Leading tags of backports and
+patch ports are skipped: `[Backport 21.2.x] fix(router): …` is a fix.
 
 | Type | Points | PR title prefixes |
 | --- | --- | --- |
@@ -36,7 +37,9 @@ Bots are left out: GitHub apps, `-bot` accounts and the list in `shared/src/bots
 
 ## Packages on profiles
 
-"Contributed to" groups landed PRs by the packages their titles name. The angular/domino repository provides `@angular/domino`,
+"Contributed to" groups landed PRs by the packages their titles name, after the same leading tags. In angular/components a
+scope's first part names the npm package: `fix(aria/grid)` is `@angular/aria`, `fix(material/button)` is `@angular/material`;
+`multiple` names none. Reverts count toward no package. The angular/domino repository provides `@angular/domino`,
 the DOM implementation bundled with `@angular/platform-server` for server-side rendering. Every landed PR in angular/domino
 counts toward `@angular/domino`, even without a scope in its title.
 
