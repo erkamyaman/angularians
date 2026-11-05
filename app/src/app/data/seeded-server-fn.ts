@@ -1,38 +1,35 @@
 import { computed, inject, resource, untracked } from '@angular/core'
 import { ServerFnClient, type ServerFn } from '@analogjs/router'
 
-/**
- * `injectServerFn`, but the server's value is there for the first render in the browser: Analog's own reads it a
- * microtask later, so hydration found no value, took the other `@if` branch and rebuilt the page.
- */
 export function injectSeededServerFn<In, Out>(fn: ServerFn<In, Out>, args: () => In) {
   const client = inject(ServerFnClient)
-  const read = fn as unknown as ServerFn<unknown, Out>
+  const seedFn = fn as unknown as ServerFn<unknown, Out>
   const firstInput = untracked(args)
-  const first = JSON.stringify(firstInput)
-  const seeded = client.isServer ? undefined : client.readSeed(read, firstInput)
+  const firstKey = JSON.stringify(firstInput)
+  const isFirst = (input: In) => JSON.stringify(input) === firstKey
+  const seeded = client.isServer ? undefined : client.readSeed(seedFn, firstInput)
   let seedUnused = seeded !== undefined
 
-  const ref = resource({
+  const loaded = resource({
     params: args,
     loader: async ({ params }) => {
-      if (seedUnused && JSON.stringify(params) === first) {
+      if (seedUnused && isFirst(params)) {
         seedUnused = false
         return seeded as Out
       }
       const value = await client.call(fn, params)
-      if (client.isServer) client.writeSeed(read, params, value)
+      if (client.isServer) client.writeSeed(seedFn, params, value)
       return value
     },
   })
-  const fromSeed = computed(() => seeded !== undefined && !ref.hasValue() && !ref.error() && JSON.stringify(args()) === first)
-  const value = computed<Out | undefined>(() => (ref.hasValue() ? ref.value() : fromSeed() ? seeded : undefined))
+  const fromSeed = computed(() => seeded !== undefined && !loaded.hasValue() && !loaded.error() && isFirst(args()))
+  const value = computed<Out | undefined>(() => (loaded.hasValue() ? loaded.value() : fromSeed() ? seeded : undefined))
 
   return {
     value,
     hasValue: () => value() !== undefined,
-    error: ref.error,
-    isLoading: computed(() => ref.isLoading() && !fromSeed()),
-    reload: () => ref.reload(),
+    error: loaded.error,
+    isLoading: computed(() => loaded.isLoading() && !fromSeed()),
+    reload: () => loaded.reload(),
   }
 }

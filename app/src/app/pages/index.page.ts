@@ -4,7 +4,6 @@ import { afterRenderEffect, Component, computed, effect, inject, linkedSignal, u
 import { Meta, Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { type RouteMeta } from '@analogjs/router';
-import { injectSeededServerFn } from '../data/seeded-server-fn';
 import { injectResponse } from '@analogjs/router/tokens';
 import { countryCode, countryName, DEFAULT_PERIOD, isPeriod, periodPhrase, type Period } from '@angularians/shared';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -16,6 +15,7 @@ import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 import { getContributorsMap, getLeaderboard } from '../data/contributors.server';
+import { injectSeededServerFn } from '../data/seeded-server-fn';
 import { loadedValue, markFailed } from '../data/loaded';
 import { PageGrid } from '../layout/page-grid';
 import { AngularLogo } from '../layout/angular-logo';

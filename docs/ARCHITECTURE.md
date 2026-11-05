@@ -28,6 +28,10 @@ Browsers keep `/assets/*` and `/fonts/*` for a year and `/flags/*` for 30 days (
 The data is read once per server instance from a JSON file next to the server (`app/scripts/bundle-data.ts` writes it,
 `app/scripts/copy-data.ts` copies it there): at ~25 MB it is too big to compile into the server.
 
+Pages load their data with `injectSeededServerFn` (`app/src/app/data/seeded-server-fn.ts`), not Analog's
+`injectServerFn`: it hands the browser the server's value on the first render, so hydration keeps the server-rendered page
+instead of rebuilding it. Later inputs load as usual.
+
 To try the site with another data folder: `CONTRIBUTORS_DATA_DIR=/path/to/data pnpm build`.
 
 The brand font, Norse Bold (the word "Angularian" on the site and the cards), is in `app/public/fonts/`. The mark is built by `app/scripts/logo/build.py`.
