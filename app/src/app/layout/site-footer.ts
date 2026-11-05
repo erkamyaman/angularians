@@ -32,7 +32,7 @@ const REPO = 'https://github.com/erkamyaman/angularians';
 
       <!-- The Angular community projects this site is built on, with their own logos (THIRD_PARTY_NOTICES.md) -->
       <div class="mt-8 flex flex-col gap-3 border-t pt-6 sm:flex-row sm:items-center sm:gap-5">
-        <p class="text-muted-foreground">Built on Angular community tools</p>
+        <p class="text-muted-foreground">Built on <span class="ml-0.5 inline-flex items-baseline gap-1 font-medium whitespace-nowrap text-foreground"><app-angular-logo class="size-[1.1em] self-center" />Angular</span> community tools</p>
         <ul class="flex flex-wrap items-center gap-x-5 gap-y-2">
           @for (tool of tools; track tool.name) {
             <li>
