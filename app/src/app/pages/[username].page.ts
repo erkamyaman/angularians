@@ -71,7 +71,7 @@ const TOOL_PEOPLE: Readonly<Record<number, { name: string, role: 'creator' | 'ma
   35136007: { name: 'spartan/ui', role: 'creator', logo: '/credits/spartan.svg' }, // goetzrobin
   20795331: { name: 'ng-icons', role: 'creator', logo: '/credits/ng-icons.svg' }, // ashley-hunter
   25516557: { name: 'ngxtension', role: 'creator', logo: '/credits/ngxtension.svg' }, // nartc
-  25394362: { name: 'ngxtension', role: 'maintainer', logo: '/credits/ngxtension.svg' }, // eneajaho
+  25394362: { name: 'ngxtension', role: 'creator', logo: '/credits/ngxtension.svg' }, // eneajaho
 };
 
 @Component({
