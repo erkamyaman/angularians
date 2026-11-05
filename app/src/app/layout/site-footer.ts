@@ -30,7 +30,26 @@ const REPO = 'https://github.com/erkamyaman/angularians';
         </a>
       </div>
 
-      <div class="mt-8 flex flex-col gap-2 border-t pt-6 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between">
+      <!-- The Angular community projects this site is built on, with their own logos (THIRD_PARTY_NOTICES.md) -->
+      <div class="mt-8 flex flex-col gap-3 border-t pt-6 sm:flex-row sm:items-center sm:gap-5">
+        <p class="text-muted-foreground">Built on Angular community tools</p>
+        <ul class="flex flex-wrap items-center gap-x-5 gap-y-2">
+          @for (tool of tools; track tool.name) {
+            <li>
+              <a class="inline-flex items-center gap-2 font-medium text-foreground/80 transition-colors hover:text-foreground" [href]="tool.href" target="_blank" rel="noopener" [title]="tool.does">
+                @if (tool.logo) {
+                  <img [src]="tool.logo" alt="" width="18" height="18" class="size-[18px] shrink-0 object-contain" />
+                } @else {
+                  <svg viewBox="0 0 128 128" class="size-[18px] shrink-0" aria-hidden="true"><path fill-rule="evenodd" d="M81 36 64 0 47 36l-1 2-9-10a6 6 0 0 0-9 9l10 10h-2L0 64l36 17h2L28 91a6 6 0 1 0 9 9l9-10 1 2 17 36 17-36v-2l9 10a6 6 0 1 0 9-9l-9-9 2-1 36-17-36-17-2-1 9-9a6 6 0 1 0-9-9l-9 10v-2Zm-17 2-2 5c-4 8-11 15-19 19l-5 2 5 2c8 4 15 11 19 19l2 5 2-5c4-8 11-15 19-19l5-2-5-2c-8-4-15-11-19-19l-2-5Z" clip-rule="evenodd" fill="currentColor" /><path d="M118 19a6 6 0 0 0-9-9l-3 3a6 6 0 1 0 9 9l3-3Zm-96 4c-2 2-6 2-9 0l-3-3a6 6 0 1 1 9-9l3 3c3 2 3 6 0 9Zm0 82c-2-2-6-2-9 0l-3 3a6 6 0 1 0 9 9l3-3c3-2 3-6 0-9Zm96 4a6 6 0 0 1-9 9l-3-3a6 6 0 1 1 9-9l3 3Z" fill="currentColor" /></svg>
+                }
+                {{ tool.name }}
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <div class="mt-6 flex flex-col gap-2 border-t pt-6 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between">
         <p>
           © 2026 <a class="font-medium text-foreground transition-opacity hover:opacity-80 " href="https://erkamyaman.dev" target="_blank" rel="noopener">Erkam Yaman</a> ·
           <a class="hover:text-foreground" [href]="repo + '/blob/main/LICENSE'" target="_blank" rel="noopener">MIT licence</a> ·
@@ -44,4 +63,11 @@ const REPO = 'https://github.com/erkamyaman/angularians';
 })
 export class SiteFooter {
   protected readonly repo = REPO;
+  /** No `logo`: ngxtension's, drawn inline in the text colour (its file has none). */
+  protected readonly tools: Array<{ name: string, href: string, does: string, logo?: string }> = [
+    { name: 'AnalogJS', href: 'https://analogjs.org', does: 'The meta-framework: pages, server rendering, the API', logo: '/credits/analogjs.svg' },
+    { name: 'spartan/ui', href: 'https://spartan.ng', does: 'The UI components', logo: '/credits/spartan.svg' },
+    { name: 'ng-icons', href: 'https://ng-icons.github.io/ng-icons', does: 'The icons', logo: '/credits/ng-icons.svg' },
+    { name: 'ngxtension', href: 'https://ngxtension.dev', does: 'Signal utilities', },
+  ];
 }

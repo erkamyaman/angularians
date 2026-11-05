@@ -109,6 +109,14 @@ MIT, Copyright (c) 2026 HatScripts. The full licence ships with the package.
 
 Every other npm dependency keeps its own licence, listed in its package.
 
+## Credited logos
+
+The footer credits the Angular community projects the site is built on with their own logos, unchanged: AnalogJS
+(https://github.com/analogjs/analog, MIT), spartan/ui (https://spartan.ng, MIT), ng-icons
+(https://github.com/ng-icons/ng-icons, MIT) in `app/public/credits/`, and ngxtension
+(https://github.com/ngxtension/ngxtension-platform, MIT), drawn in the text colour. They are their projects' marks, used
+only to credit them.
+
 ## Data
 
 - Country names and coordinates: [GeoNames](https://www.geonames.org), CC BY 4.0.
