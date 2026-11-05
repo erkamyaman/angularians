@@ -113,8 +113,8 @@ Every other npm dependency keeps its own licence, listed in its package.
 
 The footer credits the Angular community projects the site is built on with their own logos, unchanged: AnalogJS
 (https://github.com/analogjs/analog, MIT), spartan/ui (https://spartan.ng, MIT), ng-icons
-(https://github.com/ng-icons/ng-icons, MIT) in `app/public/credits/`, and ngxtension
-(https://github.com/ngxtension/ngxtension-platform, MIT), drawn in the text colour. They are their projects' marks, used
+(https://github.com/ng-icons/ng-icons, MIT) and ngxtension (https://github.com/ngxtension/ngxtension-platform, MIT),
+as their websites show them, in `app/public/credits/`. They are their projects' marks, used
 only to credit them.
 
 ## Data
