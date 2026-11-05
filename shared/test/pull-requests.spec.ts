@@ -19,6 +19,9 @@ describe('inferPullRequestType', () => {
     ['Revert "feat(core): add input signals"', 'chore'],
     ['revert: fix(router): keep the query params', 'chore'],
     ['  feat: leading spaces', 'feat'],
+    // Backports and patch ports: their tag is not part of the commit message.
+    ['[Backport 21.2.X] fix(router): do not copy URL-sized objects', 'fix'],
+    ['[19.2.x] docs: a typo', 'docs'],
   ] as const)('%s → %s', (title, type) => {
     expect(inferPullRequestType(title)).toBe(type)
   })
@@ -143,6 +146,10 @@ describe('pullRequestScopes', () => {
     ['docs: update compiler-cli and core reference skills', ['skills']],
     ['docs: fix a typo in the signals guide', ['docs']],
     ['docs(forms): a skill for signal forms', ['forms']],
+    // Backports and patch ports still name their package.
+    ['[Backport 21.2.X] fix(router): snapshots', ['router']],
+    ['[PATCH] [19.2.x] fix(core, forms): x', ['core', 'forms']],
+    ['[19.2.x] docs: a typo', ['docs']],
   ] as const)('%s → %j', (title, scopes) => {
     expect(pullRequestScopes(title)).toEqual(scopes)
   })
@@ -154,6 +161,7 @@ describe('pullRequestScopes in other repositories', () => {
     ['angular/components', 'fix(material/select): a\nfix(material/core): b', ['@angular/material']],
     ['angular/components', 'docs(multiple): typos', []],
     ['angular/components', 'feat(google-maps): add a marker clusterer', ['@angular/google-maps']],
+    ['angular/components', 'fix(aria/grid): keyboard navigation', ['@angular/aria']],
     ['angular/angular-cli', 'fix(@angular/build): keep the base href', ['@angular/build']],
     ['angular/angular-cli', 'feat(@schematics/angular, @angular/cli): ai config', ['@schematics/angular', '@angular/cli']],
     ['angular/angular-cli', 'build: update dependency', []],
@@ -172,6 +180,7 @@ describe('packageRepo', () => {
     ['router', 'angular/angular'],
     ['@angular/material', 'angular/components'],
     ['@angular/cdk', 'angular/components'],
+    ['@angular/aria', 'angular/components'],
     ['@angular/build', 'angular/angular-cli'],
     ['@schematics/angular', 'angular/angular-cli'],
     ['@angular/domino', 'angular/domino'],

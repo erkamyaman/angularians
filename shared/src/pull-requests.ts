@@ -35,9 +35,17 @@ const LABEL_TYPE_MAP: Record<string, PullRequestType> = {
   dependencies: 'chore',
 }
 
+/** Leading tags of backports and patch ports, `[Backport 21.2.x] `, `[19.2.x] `, `[PATCH] `: not part of the commit message. */
+const TAGS_RE = /^\s*(?:\[[^\]]*\]\s*)+/
+
+/** A title without its leading tags: `[20.0.x] fix(core): …` → `fix(core): …`. */
+function untagged(title: string): string {
+  return title.replace(TAGS_RE, '')
+}
+
 /** The type from the title prefix, then from the labels. Neither: `feat`, as in Nuxters. */
 export function inferPullRequestType(title: string, labels: ReadonlyArray<{ name?: string | null }> = []): PullRequestType {
-  const trimmed = title.trim()
+  const trimmed = untagged(title).trim()
   for (const [pattern, type] of TITLE_TYPE_PATTERNS) {
     if (pattern.test(trimmed)) return type
   }
@@ -53,7 +61,7 @@ const SCOPE_RE = /^\s*[a-z]+\(([^)]+)\)!?:/i
 
 /** The published packages of angular/components, by the first part of a scope (`fix(material/button): …`). */
 const COMPONENTS_PACKAGES = new Set([
-  'material', 'cdk', 'material-experimental', 'cdk-experimental', 'google-maps', 'youtube-player',
+  'material', 'cdk', 'aria', 'material-experimental', 'cdk-experimental', 'google-maps', 'youtube-player',
   'material-luxon-adapter', 'material-moment-adapter', 'material-date-fns-adapter',
 ])
 
@@ -110,6 +118,7 @@ const SKILL_RE = /\bskills?\b/i
  */
 export function pullRequestScopes(title: string, repo = 'angular/angular'): string[] {
   if (repo === 'angular/domino') return ['@angular/domino']
+  title = untagged(title)
   const match = SCOPE_RE.exec(title)
   if (!match) {
     if (repo === 'angular/angular' && UNSCOPED_DOCS_RE.test(title)) return [SKILL_RE.test(title) ? 'skills' : 'docs']

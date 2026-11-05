@@ -1,5 +1,5 @@
 import { canonicalPackage, packageRepo } from '@angularians/shared';
-import { remixApps2Line, remixArrowUpCircleLine, remixAtomLine, remixBox1Line, remixBox3Line, remixBrainLine, remixBroadcastLine, remixBugLine, remixCalendarLine, remixChatCheckLine, remixCodeLine, remixCpuLine, remixDashboardLine, remixFlaskLine, remixFlowChart, remixGlobalLine, remixHammerLine, remixInputField, remixMagicLine, remixMapLine, remixPaletteLine, remixPlantLine, remixPlayLine, remixPuzzleLine, remixRouteLine, remixServerLine, remixSettings3Line, remixSparklingLine, remixStackLine, remixTerminalBoxLine, remixTimerLine, remixTranslate2, remixWindowLine } from '@ng-icons/remixicon';
+import { remixAccessibilityLine, remixApps2Line, remixArrowUpCircleLine, remixAtomLine, remixBox1Line, remixBox3Line, remixBrainLine, remixBroadcastLine, remixBugLine, remixCalendarLine, remixChatCheckLine, remixCodeLine, remixCpuLine, remixDashboardLine, remixFlaskLine, remixFlowChart, remixGlobalLine, remixHammerLine, remixInputField, remixMagicLine, remixMapLine, remixPaletteLine, remixPlantLine, remixPlayLine, remixPuzzleLine, remixRouteLine, remixServerLine, remixSettings3Line, remixSparklingLine, remixStackLine, remixTerminalBoxLine, remixTimerLine, remixTranslate2, remixWindowLine } from '@ng-icons/remixicon';
 import { vikingScroll } from '../layout/viking-icons';
 
 
@@ -78,6 +78,7 @@ const ICONS: Record<string, string> = {
   // angular/components
   '@angular/material': 'remixPaletteLine',
   '@angular/cdk': 'remixStackLine',
+  '@angular/aria': 'remixAccessibilityLine',
   '@angular/material-experimental': 'remixFlaskLine',
   '@angular/cdk-experimental': 'remixFlaskLine',
   '@angular/google-maps': 'remixMapLine',
@@ -111,7 +112,7 @@ export function packageIcon(name: string): string {
 }
 
 /** Every icon `packageIcon` can name, for `provideIcons`. */
-export const PACKAGE_ICONS = { vikingScroll, remixWindowLine, remixAtomLine, remixApps2Line, remixBox1Line, remixBrainLine, remixBugLine, remixCalendarLine, remixArrowUpCircleLine, remixCodeLine, remixSettings3Line, remixPuzzleLine, remixCpuLine, remixFlaskLine, remixDashboardLine, remixGlobalLine, remixHammerLine, remixTranslate2, remixStackLine, remixMapLine, remixChatCheckLine, remixBox3Line, remixPaletteLine, remixPlayLine, remixBroadcastLine, remixRouteLine, remixServerLine, remixSparklingLine, remixPlantLine, remixTerminalBoxLine, remixInputField, remixTimerLine, remixMagicLine, remixFlowChart }
+export const PACKAGE_ICONS = { vikingScroll, remixAccessibilityLine, remixWindowLine, remixAtomLine, remixApps2Line, remixBox1Line, remixBrainLine, remixBugLine, remixCalendarLine, remixArrowUpCircleLine, remixCodeLine, remixSettings3Line, remixPuzzleLine, remixCpuLine, remixFlaskLine, remixDashboardLine, remixGlobalLine, remixHammerLine, remixTranslate2, remixStackLine, remixMapLine, remixChatCheckLine, remixBox3Line, remixPaletteLine, remixPlayLine, remixBroadcastLine, remixRouteLine, remixServerLine, remixSparklingLine, remixPlantLine, remixTerminalBoxLine, remixInputField, remixTimerLine, remixMagicLine, remixFlowChart }
 
 /** A contributor's packages with misspelled scopes folded into the package they mean, most PRs first. */
 export function foldPackages(packages: ReadonlyArray<{ name: string, pullRequests: number }>): Array<{ name: string, pullRequests: number }> {
