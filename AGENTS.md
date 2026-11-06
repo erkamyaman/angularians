@@ -12,7 +12,7 @@ Angularians ranks everyone who has contributed to the Angular repositories: a co
 | `collector/src` | the GitHub client, the collection (`main.ts`), parts and their merge (`finalize.ts`, `merge.ts`), the GitHub App token (`auth.ts`) |
 | `app/src/app` | the pages, the leaderboard, profiles, the signed-in card and sharing |
 | `app/src/server` | the API, sign-in (`auth/`), the Angularian card (`card/`), the data store |
-| `app/src/app/layout` | the header, the footer, the mark (`logo-mark.ts`, its paths in `logo-mark.html`), the hero, the colour picker |
+| `app/src/app/layout` | the header, the footer, the mark (`logo-mark.ts`, its paths in `logo-mark.html`), the hero |
 | `app/src/ui` | spartan/ui helm components, copied in and ours to change (`@spartan-ng/helm/*` in tsconfig) |
 | `app/scripts/logo` | the mark (`build.py`) and the README wordmark (`wordmark.py`), built from their construction |
 | `app/public` | the favicon, the Norse font (`fonts/`) |
@@ -42,9 +42,9 @@ pnpm build        # the site, as Netlify builds it
 - Update `docs/` in the same change as the code.
 - Never write secrets, tokens, absolute local paths or personal data into the repository.
 - Pages are cached by the CDN for everyone: never render the signed-in user into a page; read it in the browser from `/api/auth/me`.
-- No gradients: the brand is forest green, in flat colours (the mark's graph uses its shades and a grey).
+- No gradients: the brand is Viking gold, in flat colours (the mark's graph uses its shades and a grey).
 - Our colours come from the theme (`--primary`, `--color-brand-from`, `--mark-*` in `app/src/styles.css`), not a hex in
-  a component: the colour picker and both themes recolour everything through them. Fixed hex is only for other
+  a component: both themes recolour everything through them. Fixed hex is only for other
   projects' brand colours and the server-drawn cards (`app/src/server/card`), which have no theme.
 - The word "Angularian(s)" is written with the `brand` utility (the Norse font); on the cards, `branded()` does the same.
 - The mark is generated: change `app/scripts/logo/build.py` and regenerate the component (`logo-mark.html`), the favicon, the cards and the

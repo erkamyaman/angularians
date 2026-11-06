@@ -1,9 +1,9 @@
 [
   { "name": "bug", "color": "d73a4a", "description": "Something isn't working" },
-  { "name": "feature", "color": "14632e", "description": "A new feature or request" },
+  { "name": "feature", "color": "9a6700", "description": "A new feature or request" },
   { "name": "needs triage", "color": "fbca04", "description": "Not looked at yet" },
   { "name": "needs reproduction", "color": "f9d0c4", "description": "Needs a way to reproduce it" },
-  { "name": "ready for development", "color": "5eb572", "description": "Clear enough to work on" },
+  { "name": "ready for development", "color": "d29922", "description": "Clear enough to work on" },
   { "name": "good first issue", "color": "7057ff", "description": "Good for newcomers" },
   { "name": "help wanted", "color": "008672", "description": "Extra attention is needed" },
   { "name": "question", "color": "d876e3", "description": "Further information is requested" },

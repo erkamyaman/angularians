@@ -30,9 +30,9 @@ parts = json.loads(subprocess.check_output(['python3', 'app/scripts/logo/build.p
 cls = {'solid': 's', 'empty': 'e', 'l1': 'a', 'l2': 'b', 'l3': 'c'}
 open(OUT, 'w').write(
     f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width:.0f} {LOGO:.0f}" role="img" aria-label="Angularians">'
-    # Green on GitHub's dark theme; the deeper #14632E and a lighter grey when the viewer's system is light.
-    '<style>.s,.w{fill:#5eb572}.e{fill:#4a525c}.a{fill:#194825}.b{fill:#337343}.c{fill:#5eb572}'
-    '@media (prefers-color-scheme:light){.s,.w{fill:#14632e}.e{fill:#d0d7de}}</style>'
+    # Gold on GitHub's dark theme; the deeper #9A6700 and a lighter grey when the viewer's system is light.
+    '<style>.s,.w{fill:#D29922}.e{fill:#4a525c}.a{fill:#5c4000}.b{fill:#9A6700}.c{fill:#E3B341}'
+    '@media (prefers-color-scheme:light){.s,.w{fill:#9A6700}.e{fill:#d0d7de}}</style>'
     f'<g transform="scale({LOGO / 24:.4f})">' + ''.join(f'<path class="{cls[k]}" d="{d}"/>' for k, d in parts.items()) + '</g>'
     f'<path class="w" d="{" ".join(paths)}"/></svg>\n')
 print(f'{OUT}: {width:.0f} x {LOGO:.0f}')

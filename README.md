@@ -1,8 +1,8 @@
 <h1 align="center"><img src="docs/assets/wordmark.svg" height="72" alt="Angularians"></h1>
 
 <p align="center">
-  <a href="https://angularians.dev"><img src="https://img.shields.io/badge/live-angularians.dev-14632E.svg" alt="Live: angularians.dev"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-14632E.svg" alt="License: MIT"></a>
+  <a href="https://angularians.dev"><img src="https://img.shields.io/badge/live-angularians.dev-9A6700.svg" alt="Live: angularians.dev"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-9A6700.svg" alt="License: MIT"></a>
   <a href="https://github.com/sponsors/erkamyaman"><img src="https://img.shields.io/badge/sponsor-erkamyaman-db61a2?logo=githubsponsors&logoColor=white" alt="Sponsor"></a>
 </p>
 
@@ -43,7 +43,7 @@ The data is already in `data/`: you do not need a GitHub token to work on the si
 - Sign in with GitHub to see your rank and badges, share your profile and add your Angularian card to your GitHub README.
 - Link previews for every profile and period, drawn on the server: share a link and it shows your card. Pick a
   period for your README card and only what changes reloads.
-- Dark and light themes; signed in, a colour picker to try another brand colour on the live site (in your browser only).
+- Dark and light themes.
 - A public JSON API. How it all fits: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Built with
@@ -71,7 +71,7 @@ The Viking icons are by Lorc and Delapouite from [Game Icons](https://game-icons
 ## The brand
 
 The mark is the Angular shield cut in two: the A of [Norse](https://www.joelcarrouche.net) on one side, a contribution
-graph on the other, in forest green (`#14632E`, and the brighter `#5EB572` on dark) and the grey of empty days. Its construction is in
+graph on the other, in Viking gold (`#9A6700`, and the brighter `#D29922` on dark) and the grey of empty days. Its construction is in
 [`app/scripts/logo`](app/scripts/logo). About the Norse font: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## Contributing

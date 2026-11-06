@@ -185,11 +185,11 @@ export default class Profile {
     const blue = 'bg-[#0969DA]/10 text-[#0969DA] ring-[#0969DA]/30 dark:bg-[#58A6FF]/10 dark:text-[#58A6FF] dark:ring-[#58A6FF]/30';
     const badges: Array<{ label: string, title: string, icon: string, style: string }> = [];
     // The gradient Angular logo of the press kit, only to say "member of the Angular team" (the site's mark stays the A).
-    if (person.team) badges.push({ label: 'Angular team', title: 'A public member of the Angular organization on GitHub', icon: 'angular', style: 'bg-[#dc087d]/10 text-foreground ring-[#dc087d]/40' });
+    if (person.team) badges.push({ label: 'Angular team', title: 'Public member of the Angular organization on GitHub', icon: 'angular', style: 'bg-[#dc087d]/10 text-foreground ring-[#dc087d]/40' });
     // Recognised by Google and by GitHub (lists in profile/recognitions.ts): Google's blue, GitHub's star yellow; their text a
     // shade darker on white, for 4.5:1 contrast.
-    if (ANGULAR_GDES.has(person.githubId)) badges.push({ label: 'Angular GDE', title: 'A Google Developer Expert for Angular', icon: 'gde', style: 'bg-[#1A73E8]/10 text-[#185ABC] ring-[#1A73E8]/30 dark:bg-[#8AB4F8]/10 dark:text-[#8AB4F8] dark:ring-[#8AB4F8]/30' });
-    if (GITHUB_STARS.has(person.githubId)) badges.push({ label: 'GitHub Star', title: 'A GitHub Star, recognised by GitHub for helping the community', icon: 'remixStarFill', style: 'bg-[#BF8700]/10 text-[#845A00] ring-[#BF8700]/30 dark:bg-[#E3B341]/10 dark:text-[#E3B341] dark:ring-[#E3B341]/30' });
+    if (ANGULAR_GDES.has(person.githubId)) badges.push({ label: 'Angular GDE', title: 'Google Developer Expert for Angular', icon: 'gde', style: 'bg-[#1A73E8]/10 text-[#185ABC] ring-[#1A73E8]/30 dark:bg-[#8AB4F8]/10 dark:text-[#8AB4F8] dark:ring-[#8AB4F8]/30' });
+    if (GITHUB_STARS.has(person.githubId)) badges.push({ label: 'GitHub Star', title: 'GitHub Star, recognised by GitHub for helping the community', icon: 'remixStarFill', style: 'bg-[#BF8700]/10 text-[#845A00] ring-[#BF8700]/30 dark:bg-[#E3B341]/10 dark:text-[#E3B341] dark:ring-[#E3B341]/30' });
     // Every year at #1 in one badge: "#1 in 2024–2026", "#1 in 2019, 2024".
     const firsts = this.years().filter(row => row.rank === 1).map(row => Number(row.period)).sort((x, y) => x - y);
     if (firsts.length) {
@@ -201,7 +201,7 @@ export default class Profile {
   });
   /** The contributor's rank in each period they contributed in, for the period tabs. */
   protected readonly ranks = computed(() => Object.fromEntries((this.loaded()?.periods ?? []).map(row => [row.period, row.rank])));
-  /** Gold for the best year, solid when it is the one on screen; the others in the brand's green. */
+  /** Gold for the best year, solid when it is the one on screen; the others in the brand colour. */
   protected readonly yearColumn = (row: { period: string }) => {
     const picked = row.period === this.period();
     if (row === this.best()) return picked ? 'bg-[#9A6700] dark:bg-[#D29922]' : 'bg-[#9A6700]/60 group-hover:bg-[#9A6700] dark:bg-[#D29922]/60 dark:group-hover:bg-[#D29922]';

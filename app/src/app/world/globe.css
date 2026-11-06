@@ -4,7 +4,7 @@
 :host:has(.globe__canvas:focus-visible)::after {
   content: ""; position: absolute; inset: 4px; border-radius: 999px; outline: 2px solid var(--ring); pointer-events: none;
 }
-/* In light mode the library draws land black: the filter maps black to the theme's green, and keeps white */
+/* In light mode the library draws land black: the filter maps black to the theme's primary colour, and keeps white */
 .globe__canvas.is-light { filter: url(#globe-land); }
 .globe__ship {
   position: absolute; inset: 0 auto auto 0; will-change: transform; pointer-events: none; color: var(--primary);

@@ -5,7 +5,6 @@ import { remixHeartLine } from '@ng-icons/remixicon';
 import { simpleGithub } from '@ng-icons/simple-icons';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { Container } from './container';
-import { BrandPicker } from './brand-picker';
 import { LogoMark } from './logo-mark';
 import { ThemeToggle } from './theme-toggle';
 import { UserMenu } from './user-menu';
@@ -13,7 +12,7 @@ import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-site-header',
-  imports: [BrandPicker, Container, HlmButton, LogoMark, NgIcon, RouterLink, ThemeToggle, UserMenu],
+  imports: [Container, HlmButton, LogoMark, NgIcon, RouterLink, ThemeToggle, UserMenu],
   providers: [provideIcons({ remixHeartLine, simpleGithub })],
   host: { role: 'banner', class: 'sticky top-0 z-40 block border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60' },
   templateUrl: './site-header.html',

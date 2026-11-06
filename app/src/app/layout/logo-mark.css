@@ -1,7 +1,76 @@
+:host([intro]:hover) path:nth-of-type(3) {
+  fill: #194825;
+}
+
+:host([intro]:hover) path:nth-of-type(4) {
+  fill: #337343;
+}
+
+:host([intro]:hover) path:nth-of-type(5) {
+  fill: #5eb572;
+}
+
 :host(.compact) {
   --color-brand-from: currentColor;
   --mark-empty: color-mix(in oklch, currentColor 22%, transparent);
   --mark-1: color-mix(in oklch, currentColor 45%, transparent);
   --mark-2: color-mix(in oklch, currentColor 70%, transparent);
   --mark-3: currentColor;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :host([intro]) path {
+    transition: fill 0.6s ease-in-out;
+  }
+
+  :host(.intro) path {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  :host(.intro) path:nth-of-type(1) {
+    animation: mark-piece 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  :host(.intro) path:nth-of-type(2) {
+    animation: mark-square 0.4s ease-out 0.3s both;
+  }
+
+  :host(.intro) path:nth-of-type(3) {
+    --green: #194825;
+    animation: mark-square 0.4s ease-out 0.5s both, mark-gold 0.8s ease-in-out 2.3s both;
+  }
+
+  :host(.intro) path:nth-of-type(4) {
+    --green: #337343;
+    animation: mark-square 0.4s ease-out 0.7s both, mark-gold 0.8s ease-in-out 2.4s both;
+  }
+
+  :host(.intro) path:nth-of-type(5) {
+    --green: #5eb572;
+    animation: mark-square 0.4s ease-out 0.9s both, mark-gold 0.8s ease-in-out 2.5s both;
+  }
+
+
+
+}
+
+@keyframes mark-piece {
+  from {
+    opacity: 0;
+    transform: translateY(-12%);
+  }
+}
+
+@keyframes mark-square {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes mark-gold {
+  from {
+    fill: var(--green);
+  }
 }

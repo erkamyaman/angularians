@@ -50,7 +50,7 @@ If its PR titles name packages, teach `pullRequestScopes` in `shared/src/pull-re
 Angularian" on the home page. The next nightly run collects its full history.
 
 **The mark or the brand colour.** The mark is built by `app/scripts/logo/build.py`: change it there and regenerate its
-uses (see the script). Colours live in `app/src/styles.css`; signed in, the colour picker in the header tries one live.
+uses (see the script). Colours live in `app/src/styles.css`.
 
 **A bot.** When a run's `Possible bots:` line shows an account that is a bot, add it to `KNOWN_BOT_ACCOUNTS` in
 `shared/src/bots.ts`. Check its profile first: a few people have "bot" in their username.

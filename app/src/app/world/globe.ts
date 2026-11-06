@@ -30,7 +30,7 @@ const KEY_MOVES: Record<string, [number, number]> = { ArrowLeft: [-0.15, 0], Arr
 
 const clamp = (value: number, low: number, high: number) => Math.min(high, Math.max(low, value));
 const angleDelta = (from: number, to: number) => ((to - from + Math.PI) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2) - Math.PI;
-/** The theme's green as WebGL wants it: the colour picker and both themes recolour the land through it. */
+/** The theme's primary colour as WebGL wants it: both themes recolour the land through it. */
 const primaryColor = (fallback: [number, number, number]): [number, number, number] => {
   const context = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
   const value = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
@@ -212,13 +212,13 @@ export class Globe {
         this.schedule();
       });
     });
-    // The colour picker writes --primary on the root element.
+    // The theme toggle switches the `dark` class on the root element.
     const recolour = new MutationObserver(() => {
       this.land.set(primaryColor(this.land()));
       this.globe?.update(palette(this.theme.dark()));
       this.schedule();
     });
-    recolour.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style'] });
+    recolour.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     inject(DestroyRef).onDestroy(() => recolour.disconnect());
   }
 
