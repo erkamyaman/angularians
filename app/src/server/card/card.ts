@@ -4,7 +4,7 @@
 import { Resvg } from '@resvg/resvg-js'
 import { periodOrNull, periodPhrase, type ContributorProfile, type Period } from '@angularians/shared'
 import satori from 'satori'
-import { formatNumber, formatPoints } from '../../app/leaderboard/format'
+import { formatMonth, formatNumber, formatPoints } from '../../app/leaderboard/format'
 
 export const CARD_WIDTH = 1200
 export const CARD_HEIGHT = 630
@@ -49,8 +49,6 @@ const statIcon = (paths: string[], color: string): Node =>
     viewBox: '0 0 16 16', width: STAT_ICON_SIZE, height: STAT_ICON_SIZE, fill: color,
   })
 
-/** `Apr 2025`, as on the profile. */
-const SINCE = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })
 const label = (value: number, one: string, many: string) => (value === 1 ? one : many)
 
 /**
@@ -86,7 +84,7 @@ export function cardPeriod(profile: ContributorProfile, requested: unknown): Per
 /** `avatar`: a data URL, or `null` when GitHub did not send it (a grey circle instead). */
 export function cardTree(profile: ContributorProfile, period: Period, avatar: string | null, flag: { src: string, name: string } | null = null, badges: readonly string[] = []): Node {
   const stats = period === 'all' ? profile : profile.periods.find(row => row.period === period)!
-  const since = profile.firstContributionAt ? SINCE.format(new Date(profile.firstContributionAt)) : null
+  const since = profile.firstContributionAt ? formatMonth(profile.firstContributionAt) : null
   const rows = [
     [
       { label: label(stats.pullRequests.all, 'Merged PR', 'Merged PRs'), value: stats.pullRequests.all, color: COLORS.pullRequests, icon: ICONS.pullRequests },

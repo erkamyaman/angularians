@@ -2,12 +2,15 @@ import { countrySearchNames, periodPhrase, type Period } from '@angularians/shar
 
 const number = new Intl.NumberFormat('en-US')
 const date = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeZone: 'UTC' })
+const month = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })
 
 export const formatNumber = (value: number): string => number.format(value)
 export const formatPoints = (score: number): string => `${number.format(score)} ${score === 1 ? 'pt' : 'pts'}`
 export const plural = (count: number, one: string, many: string): string => `${number.format(count)} ${count === 1 ? one : many}`
 /** UTC, so the server and the browser print the same day (no hydration mismatch). */
 export const formatDate = (iso: string): string => date.format(new Date(iso))
+/** `Apr 2025`: "Angular contributor since …" on the profile, the signed-in card and the Angularian card. */
+export const formatMonth = (iso: string): string => month.format(new Date(iso))
 
 /**
  * A GitHub avatar by account id: stable across renames, served by GitHub's CDN.
