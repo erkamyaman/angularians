@@ -45,7 +45,7 @@ for (const repo of config.repos) {
     const discussions = await collectDiscussions(repo, config.since, accumulator)
     stats.discussions += discussions.discussions
     stats.discussionComments += discussions.discussionComments
-    console.log(`${fullName}: ${discussions.discussions} discussions, ${discussions.discussionComments} discussion comments`)
+    console.log(`${fullName}: ${discussions.discussions} discussions, ${discussions.discussionComments} discussion comments (of ${discussions.read} discussions, ${discussions.readComments} comments read)`)
   }
 }
 

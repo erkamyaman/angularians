@@ -5,8 +5,12 @@ import { graphql, retryTiming } from './github.ts'
 type Repo = { owner: string, name: string }
 
 export interface DiscussionStats {
+  /** Counted: created in the run's window (all of them in a full run). */
   discussions: number
   discussionComments: number
+  /** Read, whatever their date: what the repository has. */
+  read: number
+  readComments: number
 }
 
 type Author = { __typename?: string, login?: string, databaseId?: number | null } | null
@@ -60,9 +64,10 @@ async function query<T>(text: string, variables: Record<string, unknown>): Promi
  * A repository without discussions has none. With `since` (test runs), only those created since then.
  */
 export async function collectDiscussions({ owner, name }: Repo, since: Date | null, accumulator: ContributorsAccumulator): Promise<DiscussionStats> {
-  const stats: DiscussionStats = { discussions: 0, discussionComments: 0 }
+  const stats: DiscussionStats = { discussions: 0, discussionComments: 0, read: 0, readComments: 0 }
   const created = (at: string) => !since || Date.parse(at) >= since.getTime()
   const addReply = (reply: Reply | null, answer = false) => {
+    if (reply) stats.readComments++
     if (!reply || !created(reply.createdAt)) return
     const comment: CommentInput = { user: user(reply.author), created_at: reply.createdAt, reactions: { total_count: reply.reactions.totalCount } }
     accumulator.addComment(comment)
@@ -99,6 +104,7 @@ export async function collectDiscussions({ owner, name }: Repo, since: Date | nu
     if (!discussions) break
     for (const discussion of discussions.nodes ?? []) {
       if (!discussion) continue
+      stats.read++
       if (created(discussion.createdAt)) {
         const issue: IssueInput = { user: user(discussion.author), created_at: discussion.createdAt, comments: discussion.comments.totalCount ?? 0, reactions: { total_count: discussion.reactions.totalCount } }
         accumulator.addIssue(issue)

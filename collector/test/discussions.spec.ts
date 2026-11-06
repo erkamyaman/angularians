@@ -40,7 +40,7 @@ describe('collectDiscussions', () => {
     const accumulator = new ContributorsAccumulator(new Date('2026-06-01T00:00:00Z'))
     const stats = await collectDiscussions({ owner: 'angular', name: 'angular' }, null, accumulator)
 
-    expect(stats).toEqual({ discussions: 2, discussionComments: 5 })
+    expect(stats).toEqual({ discussions: 2, discussionComments: 5, read: 2, readComments: 5 })
     expect(graphql).toHaveBeenCalledTimes(4)
     expect(records(accumulator)).toEqual({
       // A discussion with 4 reactions: a helpful issue (1 + 3 + 0.4), and a reply (0.5).
@@ -57,17 +57,17 @@ describe('collectDiscussions', () => {
       { id: 'D1', createdAt: '2025-01-01T00:00:00Z', author: alice, reactions: { totalCount: 0 }, comments: page([comment('C1', bob)]) },
     ]) } } as never })
     const accumulator = new ContributorsAccumulator(new Date('2026-06-01T00:00:00Z'))
-    expect(await collectDiscussions({ owner: 'a', name: 'b' }, new Date('2026-01-01T00:00:00Z'), accumulator)).toEqual({ discussions: 0, discussionComments: 1 })
+    expect(await collectDiscussions({ owner: 'a', name: 'b' }, new Date('2026-01-01T00:00:00Z'), accumulator)).toEqual({ discussions: 0, discussionComments: 1, read: 1, readComments: 1 })
 
     vi.mocked(graphql).mockResolvedValueOnce({ data: { repository: { discussions: page([]) } } as never })
-    expect(await collectDiscussions({ owner: 'a', name: 'b' }, null, new ContributorsAccumulator(new Date()))).toEqual({ discussions: 0, discussionComments: 0 })
+    expect(await collectDiscussions({ owner: 'a', name: 'b' }, null, new ContributorsAccumulator(new Date()))).toEqual({ discussions: 0, discussionComments: 0, read: 0, readComments: 0 })
   })
 
   it('waits out a rate limit', async () => {
     vi.mocked(graphql)
       .mockResolvedValueOnce({ data: null, errors: [{ type: 'RATE_LIMITED' }] })
       .mockResolvedValueOnce({ data: { repository: { discussions: page([]) } } as never })
-    expect(await collectDiscussions({ owner: 'a', name: 'b' }, null, new ContributorsAccumulator(new Date()))).toEqual({ discussions: 0, discussionComments: 0 })
+    expect(await collectDiscussions({ owner: 'a', name: 'b' }, null, new ContributorsAccumulator(new Date()))).toEqual({ discussions: 0, discussionComments: 0, read: 0, readComments: 0 })
   })
 
   it('asks for fewer discussions a page when GitHub says the query is too big, from the first page on', async () => {
@@ -76,7 +76,7 @@ describe('collectDiscussions', () => {
       .mockResolvedValueOnce({ data: { repository: { discussions: page([
         { id: 'D1', createdAt: '2026-02-01T00:00:00Z', author: alice, reactions: { totalCount: 0 }, comments: page([]) },
       ]) } } as never })
-    expect(await collectDiscussions({ owner: 'a', name: 'b' }, null, new ContributorsAccumulator(new Date()))).toEqual({ discussions: 1, discussionComments: 0 })
+    expect(await collectDiscussions({ owner: 'a', name: 'b' }, null, new ContributorsAccumulator(new Date()))).toEqual({ discussions: 1, discussionComments: 0, read: 1, readComments: 0 })
     expect(vi.mocked(graphql).mock.calls.map(([text]) => /discussions\(first: (\d+)/.exec(text)?.[1])).toEqual(['10', '5'])
   })
 
