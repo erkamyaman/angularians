@@ -3,11 +3,12 @@ import { afterNextRender, Component, DestroyRef, inject, Injector, PLATFORM_ID, 
 import { NavigationEnd, NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { SiteFooter } from './layout/site-footer';
 import { SiteHeader } from './layout/site-header';
+import { HammerStrike } from './layout/hammer-strike';
 import { ThemeService } from './theme.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, SiteFooter, SiteHeader],
+  imports: [HammerStrike, RouterOutlet, SiteFooter, SiteHeader],
   host: { class: 'flex min-h-dvh flex-col' },
   templateUrl: './app.html',
 })
