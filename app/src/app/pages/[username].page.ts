@@ -17,7 +17,6 @@ import {
 } from '@ng-icons/simple-icons';
 import { BADGE_ICONS, earnedBadges } from '../profile/earned-badges';
 import { BadgePill } from '../profile/badge-pill';
-import { EMBLEMS } from '../profile/special-badges';
 import { injectParams } from 'ngxtension/inject-params';
 import { injectQueryParams } from 'ngxtension/inject-query-params';
 import { HlmButton } from '@spartan-ng/helm/button';
@@ -68,7 +67,6 @@ function githubSearch(q: string, type: 'pullrequests' | 'issues'): string {
   selector: 'app-profile',
   imports: [AngularLogo, BadgePill, CardPreview, Container, HlmButton, HlmSkeleton, HlmTooltip, AngularianPill, NgIcon, NgTemplateOutlet, PeriodTabs, RouterLink, ScoreDialog, Share],
   providers: [provideIcons({
-    ...EMBLEMS,
     ...BADGE_ICONS,
     vikingAxes, vikingLongship, remixCloseLine, remixArrowLeftLine, remixArrowRightSLine, remixArrowRightUpLine, remixMedalLine, octIssueOpened, octGitMerge, remixInformationLine,
     remixVerifiedBadgeLine, remixArrowDownSLine, remixArrowUpSLine, vikingHelmet, remixLinkM, remixLinkedinBoxLine, octComment,

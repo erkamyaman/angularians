@@ -6,9 +6,6 @@
     @default { <ng-icon [name]="badge().icon" [size]="badge().icon.startsWith('viking') ? '1.25rem' : '1em'" aria-hidden="true" /> }
   }
   {{ badge().label }}
-  @if (badge().emblem) {
-    <ng-icon [name]="badge().emblem!" size="0.9em" class="opacity-70" aria-hidden="true" />
-  }
 </ng-template>
 @if (badge().href) {
   <a [href]="badge().href" target="_blank" rel="noopener" [class]="pill + ' ' + badge().style" [hlmTooltip]="badge().title"><ng-container [ngTemplateOutlet]="body" /></a>

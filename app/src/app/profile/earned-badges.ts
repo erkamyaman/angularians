@@ -19,7 +19,6 @@ export interface EarnedBadge {
   style: string
   logo?: string
   href?: string
-  emblem?: string
 }
 
 const GOLD = 'bg-[#9A6700]/10 text-[#7D4E00] ring-[#9A6700]/30 dark:bg-[#D29922]/10 dark:text-[#D29922] dark:ring-[#D29922]/30'
@@ -40,7 +39,7 @@ export function yearRanges(years: readonly number[]): string {
 
 /** A project's badge for one of its people: its title, logo and colour, linked to the project. */
 export function projectBadge(project: ProjectBadge, role: ProjectRole): EarnedBadge {
-  return { label: project.badge, title: `${role[0]!.toUpperCase()}${role.slice(1)} of ${project.name}: ${project.does}`, icon: 'logo', logo: project.logo, href: project.href, emblem: project.emblem, style: project.style }
+  return { label: project.badge, title: `${role[0]!.toUpperCase()}${role.slice(1)} of ${project.name}: ${project.does}`, icon: 'logo', logo: project.logo, href: project.href, style: project.style }
 }
 
 /** Every badge a contributor has, in the order the profile and the card show them. */
