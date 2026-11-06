@@ -62,7 +62,7 @@ export class MeCard {
     return [
       { label: 'Merged PRs', one: 'Merged PR', value: person?.pullRequests.all ?? 0, hint: null, icon: 'octGitMerge', color: GITHUB_TEXT.purple },
       { label: 'Helpful issues', one: 'Helpful issue', value: person?.helpfulIssues ?? 0, hint: 'Completed, or 3+ reactions, or 5+ comments', icon: 'octIssueOpened', color: GITHUB_TEXT.green },
-      { label: 'Helpful comments', one: 'Helpful comment', value: person?.helpfulComments ?? 0, hint: '3+ reactions', icon: 'remixChatHeartLine', color: GITHUB_TEXT.blue },
+      { label: 'Helpful comments', one: 'Helpful comment', value: person?.helpfulComments ?? 0, hint: '3+ reactions, or a discussion\'s accepted answer', icon: 'remixChatHeartLine', color: GITHUB_TEXT.blue },
     ]
   })
 
