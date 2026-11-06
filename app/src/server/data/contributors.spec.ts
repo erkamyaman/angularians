@@ -1,4 +1,4 @@
-import type { Contributor } from '@angularians/shared'
+import { type Contributor, emptyActivity } from '@angularians/shared'
 import * as v from 'valibot'
 import type { DataBundle } from './bundle'
 import { ContributorsData, MAX_PAGE_SIZE } from './contributors'
@@ -6,7 +6,7 @@ import { ContributorInput, LeaderboardInput, MapInput, queryNumber, SearchInput 
 
 const row = (githubId: number, username: string, rank: number, feat: number, comments = 0): Contributor => ({
   githubId, username, rank, score: feat * 7, pullRequests: { feat, fix: 0, docs: 0, chore: 0, all: feat },
-  issues: 1, helpfulIssues: 0, comments, helpfulComments: 0, reviewComments: 2, reactions: 0, firstContributionAt: '2016-01-01T00:00:00.000Z',
+  ...emptyActivity(), issues: 1, comments, reviewComments: 2, firstContributionAt: '2016-01-01T00:00:00.000Z',
 })
 
 const all = [row(1, 'crisbeto', 1, 50, 7), row(2, 'Cristina', 2, 40), row(3, 'atscott', 3, 30), row(4, 'bob', 4, 20), row(5, 'christian', 5, 10)]
