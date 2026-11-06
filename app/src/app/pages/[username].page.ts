@@ -197,11 +197,12 @@ export default class Profile {
     const rel = 'me nofollow noopener noreferrer';
     const all = [
       { url: `https://github.com/${person.username}`, label: `github.com/${person.username}`, icon: 'simpleGithub', rel: 'me noopener' },
-      ...(person.website ? [{ url: person.website, label: 'Website', icon: 'remixGlobalLine', rel }] : []),
+      ...(person.website ? [{ url: person.website, label: 'Website', icon: 'remixLinkM', rel }] : []),
       ...person.socialAccounts.map(account => ({ url: account.url, label: account.displayName, icon: SOCIAL_ICONS[account.provider] ?? 'remixLinkM', rel })),
     ];
     // A website can also be a social account: one icon per URL, the first wins.
-    return all.filter((link, index) => all.findIndex(other => other.url === link.url) === index);
+    const same = (url: string) => url.toLowerCase().replace(/^https?:\/\/(www\.)?/, '').replace(/\/+$/, '');
+    return all.filter((link, index) => all.findIndex(other => same(other.url) === same(link.url)) === index);
   });
   /** Back to the board of the period on screen; the board's default period keeps its URL clean. */
   /** The board the profile was opened from: its period and, from the grid, its country (`?country=`). */

@@ -9,6 +9,8 @@
 </ng-template>
 @if (badge().href) {
   <a [href]="badge().href" target="_blank" rel="noopener" [class]="pill + ' ' + badge().style" [hlmTooltip]="badge().title"><ng-container [ngTemplateOutlet]="body" /></a>
-} @else {
+} @else if (badge().title) {
   <button type="button" [class]="pill + ' ' + badge().style" [hlmTooltip]="badge().title"><ng-container [ngTemplateOutlet]="body" /></button>
+} @else {
+  <span [class]="pill + ' ' + badge().style"><ng-container [ngTemplateOutlet]="body" /></span>
 }

@@ -62,7 +62,7 @@
             }
             @if (best(); as year) {
               <a [routerLink]="[]" [queryParams]="{ period: year.period }" replaceUrl class="inline-flex flex-wrap items-center gap-x-1.5 gap-y-1 font-medium tabular-nums transition-opacity hover:opacity-80" [class]="colors.gold">
-                <ng-icon name="vikingHelmet" size="1.25rem" aria-hidden="true" /><span class="brand relative top-[0.09em] text-base leading-none">Greatest saga</span> {{ year.period }}, <span class="brand text-base leading-none">#{{ number(year.rank) }}</span> with {{ points(year.score) }}
+                <ng-icon name="vikingHelmet" size="1.25rem" aria-hidden="true" /><span class="brand relative top-[0.09em] text-base leading-none">Greatest saga</span> {{ year.period }}, <span class="brand relative top-[0.09em] text-base leading-none">#{{ number(year.rank) }}</span> with {{ points(year.score) }}
               </a>
             }
           </div>

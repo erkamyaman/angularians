@@ -39,7 +39,7 @@ export class NextUpdate {
   })
   protected readonly hint = computed(() => {
     const collected = this.collectedAt()
-    return `A new collection starts every night at 03:17 UTC and takes a few hours.${collected ? ` This data is from ${formatDate(collected)}.` : ''}`
+    return `Updated nightly from 03:17 UTC.${collected ? ` Data from ${formatDate(collected)}.` : ''}`
   })
 
   constructor() {

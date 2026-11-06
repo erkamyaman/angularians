@@ -48,8 +48,11 @@ export const PROJECT_BADGES: readonly ProjectBadge[] = [
   { name: 'Angular Native', badge: 'Native navigator', style: 'bg-[#F0224F]/10 text-[#C4002D] ring-[#F0224F]/30 dark:text-[#FF6B88] dark:ring-[#F0224F]/40', href: 'https://ng-native.com', logo: '/credits/ng-native.svg', does: 'Angular apps as real native iOS and Android views', people: [
     { githubId: 20795331, username: 'ashley-hunter', name: 'Ashley Hunter', role: 'creator' },
   ] },
-  { name: 'Angular Primitives', badge: 'Primitive mason', style: 'bg-[#E90364]/10 text-[#B8024F] ring-[#E90364]/30 dark:text-[#FF5C9A] dark:ring-[#E90364]/40', href: 'https://angularprimitives.com', logo: '/credits/ng-primitives.svg', does: 'Headless, accessible UI primitives', people: [
+  { name: 'Angular Primitives', badge: 'Headless hero', style: 'bg-[#E90364]/10 text-[#B8024F] ring-[#E90364]/30 dark:text-[#FF5C9A] dark:ring-[#E90364]/40', href: 'https://angularprimitives.com', logo: '/credits/ng-primitives.svg', does: 'Headless, accessible UI primitives', people: [
     { githubId: 20795331, username: 'ashley-hunter', name: 'Ashley Hunter', role: 'creator' },
+  ] },
+  { name: 'ngx-builders', badge: 'Builder baron', style: 'bg-[#455A64]/10 text-[#37474F] ring-[#455A64]/30 dark:text-[#B0BEC5] dark:ring-[#90A4AE]/40', href: 'https://github.com/ngx-builders', logo: '/credits/ngx-builders.png', does: 'Angular CLI builders: Netlify deploys, bundle analysis', people: [
+    { githubId: 11923975, username: 'santoshyadavdev', name: 'Santosh Yadav', role: 'creator' },
   ] },
 ]
 

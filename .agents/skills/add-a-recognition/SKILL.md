@@ -5,7 +5,7 @@ description: Give an Angularian the Angular GDE or GitHub Star badge, by adding 
 
 # Add a recognition
 
-The Angular GDE and GitHub Star badges come from two lists of GitHub ids in `app/src/app/profile/recognitions.ts`. Its header comment names the official source of each list; that source is the proof.
+The Angular GDE, GitHub Star and Nx Champion badges come from three lists of GitHub ids in `app/src/app/profile/recognitions.ts`. Its header comment names the official source of each list; that source is the proof.
 
 ## 1. Confirm it
 
@@ -18,7 +18,7 @@ Done when you hold the source link, the GitHub username, and a profile on the bo
 ## 2. Add it
 
 1. Get the id: `gh api users/<username> -q .id`. Ids stay put when a username changes.
-2. Add `<id>, // <username>` to `ANGULAR_GDES` or `GITHUB_STARS`, in the list's order (alphabetical by username, ignoring case).
+2. Add it in the list's order (alphabetical by username, ignoring case): `[<id>, '<handle>'], // <username>` to `ANGULAR_GDES`, where the handle is the end of their `me.developers.google.com/u/<handle>` profile (`null` if it is not in the directory); `<id>, // <username>` to `GITHUB_STARS` or `NX_CHAMPIONS`.
 3. When you refresh a whole list, update its "as of <month year>" line too.
 
 Done when the id is in the right list, in order, and `/<username>` with `pnpm dev` shows the badge.

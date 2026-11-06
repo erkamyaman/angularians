@@ -1,12 +1,13 @@
 import type { ContributorProfile } from '@angularians/shared'
 import { remixStarFill } from '@ng-icons/remixicon'
+import { simpleNx } from '@ng-icons/simple-icons'
 import { formatNumber, plural } from '../leaderboard/format'
 import { vikingAnvil, vikingAxes, vikingHelmet, vikingShield } from '../layout/viking-icons'
-import { ANGULAR_GDES, GITHUB_STARS } from './recognitions'
+import { ANGULAR_GDES, GITHUB_STARS, NX_CHAMPIONS } from './recognitions'
 import { projectBadgesOf, type ProjectBadge, type ProjectRole } from './special-badges'
 
 /** The icons a badge can show, as SVG: the page names them, the card draws them. */
-export const BADGE_ICONS = { remixStarFill, vikingAnvil, vikingAxes, vikingHelmet, vikingShield }
+export const BADGE_ICONS = { remixStarFill, simpleNx, vikingAnvil, vikingAxes, vikingHelmet, vikingShield }
 
 /**
  * A badge on a profile and on its card. `icon`: `angular`, `gde` or `logo` (`logo` is its image), or a key of
@@ -45,13 +46,15 @@ export function projectBadge(project: ProjectBadge, role: ProjectRole): EarnedBa
 /** Every badge a contributor has, in the order the profile and the card show them. */
 export function earnedBadges(person: ContributorProfile): EarnedBadge[] {
   const badges: EarnedBadge[] = []
-  if (person.team) badges.push({ label: 'Angular team', title: 'Public member of the Angular organization on GitHub', icon: 'angular', style: 'bg-[#dc087d]/10 text-foreground ring-[#dc087d]/40' })
-  if (ANGULAR_GDES.has(person.githubId)) badges.push({ label: 'Angular GDE', title: 'Google Developer Expert for Angular', icon: 'gde', logo: '/credits/gde.svg', style: 'bg-[#1A73E8]/10 text-[#185ABC] ring-[#1A73E8]/30 dark:bg-[#8AB4F8]/10 dark:text-[#8AB4F8] dark:ring-[#8AB4F8]/30' })
-  if (GITHUB_STARS.has(person.githubId)) badges.push({ label: 'GitHub Star', title: 'GitHub Star, recognised by GitHub for helping the community', icon: 'remixStarFill', style: 'bg-[#BF8700]/10 text-[#845A00] ring-[#BF8700]/30 dark:bg-[#E3B341]/10 dark:text-[#E3B341] dark:ring-[#E3B341]/30' })
+  if (person.team) badges.push({ label: 'Angular team', title: 'Member of the Angular org on GitHub', icon: 'angular', style: 'bg-[#dc087d]/10 text-foreground ring-[#dc087d]/40' })
+  const gde = ANGULAR_GDES.get(person.githubId)
+  if (gde !== undefined) badges.push({ label: 'Angular GDE', title: 'Google Developer Expert for Angular', href: gde ? `https://me.developers.google.com/u/${gde}` : undefined, icon: 'gde', logo: '/credits/gde.svg', style: 'bg-[#1A73E8]/10 text-[#185ABC] ring-[#1A73E8]/30 dark:bg-[#8AB4F8]/10 dark:text-[#8AB4F8] dark:ring-[#8AB4F8]/30' })
+  if (GITHUB_STARS.has(person.githubId)) badges.push({ label: 'GitHub Star', title: '', href: `https://stars.github.com/profiles/${person.username}`, icon: 'remixStarFill', style: 'bg-[#BF8700]/10 text-[#845A00] ring-[#BF8700]/30 dark:bg-[#E3B341]/10 dark:text-[#E3B341] dark:ring-[#E3B341]/30' })
+  if (NX_CHAMPIONS.has(person.githubId)) badges.push({ label: 'Nx Champion', title: '', href: 'https://nx.dev/community', icon: 'simpleNx', style: 'bg-[#143055]/10 text-[#143055] ring-[#143055]/30 dark:bg-[#96D7E8]/10 dark:text-[#96D7E8] dark:ring-[#96D7E8]/30' })
   const projects = projectBadgesOf(person.githubId)
   for (const { project, role } of projects) badges.push(projectBadge(project, role))
   const forged = projects.filter(({ project, role }) => project.builtOn && (role === 'creator' || role === 'co-creator')).map(({ project }) => project.name)
-  if (forged.length) badges.push({ label: 'Smith of ng-halla', title: `Forged a tool Angularians is built on: ${forged.join(', ')}`, icon: 'vikingAnvil', style: 'bg-primary/10 text-primary ring-primary/30' })
+  if (forged.length) badges.push({ label: 'Smith of ng-halla', title: `Forged ${forged.join(' and ')}`, icon: 'vikingAnvil', style: 'bg-primary/10 text-primary ring-primary/30' })
   const firsts = person.periods.filter(row => /^\d{4}$/.test(row.period) && row.rank === 1).map(row => Number(row.period)).sort((x, y) => x - y)
   if (firsts.length) badges.push({ label: `#1 in ${yearRanges(firsts)}`, title: `The top Angularian of ${plural(firsts.length, 'year', 'years')}`, icon: 'vikingHelmet', style: GOLD })
   if (person.rank <= 10) badges.push({ label: 'Top 10 all time', title: `#${formatNumber(person.rank)} of all time`, icon: 'vikingShield', style: GREEN })

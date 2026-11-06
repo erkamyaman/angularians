@@ -127,7 +127,8 @@ The special badges also show, unchanged, the marks of Pangular Inspector (https:
 `app/public/credits/`.
 
 The badges of Ashley Hunter's Angular Native (https://ng-native.com) and Angular Primitives
-(https://angularprimitives.com) show their marks, unchanged, in `app/public/credits/`.
+(https://angularprimitives.com) show their marks, unchanged, in `app/public/credits/`. Santosh Yadav's ngx-builders
+(https://github.com/ngx-builders) shows its GitHub organization avatar, unchanged.
 
 ## Data
 
