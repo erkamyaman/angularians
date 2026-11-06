@@ -18,17 +18,20 @@ type Discussion = { id: string, createdAt: string, author: Author, reactions: { 
 const AUTHOR = 'author { __typename login ... on User { databaseId } ... on Bot { databaseId } }'
 const REPLY = `createdAt ${AUTHOR} reactions { totalCount }`
 const PAGE = 'pageInfo { hasNextPage endCursor }'
-const COMMENT = `id isAnswer ${REPLY} replies(first: 50) { totalCount ${PAGE} nodes { ${REPLY} } }`
-/** 25 discussions × 30 comments × 50 replies: well under GraphQL's node limit; longer threads are paged on their own. */
-const DISCUSSIONS = `query($owner: String!, $name: String!, $after: String) {
+const COMMENT = `id isAnswer ${REPLY} replies(first: 10) { totalCount ${PAGE} nodes { ${REPLY} } }`
+/**
+ * 10 discussions × 20 comments × 10 replies a request: GitHub refused 25 × 30 × 50 (RESOURCE_LIMITS_EXCEEDED on
+ * angular/angular's RFCs). Longer threads are paged on their own, 50 comments or 100 replies at a time.
+ */
+const DISCUSSIONS = (size: number) => `query($owner: String!, $name: String!, $after: String) {
   repository(owner: $owner, name: $name) {
-    discussions(first: 25, after: $after, orderBy: { field: CREATED_AT, direction: ASC }) {
+    discussions(first: ${size}, after: $after, orderBy: { field: CREATED_AT, direction: ASC }) {
       ${PAGE}
-      nodes { id createdAt ${AUTHOR} reactions { totalCount } comments(first: 30) { totalCount ${PAGE} nodes { ${COMMENT} } } }
+      nodes { id createdAt ${AUTHOR} reactions { totalCount } comments(first: 20) { totalCount ${PAGE} nodes { ${COMMENT} } } }
     }
   }
 }`
-const MORE_COMMENTS = `query($id: ID!, $after: String) { node(id: $id) { ... on Discussion { comments(first: 50, after: $after) { ${PAGE} nodes { ${COMMENT} } } } } }`
+const MORE_COMMENTS = `query($id: ID!, $after: String) { node(id: $id) { ... on Discussion { comments(first: 30, after: $after) { ${PAGE} nodes { ${COMMENT} } } } } }`
 const MORE_REPLIES = `query($id: ID!, $after: String) { node(id: $id) { ... on DiscussionComment { replies(first: 100, after: $after) { ${PAGE} nodes { ${REPLY} } } } } }`
 
 /** GraphQL's author as the REST user the accumulator reads; GitHub apps are `Bot`s. */
@@ -36,6 +39,9 @@ const user = (author: Author): CommentInput['user'] =>
   author?.login ? { login: author.login, id: author.databaseId ?? null, type: author.__typename === 'Bot' ? 'Bot' : 'User' } : null
 
 /** A rate limit (`RATE_LIMITED`): wait 1, 2, 4, 8, 16 minutes and ask again; any other error fails the run. */
+/** GitHub refuses a query that would return too much at once. */
+class TooBig extends Error {}
+
 async function query<T>(text: string, variables: Record<string, unknown>): Promise<T> {
   let { data, errors } = await graphql<T>(text, variables)
   for (let attempt = 0; attempt < 5 && errors?.some(error => error.type === 'RATE_LIMITED'); attempt++) {
@@ -43,6 +49,7 @@ async function query<T>(text: string, variables: Record<string, unknown>): Promi
     await new Promise(resolve => setTimeout(resolve, 2 ** attempt * 60_000 * retryTiming.scale))
     ;({ data, errors } = await graphql<T>(text, variables))
   }
+  if (errors?.some(error => error.type === 'RESOURCE_LIMITS_EXCEEDED')) throw new TooBig('GraphQL: resource limits exceeded')
   if (!data || errors?.length) throw new Error(`GraphQL discussions failed: ${JSON.stringify(errors).slice(0, 300)}`)
   return data
 }
@@ -75,8 +82,19 @@ export async function collectDiscussions({ owner, name }: Repo, since: Date | nu
   }
 
   let after: string | null = null
-  do {
-    const data: { repository: { discussions: Page<Discussion> } | null } = await query(DISCUSSIONS, { owner, name, after })
+  let size = 10
+  for (;;) {
+    let data: { repository: { discussions: Page<Discussion> } | null }
+    try {
+      data = await query(DISCUSSIONS(size), { owner, name, after })
+    }
+    catch (error) {
+      // A page of busy RFCs too big for one query: fewer discussions a page, down to one (whose long threads page anyway).
+      if (!(error instanceof TooBig) || size === 1) throw error
+      size = Math.max(1, Math.floor(size / 2))
+      console.warn(`GraphQL discussions too big, ${size} a page`)
+      continue
+    }
     const discussions = data.repository?.discussions
     if (!discussions) break
     for (const discussion of discussions.nodes ?? []) {
@@ -94,7 +112,8 @@ export async function collectDiscussions({ owner, name }: Repo, since: Date | nu
         page = more.node.comments.pageInfo
       }
     }
-    after = discussions.pageInfo.hasNextPage ? discussions.pageInfo.endCursor : null
-  } while (after)
+    if (!discussions.pageInfo.hasNextPage) break
+    after = discussions.pageInfo.endCursor
+  }
   return stats
 }

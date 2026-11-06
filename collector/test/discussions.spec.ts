@@ -70,6 +70,16 @@ describe('collectDiscussions', () => {
     expect(await collectDiscussions({ owner: 'a', name: 'b' }, null, new ContributorsAccumulator(new Date()))).toEqual({ discussions: 0, discussionComments: 0 })
   })
 
+  it('asks for fewer discussions a page when GitHub says the query is too big, from the first page on', async () => {
+    vi.mocked(graphql)
+      .mockResolvedValueOnce({ data: null, errors: [{ type: 'RESOURCE_LIMITS_EXCEEDED' }] })
+      .mockResolvedValueOnce({ data: { repository: { discussions: page([
+        { id: 'D1', createdAt: '2026-02-01T00:00:00Z', author: alice, reactions: { totalCount: 0 }, comments: page([]) },
+      ]) } } as never })
+    expect(await collectDiscussions({ owner: 'a', name: 'b' }, null, new ContributorsAccumulator(new Date()))).toEqual({ discussions: 1, discussionComments: 0 })
+    expect(vi.mocked(graphql).mock.calls.map(([text]) => /discussions\(first: (\d+)/.exec(text)?.[1])).toEqual(['10', '5'])
+  })
+
   it('fails on a GraphQL error, rather than publishing part of the discussions', async () => {
     vi.mocked(graphql).mockResolvedValueOnce({ data: null, errors: [{ type: 'FORBIDDEN', message: 'no' }] })
     await expect(collectDiscussions({ owner: 'a', name: 'b' }, null, new ContributorsAccumulator(new Date()))).rejects.toThrow('GraphQL discussions failed')
