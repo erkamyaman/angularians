@@ -1,46 +1,45 @@
 /*
- * GitHub's colours, one for each kind of contribution, as the text colour in both themes.
+ * GitHub's colours, one for each kind of contribution: `--github-*` in the page's theme (GitHub's dark ones are
+ * brighter), and `github-*` for one as the text colour.
  */
-.github-purple {
-  color: #8250DF;
-}
-.github-red {
-  color: #CF222E;
-}
-.github-blue {
-  color: #0969DA;
-}
-.github-gold {
-  color: #9A6700;
-}
-.github-green {
-  color: #1A7F37;
-}
-.github-pink {
-  color: #BF3989;
-}
-.github-orange {
-  color: #BC4C00;
+:root {
+  --github-purple: #8250DF;
+  --github-red: #CF222E;
+  --github-blue: #0969DA;
+  --github-gold: #9A6700;
+  --github-green: #1A7F37;
+  --github-pink: #BF3989;
+  --github-orange: #BC4C00;
 }
 
-.dark .github-purple {
-  color: #A371F7;
+:root.dark {
+  --github-purple: #A371F7;
+  --github-red: #F85149;
+  --github-blue: #58A6FF;
+  --github-gold: #D29922;
+  --github-green: #3FB950;
+  --github-pink: #DB61A2;
+  --github-orange: #F0883E;
 }
-.dark .github-red {
-  color: #F85149;
+
+.github-purple {
+  color: var(--github-purple);
 }
-.dark .github-blue {
-  color: #58A6FF;
+.github-red {
+  color: var(--github-red);
 }
-.dark .github-gold {
-  color: #D29922;
+.github-blue {
+  color: var(--github-blue);
 }
-.dark .github-green {
-  color: #3FB950;
+.github-gold {
+  color: var(--github-gold);
 }
-.dark .github-pink {
-  color: #DB61A2;
+.github-green {
+  color: var(--github-green);
 }
-.dark .github-orange {
-  color: #F0883E;
+.github-pink {
+  color: var(--github-pink);
+}
+.github-orange {
+  color: var(--github-orange);
 }

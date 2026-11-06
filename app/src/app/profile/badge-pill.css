@@ -92,37 +92,29 @@
   --pill-ring: color-mix(in oklab, var(--primary) 30%, transparent);
 }
 
+/* GitHub's colours (`styles/github-colors.css`); the text a shade darker on light, for contrast. */
 .tone-gold {
-  --pill-bg: color-mix(in oklab, #9A6700 10%, transparent);
+  --pill-bg: color-mix(in oklab, var(--github-gold) 10%, transparent);
   --pill-text: #7D4E00;
-  --pill-ring: color-mix(in oklab, #9A6700 30%, transparent);
+  --pill-ring: color-mix(in oklab, var(--github-gold) 30%, transparent);
 }
 :host-context(.dark) .tone-gold {
-  --pill-bg: color-mix(in oklab, #D29922 10%, transparent);
-  --pill-text: #D29922;
-  --pill-ring: color-mix(in oklab, #D29922 30%, transparent);
+  --pill-text: var(--github-gold);
 }
 
 .tone-green {
-  --pill-bg: color-mix(in oklab, #1A7F37 10%, transparent);
+  --pill-bg: color-mix(in oklab, var(--github-green) 10%, transparent);
   --pill-text: #116329;
-  --pill-ring: color-mix(in oklab, #1A7F37 30%, transparent);
+  --pill-ring: color-mix(in oklab, var(--github-green) 30%, transparent);
 }
 :host-context(.dark) .tone-green {
-  --pill-bg: color-mix(in oklab, #3FB950 10%, transparent);
-  --pill-text: #3FB950;
-  --pill-ring: color-mix(in oklab, #3FB950 30%, transparent);
+  --pill-text: var(--github-green);
 }
 
 .tone-purple {
-  --pill-bg: color-mix(in oklab, #8250DF 10%, transparent);
-  --pill-text: #8250DF;
-  --pill-ring: color-mix(in oklab, #8250DF 30%, transparent);
-}
-:host-context(.dark) .tone-purple {
-  --pill-bg: color-mix(in oklab, #A371F7 10%, transparent);
-  --pill-text: #A371F7;
-  --pill-ring: color-mix(in oklab, #A371F7 30%, transparent);
+  --pill-bg: color-mix(in oklab, var(--github-purple) 10%, transparent);
+  --pill-text: var(--github-purple);
+  --pill-ring: color-mix(in oklab, var(--github-purple) 30%, transparent);
 }
 
 .tone-foreground {
