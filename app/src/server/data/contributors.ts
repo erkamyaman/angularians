@@ -103,15 +103,16 @@ export class ContributorsData {
     // Ties share a place, as they share a global rank.
     const places: number[] = []
     rows.forEach((row, index) => places.push(index && rows[index - 1].rank === row.rank ? places[index - 1] : index + 1))
+    const total = (count: (row: Contributor) => number) => rows.reduce((sum, row) => sum + count(row), 0)
     return {
       period,
       country,
       periods: this.periods,
       total: rows.length,
-      landedPullRequests: rows.reduce((sum, row) => sum + row.pullRequests.all, 0),
-      issues: rows.reduce((sum, row) => sum + row.issues, 0),
-      comments: rows.reduce((sum, row) => sum + row.comments, 0),
-      reviewComments: rows.reduce((sum, row) => sum + row.reviewComments, 0),
+      landedPullRequests: total(row => row.pullRequests.all),
+      issues: total(row => row.issues),
+      comments: total(row => row.comments),
+      reviewComments: total(row => row.reviewComments),
       items: rows.slice(start, start + size).map((row, index) => {
         const item = this.namedSummary(row)
         return country ? { ...item, countryRank: places[start + index] } : item
