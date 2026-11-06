@@ -1,6 +1,6 @@
 # How the score works
 
-Every contribution counts for its author, on the day it was made. The weights are those of [Nuxters](https://nuxt.com/nuxters),
+Every contribution counts for its author, on the day it was made (a pull request on the day it landed). The weights are those of [Nuxters](https://nuxt.com/nuxters),
 plus review comments and security reports. The rules live in `shared/src/scoring.ts` and `shared/src/pull-requests.ts`.
 
 ## Merged pull requests, by type
@@ -22,14 +22,14 @@ a feat, `documentation` docs), else counts as a chore: these are mostly version 
 | --- | --- |
 | Issue, or GitHub Discussion | 1 |
 | Helpful issue (closed as completed, or 3+ reactions, or 5+ comments; a discussion by reactions or comments) | +3 |
-| Review comment (inline, on the code of a PR) | 1 |
+| Review comment (inline, on the code of a PR; a review's summary does not count) | 1 |
 | Comment (on an issue, a PR or a discussion, replies too) | 0.5 |
 | Helpful comment (3+ reactions, or marked as a discussion's answer) | +2 |
-| Reaction received (on the day of the issue, PR or comment) | 0.1 |
+| Reaction received (on an issue, a PR, a discussion or a comment, not on a review comment; on the day of what got it) | 0.1 |
 | Security report (credited as `reporter` or `finder` on an Angular security advisory, on the day it is published) | 20 |
 
-Discussions (angular/angular's RFCs) come from GitHub's GraphQL API: they are counted as issues and comments are, in
-the issue and comment totals.
+Discussions (in every repository that has them, such as angular/angular's RFCs) come from GitHub's GraphQL API: they are
+counted as issues and comments are, in the issue and comment totals.
 
 Security advisories are those of the `@angular/*`, `@angular-devkit/*`, `@nguniversal/*` and `@schematics/angular`
 packages: the repositories' own advisories and GitHub's reviewed npm advisories, joined by GHSA id. Each counts once per
@@ -42,10 +42,11 @@ The sum is rounded once.
 
 A PR has landed if GitHub marks it merged, **or** a commit on the default branch has a `PR Close #N` line for it. Angular's merge
 tooling pushes the commits itself and closes the PR, so GitHub shows most PRs from 2017 to 2025 as closed, not merged.
-Before its first `PR Close` (January 2017), angular/angular's merge script wrote `Closes #N` instead: in that era, such a
-commit lands PR N too. Only in repositories that use `PR Close`, and only before it: elsewhere `Closes #N` closes issues.
+Before its first `PR Close` (January 2017), angular/angular's merge script wrote `Closes #N` instead: in that era, a
+commit with `Closes`, `Fixes` or `Resolves #N` at the start of a line lands PR N too. Only in repositories that use
+`PR Close`, and only before it: elsewhere these keywords close issues.
 
-Bots are left out: GitHub apps, `-bot` accounts and the list in `shared/src/bots.ts`.
+Bots are left out: GitHub apps, `[bot]` and `-bot` accounts and the list in `shared/src/bots.ts`; so are deleted accounts (`ghost`).
 
 ## Packages on profiles
 
