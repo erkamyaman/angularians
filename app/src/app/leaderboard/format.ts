@@ -5,8 +5,11 @@ const date = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeZone: '
 const month = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })
 
 export const formatNumber = (value: number): string => number.format(value)
-export const formatPoints = (score: number): string => `${number.format(score)} ${score === 1 ? 'pt' : 'pts'}`
-export const plural = (count: number, one: string, many: string): string => `${number.format(count)} ${count === 1 ? one : many}`
+/** The word alone: `Merged PR` for 1, `Merged PRs` otherwise. */
+export const pluralWord = (count: number, one: string, many: string): string => (count === 1 ? one : many)
+export const plural = (count: number, one: string, many: string): string => `${number.format(count)} ${pluralWord(count, one, many)}`
+export const formatPoints = (score: number): string => plural(score, 'pt', 'pts')
+export const formatRank = (rank: number): string => `#${number.format(rank)}`
 /** UTC, so the server and the browser print the same day (no hydration mismatch). */
 export const formatDate = (iso: string): string => date.format(new Date(iso))
 /** `Apr 2025`: "Angular contributor since …" on the profile, the signed-in card and the Angularian card. */

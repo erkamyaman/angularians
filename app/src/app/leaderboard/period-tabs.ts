@@ -3,10 +3,10 @@ import { Component, computed, input, linkedSignal, output } from '@angular/core'
 import { periodPhrase, type Period } from '@angularians/shared'
 import { HlmSelectImports } from '@spartan-ng/helm/select'
 import { HlmTabsImports } from '@spartan-ng/helm/tabs'
+import { formatRank } from './format'
 
 const TAB_LABELS: Record<string, string> = { '30d': '30 days', '12m': '12 months', 'all': 'All time' }
 const YEAR = 'year'
-const RANK = new Intl.NumberFormat('en-US')
 
 /** 30 days, 12 months and all time as tabs; the years in a picker next to them. */
 @Component({
@@ -39,7 +39,7 @@ export class PeriodTabs {
   /** `#12`, or `null` without a rank for that period. */
   protected readonly rankOf = (period: Period): string | null => {
     const rank = this.ranks()?.[period]
-    return rank ? `#${RANK.format(rank)}` : null
+    return rank ? formatRank(rank) : null
   }
   /** The year on the closed picker, with its rank when there is one: "2019 #2". */
   protected readonly yearLabel = (value: string | null) => (value ? [value, this.rankOf(value)].filter(Boolean).join(' ') : '')
