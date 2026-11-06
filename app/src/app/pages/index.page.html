@@ -40,10 +40,9 @@
   }
   @if (board(); as page) {
     <ul class="mx-auto mt-4 mb-6 grid w-fit grid-cols-[auto_auto] gap-x-8 gap-y-1.5 text-sm text-muted-foreground sm:mx-0 sm:flex sm:w-auto sm:flex-wrap sm:items-center sm:gap-x-5" [attr.aria-label]="'Contributions ' + phrase(page.period)">
-      <li class="flex items-center gap-1.5"><ng-icon name="remixGroupLine" aria-hidden="true" /><span><strong class="font-semibold text-foreground tabular-nums">{{ number(page.total) }}</strong> {{ page.total === 1 ? 'contributor' : 'contributors' }}{{ page.country ? ' from ' + countryLabel(page.country) : '' }}</span></li>
-      <li class="flex items-center gap-1.5"><ng-icon name="octGitMerge" class="github-purple" aria-hidden="true" /><span><strong class="font-semibold text-foreground tabular-nums">{{ number(page.landedPullRequests) }}</strong> merged {{ page.landedPullRequests === 1 ? 'PR' : 'PRs' }}</span></li>
-      <li class="flex items-center gap-1.5"><ng-icon name="octIssueOpened" class="github-green" aria-hidden="true" /><span><strong class="font-semibold text-foreground tabular-nums">{{ number(page.issues) }}</strong> {{ page.issues === 1 ? 'issue' : 'issues' }}</span></li>
-      <li class="flex items-center gap-1.5"><ng-icon name="octComment" class="github-blue" aria-hidden="true" /><span><strong class="font-semibold text-foreground tabular-nums">{{ number(page.comments + page.reviewComments) }}</strong> {{ page.comments + page.reviewComments === 1 ? 'comment' : 'comments' }}</span></li>
+      @for (count of totals(); track count.icon) {
+        <li class="flex items-center gap-1.5"><ng-icon [name]="count.icon" [class]="count.color ? 'github-' + count.color : ''" aria-hidden="true" /><span><strong class="font-semibold text-foreground tabular-nums">{{ number(count.value) }}</strong> {{ count.words }}</span></li>
+      }
       <li class="col-span-2 justify-self-center text-xs sm:ml-auto"><app-next-update [collectedAt]="page.collectedAt" /></li>
     </ul>
 
