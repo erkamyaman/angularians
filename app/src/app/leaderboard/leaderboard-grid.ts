@@ -10,15 +10,14 @@ import { vikingAxes, vikingHelmet, vikingShield } from '../layout/viking-icons'
 import { getLeaderboard } from '../data/contributors.server'
 import { RankShield } from './rank-shield'
 import { avatarSrcset, avatarUrl, formatNumber, formatPoints, profileQuery } from './format'
-import { GITHUB_TEXT } from './github-colors'
 
 /** The fallback for browsers without srcset: the cells are drawn at 124px at most. */
 const AVATAR_SIZE = 56
-/** Gold, silver and bronze for the top three of a period. */
-export const PODIUM: Record<number, { icon: string, ring: string, badge: string, text: string } | undefined> = {
-  1: { icon: 'vikingHelmet', ring: 'ring-2 ring-[#D29922]', badge: `ring-[#D29922] ${GITHUB_TEXT.gold}`, text: GITHUB_TEXT.gold },
-  2: { icon: 'vikingShield', ring: 'ring-2 ring-[#A8B3BD]', badge: 'ring-[#A8B3BD] text-[#59636E] dark:text-[#A8B3BD]', text: 'text-[#59636E] dark:text-[#A8B3BD]' },
-  3: { icon: 'vikingAxes', ring: 'ring-2 ring-[#B5561C]', badge: 'ring-[#B5561C] text-[#9A4510] dark:text-[#D2691E]', text: 'text-[#9A4510] dark:text-[#D2691E]' },
+/** Gold, silver and bronze for the top three of a period: their colours are in `styles/podium.css`. */
+export const PODIUM: Record<number, { icon: string, medal: 'gold' | 'silver' | 'bronze' } | undefined> = {
+  1: { icon: 'vikingHelmet', medal: 'gold' },
+  2: { icon: 'vikingShield', medal: 'silver' },
+  3: { icon: 'vikingAxes', medal: 'bronze' },
 }
 
 /** How many contributors the board shows at first, and how many more each "Show more" adds: a page on wider screens, fewer on phones. */
@@ -58,8 +57,6 @@ export class LeaderboardGrid {
   private readonly fetchPage = injectServerFnMutation(getLeaderboard)
   protected readonly memory = inject(LeaderboardMemory)
   protected readonly view = this.memory.view
-  protected readonly viewButton = (active: boolean) =>
-    `grid size-8 place-items-center rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none ${active ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground hover:text-foreground'}`
   /**
    * The pages after the first, as "Show more" loaded them: remembered per board, so coming back from a profile shows
    * the same list (and the browser's scroll position lands where it was). Another period or country: its own.
@@ -80,7 +77,6 @@ export class LeaderboardGrid {
   protected readonly avatar = (item: ContributorSummary) => avatarUrl(item.githubId, AVATAR_SIZE)
   protected readonly avatars = (item: ContributorSummary) => avatarSrcset(item.githubId)
   protected readonly listAvatar = (item: ContributorSummary) => avatarUrl(item.githubId, 40)
-  protected readonly podiumRing = (item: ContributorSummary) => PODIUM[this.place(item)]?.ring ?? 'ring-1 ring-border hover:ring-2 hover:ring-primary'
   protected readonly podium = (item: ContributorSummary) => PODIUM[this.place(item)] ?? null
   protected readonly who = (item: ContributorSummary) =>
     item.name && item.name.toLowerCase() !== item.username.toLowerCase() ? `${item.name} (${item.username})` : item.username

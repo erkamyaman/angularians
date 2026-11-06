@@ -3,3 +3,85 @@
   display: block;
   isolation: isolate;
 }
+
+/*
+ * The four stats in GitHub's colours: `tint-*` on a card sets `--tint` for its background, and `--tint-strong`
+ * (brighter on dark) for its ring and, through `tint-text`, its icon and name.
+ */
+.tint-merges {
+  --tint: #8250DF;
+  --tint-strong: #8250DF;
+}
+.tint-issues {
+  --tint: #1A7F37;
+  --tint-strong: #1A7F37;
+}
+.tint-comments {
+  --tint: #0969DA;
+  --tint-strong: #0969DA;
+}
+.tint-reactions {
+  --tint: #9A6700;
+  --tint-strong: #9A6700;
+}
+
+:host-context(.dark) .tint-merges {
+  --tint-strong: #A371F7;
+}
+:host-context(.dark) .tint-issues {
+  --tint-strong: #3FB950;
+}
+:host-context(.dark) .tint-comments {
+  --tint-strong: #58A6FF;
+}
+:host-context(.dark) .tint-reactions {
+  --tint-strong: #D29922;
+}
+
+.tint {
+  background-color: color-mix(in oklab, var(--tint) 5%, transparent);
+  box-shadow: 0 0 0 1px var(--tint-strong);
+}
+
+/* The ones that link to GitHub */
+@media (hover: hover) {
+  a.tint:hover {
+    background-color: color-mix(in oklab, var(--tint) 10%, transparent);
+  }
+}
+
+.tint-text {
+  color: var(--tint-strong);
+}
+
+/* A year's column: gold for the best year, solid when it is the one on screen; the others in the brand colour. */
+.year-bar {
+  background-color: color-mix(in oklab, var(--primary) 40%, transparent);
+}
+.year-bar.picked {
+  background-color: var(--primary);
+}
+.year-bar.best {
+  background-color: color-mix(in oklab, #9A6700 60%, transparent);
+}
+.year-bar.best.picked {
+  background-color: #9A6700;
+}
+:host-context(.dark) .year-bar.best {
+  background-color: color-mix(in oklab, #D29922 60%, transparent);
+}
+:host-context(.dark) .year-bar.best.picked {
+  background-color: #D29922;
+}
+
+@media (hover: hover) {
+  .group:hover .year-bar:not(.picked) {
+    background-color: color-mix(in oklab, var(--primary) 70%, transparent);
+  }
+  .group:hover .year-bar.best:not(.picked) {
+    background-color: #9A6700;
+  }
+  :host-context(.dark) .group:hover .year-bar.best:not(.picked) {
+    background-color: #D29922;
+  }
+}

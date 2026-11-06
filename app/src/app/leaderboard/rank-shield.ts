@@ -8,13 +8,10 @@ import { Component, computed, input } from '@angular/core'
 })
 export class RankShield {
   readonly rank = input.required<number>()
-  readonly metal = input('text-muted-foreground/60')
   readonly podium = input(false)
 
-  protected readonly scale = computed(() => {
-    const digits = String(this.rank()).length
-    return digits <= 2 ? '1em' : digits === 3 ? '0.85em' : digits === 4 ? '0.7em' : '0.8em'
-  })
+  /** The number's length, from 2 to 5: longer numbers are set smaller (`rank-shield.css`). */
+  protected readonly digits = computed(() => Math.min(5, Math.max(2, String(this.rank()).length)))
   /** 10,000 and up: no inner line, and a wider shield for a number that stays readable. */
   protected readonly wide = computed(() => this.rank() >= 10000)
 }

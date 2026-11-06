@@ -35,7 +35,6 @@ import { JoinLinks } from '../leaderboard/join-links';
 import { LeaderboardGrid } from '../leaderboard/leaderboard-grid';
 import { PeriodTabs } from '../leaderboard/period-tabs';
 import { World } from '../world/world';
-import { GITHUB_TEXT } from '../leaderboard/github-colors';
 
 const SITE_DESCRIPTION = 'Everyone who has contributed to Angular since 2014, ranked: merged pull requests, issues, comments and code reviews in angular/angular, Components, the CLI, dev-infra, Domino, zone.js and Universal.';
 
@@ -88,11 +87,10 @@ export default class Home {
   protected readonly placeholders = Array.from({ length: 30 }, (_, index) => index);
   /** The three ways onto the board (Nuxters' "How to become a Nuxter"). */
   protected readonly becomeWays = [
-    { title: 'Merge a pull request', action: 'Read the guide', description: 'Fix a bug, ship a feature or improve the docs in any Angular repository.', icon: 'octGitMerge', color: GITHUB_TEXT.purple, url: 'https://github.com/angular/angular/blob/main/CONTRIBUTING.md' },
-    { title: 'Open a helpful issue', action: 'See the issues', description: 'An issue that gets completed, or collects 3+ reactions or 5+ comments.', icon: 'octIssueOpened', color: GITHUB_TEXT.green, url: 'https://github.com/angular/angular/issues' },
-    { title: 'Write a helpful comment', action: 'Review a pull request', description: 'Answer a question on an issue, a PR or a discussion: a comment with 3+ reactions, or an accepted answer, counts.', icon: 'remixChatHeartLine', color: GITHUB_TEXT.blue, url: 'https://github.com/angular/angular/pulls' },
+    { title: 'Merge a pull request', action: 'Read the guide', description: 'Fix a bug, ship a feature or improve the docs in any Angular repository.', icon: 'octGitMerge', color: 'purple', url: 'https://github.com/angular/angular/blob/main/CONTRIBUTING.md' },
+    { title: 'Open a helpful issue', action: 'See the issues', description: 'An issue that gets completed, or collects 3+ reactions or 5+ comments.', icon: 'octIssueOpened', color: 'green', url: 'https://github.com/angular/angular/issues' },
+    { title: 'Write a helpful comment', action: 'Review a pull request', description: 'Answer a question on an issue, a PR or a discussion: a comment with 3+ reactions, or an accepted answer, counts.', icon: 'remixChatHeartLine', color: 'blue', url: 'https://github.com/angular/angular/pulls' },
   ];
-  protected readonly colors = GITHUB_TEXT;
   protected readonly number = formatNumber;
   protected readonly phrase = periodPhrase;
   protected readonly date = formatDate;

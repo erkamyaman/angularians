@@ -1,7 +1,7 @@
 <div class="mb-3 flex justify-end sm:hidden" role="group" aria-label="Leaderboard view">
   <div class="inline-flex gap-1 rounded-lg bg-muted p-1">
-    <button type="button" aria-label="Show as a grid" [attr.aria-pressed]="view() === 'grid'" [class]="viewButton(view() === 'grid')" (click)="memory.view.set('grid')"><ng-icon name="remixLayoutGridLine" aria-hidden="true" /></button>
-    <button type="button" aria-label="Show as a list" [attr.aria-pressed]="view() === 'list'" [class]="viewButton(view() === 'list')" (click)="memory.view.set('list')"><ng-icon name="remixListUnordered" aria-hidden="true" /></button>
+    <button type="button" aria-label="Show as a grid" [attr.aria-pressed]="view() === 'grid'" class="grid size-8 place-items-center rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none" [class]="view() === 'grid' ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground hover:text-foreground'" (click)="memory.view.set('grid')"><ng-icon name="remixLayoutGridLine" aria-hidden="true" /></button>
+    <button type="button" aria-label="Show as a list" [attr.aria-pressed]="view() === 'list'" class="grid size-8 place-items-center rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none" [class]="view() === 'list' ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground hover:text-foreground'" (click)="memory.view.set('list')"><ng-icon name="remixListUnordered" aria-hidden="true" /></button>
   </div>
 </div>
 
@@ -11,7 +11,7 @@
       <li [class.hidden]="index >= phoneShown()">
         <a [routerLink]="['/', item.username]" [queryParams]="query()" class="flex items-center gap-3 rounded-lg bg-muted/40 p-2 ring-1 ring-border transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none" [attr.aria-label]="label(item)">
           @if (podium(item); as medal) {
-            <app-rank-shield [rank]="place(item)" metal="" [podium]="true" [class]="'h-8 w-7 shrink-0 text-sm ' + medal.text" />
+            <app-rank-shield [rank]="place(item)" [podium]="true" class="medal-text h-8 w-7 shrink-0 text-sm" [class]="'medal-' + medal.medal" />
           } @else {
             <app-rank-shield [rank]="place(item)" class="h-8 w-7 shrink-0 text-sm text-foreground" />
           }
@@ -43,7 +43,8 @@
         [queryParams]="query()"
         [attr.data-index]="index"
         [attr.aria-label]="label(item)"
-        [class]="'relative block aspect-square overflow-hidden rounded-xl bg-muted transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none ' + podiumRing(item)"
+        class="relative block aspect-square overflow-hidden rounded-xl bg-muted transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+        [class]="podium(item) ? 'medal-ring medal-' + podium(item)!.medal : 'ring-1 ring-border hover:ring-2 hover:ring-primary'"
       >
         <img [src]="avatar(item)" [srcset]="avatars(item)" sizes="(min-width: 1280px) 124px, (min-width: 768px) 9vw, (min-width: 640px) 11vw, 17vw" alt="" [width]="AVATAR_SIZE" [height]="AVATAR_SIZE" loading="lazy" decoding="async" class="size-full object-cover" />
         @if (podium(item)) {
@@ -51,10 +52,10 @@
         }
       </a>
       @if (podium(item); as medal) {
-        <span [class]="'pointer-events-none absolute -top-2 -left-1 grid size-7 place-items-center rounded-md bg-background ring-1 ' + medal.badge" aria-hidden="true">
+        <span class="medal-badge pointer-events-none absolute -top-2 -left-1 grid size-7 place-items-center rounded-md bg-background" [class]="'medal-' + medal.medal" aria-hidden="true">
           <ng-icon [name]="medal.icon" size="1.25rem" />
         </span>
-        <app-rank-shield [rank]="place(item)" metal="" [podium]="true" [class]="'pointer-events-none absolute! -top-2 -right-1 h-8 w-7 text-sm ' + medal.text" />
+        <app-rank-shield [rank]="place(item)" [podium]="true" class="medal-text pointer-events-none absolute! -top-2 -right-1 h-8 w-7 text-sm" [class]="'medal-' + medal.medal" />
       } @else {
         <app-rank-shield [rank]="place(item)" class="pointer-events-none absolute! -right-1 -bottom-1 h-5 w-4.5 text-[0.625rem] text-foreground sm:h-6 sm:w-5.5 sm:text-xs" />
       }
