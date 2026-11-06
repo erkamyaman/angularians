@@ -178,11 +178,11 @@ export default class Profile {
   protected readonly badges = computed(() => {
     const person = this.loaded();
     if (!person) return [];
-    // One colour per kind, the profile's stat colours: gold for a #1, green for the all-time top 10, blue (comments)
-    // for reviews. As soft tints, readable in both themes.
+    // One colour per kind, the profile's stat colours: gold for a #1, green for the all-time top 10, purple (review
+    // comments, as in the score rules) for reviews. As soft tints, readable in both themes.
     const gold = 'bg-[#9A6700]/10 text-[#7D4E00] ring-[#9A6700]/30 dark:bg-[#D29922]/10 dark:text-[#D29922] dark:ring-[#D29922]/30';
     const green = 'bg-[#1A7F37]/10 text-[#116329] ring-[#1A7F37]/30 dark:bg-[#3FB950]/10 dark:text-[#3FB950] dark:ring-[#3FB950]/30';
-    const blue = 'bg-[#0969DA]/10 text-[#0969DA] ring-[#0969DA]/30 dark:bg-[#58A6FF]/10 dark:text-[#58A6FF] dark:ring-[#58A6FF]/30';
+    const purple = 'bg-[#8250DF]/10 text-[#8250DF] ring-[#8250DF]/30 dark:bg-[#A371F7]/10 dark:text-[#A371F7] dark:ring-[#A371F7]/30';
     const badges: Array<{ label: string, title: string, icon: string, style: string }> = [];
     // The gradient Angular logo of the press kit, only to say "member of the Angular team" (the site's mark stays the A).
     if (person.team) badges.push({ label: 'Angular team', title: 'Public member of the Angular organization on GitHub', icon: 'angular', style: 'bg-[#dc087d]/10 text-foreground ring-[#dc087d]/40' });
@@ -196,7 +196,7 @@ export default class Profile {
       badges.push({ label: `#1 in ${yearRanges(firsts)}`, title: `The top Angularian of ${plural(firsts.length, 'year', 'years')}`, icon: 'vikingHelmet', style: gold });
     }
     if (person.rank <= 10) badges.push({ label: 'Top 10 all time', title: `#${formatNumber(person.rank)} of all time`, icon: 'vikingShield', style: green });
-    if (person.reviewComments >= 100) badges.push({ label: 'Reviewer', title: `${formatNumber(person.reviewComments)} review comments on code`, icon: 'vikingAxes', style: blue });
+    if (person.reviewComments >= 100) badges.push({ label: 'Reviewer', title: `${formatNumber(person.reviewComments)} review comments on code`, icon: 'vikingAxes', style: purple });
     return badges;
   });
   /** The contributor's rank in each period they contributed in, for the period tabs. */
