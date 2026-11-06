@@ -1,9 +1,9 @@
 import { isPlatformBrowser, Location } from '@angular/common';
 import { afterNextRender, Component, DestroyRef, inject, Injector, PLATFORM_ID, signal } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router, RouterOutlet } from '@angular/router';
+import { HammerStrike } from './layout/hammer-strike';
 import { SiteFooter } from './layout/site-footer';
 import { SiteHeader } from './layout/site-header';
-import { HammerStrike } from './layout/hammer-strike';
 import { ThemeService } from './theme.service';
 
 @Component({

@@ -104,6 +104,10 @@
   --idea-meetup: var(--github-orange);
   --idea-teaching: #1B7C83;
 
+  /* Angie's storm: the bolt's white-hot core, and her shadow. */
+  --lightning: #ffffff;
+  --angie-shadow: rgb(0 0 0 / 0.45);
+
   --font-sans: "Manrope Variable", "Manrope Fallback", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   --radius: 0.625rem;
