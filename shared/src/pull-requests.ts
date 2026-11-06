@@ -170,7 +170,7 @@ export function prCloseNumbers(message: string): number[] {
   return [...numbers]
 }
 
-/** The numbers a commit message closes with GitHub's keywords, `Closes #N` or `Fixes #N` at the start of a line: issues or PRs. */
+/** The numbers a commit message closes with GitHub's keywords, `Closes #N`, `Fixes #N` or `Resolves #N` at the start of a line: issues or PRs. */
 export function closingNumbers(message: string): number[] {
   const numbers = new Set<number>()
   for (const match of message.matchAll(CLOSES_RE)) numbers.add(Number(match[1]))
