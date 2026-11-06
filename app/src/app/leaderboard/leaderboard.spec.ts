@@ -3,7 +3,7 @@ import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
-import { avatarUrl, formatDate, formatMonth, formatPoints, matchesCountry, plural, profileQuery } from './format';
+import { avatarUrl, formatDate, formatMonth, formatPoints, formatRank, matchesCountry, plural, pluralWord, profileQuery } from './format';
 import { CountrySelect } from './country-select';
 import { LeaderboardGrid } from './leaderboard-grid';
 import { MeCard } from './me-card';
@@ -16,6 +16,9 @@ describe('format', () => {
     expect(formatPoints(5539)).toBe('5,539 pts');
     expect(plural(1, 'person', 'people')).toBe('1 person');
     expect(plural(2194, 'person', 'people')).toBe('2,194 people');
+    expect(pluralWord(1, 'Issue', 'Issues')).toBe('Issue');
+    expect(pluralWord(0, 'Issue', 'Issues')).toBe('Issues');
+    expect(formatRank(12345)).toBe('#12,345');
     expect(formatDate('2026-11-03T23:59:00Z')).toBe('Nov 3, 2026');
     expect(formatMonth('2025-04-30T23:59:00Z')).toBe('Apr 2025');
   });

@@ -9,7 +9,7 @@ import { remixAddLine, remixPauseLine, remixPlayLine, remixRestartLine, remixSub
 import { HlmButton } from '@spartan-ng/helm/button';
 import type { Globe as CobeGlobe } from 'cobe';
 import createGlobe from 'cobe';
-import { flagUrl, formatNumber } from '../leaderboard/format';
+import { flagUrl, formatNumber, plural } from '../leaderboard/format';
 import { ThemeService } from '../theme.service';
 import { vikingLongship } from '../layout/viking-icons';
 import { faceOnGlobe, projectOnGlobe } from './globe-math';
@@ -88,7 +88,7 @@ export class Globe {
   protected readonly tier = (count: number) => count >= this.topCount() * 0.25 ? 'top' : count >= this.topCount() * 0.05 ? 'mid' : 'base';
   protected readonly flag = flagUrl;
   protected readonly number = formatNumber;
-  protected readonly count = (value: number) => `${formatNumber(value)} ${value === 1 ? 'Angularian' : 'Angularians'}`;
+  protected readonly count = (value: number) => plural(value, 'Angularian', 'Angularians');
   protected readonly avatar = (username: string) => `https://avatars.githubusercontent.com/${encodeURIComponent(username)}?s=64`;
 
   // WebGL and the frame-by-frame camera stay local: none of it is state to share or render.

@@ -4,7 +4,7 @@
 import { Resvg } from '@resvg/resvg-js'
 import { periodOrNull, periodPhrase, type ContributorProfile, type Period } from '@angularians/shared'
 import satori from 'satori'
-import { formatMonth, formatNumber, formatPoints } from '../../app/leaderboard/format'
+import { formatMonth, formatNumber, formatPoints, formatRank, pluralWord } from '../../app/leaderboard/format'
 
 export const CARD_WIDTH = 1200
 export const CARD_HEIGHT = 630
@@ -49,7 +49,6 @@ const statIcon = (paths: string[], color: string): Node =>
     viewBox: '0 0 16 16', width: STAT_ICON_SIZE, height: STAT_ICON_SIZE, fill: color,
   })
 
-const label = (value: number, one: string, many: string) => (value === 1 ? one : many)
 
 /**
  * Text with the word "Angularian(s)" set in the brand font (its capitals are about as tall as Manrope's):
@@ -87,12 +86,12 @@ export function cardTree(profile: ContributorProfile, period: Period, avatar: st
   const since = profile.firstContributionAt ? formatMonth(profile.firstContributionAt) : null
   const rows = [
     [
-      { label: label(stats.pullRequests.all, 'Merged PR', 'Merged PRs'), value: stats.pullRequests.all, color: COLORS.pullRequests, icon: ICONS.pullRequests },
-      { label: label(stats.issues, 'Issue', 'Issues'), value: stats.issues, color: COLORS.issues, icon: ICONS.issues },
+      { label: pluralWord(stats.pullRequests.all, 'Merged PR', 'Merged PRs'), value: stats.pullRequests.all, color: COLORS.pullRequests, icon: ICONS.pullRequests },
+      { label: pluralWord(stats.issues, 'Issue', 'Issues'), value: stats.issues, color: COLORS.issues, icon: ICONS.issues },
     ],
     [
-      { label: label(stats.comments + stats.reviewComments, 'Comment', 'Comments'), value: stats.comments + stats.reviewComments, color: COLORS.comments, icon: ICONS.comments },
-      { label: label(stats.reactions, 'Reaction', 'Reactions'), value: stats.reactions, color: COLORS.reactions, icon: ICONS.reactions },
+      { label: pluralWord(stats.comments + stats.reviewComments, 'Comment', 'Comments'), value: stats.comments + stats.reviewComments, color: COLORS.comments, icon: ICONS.comments },
+      { label: pluralWord(stats.reactions, 'Reaction', 'Reactions'), value: stats.reactions, color: COLORS.reactions, icon: ICONS.reactions },
     ],
   ]
   return h('div', { width: '100%', height: '100%', flexDirection: 'column', justifyContent: 'space-between', backgroundColor: '#0a0a0a', color: '#ffffff', paddingTop: 44, paddingRight: 64, paddingBottom: 36, paddingLeft: 64, fontFamily: 'Manrope' }, [
@@ -102,7 +101,7 @@ export function cardTree(profile: ContributorProfile, period: Period, avatar: st
           ? h('img', { width: 108, height: 108, borderRadius: 9999, border: '4px solid #262626' }, undefined, { src: avatar, width: 108, height: 108 })
           : h('div', { width: 108, height: 108, borderRadius: 9999, backgroundColor: '#262626' }),
         h('div', { fontSize: 40, fontWeight: 600, marginTop: 12, maxWidth: 380, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }, profile.username),
-        h('div', { fontFamily: 'Norse', fontWeight: 700, fontSize: 84, lineHeight: 1, letterSpacing: 2, color: BRAND, marginTop: 6 }, `#${formatNumber(period === 'all' ? profile.rank : stats.rank)}`),
+        h('div', { fontFamily: 'Norse', fontWeight: 700, fontSize: 84, lineHeight: 1, letterSpacing: 2, color: BRAND, marginTop: 6 }, formatRank(period === 'all' ? profile.rank : stats.rank)),
         h('div', { fontSize: 30, fontWeight: 600, color: BRAND, marginTop: 4 }, formatPoints(stats.score)),
         ...(period !== 'all' ? [h('div', { fontSize: 24, color: '#a3a3a3', marginTop: 4 }, periodPhrase(period))] : []),
         ...(flag ? [h('div', { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: period === 'all' ? 10 : 4, fontSize: 24, color: '#a3a3a3' }, [
