@@ -28,7 +28,7 @@ import { missingPeriod, shownPeriod } from '../profile/period-choice';
 import { getContributor } from '../data/contributors.server';
 import { AngularLogo } from '../layout/angular-logo';
 import { Container } from '../layout/container';
-import { avatarUrl, flagUrl, formatNumber, formatPoints, plural, profileQuery, shareQuery } from '../leaderboard/format';
+import { avatarUrl, flagUrl, formatMonth, formatNumber, formatPoints, plural, profileQuery, shareQuery } from '../leaderboard/format';
 import { PeriodTabs } from '../leaderboard/period-tabs';
 import { foldPackages, PACKAGE_ICONS, packageIcon, packageLabel } from '../profile/packages';
 import { CardPreview } from '../profile/card-preview';
@@ -56,7 +56,6 @@ const SOCIAL_ICONS: Record<string, string> = {
   reddit: 'simpleReddit',
   npm: 'simpleNpm',
 };
-const SINCE = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
 
 function githubSearch(q: string, type: 'pullrequests' | 'issues'): string {
   return `https://github.com/search?${new URLSearchParams({ q: `${reposQuery()} ${q}`, type })}`;
@@ -183,7 +182,7 @@ export default class Profile {
   protected readonly displayName = computed(() => this.loaded()?.name || this.loaded()?.username || this.username());
   protected readonly since = computed(() => {
     const date = this.loaded()?.firstContributionAt;
-    return date ? SINCE.format(new Date(date)) : null;
+    return date ? formatMonth(date) : null;
   });
   protected readonly links = computed(() => {
     const person = this.loaded();

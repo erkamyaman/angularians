@@ -16,10 +16,7 @@ import { AngularianPill } from '../layout/angularian-pill'
 import { ScoreDialog } from '../profile/score-dialog'
 import { JoinLinks } from './join-links'
 import { Share } from '../profile/share'
-import { avatarUrl, formatNumber, formatPoints } from './format'
-
-/** `Apr 2025`, as on the profile and the card. */
-const SINCE = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })
+import { avatarUrl, formatMonth, formatNumber, formatPoints } from './format'
 
 /** The signed-in Angularian, or a sign-in. */
 @Component({
@@ -36,7 +33,7 @@ export class MeCard {
   protected readonly loginUrl = this.auth.loginUrl('/')
   protected readonly contributorSince = computed(() => {
     const first = this.me()?.angularian?.firstContributionAt
-    return first ? SINCE.format(new Date(first)) : null
+    return first ? formatMonth(first) : null
   })
   protected readonly lastYear = computed(() => this.me()?.angularian?.periods.find(row => row.period === '12m') ?? null)
   protected readonly periods = computed(() => this.me()?.angularian?.periods.map(row => row.period) ?? [])
