@@ -2,7 +2,7 @@
 // (MIT, Copyright (c) 2023 Nuxt).
 import { strFromU8, unzipSync } from 'fflate'
 import { countryFromLocation, parseCountryIndex, type CountryIndex, type ProfileRecord, type SocialAccount } from '@angularians/shared'
-import { graphql, retryTiming } from './github.ts'
+import { graphql } from './github.ts'
 
 const GEONAMES_COUNTRIES_URL = 'https://download.geonames.org/export/dump/countryInfo.txt'
 const GEONAMES_CITIES_URL = 'https://download.geonames.org/export/dump/cities15000.zip'
@@ -56,21 +56,13 @@ export function toProfileRecord(githubId: number, user: GraphQLProfile, countrie
   return { githubId, username: user.login, name, website, socialAccounts, country }
 }
 
-/** GraphQL answers a rate limit with 200 and a `RATE_LIMITED` error: wait and ask again, 1, 2, 4… minutes, 5 times. */
-const RATE_LIMIT_RETRIES = 5
-
 export async function fetchBatch(batch: Array<{ username: string, githubId: number }>, countries: CountryIndex): Promise<ProfileRecord[]> {
   const variables = Object.fromEntries(batch.map((user, index) => [`l${index}`, user.username]))
   const query = `query(${batch.map((_, index) => `$l${index}: String!`).join(', ')}) {
     ${batch.map((_, index) => `u${index}: user(login: $l${index}) { ${FIELDS} }`).join('\n')}
   }`
-  let { data, errors } = await graphql<Record<string, GraphQLProfile>>(query, variables)
-  for (let attempt = 0; attempt < RATE_LIMIT_RETRIES && errors?.some(error => error.type === 'RATE_LIMITED'); attempt++) {
-    const minutes = 2 ** attempt
-    console.warn(`GraphQL rate limited, retrying the batch in ${minutes} min`)
-    await new Promise(resolve => setTimeout(resolve, minutes * 60_000 * retryTiming.scale))
-    ;({ data, errors } = await graphql<Record<string, GraphQLProfile>>(query, variables))
-  }
+  // Rate limits are waited out in `graphql`.
+  const { data, errors } = await graphql<Record<string, GraphQLProfile>>(query, variables)
   // A deleted or renamed account resolves to `null` with a NOT_FOUND error: keep the rest of the batch.
   if (!data || errors?.some(error => error.type !== 'NOT_FOUND')) {
     throw new Error(`GraphQL profiles failed: ${JSON.stringify(errors).slice(0, 300)}`)

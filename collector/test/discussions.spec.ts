@@ -3,7 +3,7 @@ import { ContributorsAccumulator } from '@angularians/shared'
 import { graphql } from '../src/github.ts'
 import { collectDiscussions } from '../src/discussions.ts'
 
-vi.mock('../src/github.ts', () => ({ graphql: vi.fn(), retryTiming: { scale: 0 } }))
+vi.mock('../src/github.ts', () => ({ graphql: vi.fn() }))
 
 const author = (login: string, databaseId: number, type = 'User') => ({ __typename: type, login, databaseId })
 const page = <T>(nodes: T[], next: string | null = null, totalCount = nodes.length) => ({ totalCount, pageInfo: { hasNextPage: next !== null, endCursor: next }, nodes })
@@ -60,13 +60,6 @@ describe('collectDiscussions', () => {
     expect(await collectDiscussions({ owner: 'a', name: 'b' }, new Date('2026-01-01T00:00:00Z'), accumulator)).toEqual({ discussions: 0, discussionComments: 1, read: 1, readComments: 1 })
 
     vi.mocked(graphql).mockResolvedValueOnce({ data: { repository: { discussions: page([]) } } as never })
-    expect(await collectDiscussions({ owner: 'a', name: 'b' }, null, new ContributorsAccumulator(new Date()))).toEqual({ discussions: 0, discussionComments: 0, read: 0, readComments: 0 })
-  })
-
-  it('waits out a rate limit', async () => {
-    vi.mocked(graphql)
-      .mockResolvedValueOnce({ data: null, errors: [{ type: 'RATE_LIMITED' }] })
-      .mockResolvedValueOnce({ data: { repository: { discussions: page([]) } } as never })
     expect(await collectDiscussions({ owner: 'a', name: 'b' }, null, new ContributorsAccumulator(new Date()))).toEqual({ discussions: 0, discussionComments: 0, read: 0, readComments: 0 })
   })
 
