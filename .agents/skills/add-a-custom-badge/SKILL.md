@@ -32,13 +32,13 @@ Check the project is for Angular developers, public and maintained. If it isn't,
 3. **Entry.** Add one to `PROJECT_BADGES` in `app/src/app/profile/special-badges.ts`, after the last one, in the same shape:
 
    ```ts
-   { name: 'Project', badge: 'Short fun title', style: '<classes>', href: 'https://project.dev', logo: '/credits/project.svg', does: 'What it does', people: [
+   { name: 'Project', badge: 'Short fun title', tone: '<project>', href: 'https://project.dev', logo: '/credits/project.svg', does: 'What it does', people: [
      { githubId: 123, username: 'login', name: 'Their Name', role: 'creator' },
    ] },
    ```
 
    - **`badge`.** Two or three words, playful, about what the project does ("Analog alchemist", "Icon smith", "Slide master"). Use a word other badges don't already use. Don't use the plain role ("Creator"): the one exception is the badge of Angularians' own creator.
-   - **`style`.** Built from the brand colour `C`, like the other entries: `bg-[C]/10 text-[L] ring-[C]/30 dark:text-[D] dark:ring-[C]/40`. `L` is `C` darkened until it has 4.5:1 contrast on white. `D` is `C` lightened until it has 4.5:1 on `#0a0a0a`. Use full literal class strings, since Tailwind only sees literal classes.
+   - **`tone`.** The project's name in kebab case. Add its colours to `app/src/app/profile/badge-pill.css`, after the other projects, built from the brand colour `C` like theirs: `--pill-bg: color-mix(in oklab, C 10%, transparent)`, `--pill-text: L`, `--pill-ring: color-mix(in oklab, C 30%, transparent)` in `.tone-<project>`, then `--pill-text: D` and `--pill-ring: color-mix(in oklab, C 40%, transparent)` in `:host-context(.dark) .tone-<project>`. `L` is `C` darkened until it has 4.5:1 contrast on white. `D` is `C` lightened until it has 4.5:1 on `#0a0a0a`.
    - **`builtOn`.** Leave it out. It is only for the tools Angularians itself runs on.
 4. **Notices.** Add the logo's credit to `THIRD_PARTY_NOTICES.md`, under "Credited logos".
 5. **Data.** Never edit anything in `data/`.

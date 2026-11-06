@@ -8,9 +8,9 @@
   {{ badge().label }}
 </ng-template>
 @if (badge().href) {
-  <a [href]="badge().href" target="_blank" rel="noopener" [class]="pill + ' ' + badge().style" [hlmTooltip]="badge().title"><ng-container [ngTemplateOutlet]="body" /></a>
+  <a [href]="badge().href" target="_blank" rel="noopener" class="pill" [class]="'tone-' + badge().tone" [hlmTooltip]="badge().title"><ng-container [ngTemplateOutlet]="body" /></a>
 } @else if (badge().title) {
-  <button type="button" [class]="pill + ' ' + badge().style" [hlmTooltip]="badge().title"><ng-container [ngTemplateOutlet]="body" /></button>
+  <button type="button" class="pill" [class]="'tone-' + badge().tone" [hlmTooltip]="badge().title"><ng-container [ngTemplateOutlet]="body" /></button>
 } @else {
-  <span [class]="pill + ' ' + badge().style"><ng-container [ngTemplateOutlet]="body" /></span>
+  <span class="pill" [class]="'tone-' + badge().tone"><ng-container [ngTemplateOutlet]="body" /></span>
 }
