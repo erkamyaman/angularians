@@ -65,6 +65,15 @@ describe('parseConfig', () => {
     expect(() => parseConfig(['--repos=angular'], {}, now)).toThrow()
     expect(() => parseSince('soon', now)).toThrow()
   })
+
+  it('collects the security advisories in the run of angular/angular, unless told otherwise', () => {
+    expect(parseConfig([], {}, now).advisories).toBe(true)
+    expect(parseConfig(['--repos=angular/angular'], {}, now).advisories).toBe(true)
+    expect(parseConfig(['--repos=angular/components'], {}, now).advisories).toBe(false)
+    expect(parseConfig(['--no-activity'], {}, now).advisories).toBe(false)
+    expect(parseConfig(['--repos=angular/components', '--advisories'], {}, now).advisories).toBe(true)
+    expect(parseConfig([], { COLLECT_ADVISORIES: 'false' }, now).advisories).toBe(false)
+  })
 })
 
 describe('toProfileRecord', () => {

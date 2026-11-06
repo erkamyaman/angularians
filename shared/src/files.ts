@@ -66,6 +66,7 @@ export function parseContributorsFile(data: unknown): Contributor[] {
       helpfulComments: Math.min(comments, count(record['helpfulComments'])),
       reviewComments: count(record['reviewComments']),
       reactions: count(record['reactions']),
+      advisories: count(record['advisories']),
     }
 
     const first = typeof record['firstContributionAt'] === 'string' ? new Date(record['firstContributionAt']) : null

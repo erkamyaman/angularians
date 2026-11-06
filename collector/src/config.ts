@@ -9,6 +9,8 @@ export interface Config {
   pulls: 'rest' | 'search'
   /** Issues, conversation comments and inline review comments. Off: landed PRs only (as in v1). */
   activity: boolean
+  /** Angular's security advisories, for their reporters. One run of the parts does it: the one of `REPOS[0]`. */
+  advisories: boolean
   profiles: boolean
   outputDir: string
   cacheDir: string
@@ -39,8 +41,8 @@ export function parseRepos(value: string): Config['repos'] {
 }
 
 /**
- * `node src/main.ts [--since=90d] [--pulls=rest|search] [--no-activity] [--no-profiles] [--out=dir] [--repos=a/b,c/d] [--part]`,
- * or the same as env vars: COLLECT_SINCE, COLLECT_PULLS, COLLECT_ACTIVITY=false, COLLECT_PROFILES=false,
+ * `node src/main.ts [--since=90d] [--pulls=rest|search] [--no-activity] [--no-advisories] [--no-profiles] [--out=dir] [--repos=a/b,c/d] [--part]`,
+ * or the same as env vars: COLLECT_SINCE, COLLECT_PULLS, COLLECT_ACTIVITY=false, COLLECT_ADVISORIES=false, COLLECT_PROFILES=false,
  * CONTRIBUTORS_OUTPUT_DIR, COLLECT_REPOS.
  */
 export function parseConfig(argv: string[], env: NodeJS.ProcessEnv, now = new Date()): Config {
@@ -52,17 +54,21 @@ export function parseConfig(argv: string[], env: NodeJS.ProcessEnv, now = new Da
     if (!match) throw new Error(`Unknown argument "${arg}"`)
     flags.set(match[2]!, match[1] ? 'false' : match[3] ?? 'true')
   }
-  const known = new Set(['since', 'pulls', 'activity', 'profiles', 'out', 'repos', 'part'])
+  const known = new Set(['since', 'pulls', 'activity', 'advisories', 'profiles', 'out', 'repos', 'part'])
   for (const flag of flags.keys()) if (!known.has(flag)) throw new Error(`Unknown flag --${flag}`)
 
   const pulls = flags.get('pulls') ?? env['COLLECT_PULLS'] ?? 'rest'
   if (pulls !== 'rest' && pulls !== 'search') throw new Error(`--pulls must be rest or search, not "${pulls}"`)
   const since = flags.get('since') ?? env['COLLECT_SINCE']
+  const repos = parseRepos(flags.get('repos') ?? env['COLLECT_REPOS'] ?? DEFAULT_REPOS)
+  const activity = (flags.get('activity') ?? env['COLLECT_ACTIVITY'] ?? 'true') !== 'false'
+  const advisories = flags.get('advisories') ?? env['COLLECT_ADVISORIES']
   return {
-    repos: parseRepos(flags.get('repos') ?? env['COLLECT_REPOS'] ?? DEFAULT_REPOS),
+    repos,
     since: since ? parseSince(since, now) : null,
     pulls,
-    activity: (flags.get('activity') ?? env['COLLECT_ACTIVITY'] ?? 'true') !== 'false',
+    activity,
+    advisories: advisories === undefined ? activity && repos.some(r => `${r.owner}/${r.name}` === REPOS[0]) : advisories !== 'false',
     profiles: (flags.get('profiles') ?? env['COLLECT_PROFILES'] ?? 'true') !== 'false',
     outputDir: resolve(flags.get('out') ?? env['CONTRIBUTORS_OUTPUT_DIR'] ?? `${ROOT}data`),
     cacheDir: resolve(env['COLLECT_CACHE_DIR'] ?? `${ROOT}.cache`),

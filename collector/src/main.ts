@@ -1,5 +1,6 @@
 import { ContributorsAccumulator, landedPullRequests, prCloseNumbers } from '@angularians/shared'
 import { collectActivity } from './activity.ts'
+import { collectAdvisories } from './advisories.ts'
 import { collectDiscussions } from './discussions.ts'
 import { gitCommits } from './commits.ts'
 import { parseConfig } from './config.ts'
@@ -47,6 +48,12 @@ for (const repo of config.repos) {
     stats.discussionComments += discussions.discussionComments
     console.log(`${fullName}: ${discussions.discussions} discussions, ${discussions.discussionComments} discussion comments (of ${discussions.read} discussions, ${discussions.readComments} comments read)`)
   }
+}
+
+if (config.advisories) {
+  const advisories = await collectAdvisories(config.since, accumulator)
+  stats.advisories = advisories.advisories
+  console.log(`Security advisories: ${advisories.advisories}, ${advisories.reported} of them with a reporter`)
 }
 
 const collected: Collected = {

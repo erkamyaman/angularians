@@ -17,6 +17,7 @@ describe('ScoreBreakdown', () => {
     expect(rows).toEqual([
       'Docs PRs 134 × 4 = 536', 'Fix PRs 66 × 5 = 330', 'Feature PRs 16 × 7 = 112', 'Chore PRs 33 × 3 = 99', 'Comments 41 × 0.5 = 20.5',
       'Review comments 12 × 1 = 12', 'Helpful issues 2 × 3 = 6', 'Issues 3 × 1 = 3', 'Reactions received 25 × 0.1 = 2.5', 'Helpful comments 1 × 2 = 2',
+      'Security reports 0 × 20 = 0',
     ]);
   });
 
@@ -29,6 +30,6 @@ describe('ScoreBreakdown', () => {
     // docs 20 (max), fix 10 (half), every other row 0 (empty)
     const transforms = [...fixture.nativeElement.querySelectorAll('hlm-progress-indicator')].map((el: HTMLElement) => el.style.transform);
     expect(transforms.slice(0, 3)).toEqual(['translateX(-0%)', 'translateX(-50%)', 'translateX(-100%)']);
-    expect(transforms).toHaveLength(10);
+    expect(transforms).toHaveLength(11);
   });
 });

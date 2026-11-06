@@ -5,7 +5,7 @@ A pnpm workspace of three packages and the data they share.
 | Folder | |
 | --- | --- |
 | [`shared/`](../shared) | Types, scoring, PR type rules, periods, countries, the repositories on the board. Used by both others. |
-| [`collector/`](../collector) | Collects landed PRs, issues, comments, review comments and GitHub profiles, writes `data/`. Runs nightly in GitHub Actions. |
+| [`collector/`](../collector) | Collects landed PRs, issues, comments, review comments, security advisories and GitHub profiles, writes `data/`. Runs nightly in GitHub Actions. |
 | [`app/`](../app) | The site: [Analog](https://analogjs.org) (Angular 22, server-rendered), [spartan/ui](https://www.spartan.ng), Tailwind 4. |
 | [`data/`](../data) | The collector's output: `contributors*.json`, `profiles.json`, `packages.json`, `team.json`, `renames.json`, `meta.json`. Committed. |
 

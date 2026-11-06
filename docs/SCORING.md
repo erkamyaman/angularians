@@ -1,7 +1,7 @@
 # How the score works
 
 Every contribution counts for its author, on the day it was made. The weights are those of [Nuxters](https://nuxt.com/nuxters),
-plus review comments. The rules live in `shared/src/scoring.ts` and `shared/src/pull-requests.ts`.
+plus review comments and security reports. The rules live in `shared/src/scoring.ts` and `shared/src/pull-requests.ts`.
 
 ## Merged pull requests, by type
 
@@ -26,9 +26,15 @@ a feat, `documentation` docs), else counts as a chore: these are mostly version 
 | Comment (on an issue, a PR or a discussion, replies too) | 0.5 |
 | Helpful comment (3+ reactions, or marked as a discussion's answer) | +2 |
 | Reaction received (on the day of the issue, PR or comment) | 0.1 |
+| Security report (credited as `reporter` or `finder` on an Angular security advisory, on the day it is published) | 20 |
 
 Discussions (angular/angular's RFCs) come from GitHub's GraphQL API: they are counted as issues and comments are, in
 the issue and comment totals.
+
+Security advisories are those of the `@angular/*`, `@angular-devkit/*`, `@nguniversal/*` and `@schematics/angular`
+packages: the repositories' own advisories and GitHub's reviewed npm advisories, joined by GHSA id. Each counts once per
+person, however many reporter and finder credits they have on it. Credits for fixing, reviewing or analysing an advisory
+give no points: the fix's PR and its reviews already count. The run of angular/angular collects them (`collector/src/advisories.ts`).
 
 The sum is rounded once.
 

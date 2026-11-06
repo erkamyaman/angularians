@@ -35,7 +35,7 @@
       <h3 class="font-semibold">Everything else counts too</h3>
       <ul class="mt-3 grid grid-cols-2 gap-2">
         @for (rule of rules; track rule.what) {
-          <li class="flex flex-col gap-2 rounded-lg bg-muted/40 p-3 ring-1 ring-border">
+          <li class="flex flex-col gap-2 rounded-lg bg-muted/40 p-3 ring-1 ring-border" [class.col-span-2]="$last && $even">
             <div class="flex items-center justify-between gap-2">
               <ng-icon [name]="rule.icon" [class]="'shrink-0 ' + rule.color" size="24" aria-hidden="true" />
               <p class="flex items-baseline gap-1 tabular-nums"><span class="text-2xl font-semibold">{{ rule.value }}</span><span class="text-xs text-muted-foreground">{{ rule.unit }}</span></p>
@@ -54,7 +54,7 @@
       <p class="mt-2 text-muted-foreground">
         Most PRs from 2017 to 2025 show as closed, not merged: Angular's merge tooling pushes the commits itself and adds
         <code class="rounded bg-muted px-1 py-0.5 text-xs">PR Close #N</code> to them. Those count as merged too. Bots are left out.
-        The weights are the ones of Nuxters, plus review comments.
+        The weights are the ones of Nuxters, plus review comments and security reports.
       </p>
     </details>
   </hlm-dialog-content>

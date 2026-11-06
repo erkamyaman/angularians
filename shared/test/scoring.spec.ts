@@ -21,6 +21,10 @@ describe('score', () => {
     expect(score(stats({}, { comments: 3, reactions: 4 }))).toBe(2) // 1.5 + 0.4 = 1.9 → 2
     expect(score(stats({}, { reactions: 4 }))).toBe(0)
   })
+
+  it('gives 20 points per security advisory reported', () => {
+    expect(score(stats({ fix: 1 }, { advisories: 2 }))).toBe(45)
+  })
 })
 
 describe('scoreBreakdown', () => {
@@ -33,7 +37,7 @@ describe('scoreBreakdown', () => {
       ['reviewComments', 4, 1, 4],
       ['comments', 7, 0.5, 3.5],
     ])
-    expect(rows).toHaveLength(10)
+    expect(rows).toHaveLength(11)
     expect(rows.find(row => row.key === 'reactions')?.total).toBe(1.2)
     expect(Math.round(rows.reduce((sum, row) => sum + row.total, 0))).toBe(score(counts))
   })
@@ -109,6 +113,20 @@ describe('ContributorsAccumulator', () => {
     acc.addComment(comment(user('cy', 3), 3))
     acc.addReviewComment(comment(user('cy', 3), 9))
     expect(acc.records().get('all')?.[0]).toMatchObject({ comments: 2, helpfulComments: 1, reviewComments: 1, reactions: 5, score: Math.round(1 + 2 + 1 + 0.5) })
+  })
+
+  it('counts an advisory for its reporters and finders, once per advisory, in the periods of its publication', () => {
+    const acc = new ContributorsAccumulator(now)
+    const credit = (type: string, login: string, id: number) => ({ type, user: user(login, id) })
+    const advisory = { ghsa_id: 'GHSA-aaaa-bbbb-cccc', published_at: '2025-06-01T00:00:00Z', credits: [credit('reporter', 'eve', 7), credit('finder', 'eve', 7), credit('finder', 'fay', 8), credit('remediation_developer', 'gus', 9), credit('remediation_reviewer', 'hal', 10), credit('analyst', 'ida', 11), credit('other', 'jo', 12)] }
+    acc.addAdvisory(advisory)
+    acc.addAdvisory(advisory)
+    acc.addAdvisory({ ...advisory, ghsa_id: 'GHSA-dddd-eeee-ffff', published_at: '2026-10-30T00:00:00Z', credits: [credit('reporter', 'eve', 7)] })
+    const files = acc.records()
+    expect(files.get('all')?.map(r => [r.username, r.advisories, r.score])).toEqual([['eve', 2, 40], ['fay', 1, 20]])
+    expect(files.get('2025')?.map(r => [r.username, r.advisories])).toEqual([['eve', 1], ['fay', 1]])
+    expect(files.get('30d')?.map(r => [r.username, r.advisories])).toEqual([['eve', 1]])
+    expect(files.get('all')?.[0]?.firstContributionAt).toBe('2025-06-01T00:00:00.000Z')
   })
 
   it('leaves out bots and deleted accounts', () => {

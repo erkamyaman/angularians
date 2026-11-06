@@ -30,6 +30,7 @@ GITHUB_TOKEN=… pnpm collect -- --since=90d --out=/tmp/test  # a quick test run
 | `--since=90d` or `--since=2026-08-01` | `COLLECT_SINCE` | full history | Test runs only |
 | `--pulls=rest\|search` | `COLLECT_PULLS` | `rest` | `search` when `/pulls` is not reachable: same data, more requests |
 | `--no-activity` | `COLLECT_ACTIVITY=false` | activity on | Landed PRs only: no issues, comments or review comments |
+| `--no-advisories` | `COLLECT_ADVISORIES=false` | on in the run of angular/angular | No Angular security advisories (their reporters score 20 points each; `--advisories` turns them on in another run) |
 | `--no-profiles` | `COLLECT_PROFILES=false` | profiles on | Profiles need GraphQL, so a token |
 | `--out=dir` | `CONTRIBUTORS_OUTPUT_DIR` | `data/` | |
 | | `COLLECT_CACHE_DIR` | `.cache/` | The treeless git clone of the repo |

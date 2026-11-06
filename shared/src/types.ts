@@ -69,6 +69,8 @@ export interface ActivityCounts {
   reviewComments: number
   /** Received on the contributor's issues, PRs and comments, counted on the day of the item. */
   reactions: number
+  /** Angular security advisories credited to them as reporter or finder. */
+  advisories: number
 }
 
 /** A contributor's stats over one period, ranked. */

@@ -4,7 +4,7 @@ import { Component, computed, input } from '@angular/core'
 import { scoreBreakdown, type ScoredStats } from '@angularians/shared'
 import { NgIcon, provideIcons } from '@ng-icons/core'
 import { remixBookOpenLine, remixBrushLine, remixChatHeartLine, remixFileCodeLine, remixLightbulbLine, remixRocketLine, remixToolsLine } from '@ng-icons/remixicon'
-import { octComment, octIssueOpened, octSmiley } from '@ng-icons/octicons'
+import { octComment, octIssueOpened, octShield, octSmiley } from '@ng-icons/octicons'
 import { HlmProgressImports } from '@spartan-ng/helm/progress'
 import { formatNumber, formatPoints } from '../leaderboard/format'
 
@@ -20,6 +20,7 @@ const ICONS: Record<string, string> = {
   'file-code': 'remixFileCodeLine',
   'message-circle': 'octComment',
   'smile-plus': 'octSmiley',
+  'shield': 'octShield',
 }
 
 /** One row per contribution type: count × points = total, with a bar on one scale so the rows compare. */
@@ -28,7 +29,7 @@ const ICONS: Record<string, string> = {
   imports: [HlmProgressImports, NgIcon],
   providers: [provideIcons({
     remixBookOpenLine, remixBrushLine, octIssueOpened, remixFileCodeLine, remixLightbulbLine, octComment, remixChatHeartLine,
-    remixRocketLine, octSmiley, remixToolsLine,
+    remixRocketLine, octShield, octSmiley, remixToolsLine,
   })],
   templateUrl: './score-breakdown.html',
 })

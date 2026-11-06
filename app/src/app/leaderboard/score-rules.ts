@@ -1,7 +1,7 @@
 import { Component } from '@angular/core'
 import { ACTIVITY_POINTS, PULL_REQUEST_POINTS, REPOS } from '@angularians/shared'
 import { NgIcon, provideIcons } from '@ng-icons/core'
-import { octComment, octIssueOpened, octSmiley } from '@ng-icons/octicons'
+import { octComment, octIssueOpened, octShield, octSmiley } from '@ng-icons/octicons'
 import { remixChatHeartLine, remixFileCodeLine, remixLightbulbLine } from '@ng-icons/remixicon'
 import { vikingAnvil, vikingBroom, vikingHammer, vikingScroll, vikingSword } from '../layout/viking-icons'
 import { HlmButton } from '@spartan-ng/helm/button'
@@ -14,7 +14,7 @@ const { purple: PURPLE, red: RED, blue: BLUE, gold: GOLD, green: GREEN, pink: PI
 @Component({
   selector: 'app-score-rules',
   imports: [HlmButton, HlmDialogImports, NgIcon],
-  providers: [provideIcons({ octComment, octIssueOpened, octSmiley, remixChatHeartLine, remixFileCodeLine, remixLightbulbLine, vikingAnvil, vikingBroom, vikingHammer, vikingScroll, vikingSword })],
+  providers: [provideIcons({ octComment, octIssueOpened, octShield, octSmiley, remixChatHeartLine, remixFileCodeLine, remixLightbulbLine, vikingAnvil, vikingBroom, vikingHammer, vikingScroll, vikingSword })],
   host: { class: 'contents' },
   templateUrl: './score-rules.html',
 })
@@ -33,5 +33,6 @@ export class ScoreRules {
     { what: 'Helpful comment', when: 'On top, with 3+ reactions, or as a discussion\'s accepted answer.', value: `+${ACTIVITY_POINTS.helpfulComments}`, unit: 'pts', icon: 'remixChatHeartLine', color: PINK },
     { what: 'Review comment', when: 'Every comment on the code of a pull request.', value: `${ACTIVITY_POINTS.reviewComments}`, unit: 'pt', icon: 'remixFileCodeLine', color: PURPLE },
     { what: 'Reaction', when: 'Received on your issues, pull requests and comments.', value: `${ACTIVITY_POINTS.reactions}`, unit: 'pt', icon: 'octSmiley', color: ORANGE },
+    { what: 'Security report', when: 'Credited as reporter or finder on an Angular security advisory, on the day it is published.', value: `${ACTIVITY_POINTS.advisories}`, unit: 'pts', icon: 'octShield', color: RED },
   ]
 }

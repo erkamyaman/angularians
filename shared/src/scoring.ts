@@ -20,7 +20,11 @@ export const ACTIVITY_POINTS: Readonly<Record<keyof ActivityCounts, number>> = {
   reviewComments: 1,
   comments: 0.5,
   reactions: 0.1,
+  advisories: 20,
 }
+
+/** The credits on a security advisory that score: reporting it. Fixing and reviewing it score as PRs and reviews. */
+export const ADVISORY_CREDITS: readonly string[] = ['reporter', 'finder']
 
 /** An issue is helpful when it was closed as completed, or got this many reactions or comments. */
 export const HELPFUL_ISSUE_REACTIONS = 3
@@ -29,7 +33,7 @@ export const HELPFUL_ISSUE_COMMENTS = 5
 export const HELPFUL_COMMENT_REACTIONS = 3
 
 export const emptyCounts = (): PullRequestCounts => ({ feat: 0, fix: 0, docs: 0, chore: 0, all: 0 })
-export const emptyActivity = (): ActivityCounts => ({ issues: 0, helpfulIssues: 0, comments: 0, helpfulComments: 0, reviewComments: 0, reactions: 0 })
+export const emptyActivity = (): ActivityCounts => ({ issues: 0, helpfulIssues: 0, comments: 0, helpfulComments: 0, reviewComments: 0, reactions: 0, advisories: 0 })
 
 export type ScoredStats = { pullRequests: PullRequestCounts } & ActivityCounts
 
@@ -46,6 +50,7 @@ export function score(stats: ScoredStats): number {
     + stats.reviewComments * ACTIVITY_POINTS.reviewComments
     + stats.comments * ACTIVITY_POINTS.comments
     + stats.reactions * ACTIVITY_POINTS.reactions
+    + stats.advisories * ACTIVITY_POINTS.advisories
   return Math.round(total)
 }
 
@@ -67,6 +72,7 @@ const ROWS: ReadonlyArray<Pick<ScoreRow, 'key' | 'label' | 'icon'>> = [
   { key: 'fix', label: 'Fix PRs', icon: 'wrench' },
   { key: 'docs', label: 'Docs PRs', icon: 'book-open' },
   { key: 'chore', label: 'Chore PRs', icon: 'brush-cleaning' },
+  { key: 'advisories', label: 'Security reports', icon: 'shield' },
   { key: 'helpfulIssues', label: 'Helpful issues', icon: 'lightbulb' },
   { key: 'helpfulComments', label: 'Helpful comments', icon: 'message-circle-heart' },
   { key: 'issues', label: 'Issues', icon: 'circle-dot' },
@@ -110,6 +116,13 @@ export interface CommentInput {
   reactions?: { total_count?: number } | null
 }
 
+/** A GitHub security advisory of an Angular package, the fields used here. */
+export interface AdvisoryInput {
+  ghsa_id: string
+  published_at: string
+  credits: ReadonlyArray<{ type: string, user: IssueInput['user'] }>
+}
+
 type Counts = { pullRequests: PullRequestCounts } & ActivityCounts
 
 /**
@@ -124,6 +137,8 @@ export class ContributorsAccumulator {
   private readonly first = new Map<number, number>()
   /** GitHub id → package → merged PRs, all time. */
   private readonly packageCounts = new Map<number, Map<string, number>>()
+  /** `GHSA id:GitHub id` of the advisories already counted. */
+  private readonly advisories = new Set<string>()
 
   constructor(now: Date) {
     this.now = now
@@ -186,6 +201,17 @@ export class ContributorsAccumulator {
     const user = toUser(comment.user)
     if (!user) return
     this.add(user, comment.created_at, true, counts => (counts.reviewComments += 1))
+  }
+
+  /** A security advisory counts for each person credited as its reporter or finder, once per advisory. */
+  addAdvisory(advisory: AdvisoryInput): void {
+    for (const credit of advisory.credits) {
+      const user = ADVISORY_CREDITS.includes(credit.type) ? toUser(credit.user) : null
+      const key = `${advisory.ghsa_id}:${user?.id}`
+      if (!user || this.advisories.has(key)) continue
+      this.advisories.add(key)
+      this.add(user, advisory.published_at, true, counts => (counts.advisories += 1))
+    }
   }
 
   /** `packages.json`: every contributor with a scoped PR, by GitHub id; each one's packages, most PRs first. */
