@@ -2,6 +2,7 @@
 
 <p align="center">
   <a href="https://angularians.dev"><img src="https://img.shields.io/badge/live-angularians.dev-9A6700.svg" alt="Live: angularians.dev"></a>
+  <a href="https://app.netlify.com/projects/angularians/deploys"><img src="https://api.netlify.com/api/v1/badges/d439db74-0404-4a63-b4c6-ac8cf0215a95/deploy-status" alt="Netlify status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-9A6700.svg" alt="License: MIT"></a>
   <a href="https://github.com/sponsors/erkamyaman"><img src="https://img.shields.io/badge/sponsor-erkamyaman-db61a2?logo=githubsponsors&logoColor=white" alt="Sponsor"></a>
 </p>
