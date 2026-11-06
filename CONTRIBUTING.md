@@ -55,7 +55,7 @@ uses (see the script). Colours live in `app/src/styles.css`.
 **A bot.** When a run's `Possible bots:` line shows an account that is a bot, add it to `KNOWN_BOT_ACCOUNTS` in
 `shared/src/bots.ts`. Check its profile first: a few people have "bot" in their username.
 
-**A badge.** Profile badges are in `badges()` of `app/src/app/pages/[username].page.ts`. The Angular GDE and GitHub Star badges
+**A badge.** Badges are in `earnedBadges()` of `app/src/app/profile/earned-badges.ts`, which both the profile page and the card use. The Angular GDE and GitHub Star badges
 come from hand-kept lists of GitHub ids in `app/src/app/profile/recognitions.ts`: add someone there when they become one.
 Project badges ("Analog alchemist") are in `app/src/app/profile/special-badges.ts`: each project has its own short,
 fun title, its brand colour, its logo in `app/public/credits/` and the GitHub ids of its people; the badge links to the

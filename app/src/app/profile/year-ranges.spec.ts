@@ -1,4 +1,4 @@
-import { yearRanges } from '../pages/[username].page';
+import { yearRanges } from './earned-badges';
 
 describe('yearRanges', () => {
   it.each([

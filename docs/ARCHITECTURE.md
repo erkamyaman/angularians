@@ -74,5 +74,5 @@ Signing in from the home page ends on your profile, or back on the home page if 
 | `GET /api/contributors/:username` | A profile: all-time stats, rank in each period, links |
 | `GET /api/search/contributors?q=cris&country=TR` | Up to 8 contributors, of that country if given |
 | `GET /api/map/contributors?period=all` | Contributors by country |
-| `GET /:username/card.png?period=2025&flag=TR` | The Angularian card, 2400×1260: the README card and the profile's link preview. Its flag is the GitHub location's country, or `flag` when the owner picked another |
+| `GET /:username/card.png?period=2025&flag=TR` | The Angularian card, 2400×1260: the README card and the profile's link preview. Its flag is the GitHub location's country, or `flag` when the owner picked another; its footer shows the profile's badges as icons (`earnedBadges` in `app/src/app/profile/earned-badges.ts`, shared with the profile page; images from the `site-images` server asset) |
 | `GET /og.png?period=2025` | The home page's link preview, 2400×1260: all time, or the top of a period |

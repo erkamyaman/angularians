@@ -42,7 +42,7 @@ The data is already in `data/`: you do not need a GitHub token to work on the si
 - A profile for everyone: stats, badges and year by year, with the packages they contributed to, down to
   angular.dev and the Angular agent skills.
 - Sign in with GitHub to see your rank and badges, share your profile and add your Angularian card to your GitHub README.
-- A special badge, with the project's own logo, for the creators of the community tools Angularians is built on ("AnalogJS creator").
+- Custom badges for the people behind Angular community projects, each with its own title, logo and colour ("Analog alchemist"), linked to the project and shown on the Angularian card.
 - Link previews for every profile and period, drawn on the server: share a link and it shows your card. Pick a
   period for your README card and only what changes reloads.
 - Dark and light themes.

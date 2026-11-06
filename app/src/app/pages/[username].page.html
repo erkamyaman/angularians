@@ -86,9 +86,9 @@
               @for (badge of badges(); track badge.label) {
                 <li>
                   @if (badge.href) {
-                    <a [href]="badge.href" target="_blank" rel="noopener" [class]="badgeClass + badge.style" [hlmTooltip]="badge.title"><ng-container *ngTemplateOutlet="badgeBody; context: { $implicit: badge }" /></a>
+                    <a [href]="badge.href" target="_blank" rel="noopener" [class]="badgeClass + ' ' + badge.style" [hlmTooltip]="badge.title"><ng-container *ngTemplateOutlet="badgeBody; context: { $implicit: badge }" /></a>
                   } @else {
-                    <button type="button" [class]="badgeClass + badge.style" [hlmTooltip]="badge.title"><ng-container *ngTemplateOutlet="badgeBody; context: { $implicit: badge }" /></button>
+                    <button type="button" [class]="badgeClass + ' ' + badge.style" [hlmTooltip]="badge.title"><ng-container *ngTemplateOutlet="badgeBody; context: { $implicit: badge }" /></button>
                   }
                 </li>
               }

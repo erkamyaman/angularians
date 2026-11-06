@@ -6,8 +6,8 @@ import { HlmButton } from '@spartan-ng/helm/button';
 import { AngularLogo } from './angular-logo';
 import { Container } from './container';
 import { LogoMark } from './logo-mark';
+import { REPO_URL } from '../site';
 
-const REPO = 'https://github.com/erkamyaman/angularians';
 
 /** The footer: the brand and its pitch, then the small print. */
 @Component({
@@ -18,5 +18,5 @@ const REPO = 'https://github.com/erkamyaman/angularians';
   templateUrl: './site-footer.html',
 })
 export class SiteFooter {
-  protected readonly repo = REPO;
+  protected readonly repo = REPO_URL;
 }

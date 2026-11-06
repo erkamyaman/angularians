@@ -114,10 +114,6 @@ export function cardTree(profile: ContributorProfile, period: Period, avatar: st
           h('div', { fontSize: 22, fontWeight: 600 }, 'Angular contributor'),
           ...(since ? [h('div', { fontSize: 22, color: '#a3a3a3' }, `since ${since}`)] : []),
         ]),
-        ...(badges.length ? [h('div', { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 14 }, badges.map(src =>
-          h('div', { width: 40, height: 40, borderRadius: 10, backgroundColor: '#171717', border: '1px solid #262626', alignItems: 'center', justifyContent: 'center' }, [
-            h('img', { width: 24, height: 24 }, undefined, { src, width: 24, height: 24 }),
-          ])))] : []),
       ]),
       h('div', { flexDirection: 'column', flex: 1, gap: 24 }, rows.map(row =>
         h('div', { flexDirection: 'row', gap: 24 }, row.map(stat =>
@@ -131,7 +127,11 @@ export function cardTree(profile: ContributorProfile, period: Period, avatar: st
         ))),
     ]),
     // The footer's left stays empty: X lays the page's title over a card's bottom-left corner.
-    h('div', { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', borderTop: '1px solid #262626', paddingTop: 18 }, [
+    h('div', { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 40, borderTop: '1px solid #262626', paddingTop: 18 }, [
+      ...(badges.length ? [h('div', { flexDirection: 'row', gap: 10 }, badges.map(src =>
+        h('div', { width: 48, height: 48, borderRadius: 12, backgroundColor: '#171717', border: '1px solid #262626', alignItems: 'center', justifyContent: 'center' }, [
+          h('img', { width: 28, height: 28 }, undefined, { src, width: 28, height: 28 }),
+        ])))] : []),
       h('div', { flexDirection: 'row', alignItems: 'center', gap: 12 }, [
         markSvg(68),
         h('div', { flexDirection: 'column' }, [

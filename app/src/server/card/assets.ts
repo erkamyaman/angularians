@@ -1,5 +1,4 @@
 import { useStorage } from 'nitropack/runtime'
-import { SITE_URL } from '../../app/site'
 import type { CardFonts } from './card'
 import { avatarUrl, flagUrl } from '../../app/leaderboard/format'
 
@@ -25,22 +24,15 @@ export function cardFonts(): Promise<CardFonts> {
 
 const images = new Map<string, string>()
 
-/** One of the site's own images (`/credits/…` from the server assets, the rest fetched) as a data URL, or `null`: a card still renders without it. */
+/** One of the site's own images (`/logo.svg`, `/credits/…`, `/flags/…`, from the server assets) as a data URL, or `null`: a card still renders without it. */
 export async function siteImage(path: string): Promise<string | null> {
   const known = images.get(path)
   if (known) return known
-  try {
-    const raw = path.startsWith('/credits/')
-      ? await useStorage('assets:credits').getItemRaw<Buffer>(path.slice('/credits/'.length))
-      : await fetch(`${SITE_URL}${path}`, { signal: AbortSignal.timeout(5000) }).then(async response => response.ok ? Buffer.from(await response.arrayBuffer()) : null)
-    if (!raw) return null
-    const data = `data:${path.endsWith('.svg') ? 'image/svg+xml' : 'image/png'};base64,${Buffer.from(raw).toString('base64')}`
-    images.set(path, data)
-    return data
-  }
-  catch {
-    return null
-  }
+  const raw = await useStorage('assets:site-images').getItemRaw<Buffer>(path.slice(1).replaceAll('/', ':')).catch(() => null)
+  if (!raw) return null
+  const data = `data:${path.endsWith('.svg') ? 'image/svg+xml' : 'image/png'};base64,${Buffer.from(raw).toString('base64')}`
+  images.set(path, data)
+  return data
 }
 
 /** A country's flag as a data URL, or `null`. */
