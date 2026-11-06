@@ -13,8 +13,8 @@ import { ScoreBreakdown } from './score-breakdown'
   selector: 'app-score-dialog',
   imports: [HlmButton, HlmDialogImports, NgIcon, ScoreBreakdown],
   providers: [provideIcons({ remixInformationLine })],
-  host: { class: 'inline-flex' },
   templateUrl: './score-dialog.html',
+  styleUrl: './score-dialog.css',
 })
 export class ScoreDialog {
   readonly stats = input.required<ScoredStats & { score: number }>()

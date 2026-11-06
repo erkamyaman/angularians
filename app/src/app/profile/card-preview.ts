@@ -11,8 +11,8 @@ import { CARD_DESIGN } from './share'
   selector: 'app-card-preview',
   imports: [HlmButton, HlmDialogImports, NgIcon],
   providers: [provideIcons({ remixEyeLine, simpleGithub })],
-  host: { class: 'contents' },
   templateUrl: './card-preview.html',
+  styleUrl: './card-preview.css',
 })
 export class CardPreview {
   readonly username = input.required<string>()

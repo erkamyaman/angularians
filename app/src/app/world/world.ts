@@ -21,8 +21,8 @@ const CARD_TILES = 12;
   selector: 'app-world',
   imports: [Globe, RankShield, HlmButton, HlmInputGroupImports, HlmSkeleton, HlmTooltip, NgIcon, NgTemplateOutlet, RouterLink],
   providers: [provideIcons({ remixArrowUpLine, remixCloseLine, remixSearchLine })],
-  host: { class: 'grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] lg:gap-12' },
   templateUrl: './world.html',
+  styleUrl: './world.css',
 })
 export class World {
   private readonly globeBox = viewChild.required<ElementRef<HTMLElement>>('globeBox');

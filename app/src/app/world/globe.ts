@@ -53,7 +53,7 @@ interface GlobeMarker extends CountryStats {
   selector: 'app-globe',
   imports: [HlmButton, NgIcon],
   providers: [provideIcons({ vikingLongship, remixSubtractLine, remixPauseLine, remixPlayLine, remixAddLine, remixRestartLine })],
-  host: { class: 'globe relative block size-full isolate overflow-hidden', '[attr.data-ready]': 'ready() || null' },
+  host: { '[attr.data-ready]': 'ready() || null' },
   templateUrl: './globe.html',
   styleUrl: './globe.css',
 })

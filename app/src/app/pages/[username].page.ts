@@ -74,8 +74,8 @@ function githubSearch(q: string, type: 'pullrequests' | 'issues'): string {
     simpleBluesky, simpleFacebook, simpleGithub, simpleInstagram, simpleMastodon, simpleNpm, simpleReddit, simpleThreads, simpleTwitch, simpleX,
     simpleYoutube, remixStarFill, ...PACKAGE_ICONS,
   })],
-  host: { class: 'relative block isolate' },
   templateUrl: './[username].page.html',
+  styleUrl: './[username].page.css',
 })
 export default class Profile {
   private readonly router = inject(Router);

@@ -1,0 +1,18 @@
+/* One pill: the tabs, then the year picker inside it (Nuxters). */
+:host {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  border-radius: var(--radius);
+  background-color: var(--muted);
+  padding: 3px;
+}
+
+@media (width >= 40rem) {
+  :host {
+    display: inline-flex;
+    width: auto;
+    max-width: 100%;
+  }
+}

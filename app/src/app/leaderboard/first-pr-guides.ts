@@ -9,8 +9,8 @@ export const GUIDE = 'flex min-h-16 items-center gap-3 rounded-lg bg-background 
   selector: 'app-first-pr-guides',
   imports: [NgIcon],
   providers: [provideIcons({ remixSparklingLine })],
-  host: { class: 'block' },
   templateUrl: './first-pr-guides.html',
+  styleUrl: './first-pr-guides.css',
 })
 export class FirstPrGuides {
   protected readonly guide = GUIDE

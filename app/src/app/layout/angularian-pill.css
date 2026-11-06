@@ -1,0 +1,13 @@
+:host {
+  display: inline-flex;
+  height: calc(var(--spacing) * 8);
+  align-items: center;
+  gap: calc(var(--spacing) * 1.5);
+  border-radius: calc(var(--radius) * 0.8);
+  background-color: color-mix(in oklab, var(--primary) 10%, transparent);
+  padding-inline: calc(var(--spacing) * 2);
+  font-size: var(--text-base);
+  line-height: var(--text-base--line-height);
+  font-weight: var(--font-weight-medium);
+  color: var(--primary);
+}

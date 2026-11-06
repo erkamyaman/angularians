@@ -9,8 +9,8 @@ let nextId = 0;
  */
 @Component({
   selector: 'app-angular-logo',
-  host: { class: 'inline-block shrink-0' },
   templateUrl: './angular-logo.html',
+  styleUrl: './angular-logo.css',
 })
 export class AngularLogo {
   protected readonly id = `angular-logo-${nextId++}-`;

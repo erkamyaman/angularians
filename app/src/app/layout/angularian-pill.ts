@@ -5,7 +5,7 @@ import { LogoMark } from './logo-mark'
 @Component({
   selector: 'app-angularian-pill',
   imports: [LogoMark],
-  host: { class: 'inline-flex h-8 items-center gap-1.5 rounded-md bg-primary/10 px-2 text-base font-medium text-primary' },
   templateUrl: './angularian-pill.html',
+  styleUrl: './angularian-pill.css',
 })
 export class AngularianPill {}

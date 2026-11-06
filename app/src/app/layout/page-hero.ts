@@ -8,8 +8,8 @@ import { Container } from './container';
 @Component({
   selector: 'app-page-hero',
   imports: [Container],
-  host: { class: 'block' },
   templateUrl: './page-hero.html',
+  styleUrl: './page-hero.css',
 })
 export class PageHero {
   readonly title = input('')

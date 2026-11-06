@@ -1,0 +1,17 @@
+:host {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: block;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  background-color: color-mix(in oklab, var(--background) 80%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+@supports (backdrop-filter: blur(0)) {
+  :host {
+    background-color: color-mix(in oklab, var(--background) 60%, transparent);
+  }
+}

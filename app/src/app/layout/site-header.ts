@@ -14,8 +14,9 @@ import { AuthService } from '../auth/auth.service';
   selector: 'app-site-header',
   imports: [Container, HlmButton, LogoMark, NgIcon, RouterLink, ThemeToggle, UserMenu],
   providers: [provideIcons({ remixHeartLine, simpleGithub })],
-  host: { role: 'banner', class: 'sticky top-0 z-40 block border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60' },
+  host: { role: 'banner' },
   templateUrl: './site-header.html',
+  styleUrl: './site-header.css',
 })
 export class SiteHeader {
   protected readonly auth = inject(AuthService);

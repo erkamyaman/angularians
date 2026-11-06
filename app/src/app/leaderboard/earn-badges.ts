@@ -13,8 +13,8 @@ import { projectBadge } from '../profile/earned-badges'
   selector: 'app-earn-badges',
   imports: [BadgePill, LogoMark, HlmCardImports, NgIcon, RouterLink],
   providers: [provideIcons({ remixArrowRightUpLine })],
-  host: { class: 'block' },
   templateUrl: './earn-badges.html',
+  styleUrl: './earn-badges.css',
 })
 export class EarnBadges {
   protected readonly projects = BUILT_ON

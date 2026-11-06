@@ -11,8 +11,8 @@ import { vikingAnvil, vikingHammer, vikingLongship, vikingRaven, vikingScroll } 
   selector: 'app-claim-badge',
   imports: [AngularLogo, HlmButton, NgIcon],
   providers: [provideIcons({ octGitPullRequest, octIssueOpened, remixUserLine, vikingAnvil, vikingHammer, vikingLongship, vikingRaven, vikingScroll })],
-  host: { class: 'block' },
   templateUrl: './claim-badge.html',
+  styleUrl: './claim-badge.css',
 })
 export class ClaimBadge {
   protected readonly issueUrl = `${REPO_URL}/issues/new?template=badge-request.yml`

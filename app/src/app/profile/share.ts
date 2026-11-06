@@ -38,8 +38,8 @@ export const CARD_DESIGN = 15
   selector: 'app-share',
   imports: [CountrySelect, HlmButton, HlmDialogImports, HlmSkeleton, NgIcon, NgTemplateOutlet, PeriodTabs],
   providers: [provideIcons({ remixCheckLine, remixDownloadLine, remixFileCopyLine, remixImageLine, remixLinkedinBoxFill, remixShareLine, simpleBluesky, simpleX, remixLinkM, remixMarkdownLine })],
-  host: { class: 'flex flex-wrap items-center gap-2' },
   templateUrl: './share.html',
+  styleUrl: './share.css',
 })
 export class Share {
   readonly username = input.required<string>()

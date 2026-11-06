@@ -1,0 +1,12 @@
+:host {
+  display: grid;
+  align-items: center;
+  gap: calc(var(--spacing) * 8);
+}
+
+@media (width >= 64rem) {
+  :host {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 24rem);
+    gap: calc(var(--spacing) * 12);
+  }
+}

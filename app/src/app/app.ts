@@ -8,8 +8,8 @@ import { ThemeService } from './theme.service';
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, SiteFooter, SiteHeader],
-  host: { class: 'flex min-h-dvh flex-col' },
   templateUrl: './app.html',
+  styleUrl: './app.css',
 })
 export class App {
   // Created with the app, so a saved light theme applies from the start.

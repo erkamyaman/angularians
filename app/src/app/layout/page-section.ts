@@ -7,8 +7,9 @@ const brandParts = (text: string) => text.split(/(Angularians?)/)
 @Component({
   selector: 'app-page-section',
   imports: [Container],
-  host: { class: 'block scroll-mt-20 outline-none', '[attr.id]': 'sectionId()', '[attr.tabindex]': 'sectionId() ? -1 : null', '[attr.role]': "title() || ownHeading() ? 'region' : null", '[attr.aria-labelledby]': 'title() || ownHeading() ? headingId() : null' },
+  host: { '[attr.id]': 'sectionId()', '[attr.tabindex]': 'sectionId() ? -1 : null', '[attr.role]': "title() || ownHeading() ? 'region' : null", '[attr.aria-labelledby]': 'title() || ownHeading() ? headingId() : null' },
   templateUrl: './page-section.html',
+  styleUrl: './page-section.css',
 })
 export class PageSection {
   readonly title = input('')
