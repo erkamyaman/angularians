@@ -1,8 +1,12 @@
 name: Badge request
-description: Ask for a special badge on your Angularians profile
+description: Ask for a custom badge for your Angular project on your Angularians profile
 title: "Badge: "
 labels: [badge, needs triage]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        A custom badge shows your project's logo and a short title on your profile and your Angularian card, and links to your project. See the ones on the home page ("Analog alchemist", "Spartan king"). The maintainer reviews every request.
   - type: input
     id: username
     attributes:
@@ -13,11 +17,25 @@ body:
   - type: input
     id: project
     attributes:
-      label: Your project
-      description: Its name, as it should read on the badge.
+      label: Project name
+      description: As it should read on the badge's tooltip.
       placeholder: AnalogJS
     validations:
       required: true
+  - type: input
+    id: website
+    attributes:
+      label: Website
+      description: Where the badge links to. Its main page, not a deep link.
+      placeholder: https://analogjs.org
+    validations:
+      required: true
+  - type: input
+    id: repository
+    attributes:
+      label: GitHub repository or organization
+      description: Required for a library or a tool. For a meetup, a course or a channel, its GitHub, if any.
+      placeholder: https://github.com/analogjs/analog
   - type: dropdown
     id: kind
     attributes:
@@ -29,12 +47,21 @@ body:
         - A course, blog, channel or book
     validations:
       required: true
+  - type: input
+    id: does
+    attributes:
+      label: What it does, in one line
+      description: Up to about 60 characters.
+      placeholder: The meta-framework for Angular
+    validations:
+      required: true
   - type: dropdown
     id: role
     attributes:
       label: Your role
       options:
         - Creator
+        - Co-creator
         - Maintainer
         - Organizer
     validations:
@@ -42,14 +69,50 @@ body:
   - type: textarea
     id: proof
     attributes:
-      label: Links
-      description: The project's site or repository, a link to its logo (SVG or PNG, square works best) and, for a team, the other people to badge.
+      label: Proof of your role
+      description: A link that shows it, for example the repository's contributors, its README or an "about" or "team" page.
     validations:
       required: true
+  - type: input
+    id: logo
+    attributes:
+      label: Logo
+      description: A link to the project's official logo. SVG is best, else a PNG of at least 128×128; square, with a transparent background.
+      placeholder: https://your-project.dev/logo.svg
+    validations:
+      required: true
+  - type: input
+    id: color
+    attributes:
+      label: Brand colour
+      description: The project's main colour, as a hex. We pick one from the logo if you leave it empty.
+      placeholder: "#DD0330"
+  - type: input
+    id: title
+    attributes:
+      label: Badge title idea
+      description: Short and fun, two or three words ("Analog alchemist", "Icon smith"). We can come up with one.
+  - type: textarea
+    id: team
+    attributes:
+      label: Others to badge
+      description: For a team, each person's GitHub username and role, one per line. Ask them first.
+      placeholder: |
+        nartc, co-creator
+        eneajaho, co-creator
+  - type: textarea
+    id: reach
+    attributes:
+      label: Who uses it
+      description: Optional. npm package and downloads, stars, members or attendees, anything that shows Angular developers use it.
   - type: checkboxes
     id: checks
     attributes:
       label: Before you submit
       options:
+        - label: The project is for Angular developers, and it's public and maintained.
+          required: true
         - label: It's my own work, or I run it myself.
+          required: true
+        - label: The logo may be shown on Angularians to credit the project.
           required: true

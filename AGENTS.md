@@ -20,6 +20,7 @@ Angularians ranks everyone who has contributed to the Angular repositories: a co
 | `.github/workflows/collect.yml` | the nightly collection, one job per repository |
 | `.github/labels.json` | the issue labels; `.github/workflows/labels.yml` applies them on main |
 | `docs/` | architecture, scoring |
+| `.agents/skills/` | skills for coding agents: `add-a-custom-badge` |
 
 ## Commands
 
@@ -57,4 +58,4 @@ pnpm build        # the site, as Netlify builds it
 - Accessibility: every control has a name, icons are `aria-hidden`, and nothing relies on colour alone.
 - Branches are `feat/…`, `fix/…`, `docs/…` or `chore/…`; one change per branch.
 
-How to add a repository, a bot, a badge or a score change: [CONTRIBUTING.md](CONTRIBUTING.md#adding-things).
+How to add a repository, a bot, a badge or a score change: [CONTRIBUTING.md](CONTRIBUTING.md#adding-things). A custom project badge: follow the `add-a-custom-badge` skill in `.agents/skills/`.

@@ -62,15 +62,7 @@ fun title, its brand colour, its logo in `app/public/credits/` and the GitHub id
 project's site. The tools Angularians is built on (`builtOn`) are on the home page, and their creators also get "Smith of
 ng-halla".
 
-**A special badge for your own project.** Open a "Badge request" issue, or a PR that:
-
-1. adds the project's logo as `app/public/credits/<project>.svg` (or `.png`), with its licence in `THIRD_PARTY_NOTICES.md`;
-2. adds the project to `PROJECT_BADGES` in `app/src/app/profile/special-badges.ts`: its name, badge title, site, logo, brand
-   colour (`style`), one line on what it is, and each person's GitHub id (`gh api users/<username> -q .id`), username, name and role (`creator`, `co-creator`,
-   `maintainer` or `organizer`);
-3. links the project in the PR description, so we can check it.
-
-The commit is `feat(app): the <project> badge`. The maintainer decides which badges join.
+**A custom badge for your own project.** Open a ["Badge request" issue](https://github.com/erkamyaman/angularians/issues/new?template=badge-request.yml) with the project's website, repository, logo and proof of your role, or open the pull request yourself: the steps, rules and checks are in [`.agents/skills/add-a-custom-badge/SKILL.md`](.agents/skills/add-a-custom-badge/SKILL.md), written for people and coding agents alike. One badge per pull request, titled `feat(app): the <project> badge`. The maintainer decides which badges join.
 
 **A change to the score.** The weights are in `shared/src/scoring.ts`; update [docs/SCORING.md](docs/SCORING.md) and the
 "How the score works" section of the home page with them.
