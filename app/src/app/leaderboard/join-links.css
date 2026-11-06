@@ -15,7 +15,7 @@
 
 /* Each guide's colour, on hover (`styles/guide.css`) */
 .angular {
-  --guide-accent: #9717E7;
+  --guide-accent: var(--angular-purple);
 }
 .discord {
   --guide-accent: #5865F2;
