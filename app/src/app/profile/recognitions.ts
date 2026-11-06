@@ -61,7 +61,6 @@ export const ANGULAR_GDES: ReadonlyMap<number, string | null> = new Map([
   [1511551, 'iliya-idakiev'], // IliaIdakiev
   [8780414, 'jrchristiansen'], // jc12996
   [1870060, 'jeff'], // jeffwhelpley
-  [{"message":"Not, 'jimydolores'], // jimydolores
   [10909792, 'jimydolores'], // jimyhdolores
   [640639, 'JohannesHoppe'], // JohannesHoppe
   [1202528, '111068699697656810962'], // johnpapa
@@ -73,7 +72,6 @@ export const ANGULAR_GDES: ReadonlyMap<number, string | null> = new Map([
   [5073455, 'jaroslawzolnowski'], // jzolnowski
   [6573939, 'ngKalbarczyk'], // kalbarczyk
   [34801008, 'browser-person'], // korneevamg
-  [{"message":"Not, '113405312579221112887'], // kreuzerk
   [1283734, 'kuncevic'], // kuncevic
   [1529180, 'laco'], // lacolaco
   [8270563, 'ladyleet'], // ladyleet
