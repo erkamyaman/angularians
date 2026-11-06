@@ -176,7 +176,7 @@ export function closingNumbers(message: string): number[] {
 export interface PullRequestInput {
   number: number
   title: string
-  user: { login?: string | null, id?: number | null } | null
+  user: { login?: string | null, id?: number | null, type?: string | null } | null
   labels?: ReadonlyArray<{ name?: string | null }>
   merged_at: string | null
 }
@@ -237,6 +237,6 @@ export function landedPullRequests(pulls: Iterable<PullRequestInput>, commits: I
 function toUser(user: PullRequestInput['user']): GitHubUser | null {
   const login = user?.login
   const id = user?.id
-  if (!login || typeof id !== 'number' || !Number.isSafeInteger(id) || id <= 0 || isBotAccount(login)) return null
+  if (!login || typeof id !== 'number' || !Number.isSafeInteger(id) || id <= 0 || isBotAccount(login, user?.type)) return null
   return { login, id }
 }

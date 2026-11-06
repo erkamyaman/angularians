@@ -12,11 +12,21 @@ export const KNOWN_BOT_ACCOUNTS: readonly string[] = [
   // Found in the first run with comments: the merge bot and the CLA bot.
   'mary-poppins',
   'googlebot',
+  // Found comparing with nuxt/nuxters: Google's code sync, the build artifacts pusher and a CI token.
+  'copybara-service',
+  'angular-builds',
+  'angular-github-ratelimit-token',
 ]
 
-/** GitHub apps (`renovate[bot]`), `-bot` accounts, the `ghost` of deleted accounts, and the known list. */
-export function isBotAccount(login: string | null | undefined): boolean {
-  if (!login) return true
+/** The known list, lowercased once: an entry written with capitals still matches. */
+const KNOWN = new Set(KNOWN_BOT_ACCOUNTS.map(login => login.toLowerCase()))
+
+/**
+ * GitHub apps (`renovate[bot]`), `-bot` accounts, the `ghost` of deleted accounts, and the known list.
+ * `type`: the account type GitHub sends with a user (`User`, `Bot`, `Organization`), when there is one.
+ */
+export function isBotAccount(login: string | null | undefined, type?: string | null): boolean {
+  if (!login || type === 'Bot') return true
   const lower = login.toLowerCase()
-  return KNOWN_BOT_ACCOUNTS.includes(lower) || lower.includes('[bot]') || lower.endsWith('-bot') || lower === 'ghost'
+  return KNOWN.has(lower) || lower.includes('[bot]') || lower.endsWith('-bot') || lower === 'ghost'
 }

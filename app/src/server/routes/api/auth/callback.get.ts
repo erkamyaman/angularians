@@ -1,5 +1,5 @@
 import { createError, defineEventHandler, getQuery, sendRedirect } from 'h3'
-import { afterSignIn } from '../../../auth/return-to'
+import { afterSignIn, safeReturnTo } from '../../../auth/return-to'
 import { authSession, callbackUrl, requireAuthConfig, setSignedInHint } from '../../../auth/session'
 import { contributorsData } from '../../../data/store'
 
@@ -7,8 +7,14 @@ import { contributorsData } from '../../../data/store'
 export default defineEventHandler(async (event) => {
   const config = requireAuthConfig()
   const session = await authSession(event, config.password)
-  const { code, state } = getQuery(event)
+  const { code, state, error } = getQuery(event)
   const expected = session.data.state
+  // "Cancel" on GitHub's page (`?error=access_denied`), or GitHub refusing: back where it started, not an error page.
+  if (typeof error === 'string') {
+    const returnTo = session.data.returnTo
+    await session.update({ state: undefined, returnTo: undefined })
+    return sendRedirect(event, safeReturnTo(returnTo), 302)
+  }
   if (typeof code !== 'string' || typeof state !== 'string' || !expected || state !== expected) {
     await session.update({ state: undefined })
     throw createError({ statusCode: 400, statusMessage: 'The sign-in expired or was not started here: try again' })

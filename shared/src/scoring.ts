@@ -94,7 +94,7 @@ export function compareRecords(a: Pick<ContributorRecord, 'score' | 'username'>,
 
 /** An issue or a PR, as `GET /repos/{owner}/{repo}/issues?state=all` lists it, the fields used here. */
 export interface IssueInput {
-  user: { login?: string | null, id?: number | null } | null
+  user: { login?: string | null, id?: number | null, type?: string | null } | null
   created_at: string
   /** Present on PRs: they count for their reactions only (the PR itself counts when it lands). */
   pull_request?: object | null
@@ -105,7 +105,7 @@ export interface IssueInput {
 
 /** A conversation comment (`/issues/comments`) or an inline review comment (`/pulls/comments`). */
 export interface CommentInput {
-  user: { login?: string | null, id?: number | null } | null
+  user: { login?: string | null, id?: number | null, type?: string | null } | null
   created_at: string
   reactions?: { total_count?: number } | null
 }
@@ -241,7 +241,7 @@ export function buildContributorRecords(pulls: Iterable<LandedPullRequest>, now:
 function toUser(user: IssueInput['user']): GitHubUser | null {
   const login = user?.login
   const id = user?.id
-  if (!login || typeof id !== 'number' || !Number.isSafeInteger(id) || id <= 0 || isBotAccount(login)) return null
+  if (!login || typeof id !== 'number' || !Number.isSafeInteger(id) || id <= 0 || isBotAccount(login, user?.type)) return null
   return { login, id }
 }
 
