@@ -5,6 +5,7 @@ import { ANGULAR_LOGO } from './card'
 
 /** The badge icons' colours on the card, which has no theme: the dark theme's. */
 const COLORS: Record<keyof typeof BADGE_ICONS, string> = {
+  octShield: '#FF7B72',
   remixStarFill: '#E3B341',
   simpleNx: '#96D7E8',
   vikingAnvil: '#D29922',
