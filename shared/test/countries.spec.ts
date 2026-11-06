@@ -12,6 +12,15 @@ const countryInfo = [
   'US\tUSA\t840\tUS\tUnited States',
   'CA\tCAN\t124\tCA\tCanada',
   'TR\tTUR\t792\tTU\tTurkey',
+  'NL\tNLD\t528\tNL\tThe Netherlands',
+  'GE\tGEO\t268\tGG\tGeorgia',
+  'AE\tARE\t784\tAE\tUnited Arab Emirates',
+  'CZ\tCZE\t203\tEZ\tCzechia',
+  'KR\tKOR\t410\tKS\tSouth Korea',
+  'RU\tRUS\t643\tRS\tRussia',
+  'JP\tJPN\t392\tJA\tJapan',
+  'CN\tCHN\t156\tCH\tChina',
+  'GB\tGBR\t826\tUK\tUnited Kingdom',
   'AN\tANT\t530\tNT\tNetherlands Antilles',
 ].join('\n')
 
@@ -27,6 +36,12 @@ const index = parseCountryIndex(countryInfo, [
   city('Cambridge', 'US', 118_000, '', 'MA'),
   city('Montréal', 'CA', 1_700_000, 'Montreal'),
   city('İzmir', 'TR', 2_900_000, 'Izmir'),
+  city('Atlanta', 'US', 500_000, '', 'GA'),
+  city('Tbilisi', 'GE', 1_100_000),
+  city('Victoria', 'HK', 7_000_000),
+  city('Victoria', 'CA', 90_000, '', '02'),
+  city('Holland', 'US', 33_000, '', 'MI'),
+  city('Asia', 'PH', 20_000),
 ].join('\n'))
 
 describe('countryFromLocation', () => {
@@ -46,11 +61,35 @@ describe('countryFromLocation', () => {
     ['Estados Unidos', 'US'],
     ['Izmir', 'TR'],
     ['İzmir, Türkiye', 'TR'],
+    // English names without "The", common aliases, other scripts.
+    ['Netherlands', 'NL'],
+    ['The Netherlands', 'NL'],
+    ['Holland', 'NL'],
+    ['UAE', 'AE'],
+    ['Czech Republic', 'CZ'],
+    ['Korea', 'KR'],
+    ['Russian Federation', 'RU'],
+    ['Great Britain', 'GB'],
+    ['Northern Ireland', 'GB'],
+    ['PRC', 'CN'],
+    ['US', 'US'],
+    ['日本', 'JP'],
+    ['Россия', 'RU'],
+    // A US state or a Canadian province, written out or as letters, before a country of that name.
+    ['Atlanta, Georgia', 'US'],
+    ['Tbilisi, Georgia', 'GE'],
+    ['Georgia', 'GE'],
+    ['Victoria, BC', 'CA'],
+    ['Victoria, British Columbia', 'CA'],
+    ['Victoria', 'HK'],
+    ['Texas', 'US'],
+    ['Bay Area', 'US'],
+    ['Silicon Valley', 'US'],
   ])('%s → %s', (location, country) => {
     expect(countryFromLocation(location, index)).toBe(country)
   })
 
-  it.each([null, '', 'Remote', 'localhost:3000', 'CA', 'SF', 'Netherlands Antilles'])('%s → null', (location) => {
+  it.each([null, '', 'Remote', 'localhost:3000', 'CA', 'SF', 'Netherlands Antilles', 'Asia', 'Europe', 'Planet Earth'])('%s → null', (location) => {
     expect(countryFromLocation(location, index)).toBeNull()
   })
 })
