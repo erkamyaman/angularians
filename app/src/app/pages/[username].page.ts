@@ -9,7 +9,7 @@ import { injectResponse } from '@analogjs/router/tokens';
 import { countryCode, countryName, DEFAULT_PERIOD, GITHUB_USERNAME_RE, periodOrNull, periodPhrase, reposQuery, type ContributorProfile, type Period } from '@angularians/shared';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { remixArrowDownSLine, remixArrowLeftLine, remixArrowRightSLine, remixArrowRightUpLine, remixArrowUpSLine, remixCloseLine, remixInformationLine, remixLinkM, remixLinkedinBoxLine, remixMedalLine, remixStarFill, remixVerifiedBadgeLine } from '@ng-icons/remixicon';
-import { vikingAxes, vikingHelmet, vikingLongship, vikingShield } from '../layout/viking-icons';
+import { vikingAnvil, vikingAxes, vikingHelmet, vikingLongship, vikingShield } from '../layout/viking-icons';
 import { octComment, octGitMerge, octIssueOpened, octSmiley } from '@ng-icons/octicons';
 import {
   simpleBluesky, simpleFacebook, simpleGithub, simpleInstagram, simpleMastodon, simpleNpm, simpleReddit, simpleThreads, simpleTwitch, simpleX,
@@ -79,6 +79,7 @@ function githubSearch(q: string, type: 'pullrequests' | 'issues'): string {
   selector: 'app-profile',
   imports: [AngularLogo, CardPreview, Container, HlmButton, HlmSkeleton, HlmTooltip, AngularianPill, NgIcon, NgTemplateOutlet, PeriodTabs, RouterLink, ScoreDialog, Share],
   providers: [provideIcons({
+    vikingAnvil,
     vikingAxes, vikingLongship, remixCloseLine, remixArrowLeftLine, remixArrowRightSLine, remixArrowRightUpLine, remixMedalLine, octIssueOpened, octGitMerge, remixInformationLine,
     remixVerifiedBadgeLine, remixArrowDownSLine, remixArrowUpSLine, vikingHelmet, remixLinkM, remixLinkedinBoxLine, octComment,
     octSmiley, vikingShield,
@@ -194,6 +195,8 @@ export default class Profile {
     for (const { project, role } of projectBadgesOf(person.githubId)) {
       badges.push({ label: `${project.badge ?? project.name} ${role}`, title: `${role[0].toUpperCase()}${role.slice(1)} of ${project.name}: ${project.does}`, icon: '', logo: project.logo, style: 'bg-muted/60 text-foreground ring-border' });
     }
+    const forged = projectBadgesOf(person.githubId).map(({ project }) => project.name);
+    if (forged.length) badges.push({ label: 'Smith of ng-halla', title: `Forged a tool Angularians is built on: ${forged.join(', ')}`, icon: 'vikingAnvil', style: 'bg-primary/10 text-primary ring-primary/30' });
     // Every year at #1 in one badge: "#1 in 2024–2026", "#1 in 2019, 2024".
     const firsts = this.years().filter(row => row.rank === 1).map(row => Number(row.period)).sort((x, y) => x - y);
     if (firsts.length) {

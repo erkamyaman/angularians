@@ -58,7 +58,8 @@ uses (see the script). Colours live in `app/src/styles.css`.
 **A badge.** Profile badges are in `badges()` of `app/src/app/pages/[username].page.ts`. The Angular GDE and GitHub Star badges
 come from hand-kept lists of GitHub ids in `app/src/app/profile/recognitions.ts`: add someone there when they become one.
 Project badges ("AnalogJS creator") are in `app/src/app/profile/special-badges.ts`: the community tools Angularians is
-built on, each with its logo in `app/public/credits/` and the GitHub ids of its creators. The home page shows them.
+built on, each with its logo in `app/public/credits/` and the GitHub ids of its creators. The home page shows them. Their
+creators also get "Smith of ng-halla", for forging a tool Angularians is built on.
 
 **A special badge for your own project.** Open a "Badge request" issue, or a PR that:
 
