@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <img alt="A profile: the rank, the stats, custom badges for the person's projects, and their share buttons" src="docs/assets/profile.png" width="800">
+  <img alt="Angie's profile: her rank, her stats, her badges and her share buttons" src="docs/assets/profile-angie.png" width="800">
 </p>
 
 ## Quick start
