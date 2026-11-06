@@ -32,6 +32,9 @@
   --mark-1: #5c4000;
   --mark-2: #9A6700;
   --mark-3: #E3B341;
+  /* Angie's storm: the bolt's white-hot core, and her shadow. */
+  --lightning: #ffffff;
+  --angie-shadow: rgb(0 0 0 / 0.45);
   --idea-library: #BF3989;
   --idea-tool: #59636E;
   --idea-meetup: #BC4C00;

@@ -37,6 +37,8 @@ To try the site with another data folder: `CONTRIBUTORS_DATA_DIR=/path/to/data p
 
 The brand font, Norse Bold (the word "Angularian" on the site and the cards), is in `app/public/fonts/`. The mark is built by `app/scripts/logo/build.py`.
 
+An easter egg: the word "Angularian(s)" calls Angie (`app/public/angie/`) to bring down a storm with thunder (`app/public/sounds/`), on a click, or once a visit on hover after a first click; `app/src/app/layout/hammer-strike.ts`, the bolt's shape in `lightning.ts`.
+
 ## Search engines
 
 - `/sitemap.xml` (`app/src/server/routes/sitemap.xml.get.ts`): the home page, each country's board and the profile of

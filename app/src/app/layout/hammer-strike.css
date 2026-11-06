@@ -1,7 +1,12 @@
+/*
+ * The storm's whole timeline, in one place: the keyframes below are in % of it. Angie swings at 25 %, the bolt lands at
+ * 28.75 % (1.15 s; the thunder in hammer-strike.ts follows it), and the storm ends with her animation.
+ */
 :host {
+  --storm: 4s;
   position: fixed;
   inset: 0;
-  z-index: 60;
+  z-index: 40;
   pointer-events: none;
 }
 
@@ -11,7 +16,7 @@
   inset: 0;
   background: var(--foreground);
   opacity: 0;
-  animation: sky 4s linear both;
+  animation: sky var(--storm) linear both;
 }
 
 .bolt {
@@ -37,27 +42,27 @@
 }
 
 .core {
-  stroke: white;
+  stroke: var(--lightning);
 }
 
 .main.glow {
   stroke-width: 20px;
-  animation: leader 4s linear both, main 4s linear both;
+  animation: leader var(--storm) linear both, main var(--storm) linear both;
 }
 
 .main.core {
   stroke-width: 2.5px;
-  animation: leader 4s linear both, main 4s linear both, core 4s linear both;
+  animation: leader var(--storm) linear both, main var(--storm) linear both, core var(--storm) linear both;
 }
 
 .branch.glow {
   stroke-width: 8px;
-  animation: leader 4s linear both, branch 4s linear both;
+  animation: leader var(--storm) linear both, branch var(--storm) linear both;
 }
 
 .branch.core {
   stroke-width: 1.5px;
-  animation: leader 4s linear both, branch 4s linear both;
+  animation: leader var(--storm) linear both, branch var(--storm) linear both;
 }
 
 .impact {
@@ -69,7 +74,7 @@
   background: var(--primary);
   filter: blur(22px);
   opacity: 0;
-  animation: impact 4s ease-out both;
+  animation: impact var(--storm) ease-out both;
 }
 
 /* Angie comes up from the bottom right, raises the hammer, and goes. */
@@ -80,11 +85,11 @@
   width: clamp(140px, 18vw, 260px);
   height: auto;
   transform-origin: 60% 100%;
-  filter: drop-shadow(0 10px 24px rgb(0 0 0 / 0.45));
-  animation: angie 4s cubic-bezier(0.3, 0.7, 0.3, 1) both;
+  filter: drop-shadow(0 10px 24px var(--angie-shadow));
+  animation: angie var(--storm) cubic-bezier(0.3, 0.7, 0.3, 1) both;
 }
 
-/* Angie comes up (0 to 0.6 s), winds up and swings (1 s), watches the storm, and goes (3.3 to 4 s). */
+/* Angie comes up, winds up and swings, watches the storm, and goes. */
 @keyframes angie {
   0% { transform: translateY(110%) rotate(6deg); }
   15% { transform: translateY(4%) rotate(-3deg); }
@@ -95,7 +100,7 @@
   100% { transform: translateY(110%) rotate(6deg); }
 }
 
-/* At 1 s the leader creeps down for 150 ms; then the return stroke, four re-strikes, and a slow fade by 2.8 s. */
+/* The leader creeps down (25 to 28.75 %); then the return stroke, four re-strikes, and a slow fade by 70 %. */
 @keyframes leader {
   0%, 25% { stroke-dashoffset: 1; }
   28.75%, 100% { stroke-dashoffset: 0; }

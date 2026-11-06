@@ -1,13 +1,15 @@
 import { afterNextRender, Component, DestroyRef, inject, signal } from '@angular/core'
+import { lightning, type Strike } from './lightning'
 
-/** How long Angie stays: she comes in, swings the hammer, the storm plays out, she goes. */
-const DURATION = 4000
-/** The thunder follows the flash (1.15 s in), a quarter of a second later: the light arrives first. */
+/** The thunder follows the flash (`--strike` in the CSS), a quarter of a second later: the light arrives first. */
 const THUNDER = 1400
+const HOVERED = 'angularians-storm-hovered'
 
 /**
- * Each click on the word "Angularian(s)", and once a visit the mouse coming onto it after a first click on the page, brings
- * Angie in with her hammer: she calls down lightning somewhere on the page, with thunder.
+ * The word "Angularian(s)" calls Angie: she comes in with her hammer and calls down lightning somewhere on the page, with
+ * thunder. A click on the word calls her any time; the mouse coming onto it does once a visit (the tab's session), and only
+ * after a first click or key on the page, so the browser lets the thunder play. Never on touch screens, a link or button
+ * that holds the word, or with reduced motion.
  */
 @Component({
   selector: 'app-hammer-strike',
@@ -16,59 +18,75 @@ const THUNDER = 1400
   styleUrl: './hammer-strike.css',
 })
 export class HammerStrike {
-  /** The strike on screen: where the bolt lands, and its jagged path from the top of the page. */
-  protected readonly strike = signal<{ id: number, main: string, branches: string[], x: number, y: number } | null>(null)
+  protected readonly strike = signal<Strike | null>(null)
+
+  /** Angie has gone: the storm is over. */
+  protected end(): void {
+    this.strike.set(null)
+  }
 
   constructor() {
     const destroyRef = inject(DestroyRef)
     afterNextRender(() => {
-      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+      if (matchMedia('(prefers-reduced-motion: reduce), (hover: none)').matches) return
       let current: Element | null = null
-      let timer: ReturnType<typeof setTimeout> | undefined
-      let count = 0
-      let woken = false
-      const wake = () => { woken = true }
+      let thunderTimer: ReturnType<typeof setTimeout> | undefined
+      let thunder: HTMLAudioElement | undefined
+      let strikes = 0
       const storm = () => {
         const x = innerWidth * (0.2 + Math.random() * 0.5)
         const y = innerHeight * (0.35 + Math.random() * 0.35)
-        this.strike.set({ id: ++count, ...bolt(x, y), x, y })
-        timer = setTimeout(() => this.strike.set(null), DURATION)
-        setTimeout(thunder, THUNDER)
+        this.strike.set({ id: ++strikes, x, y, ...lightning(x, y, innerWidth, innerHeight) })
+        rememberHover()
+        thunderTimer = setTimeout(() => {
+          if (!thunder) return
+          thunder.currentTime = 0
+          thunder.play().catch(() => {
+            // Not allowed yet: no click or key on the page so far.
+          })
+        }, THUNDER)
+      }
+      // The first click or key wakes the hover up, and loads the thunder ahead of the first storm.
+      const wake = () => {
+        if (thunder) return
+        thunder = new Audio('/sounds/thunder.mp3')
+        thunder.preload = 'auto'
+        thunder.volume = 0.6
       }
       const onOver = (event: PointerEvent) => {
         if (event.pointerType !== 'mouse') return
-        const word = (event.target as Element | null)?.closest?.('.brand') ?? null
-        // Once per entry into a word, and not while Angie is still on screen.
+        const word = angularian(event.target)
+        // Once per entry into a word: moving inside it, or over its letters, does not call her again.
         if (word === current) return
         current = word
-        // Only after a first click or key on the page: before that the browser would keep the thunder silent.
-        if (!word || !woken || this.strike() || hoveredThisVisit()) return
-        rememberHover()
-        storm()
+        if (word && thunder && !this.strike() && !hoveredThisVisit()) storm()
       }
-      // A click on the word strikes too: a click lets the browser play the thunder.
       const onClick = (event: MouseEvent) => {
-        if (!(event.target as Element | null)?.closest?.('.brand') || this.strike()) return
-        storm()
+        if ((event as PointerEvent).pointerType === 'touch' || this.strike()) return
+        if (angularian(event.target)) storm()
       }
       document.addEventListener('pointerover', onOver)
       document.addEventListener('click', onClick)
-      document.addEventListener('pointerdown', wake, { once: true })
-      document.addEventListener('keydown', wake, { once: true })
+      document.addEventListener('pointerdown', wake)
+      document.addEventListener('keydown', wake)
       destroyRef.onDestroy(() => {
         document.removeEventListener('pointerover', onOver)
         document.removeEventListener('click', onClick)
         document.removeEventListener('pointerdown', wake)
         document.removeEventListener('keydown', wake)
-        clearTimeout(timer)
+        clearTimeout(thunderTimer)
       })
     })
   }
 }
 
-const HOVERED = 'angularians-storm-hovered'
+/** The word "Angularian(s)" under the pointer, not in a link or a button, or `null`. Ranks and headings share its font. */
+function angularian(target: EventTarget | null): Element | null {
+  const word = (target as Element | null)?.closest?.('.brand')
+  if (!word || word.closest('a, button')) return null
+  return /^angularians?$/i.test(word.textContent?.trim() ?? '') ? word : null
+}
 
-/** Hovering calls the storm once a visit (the tab's session); clicking the word calls it any time. */
 function hoveredThisVisit(): boolean {
   try {
     return sessionStorage.getItem(HOVERED) === '1'
@@ -83,69 +101,6 @@ function rememberHover(): void {
     sessionStorage.setItem(HOVERED, '1')
   }
   catch {
-    // Storage blocked: hovering may call it again.
+    // Storage blocked: hovering may call her again.
   }
 }
-
-/**
- * The thunder recording. Browsers play sound only after the visitor has clicked or typed on the page, so a strike before
- * that is silent.
- */
-function thunder(): void {
-  const sound = new Audio('/sounds/thunder.mp3')
-  sound.volume = 0.6
-  sound.play().catch(() => {
-    // Not allowed yet: no click or key on the page so far.
-  })
-}
-
-type Point = [number, number]
-
-/**
- * A storm from the sky down to (x, y): a jagged main channel (midpoint displacement, each split pushed sideways a bit less
- * than the last), long branches forking downward across the page, a few of them forking again, and sometimes a second,
- * fainter bolt elsewhere.
- */
-function bolt(x: number, y: number): { main: string, branches: string[] } {
-  const channel = jag([x + (Math.random() - 0.5) * innerWidth * 0.3, -20], [x, y], 7, 0.22)
-  const branches: string[] = []
-  const fork = (points: Point[], count: number, reach: number, again: boolean) => {
-    for (let i = 0; i < count; i++) {
-      const from = points[Math.floor(points.length * (0.1 + Math.random() * 0.6))]!
-      const side = Math.random() < 0.5 ? -1 : 1
-      const angle = (25 + Math.random() * 40) * (Math.PI / 180) * side
-      const length = Math.max(80, (innerHeight - from[1]) * reach * (0.5 + Math.random() * 0.5))
-      const to: Point = [from[0] + Math.sin(angle) * length, from[1] + Math.cos(angle) * length]
-      const branch = jag(from, to, 6, 0.28)
-      branches.push(path(branch))
-      if (again && Math.random() < 0.6) fork(branch, 1 + Math.floor(Math.random() * 2), reach * 0.45, false)
-    }
-  }
-  fork(channel, 4 + Math.floor(Math.random() * 4), 0.75, true)
-  if (Math.random() < 0.5) {
-    const far = jag([innerWidth * (Math.random() < 0.5 ? 0.1 : 0.85), -20], [innerWidth * (0.05 + Math.random() * 0.9), innerHeight * (0.3 + Math.random() * 0.3)], 6, 0.25)
-    branches.push(path(far))
-    fork(far, 2, 0.4, false)
-  }
-  return { main: path(channel), branches }
-}
-
-/** The points of a jagged line from a to b: `depth` rounds of splitting, sideways by `roughness` of each segment's length. */
-function jag(a: Point, b: Point, depth: number, roughness: number): Point[] {
-  let points: Point[] = [a, b]
-  for (let round = 0; round < depth; round++) {
-    const next: Point[] = [points[0]!]
-    for (let i = 1; i < points.length; i++) {
-      const [ax, ay] = points[i - 1]!
-      const [bx, by] = points[i]!
-      const length = Math.hypot(bx - ax, by - ay)
-      const shift = (Math.random() - 0.5) * length * roughness * 2
-      // Sideways: perpendicular to the segment.
-      next.push([(ax + bx) / 2 + (-(by - ay) / length) * shift, (ay + by) / 2 + ((bx - ax) / length) * shift], points[i]!)
-    }
-    points = next
-  }
-  return points
-}
-
-const path = (points: Point[]) => points.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`).join(' ')
