@@ -1,8 +1,7 @@
 // GitHub Discussions (angular/angular's RFCs) through GraphQL: the REST API does not list them.
 import type { CommentInput, ContributorsAccumulator, IssueInput } from '@angularians/shared'
+import type { Repo } from './config.ts'
 import { graphql } from './github.ts'
-
-type Repo = { owner: string, name: string }
 
 export interface DiscussionStats {
   /** Counted: created in the run's window (all of them in a full run). */

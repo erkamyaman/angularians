@@ -1,7 +1,6 @@
 import type { PullRequestInput } from '@angularians/shared'
+import type { Repo } from './config.ts'
 import { getJson, paginate } from './github.ts'
-
-type Repo = { owner: string, name: string }
 
 interface RestPull extends PullRequestInput {
   updated_at: string

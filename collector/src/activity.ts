@@ -1,9 +1,8 @@
 // Ported from nuxt/nuxters `collectIssues` and `collectComments` (MIT, Copyright (c) 2023 Nuxt), plus inline review
 // comments. Every page is counted as it arrives: a full run of angular/angular streams ~500,000 comments.
 import type { CommentInput, ContributorsAccumulator, IssueInput } from '@angularians/shared'
+import type { Repo } from './config.ts'
 import { GitHubError, paginate } from './github.ts'
-
-type Repo = { owner: string, name: string }
 
 export interface ActivityStats {
   issues: number
