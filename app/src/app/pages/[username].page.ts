@@ -37,7 +37,6 @@ import { Share } from '../profile/share';
 import { AuthService } from '../auth/auth.service';
 import { AngularianPill } from '../layout/angularian-pill';
 import { breadcrumbs, setJsonLd, setShareMeta, SITE_SCHEMA, SITE_URL } from '../site';
-import { GITHUB_TEXT } from '../leaderboard/github-colors';
 
 export const routeMeta = {
   title: 'Contributor · Angularians',
@@ -129,24 +128,24 @@ export default class Profile {
         detail: `${formatNumber(prs.feat)} feat · ${formatNumber(prs.fix)} fix · ${formatNumber(prs.docs)} docs · ${formatNumber(prs.chore)} chore`,
         // GitHub shows most landed PRs as closed (PR Close): this lists all of them, landed or not.
         url: githubSearch(`is:pr author:${person.username}`, 'pullrequests'), label: `${this.githubLabel(person)}`,
-        tint: 'bg-[#8250DF]/5 ring-[#8250DF] hover:bg-[#8250DF]/10 dark:ring-[#A371F7]', text: 'text-[#8250DF] dark:text-[#A371F7]',
+        tint: 'merges',
       },
       {
         key: 'issues', icon: 'octIssueOpened', value: n.issues, name: n.issues === 1 ? 'Issue' : 'Issues', detail: `${formatNumber(n.helpfulIssues)} helpful`,
         url: githubSearch(`is:issue author:${person.username}`, 'issues'), label: `${formatNumber(n.issues)} ${n.issues === 1 ? 'Issue' : 'Issues'} ${periodPhrase(this.period())}. Opens ${person.username}'s issues on GitHub`,
-        tint: 'bg-[#1A7F37]/5 ring-[#1A7F37] hover:bg-[#1A7F37]/10 dark:ring-[#3FB950]', text: 'text-[#1A7F37] dark:text-[#3FB950]',
+        tint: 'issues',
       },
       {
         key: 'comments', icon: 'octComment', value: n.comments, name: n.comments === 1 ? 'Comment' : 'Comments',
         // Inline review comments score on their own (1 pt each): their count goes with the comments.
         detail: `${formatNumber(n.helpfulComments)} helpful · ${plural(n.reviewComments, 'review comment', 'review comments')} on code`,
         url: githubSearch(`commenter:${person.username}`, 'issues'), label: `${formatNumber(n.comments)} ${n.comments === 1 ? 'Comment' : 'Comments'} ${periodPhrase(this.period())}. Opens the issues and pull requests ${person.username} commented on, on GitHub`,
-        tint: 'bg-[#0969DA]/5 ring-[#0969DA] hover:bg-[#0969DA]/10 dark:ring-[#58A6FF]', text: 'text-[#0969DA] dark:text-[#58A6FF]',
+        tint: 'comments',
       },
       {
         key: 'reactions', icon: 'octSmiley', value: n.reactions, name: n.reactions === 1 ? 'Reaction' : 'Reactions', detail: 'received',
         url: null, label: '',
-        tint: 'bg-[#9A6700]/5 ring-[#9A6700] dark:ring-[#D29922]', text: 'text-[#9A6700] dark:text-[#D29922]',
+        tint: 'reactions',
       },
     ];
   });
@@ -173,12 +172,6 @@ export default class Profile {
   });
   /** The contributor's rank in each period they contributed in, for the period tabs. */
   protected readonly ranks = computed(() => Object.fromEntries((this.loaded()?.periods ?? []).map(row => [row.period, row.rank])));
-  /** Gold for the best year, solid when it is the one on screen; the others in the brand colour. */
-  protected readonly yearColumn = (row: { period: string }) => {
-    const picked = row.period === this.period();
-    if (row === this.best()) return picked ? 'bg-[#9A6700] dark:bg-[#D29922]' : 'bg-[#9A6700]/60 group-hover:bg-[#9A6700] dark:bg-[#D29922]/60 dark:group-hover:bg-[#D29922]';
-    return picked ? 'bg-primary' : 'bg-primary/40 group-hover:bg-primary/70';
-  };
   protected readonly yearsOldestFirst = computed(() => [...this.years()].sort((a, b) => Number(a.period) - Number(b.period)));
   protected readonly peakYear = computed(() => this.years().reduce<ReturnType<typeof this.years>[number] | undefined>((top, row) => (!top || row.score > top.score ? row : top), undefined));
   /** A year's column, in pixels: its points against the year with the most, under room for the labels. */
@@ -217,7 +210,6 @@ export default class Profile {
   }));
 
   protected readonly avatar = (person: ContributorProfile) => avatarUrl(person.githubId, 160);
-  protected readonly colors = GITHUB_TEXT;
   protected readonly number = formatNumber;
   protected readonly phrase = periodPhrase;
   protected readonly country = countryName;

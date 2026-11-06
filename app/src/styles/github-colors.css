@@ -1,0 +1,46 @@
+/*
+ * GitHub's colours, one for each kind of contribution, as the text colour in both themes.
+ */
+.github-purple {
+  color: #8250DF;
+}
+.github-red {
+  color: #CF222E;
+}
+.github-blue {
+  color: #0969DA;
+}
+.github-gold {
+  color: #9A6700;
+}
+.github-green {
+  color: #1A7F37;
+}
+.github-pink {
+  color: #BF3989;
+}
+.github-orange {
+  color: #BC4C00;
+}
+
+.dark .github-purple {
+  color: #A371F7;
+}
+.dark .github-red {
+  color: #F85149;
+}
+.dark .github-blue {
+  color: #58A6FF;
+}
+.dark .github-gold {
+  color: #D29922;
+}
+.dark .github-green {
+  color: #3FB950;
+}
+.dark .github-pink {
+  color: #DB61A2;
+}
+.dark .github-orange {
+  color: #F0883E;
+}

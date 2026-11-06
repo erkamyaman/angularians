@@ -1,6 +1,6 @@
 @if (state() === null && auth.wasSignedIn()) {
   <!-- The session loads in the browser: the skeleton, at the signed-in card's height -->
-  <div [class]="card + ' ' + signedIn" aria-hidden="true">
+  <div class="card signed-in" aria-hidden="true">
     <div class="flex flex-col gap-6">
       <div class="flex items-center gap-4">
         <div hlmSkeleton class="size-18 shrink-0 rounded-full"></div>
@@ -20,7 +20,7 @@
     </div>
   </div>
 } @else if (me(); as me) {
-  <section [class]="card + ' ' + signedIn" aria-label="Your Angularian profile">
+  <section class="card signed-in" aria-label="Your Angularian profile">
     <div class="flex flex-col gap-6">
       <div class="flex items-center gap-4">
         @if (me.angularian; as person) {
@@ -75,7 +75,7 @@
         @for (item of unlocks(); track item.label) {
           <li class="flex flex-col gap-1.5 rounded-lg bg-background/60 p-3 ring-1 ring-border">
             <!-- GitHub's colours; grey until there is one -->
-            <ng-icon [name]="item.icon" size="1.25rem" [class]="'shrink-0 ' + (item.value > 0 ? item.color : 'text-muted-foreground/60')" aria-hidden="true" />
+            <ng-icon [name]="item.icon" size="1.25rem" [class]="'shrink-0 ' + (item.value > 0 ? 'github-' + item.color : 'text-muted-foreground/60')" aria-hidden="true" />
             <span class="text-2xl font-semibold tabular-nums">{{ number(item.value) }}</span>
             <!-- Inline: the hint icon follows the last word when the label wraps -->
             <span class="text-xs text-muted-foreground">
@@ -114,7 +114,7 @@
   </section>
 } @else {
   <!-- Signed out, or not known yet (and not signed in last time): the sign-in, at once -->
-  <section [class]="card + ' ' + signedOut + ' ' + (state()?.enabled !== false ? signInOnly : 'max-sm:p-4')" aria-labelledby="me-card-title">
+  <section class="card signed-out" [class.sign-in-only]="state()?.enabled !== false" aria-labelledby="me-card-title">
     <div class="my-auto flex items-center justify-between gap-3 sm:flex-col sm:justify-center sm:gap-4 sm:text-center">
       <ng-icon name="simpleGithub" size="2rem" class="max-sm:!hidden" aria-hidden="true" />
       <p id="me-card-title" class="font-medium sm:text-lg" [class.max-sm:sr-only]="state()?.enabled !== false">Discover your contributions</p>

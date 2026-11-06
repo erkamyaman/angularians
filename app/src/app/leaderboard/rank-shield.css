@@ -8,3 +8,14 @@
 :host(.wide) {
   width: 2.17em;
 }
+
+/* The number: smaller as it gets longer; from 10,000 the shield is wider, so it can grow again. */
+.digits-3 {
+  font-size: 0.85em;
+}
+.digits-4 {
+  font-size: 0.7em;
+}
+.digits-5 {
+  font-size: 0.8em;
+}

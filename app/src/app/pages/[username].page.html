@@ -61,7 +61,7 @@
               <span class="inline-flex items-center gap-1.5"><app-angular-logo class="size-4" /><span><span class="font-medium text-foreground">Angular contributor</span> since {{ date }}</span></span>
             }
             @if (best(); as year) {
-              <a [routerLink]="[]" [queryParams]="{ period: year.period }" replaceUrl class="inline-flex flex-wrap items-center gap-x-1.5 gap-y-1 font-medium tabular-nums transition-opacity hover:opacity-80" [class]="colors.gold">
+              <a [routerLink]="[]" [queryParams]="{ period: year.period }" replaceUrl class="github-gold inline-flex flex-wrap items-center gap-x-1.5 gap-y-1 font-medium tabular-nums transition-opacity hover:opacity-80">
                 <ng-icon name="vikingHelmet" size="1.25rem" aria-hidden="true" /><span class="brand relative top-[0.09em] text-base leading-none">Greatest saga</span> {{ year.period }}, <span class="brand relative top-[0.09em] text-base leading-none">#{{ number(year.rank) }}</span> with {{ points(year.score) }}
               </a>
             }
@@ -113,13 +113,14 @@
                   target="_blank"
                   rel="noopener"
                   [attr.aria-label]="stat.label"
-                  [class]="'group relative block h-full rounded-xl p-5 ring-1 transition ' + stat.tint"
+                  class="tint group relative block h-full rounded-xl p-5 transition"
+                  [class]="'tint-' + stat.tint"
                 >
                   <ng-icon name="remixArrowRightUpLine" size="20" class="absolute top-5 right-5 text-muted-foreground group-hover:text-foreground" aria-hidden="true" />
                   <ng-container [ngTemplateOutlet]="statBody" [ngTemplateOutletContext]="{ $implicit: stat }" />
                 </a>
               } @else {
-                <div [class]="'h-full rounded-xl p-5 ring-1 ' + stat.tint">
+                <div class="tint h-full rounded-xl p-5" [class]="'tint-' + stat.tint">
                   <ng-container [ngTemplateOutlet]="statBody" [ngTemplateOutletContext]="{ $implicit: stat }" />
                 </div>
               }
@@ -127,9 +128,9 @@
           }
         </ul>
         <ng-template #statBody let-stat>
-          <ng-icon [name]="stat.icon" [class]="stat.text" size="24" aria-hidden="true" />
+          <ng-icon [name]="stat.icon" class="tint-text" size="24" aria-hidden="true" />
           <p class="mt-3 text-4xl font-semibold tabular-nums">{{ number(stat.value) }}</p>
-          <p [class]="'mt-1 ' + stat.text">{{ stat.name }}</p>
+          <p class="tint-text mt-1">{{ stat.name }}</p>
           <p class="mt-1 text-sm text-muted-foreground tabular-nums">{{ stat.detail }}</p>
         </ng-template>
 
@@ -200,7 +201,7 @@
                   @if (row.period === period() || row === best()) {
                     <span class="mb-1.5 block text-center text-xs whitespace-nowrap tabular-nums" aria-hidden="true">
                       @if (row === best()) {
-                        <span class="flex flex-col items-center font-semibold" [class]="colors.gold">
+                        <span class="github-gold flex flex-col items-center font-semibold">
                           <ng-icon name="vikingHelmet" class="text-xl sm:text-[1.75rem]" aria-hidden="true" />
                           <span class="brand hidden text-sm sm:inline">Greatest saga</span>
                         </span>
@@ -210,8 +211,9 @@
                     </span>
                   }
                   <span
-                    class="block w-full max-w-14 rounded-t transition-colors"
-                    [class]="yearColumn(row)"
+                    class="year-bar block w-full max-w-14 rounded-t transition-colors"
+                    [class.best]="row === best()"
+                    [class.picked]="row.period === period()"
                     [style.height.px]="yearBar(row.score)"
                   ></span>
                 </span>
@@ -228,7 +230,7 @@
             <span class="inline-flex items-center gap-1.5"><ng-icon name="vikingLongship" size="1.25rem" /><span class="brand relative top-[0.09em] leading-none">The saga begins</span> {{ yearsOldestFirst()[0]?.period }}</span>
           }
           @if (best(); as year) {
-            <span class="inline-flex items-center gap-1.5" [class]="colors.gold"><ng-icon name="vikingHelmet" size="1.25rem" /><span class="brand relative top-[0.09em] leading-none">Greatest saga</span> {{ year.period }}</span>
+            <span class="github-gold inline-flex items-center gap-1.5"><ng-icon name="vikingHelmet" size="1.25rem" /><span class="brand relative top-[0.09em] leading-none">Greatest saga</span> {{ year.period }}</span>
           }
         </p>
       </section>

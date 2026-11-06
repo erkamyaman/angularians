@@ -6,6 +6,10 @@
 @import "@spartan-ng/brain/hlm-tailwind-preset.css";
 /* Manrope, self-hosted (SIL Open Font License) */
 @import "@fontsource-variable/manrope";
+/* Classes shared by several components */
+@import "./styles/github-colors.css";
+@import "./styles/podium.css";
+@import "./styles/guide.css";
 
 /*
  * The word "Angularians": Norse Bold by Joël Carrouché, rough-cut capitals like the A of the mark

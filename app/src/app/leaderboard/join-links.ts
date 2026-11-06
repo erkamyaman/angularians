@@ -2,7 +2,7 @@ import { Component } from '@angular/core'
 import { NgIcon, provideIcons } from '@ng-icons/core'
 import { simpleDiscord } from '@ng-icons/simple-icons'
 import { AngularLogo } from '../layout/angular-logo'
-import { FirstPrGuides, GUIDE } from './first-pr-guides'
+import { FirstPrGuides } from './first-pr-guides'
 import { avatarUrl } from './format'
 
 const AUTHOR_ID = 88717125
@@ -15,6 +15,5 @@ const AUTHOR_ID = 88717125
   styleUrl: './join-links.css',
 })
 export class JoinLinks {
-  protected readonly guide = GUIDE
   protected readonly authorAvatar = avatarUrl(AUTHOR_ID, 20)
 }

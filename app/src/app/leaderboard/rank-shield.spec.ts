@@ -7,11 +7,11 @@ describe('RankShield', () => {
     fixture.componentRef.setInput('rank', rank);
     fixture.detectChanges();
     const host: HTMLElement = fixture.nativeElement;
-    return { host, lines: host.querySelectorAll('path').length, size: host.querySelector('span')!.style.fontSize };
+    return { host, lines: host.querySelectorAll('path').length, digits: host.querySelector('span')!.classList };
   }
 
-  it.each([[99, '1em'], [999, '0.85em'], [9999, '0.7em'], [10000, '0.8em'], [59358, '0.8em']])('sizes %i at %s', (rank, size) => {
-    expect(render(rank).size).toBe(size);
+  it.each([[7, 'digits-2'], [99, 'digits-2'], [999, 'digits-3'], [9999, 'digits-4'], [10000, 'digits-5'], [59358, 'digits-5']])('sizes %i with %s', (rank, size) => {
+    expect(render(rank).digits).toContain(size);
   });
 
   it('widens the shield and drops its inner line from 10,000', () => {
