@@ -99,10 +99,10 @@ export function cardTree(profile: ContributorProfile, period: Period, avatar: st
     h('div', { flexDirection: 'row', gap: 64 }, [
       h('div', { flexDirection: 'column', width: 380 }, [
         avatar
-          ? h('img', { width: 124, height: 124, borderRadius: 9999, border: '4px solid #262626' }, undefined, { src: avatar, width: 124, height: 124 })
-          : h('div', { width: 124, height: 124, borderRadius: 9999, backgroundColor: '#262626' }),
-        h('div', { fontSize: 44, fontWeight: 600, marginTop: 16, maxWidth: 380, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }, profile.username),
-        h('div', { fontFamily: 'Norse', fontWeight: 700, fontSize: 96, lineHeight: 1, letterSpacing: 2, color: BRAND, marginTop: 8 }, `#${formatNumber(period === 'all' ? profile.rank : stats.rank)}`),
+          ? h('img', { width: 108, height: 108, borderRadius: 9999, border: '4px solid #262626' }, undefined, { src: avatar, width: 108, height: 108 })
+          : h('div', { width: 108, height: 108, borderRadius: 9999, backgroundColor: '#262626' }),
+        h('div', { fontSize: 40, fontWeight: 600, marginTop: 12, maxWidth: 380, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }, profile.username),
+        h('div', { fontFamily: 'Norse', fontWeight: 700, fontSize: 84, lineHeight: 1, letterSpacing: 2, color: BRAND, marginTop: 6 }, `#${formatNumber(period === 'all' ? profile.rank : stats.rank)}`),
         h('div', { fontSize: 30, fontWeight: 600, color: BRAND, marginTop: 4 }, formatPoints(stats.score)),
         ...(period !== 'all' ? [h('div', { fontSize: 24, color: '#a3a3a3', marginTop: 4 }, periodPhrase(period))] : []),
         ...(flag ? [h('div', { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: period === 'all' ? 10 : 4, fontSize: 24, color: '#a3a3a3' }, [
