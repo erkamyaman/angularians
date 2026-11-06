@@ -7,7 +7,8 @@
  * - GitHub Stars: https://stars.github.com/profiles. Only those on the board.
  * - Angular security: everyone GitHub credits on an Angular security advisory (https://github.com/advisories, the
  *   ones of @angular/* packages), as reporter, finder, analyst, developer or reviewer of the fix. With how many.
- * - Nx Champions: https://nx.dev/community (names only: matched to their GitHub profile by hand). Only those on the board.
+ * - Nx Champions: https://nx.dev/community (names only: matched to GitHub by name on the board, else by the X handle the
+ *   page gives). Also those not on the board yet: their badge shows the day they are.
  */
 
 /** Angular GDEs, as of November 2026: GitHub id, and their handle on me.developers.google.com/u/ (null: not in the directory). */
@@ -156,9 +157,41 @@ export const GITHUB_STARS: ReadonlySet<number> = new Set([
   1326112, // tiangolo
 ]);
 
-/** Nx Champions, as of November 2026: started with the ones we know, add the rest from the page. */
+/** Nx Champions, as of November 2026: all of https://nx.dev/community, also those not on the board yet. */
 export const NX_CHAMPIONS: ReadonlySet<number> = new Set([
+  93612066, // abaran30
+  7281023, // beaussan
+  36491, // beeman
+  10064416, // BioPhoton
+  4099109, // bobstrecansky
+  42211, // brandonroberts
+  480083, // brechtbilliet
+  69144223, // danielglejzner
+  33101123, // dmitry-stepanenko
+  77470, // dominikpieper
+  8522558, // edbzn
+  11268349, // FabianGosebrink
+  15331923, // getlarge
+  5638096, // guiseek
+  29503005, // HaasStefan
+  1223799, // Hotell
+  9085108, // iguissouma
+  20271968, // ixahmedxi
+  954509, // jogelin
+  5982204, // jorgeucano
+  29612832, // kategable
+  35852680, // koliveira15
+  97639402, // lara-newsom
+  6364586, // LayZeeDK
+  1573728, // manfredsteyer
+  9338604, // NachoVazquez
+  457187, // NathanWalker
+  2006222, // pjlamb12
   11923975, // santoshyadavdev
+  4053092, // tinesoft
+  30832608, // tomalaforge
+  9469090, // yharaskrik
+  2674658, // yjaaidi
 ]);
 
 /** Angular security advisories, as of November 2026: GitHub id, and how many credit them. */
