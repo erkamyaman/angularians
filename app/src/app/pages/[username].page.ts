@@ -9,13 +9,14 @@ import { injectResponse } from '@analogjs/router/tokens';
 import { countryCode, countryName, DEFAULT_PERIOD, GITHUB_USERNAME_RE, periodOrNull, periodPhrase, reposQuery, type ContributorProfile, type Period } from '@angularians/shared';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { remixArrowDownSLine, remixArrowLeftLine, remixArrowRightSLine, remixArrowRightUpLine, remixArrowUpSLine, remixCloseLine, remixInformationLine, remixLinkM, remixLinkedinBoxLine, remixMedalLine, remixStarFill, remixVerifiedBadgeLine } from '@ng-icons/remixicon';
-import { vikingAnvil, vikingAxes, vikingHelmet, vikingLongship, vikingShield } from '../layout/viking-icons';
+import { vikingAxes, vikingHelmet, vikingLongship, vikingShield } from '../layout/viking-icons';
 import { octComment, octGitMerge, octIssueOpened, octSmiley } from '@ng-icons/octicons';
 import {
   simpleBluesky, simpleFacebook, simpleGithub, simpleInstagram, simpleMastodon, simpleNpm, simpleReddit, simpleThreads, simpleTwitch, simpleX,
   simpleYoutube,
 } from '@ng-icons/simple-icons';
 import { BADGE_ICONS, earnedBadges } from '../profile/earned-badges';
+import { BadgePill } from '../profile/badge-pill';
 import { EMBLEMS } from '../profile/special-badges';
 import { injectParams } from 'ngxtension/inject-params';
 import { injectQueryParams } from 'ngxtension/inject-query-params';
@@ -65,11 +66,10 @@ function githubSearch(q: string, type: 'pullrequests' | 'issues'): string {
 
 @Component({
   selector: 'app-profile',
-  imports: [AngularLogo, CardPreview, Container, HlmButton, HlmSkeleton, HlmTooltip, AngularianPill, NgIcon, NgTemplateOutlet, PeriodTabs, RouterLink, ScoreDialog, Share],
+  imports: [AngularLogo, BadgePill, CardPreview, Container, HlmButton, HlmSkeleton, HlmTooltip, AngularianPill, NgIcon, NgTemplateOutlet, PeriodTabs, RouterLink, ScoreDialog, Share],
   providers: [provideIcons({
     ...EMBLEMS,
     ...BADGE_ICONS,
-    vikingAnvil,
     vikingAxes, vikingLongship, remixCloseLine, remixArrowLeftLine, remixArrowRightSLine, remixArrowRightUpLine, remixMedalLine, octIssueOpened, octGitMerge, remixInformationLine,
     remixVerifiedBadgeLine, remixArrowDownSLine, remixArrowUpSLine, vikingHelmet, remixLinkM, remixLinkedinBoxLine, octComment,
     octSmiley, vikingShield,
@@ -166,7 +166,6 @@ export default class Profile {
   protected readonly icon = packageIcon;
   protected readonly plural = plural;
   protected readonly points = formatPoints;
-  protected readonly badgeClass = 'inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-sm ring-1 transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none';
   /** Earned from the data and from the lists in `profile/`: `earnedBadges`, shared with the card. */
   protected readonly badges = computed(() => {
     const person = this.loaded();

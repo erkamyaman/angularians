@@ -16,7 +16,7 @@ import { vikingAnvil, vikingHammer, vikingLongship, vikingScroll } from '../layo
 })
 export class ClaimBadge {
   protected readonly issueUrl = `${REPO_URL}/issues/new?template=badge-request.yml`
-  protected readonly prUrl = `${REPO_URL}/blob/main/CONTRIBUTING.md#adding-things`
+  protected readonly prUrl = `${REPO_URL}/blob/main/.agents/skills/add-a-custom-badge/SKILL.md`
   protected readonly ideas = [
     { text: 'You made an Angular library people use.', icon: 'vikingAnvil', color: 'text-(--idea-library)' },
     { text: 'You built a tool for Angular developers.', icon: 'vikingHammer', color: 'text-(--idea-tool)' },

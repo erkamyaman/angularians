@@ -20,7 +20,7 @@ Ask for anything missing; never guess it. The "Badge request" issue form asks fo
 | A link that proves the role | contributors, README, team page |
 | What it does, one line, about 60 characters | the tooltip |
 | The official logo, SVG best, else a square PNG of 128×128 or more | the badge's image |
-| Brand colour, as a hex | the badge's tint |
+| Brand colour, as a hex (optional: else pick the logo's main colour) | the badge's tint |
 | A title idea | optional |
 
 Check the project is for Angular developers, public and maintained. If it isn't, stop and say why.
@@ -37,7 +37,7 @@ Check the project is for Angular developers, public and maintained. If it isn't,
    ] },
    ```
 
-   - **`badge`.** Two or three words, playful, about what the project does ("Analog alchemist", "Icon smith", "Slide master"). Use a word other badges don't already use. Don't use the plain role ("Creator").
+   - **`badge`.** Two or three words, playful, about what the project does ("Analog alchemist", "Icon smith", "Slide master"). Use a word other badges don't already use. Don't use the plain role ("Creator"): the one exception is the badge of Angularians' own creator.
    - **`style`.** Built from the brand colour `C`, like the other entries: `bg-[C]/10 text-[L] ring-[C]/30 dark:text-[D] dark:ring-[C]/40`. `L` is `C` darkened until it has 4.5:1 contrast on white. `D` is `C` lightened until it has 4.5:1 on `#0a0a0a`. Use full literal class strings, since Tailwind only sees literal classes.
    - **`emblem`.** A small icon that fits the title. To use a new one, import it into `EMBLEMS` in the same file: a Remix Icon (`@ng-icons/remixicon`) or one of the Viking icons in `app/src/app/layout/viking-icons.ts`. No other icon set.
    - **`builtOn`.** Leave it out. It is only for the tools Angularians itself runs on.

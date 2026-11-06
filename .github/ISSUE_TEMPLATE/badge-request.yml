@@ -98,8 +98,8 @@ body:
       label: Others to badge
       description: For a team, each person's GitHub username and role, one per line. Ask them first.
       placeholder: |
-        nartc, co-creator
-        eneajaho, co-creator
+        angie, co-creator
+        thor, maintainer
   - type: textarea
     id: reach
     attributes:

@@ -8,7 +8,6 @@ import { Container } from './container';
 import { LogoMark } from './logo-mark';
 import { REPO_URL } from '../site';
 
-
 /** The footer: the brand and its pitch, then the small print. */
 @Component({
   selector: 'app-site-footer',

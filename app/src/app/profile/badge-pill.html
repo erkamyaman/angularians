@@ -1,0 +1,17 @@
+<ng-template #body>
+  @switch (badge().icon) {
+    @case ('angular') { <app-angular-logo class="size-4" /> }
+    @case ('gde') { <img [src]="badge().logo" alt="" class="h-[0.8em] w-auto" /> }
+    @case ('logo') { <img [src]="badge().logo" alt="" width="16" height="16" class="size-4 shrink-0 object-contain" /> }
+    @default { <ng-icon [name]="badge().icon" [size]="badge().icon.startsWith('viking') ? '1.25rem' : '1em'" aria-hidden="true" /> }
+  }
+  {{ badge().label }}
+  @if (badge().emblem) {
+    <ng-icon [name]="badge().emblem!" size="0.9em" class="opacity-70" aria-hidden="true" />
+  }
+</ng-template>
+@if (badge().href) {
+  <a [href]="badge().href" target="_blank" rel="noopener" [class]="pill + ' ' + badge().style" [hlmTooltip]="badge().title"><ng-container [ngTemplateOutlet]="body" /></a>
+} @else {
+  <button type="button" [class]="pill + ' ' + badge().style" [hlmTooltip]="badge().title"><ng-container [ngTemplateOutlet]="body" /></button>
+}

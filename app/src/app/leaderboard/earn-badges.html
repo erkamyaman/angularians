@@ -25,9 +25,7 @@
             }
           </span>
         </div>
-        <a [href]="project.href" target="_blank" rel="noopener" [attr.aria-label]="project.badge + ', the ' + project.name + ' badge'" [class]="'inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm font-medium whitespace-nowrap ring-1 transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none ' + project.style">
-          <img [src]="project.logo" alt="" width="16" height="16" class="size-4 object-contain" />{{ project.badge }}<ng-icon [name]="project.emblem" size="0.9em" class="opacity-70" aria-hidden="true" />
-        </a>
+        <app-badge-pill [badge]="badge(project)" />
       </div>
     </li>
   }
