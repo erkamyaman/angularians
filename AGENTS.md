@@ -58,4 +58,4 @@ pnpm build        # the site, as Netlify builds it
 - Accessibility: every control has a name, icons are `aria-hidden`, and nothing relies on colour alone.
 - Branches are `feat/…`, `fix/…`, `docs/…` or `chore/…`; one change per branch.
 
-Adding a badge, a recognition, a bot, a repository or a score change: follow its skill in `.agents/skills/` (the table in [CONTRIBUTING.md](CONTRIBUTING.md#adding-things)). Before committing a site change: `check-a-site-change`.
+Adding a custom badge, a recognition or a bot: follow its skill in `.agents/skills/` (the table in [CONTRIBUTING.md](CONTRIBUTING.md#adding-things)). Before committing a site change: `check-a-site-change`. A repository or a score change is the maintainer's: their recipes are `add-a-repository` and `change-the-score`.

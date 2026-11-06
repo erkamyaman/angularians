@@ -1,7 +1,7 @@
 name: Recognition request
 description: Ask for the Angular GDE or GitHub Star badge on an Angularians profile
 title: "Recognition: "
-labels: [badge, needs triage]
+labels: [recognition, needs triage]
 body:
   - type: input
     id: username

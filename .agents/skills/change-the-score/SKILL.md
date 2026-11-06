@@ -1,6 +1,6 @@
 ---
 name: change-the-score
-description: Change how Angularians scores contributions (the points per pull request type, issue, comment or review comment) and keep every place that explains the score in step.
+description: Maintainer recipe for changing the score's weights and keeping every explanation of it in step.
 disable-model-invocation: true
 ---
 
@@ -10,13 +10,18 @@ A score change moves every rank, so it starts as an issue the maintainer agrees 
 
 ## Steps
 
-1. Change the weights in `shared/src/scoring.ts` (types and title parsing live in `shared/src/pull-requests.ts`), and the tests next to them.
-2. Bring every explanation in step, so each says the same numbers:
+1. Change the weights in `shared/src/scoring.ts` (types and title parsing are in `shared/src/pull-requests.ts`), and the tests next to them. Done when the tests pass with the new weights.
+2. Bring every explanation in step:
    - `docs/SCORING.md`;
-   - the "How the score works" section of the home page (`app/src/app/leaderboard/score-rules.*`) reads the points from `shared`, but its wording ("3+ reactions") may need a change;
+   - the "How the score works" dialog that opens from the home page's hero (`app/src/app/leaderboard/score-rules.*`). It reads the points from `shared`, but its wording ("3+ reactions") may need a change;
    - the score dialog and breakdown on profiles (`app/src/app/profile/score-dialog.*`, `score-breakdown.*`);
    - the README, if it quotes points.
-3. `pnpm test`, `pnpm typecheck` and `pnpm build` pass. Search the repository for the old numbers to find any explanation left behind.
-4. The new scores appear after the next nightly run.
 
-Pull request: branch `feat/score-<what>`, title `feat(shared): <the change>`, and in the body the old and new weights in a table. No trailer lines.
+   Done when a search of the repository for each old number finds no explanation left behind.
+3. `pnpm test`, `pnpm typecheck` and `pnpm build` pass.
+
+## Pull request
+
+- **Branch:** `feat/score-<what>`.
+- **Title:** `feat(shared): <the change>`, with no trailer lines.
+- **Body:** the old and new weights in a table, and a link to the agreed issue.

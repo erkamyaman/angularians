@@ -7,6 +7,7 @@
   { "name": "good first issue", "color": "7057ff", "description": "Good for newcomers" },
   { "name": "help wanted", "color": "008672", "description": "Extra attention is needed" },
   { "name": "badge", "color": "bf3989", "description": "A custom badge request" },
+  { "name": "recognition", "color": "1a73e8", "description": "An Angular GDE or GitHub Star request" },
   { "name": "question", "color": "d876e3", "description": "Further information is requested" },
   { "name": "documentation", "color": "0075ca", "description": "Docs, the README or comments" },
   { "name": "dependencies", "color": "0366d6", "description": "Updates a dependency" },

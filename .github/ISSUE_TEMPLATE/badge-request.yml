@@ -45,9 +45,14 @@ body:
         - A tool
         - A community, meetup or conference
         - A course, blog, channel or book
-        - Something else (tell us below)
+        - Something else
     validations:
       required: true
+  - type: input
+    id: kind-other
+    attributes:
+      label: If something else, what is it?
+      placeholder: A design system, a podcast, a VS Code extension…
   - type: input
     id: does
     attributes:
