@@ -62,7 +62,7 @@
               <p class="text-sm text-muted-foreground"><span class="brand text-base leading-none">#{{ number(year.rank) }}</span> in the last 12 months</p>
             }
             @if (contributorSince(); as since) {
-              <p class="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground"><app-angular-logo class="size-4" /><span><span class="font-medium text-foreground">Angular contributor</span> since {{ since }}</span></p>
+              <p class="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground"><app-angular-logo class="size-4" /><span><span class="font-medium text-foreground">Angular contributor</span>&ngsp;<span class="whitespace-nowrap">since {{ since }}</span></span></p>
             }
           } @else {
             <p class="text-muted-foreground">No contributions on record yet.</p>
@@ -77,10 +77,11 @@
             <!-- GitHub's colours; grey until there is one -->
             <ng-icon [name]="item.icon" size="1.25rem" [class]="'shrink-0 ' + (item.value > 0 ? item.color : 'text-muted-foreground/60')" aria-hidden="true" />
             <span class="text-2xl font-semibold tabular-nums">{{ number(item.value) }}</span>
-            <span class="flex items-center gap-1 text-xs text-muted-foreground">
+            <!-- Inline: the hint icon follows the last word when the label wraps -->
+            <span class="text-xs text-muted-foreground">
               {{ item.value === 1 ? item.one : item.label }}
               @if (item.hint) {
-                <button type="button" class="grid shrink-0 place-items-center rounded-full focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none" [hlmTooltip]="item.hint" [attr.aria-label]="item.hint"><ng-icon name="remixInformationLine" aria-hidden="true" /></button>
+                <button type="button" class="ml-0.5 inline-grid place-items-center rounded-full align-[-0.2em] focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none" [hlmTooltip]="item.hint" [attr.aria-label]="item.hint"><ng-icon name="remixInformationLine" aria-hidden="true" /></button>
               }
             </span>
           </li>
@@ -101,10 +102,11 @@
 
       <!-- Sharing is the all-time profile: the card does not follow the leaderboard period. -->
       @if (me.angularian; as person) {
-        <div class="flex flex-wrap items-center gap-2 border-t border-border pt-4">
+        <!-- Phones: one column of full-width buttons; app-share's buttons join it -->
+        <div class="grid gap-2 border-t border-border pt-4 sm:flex sm:flex-wrap sm:items-center">
           <a hlmBtn variant="outline" class="border-primary/40! bg-primary/15! text-primary! hover:bg-primary/25!" [routerLink]="['/', person.username]"><ng-icon name="vikingHead" size="1.5rem" aria-hidden="true" /> My profile</a>
           @if (me.badges.length) {
-            <app-share [username]="person.username" [periods]="periods()" [country]="person.country" />
+            <app-share class="max-sm:contents max-sm:[&_[hlmdialogtrigger]]:w-full max-sm:[&>*]:w-full" [username]="person.username" [periods]="periods()" [country]="person.country" />
           }
         </div>
       }

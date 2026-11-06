@@ -2,7 +2,7 @@
   <hlm-tabs [tab]="activeTab()" (tabActivated)="pickTab($event)">
     <hlm-tabs-list [attr.aria-label]="label()" class="bg-transparent p-0">
       @for (tab of tabs(); track tab.value) {
-        <button [hlmTabsTrigger]="tab.value" type="button" class="px-3 hover:text-foreground data-active:border-primary/40! data-active:bg-primary/15! data-active:text-primary! data-active:shadow-none!">
+        <button [hlmTabsTrigger]="tab.value" type="button" class="px-2 hover:text-foreground sm:px-3 data-active:border-primary/40! data-active:bg-primary/15! data-active:text-primary! data-active:shadow-none!">
           {{ tab.label }}
           <!-- No room on small screens: pages show the rank of the period on screen elsewhere -->
           @if (rankOf(tab.value); as rank) {
@@ -21,7 +21,7 @@
 @if (years().length) {
   <hlm-select [value]="year()" (valueChange)="pickYear($event)" [itemToString]="yearLabel">
     <hlm-select-trigger
-      [class]="'h-[calc(100%-1px)] border-transparent bg-transparent shadow-none hover:text-foreground dark:bg-transparent '
+      [class]="'h-[calc(100%-1px)] border-transparent max-sm:px-2 bg-transparent shadow-none hover:text-foreground dark:bg-transparent '
         + (year() ? 'border-primary/40! bg-primary/15! text-primary! dark:bg-primary/15! *:text-primary!' : 'text-foreground/60 dark:text-muted-foreground')"
       size="sm"
       buttonAriaLabel="Year"

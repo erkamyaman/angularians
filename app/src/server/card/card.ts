@@ -49,6 +49,8 @@ const statIcon = (paths: string[], color: string): Node =>
     viewBox: '0 0 16 16', width: STAT_ICON_SIZE, height: STAT_ICON_SIZE, fill: color,
   })
 
+/** `Apr 2025`, as on the profile. */
+const SINCE = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })
 const label = (value: number, one: string, many: string) => (value === 1 ? one : many)
 
 /**
@@ -84,7 +86,7 @@ export function cardPeriod(profile: ContributorProfile, requested: unknown): Per
 /** `avatar`: a data URL, or `null` when GitHub did not send it (a grey circle instead). */
 export function cardTree(profile: ContributorProfile, period: Period, avatar: string | null, flag: { src: string, name: string } | null = null, badges: readonly string[] = []): Node {
   const stats = period === 'all' ? profile : profile.periods.find(row => row.period === period)!
-  const since = profile.firstContributionAt ? new Date(profile.firstContributionAt).getUTCFullYear() : null
+  const since = profile.firstContributionAt ? SINCE.format(new Date(profile.firstContributionAt)) : null
   const rows = [
     [
       { label: label(stats.pullRequests.all, 'Merged PR', 'Merged PRs'), value: stats.pullRequests.all, color: COLORS.pullRequests, icon: ICONS.pullRequests },
@@ -109,10 +111,13 @@ export function cardTree(profile: ContributorProfile, period: Period, avatar: st
           h('img', { width: 30, height: 30 }, undefined, { src: flag.src, width: 30, height: 30 }),
           h('div', {}, flag.name),
         ])] : []),
-        h('div', { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 14, whiteSpace: 'nowrap' }, [
+        // The date under the words: "since Apr 2025" does not fit beside them in the column.
+        h('div', { flexDirection: 'row', alignItems: since ? 'flex-start' : 'center', gap: 10, marginTop: 14, whiteSpace: 'nowrap' }, [
           h('img', { width: 30, height: 32 }, undefined, { src: ANGULAR_LOGO, width: 30, height: 32 }),
-          h('div', { fontSize: 22, fontWeight: 600 }, 'Angular contributor'),
-          ...(since ? [h('div', { fontSize: 22, color: '#a3a3a3' }, `since ${since}`)] : []),
+          h('div', { flexDirection: 'column' }, [
+            h('div', { fontSize: 22, fontWeight: 600, lineHeight: 1.45 }, 'Angular contributor'),
+            ...(since ? [h('div', { fontSize: 22, color: '#a3a3a3' }, `since ${since}`)] : []),
+          ]),
         ]),
       ]),
       h('div', { flexDirection: 'column', flex: 1, gap: 24 }, rows.map(row =>

@@ -54,14 +54,14 @@
   <button hlmDialogTrigger hlmBtn variant="secondary" type="button">
     <ng-icon name="remixShareLine" size="1.25rem" aria-hidden="true" /> Share card
   </button>
-  <hlm-dialog-content *hlmDialogPortal class="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
+  <hlm-dialog-content *hlmDialogPortal class="max-h-[90dvh] overflow-y-auto max-sm:p-4 sm:max-w-2xl">
     <hlm-dialog-header>
       <h2 hlmDialogTitle>Share your <span class="brand text-primary">Angularian</span> card</h2>
       <p hlmDialogDescription>Download it or post it. The link shows the card as its preview.</p>
     </hlm-dialog-header>
     <div class="flex flex-col gap-4">
       <ng-container [ngTemplateOutlet]="preview" />
-      <div class="flex flex-wrap gap-2">
+      <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
         <a hlmBtn variant="secondary" [href]="previewUrl()" [attr.download]="fileName()"><ng-icon name="remixDownloadLine" aria-hidden="true" /> Download</a>
         <a hlmBtn variant="secondary" [href]="shareLinks().x" target="_blank" rel="noopener"><ng-icon name="simpleX" aria-hidden="true" /> Post on X</a>
         <a hlmBtn variant="secondary" [href]="shareLinks().linkedin" target="_blank" rel="noopener"><ng-icon name="remixLinkedinBoxFill" aria-hidden="true" /> LinkedIn</a>
@@ -75,7 +75,7 @@
   <button hlmDialogTrigger hlmBtn variant="secondary" type="button">
     <ng-icon name="remixMarkdownLine" size="1.25rem" aria-hidden="true" /> Add to README
   </button>
-  <hlm-dialog-content *hlmDialogPortal class="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
+  <hlm-dialog-content *hlmDialogPortal class="max-h-[90dvh] overflow-y-auto max-sm:p-4 sm:max-w-2xl">
     <hlm-dialog-header>
       <h2 hlmDialogTitle>Add your <span class="brand text-primary">Angularian</span> card to GitHub</h2>
       <p hlmDialogDescription>Paste this Markdown in your GitHub profile README. The card updates every day.</p>

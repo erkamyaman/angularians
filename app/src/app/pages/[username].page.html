@@ -191,21 +191,22 @@
               >
                 <span class="flex h-60 w-full flex-col items-center justify-end border-b border-border">
                   @if (row === yearsOldestFirst()[0] && row !== best()) {
-                    <span class="mb-1.5 hidden flex-col items-center whitespace-nowrap text-muted-foreground sm:flex" aria-hidden="true">
-                      <ng-icon name="vikingLongship" size="1.75rem" />
-                      <span class="brand text-sm">The saga begins</span>
+                    <!-- Phones: the icon alone, the legend below the chart names it -->
+                    <span class="mb-1.5 flex flex-col items-center whitespace-nowrap text-muted-foreground" aria-hidden="true">
+                      <ng-icon name="vikingLongship" class="text-xl sm:text-[1.75rem]" />
+                      <span class="brand hidden text-sm sm:inline">The saga begins</span>
                     </span>
                   }
                   @if (row.period === period() || row === best()) {
-                    <span class="mb-1.5 hidden text-center text-xs tabular-nums sm:block" aria-hidden="true">
+                    <span class="mb-1.5 block text-center text-xs whitespace-nowrap tabular-nums" aria-hidden="true">
                       @if (row === best()) {
-                        <span class="flex flex-col items-center font-semibold whitespace-nowrap" [class]="colors.gold">
-                          <ng-icon name="vikingHelmet" size="1.75rem" aria-hidden="true" />
-                          <span class="brand text-sm">Greatest saga</span>
+                        <span class="flex flex-col items-center font-semibold" [class]="colors.gold">
+                          <ng-icon name="vikingHelmet" class="text-xl sm:text-[1.75rem]" aria-hidden="true" />
+                          <span class="brand hidden text-sm sm:inline">Greatest saga</span>
                         </span>
                       }
-                      <span class="brand block text-base leading-none">#{{ number(row.rank) }}</span>
-                      <span class="block text-muted-foreground">{{ number(row.score) }}</span>
+                      <span class="brand block text-sm leading-none sm:text-base">#{{ number(row.rank) }}</span>
+                      <span class="hidden text-muted-foreground sm:block">{{ number(row.score) }}</span>
                     </span>
                   }
                   <span
@@ -221,6 +222,15 @@
             </li>
           }
         </ol>
+        <!-- Phones have no room for the names over the bars -->
+        <p class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground sm:hidden" aria-hidden="true">
+          @if (yearsOldestFirst()[0] !== best()) {
+            <span class="inline-flex items-center gap-1.5"><ng-icon name="vikingLongship" size="1.25rem" /><span class="brand">The saga begins</span> {{ yearsOldestFirst()[0]?.period }}</span>
+          }
+          @if (best(); as year) {
+            <span class="inline-flex items-center gap-1.5" [class]="colors.gold"><ng-icon name="vikingHelmet" size="1.25rem" /><span class="brand">Greatest saga</span> {{ year.period }}</span>
+          }
+        </p>
       </section>
     </app-container>
   }

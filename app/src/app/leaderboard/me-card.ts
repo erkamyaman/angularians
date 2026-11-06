@@ -29,6 +29,9 @@ const SIGNED_IN = 'min-h-[25rem] @min-[400px]:min-h-[23rem] @min-[520px]:min-h-[
 /** Signed out: as tall as the hero's text on wide screens, so the card does not look lost beside it. */
 const SIGNED_OUT = 'max-sm:p-4 sm:min-h-64 lg:min-h-80'
 
+/** `Apr 2025`, as on the profile and the card. */
+const SINCE = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })
+
 /** The signed-in Angularian, or a sign-in. */
 @Component({
   selector: 'app-me-card',
@@ -47,7 +50,7 @@ export class MeCard {
   protected readonly loginUrl = this.auth.loginUrl('/')
   protected readonly contributorSince = computed(() => {
     const first = this.me()?.angularian?.firstContributionAt
-    return first ? new Date(first).getUTCFullYear() : null
+    return first ? SINCE.format(new Date(first)) : null
   })
   protected readonly lastYear = computed(() => this.me()?.angularian?.periods.find(row => row.period === '12m') ?? null)
   protected readonly periods = computed(() => this.me()?.angularian?.periods.map(row => row.period) ?? [])
