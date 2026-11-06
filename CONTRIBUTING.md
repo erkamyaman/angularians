@@ -49,7 +49,7 @@ Each common change has a skill in [`.agents/skills/`](.agents/skills): the steps
 | Change | Skill | Or open an issue |
 | --- | --- | --- |
 | A custom badge for your project | [`add-a-custom-badge`](.agents/skills/add-a-custom-badge/SKILL.md) | [Badge request](https://github.com/erkamyaman/angularians/issues/new?template=badge-request.yml) |
-| The Angular GDE or GitHub Star badge | [`add-a-recognition`](.agents/skills/add-a-recognition/SKILL.md) | [Recognition request](https://github.com/erkamyaman/angularians/issues/new?template=recognition-request.yml) |
+| The Angular GDE, GitHub Star or Nx Champion badge | [`add-a-recognition`](.agents/skills/add-a-recognition/SKILL.md) | [Recognition request](https://github.com/erkamyaman/angularians/issues/new?template=recognition-request.yml) |
 | A bot on the board | [`flag-a-bot`](.agents/skills/flag-a-bot/SKILL.md) | [Bot report](https://github.com/erkamyaman/angularians/issues/new?template=bot-report.yml) |
 | A repository on the board | [`add-a-repository`](.agents/skills/add-a-repository/SKILL.md) | an issue first: the maintainer decides |
 | The score | [`change-the-score`](.agents/skills/change-the-score/SKILL.md) | an issue first: it moves every rank |

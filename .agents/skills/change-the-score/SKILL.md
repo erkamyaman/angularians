@@ -15,6 +15,7 @@ A score change moves every rank, so it starts as an issue the maintainer agrees 
    - `docs/SCORING.md`;
    - the "How the score works" dialog that opens from the home page's hero (`app/src/app/leaderboard/score-rules.*`). It reads the points from `shared`, but its wording ("3+ reactions") may need a change;
    - the score dialog and breakdown on profiles (`app/src/app/profile/score-dialog.*`, `score-breakdown.*`);
+   - the hints of the signed-in card (`app/src/app/leaderboard/me-card.ts`) and the "How to become an Angularian" cards (`becomeWays` in `app/src/app/pages/index.page.ts`), which spell out the helpful thresholds;
    - the README, if it quotes points.
 
    Done when a search of the repository for each old number finds no explanation left behind.
