@@ -5,37 +5,25 @@
 }
 
 /*
- * The four stats in GitHub's colours: `tint-*` on a card sets `--tint` for its background, and `--tint-strong`
- * (brighter on dark) for its ring and, through `tint-text`, its icon and name.
+ * The four stats in GitHub's colours (`styles/github-colors.css`): `tint-*` on a card sets `--tint`, GitHub's light
+ * colour in both themes, for its background, and `--tint-strong`, the theme's, for its ring and, through `tint-text`,
+ * its icon and name.
  */
 .tint-merges {
   --tint: #8250DF;
-  --tint-strong: #8250DF;
+  --tint-strong: var(--github-purple);
 }
 .tint-issues {
   --tint: #1A7F37;
-  --tint-strong: #1A7F37;
+  --tint-strong: var(--github-green);
 }
 .tint-comments {
   --tint: #0969DA;
-  --tint-strong: #0969DA;
+  --tint-strong: var(--github-blue);
 }
 .tint-reactions {
   --tint: #9A6700;
-  --tint-strong: #9A6700;
-}
-
-:host-context(.dark) .tint-merges {
-  --tint-strong: #A371F7;
-}
-:host-context(.dark) .tint-issues {
-  --tint-strong: #3FB950;
-}
-:host-context(.dark) .tint-comments {
-  --tint-strong: #58A6FF;
-}
-:host-context(.dark) .tint-reactions {
-  --tint-strong: #D29922;
+  --tint-strong: var(--github-gold);
 }
 
 .tint {
@@ -62,16 +50,10 @@
   background-color: var(--primary);
 }
 .year-bar.best {
-  background-color: color-mix(in oklab, #9A6700 60%, transparent);
+  background-color: color-mix(in oklab, var(--github-gold) 60%, transparent);
 }
 .year-bar.best.picked {
-  background-color: #9A6700;
-}
-:host-context(.dark) .year-bar.best {
-  background-color: color-mix(in oklab, #D29922 60%, transparent);
-}
-:host-context(.dark) .year-bar.best.picked {
-  background-color: #D29922;
+  background-color: var(--github-gold);
 }
 
 @media (hover: hover) {
@@ -79,9 +61,6 @@
     background-color: color-mix(in oklab, var(--primary) 70%, transparent);
   }
   .group:hover .year-bar.best:not(.picked) {
-    background-color: #9A6700;
-  }
-  :host-context(.dark) .group:hover .year-bar.best:not(.picked) {
-    background-color: #D29922;
+    background-color: var(--github-gold);
   }
 }

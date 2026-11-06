@@ -4,10 +4,7 @@
 
 /* Each guide's colour, on hover (`styles/guide.css`) */
 .skill {
-  --guide-accent: #9A6700;
-}
-:host-context(.dark) .skill {
-  --guide-accent: #D29922;
+  --guide-accent: var(--github-gold);
 }
 .youtube {
   --guide-accent: #FF0000;
