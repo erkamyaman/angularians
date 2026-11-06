@@ -90,7 +90,7 @@ export default class Home {
   protected readonly becomeWays = [
     { title: 'Merge a pull request', action: 'Read the guide', description: 'Fix a bug, ship a feature or improve the docs in any Angular repository.', icon: 'octGitMerge', color: GITHUB_TEXT.purple, url: 'https://github.com/angular/angular/blob/main/CONTRIBUTING.md' },
     { title: 'Open a helpful issue', action: 'See the issues', description: 'An issue that gets completed, or collects 3+ reactions or 5+ comments.', icon: 'octIssueOpened', color: GITHUB_TEXT.green, url: 'https://github.com/angular/angular/issues' },
-    { title: 'Write a helpful comment', action: 'Review a pull request', description: 'Answer a question or review a PR: a comment with 3+ reactions counts.', icon: 'remixChatHeartLine', color: GITHUB_TEXT.blue, url: 'https://github.com/angular/angular/pulls' },
+    { title: 'Write a helpful comment', action: 'Review a pull request', description: 'Answer a question on an issue, a PR or a discussion: a comment with 3+ reactions, or an accepted answer, counts.', icon: 'remixChatHeartLine', color: GITHUB_TEXT.blue, url: 'https://github.com/angular/angular/pulls' },
   ];
   protected readonly colors = GITHUB_TEXT;
   protected readonly number = formatNumber;
