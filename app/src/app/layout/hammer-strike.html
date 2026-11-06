@@ -1,0 +1,15 @@
+@if (strike(); as s) {
+  @for (one of [s]; track one.id) {
+    <div class="sky"></div>
+    <svg class="bolt">
+      @for (branch of one.branches; track $index) {
+        <path class="branch glow" [attr.d]="branch" pathLength="1" />
+        <path class="branch core" [attr.d]="branch" pathLength="1" />
+      }
+      <path class="main glow" [attr.d]="one.main" pathLength="1" />
+      <path class="main core" [attr.d]="one.main" pathLength="1" />
+    </svg>
+    <span class="impact" [style.left.px]="one.x" [style.top.px]="one.y"></span>
+    <img class="angie" src="/angie/angie-hammer.png" alt="" width="360" height="360" />
+  }
+}
