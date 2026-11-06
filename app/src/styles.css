@@ -36,12 +36,43 @@
   --mark-1: #5c4000;
   --mark-2: #9A6700;
   --mark-3: #E3B341;
+  /* The greens its three squares start as in the intro, and turn back to on hover. The same in both themes. */
+  --mark-green-1: #194825;
+  --mark-green-2: #337343;
+  --mark-green-3: #5eb572;
+
   /* Angular's own colours, from its logo: the team's pink and the purple. The same in both themes. */
   --angular-pink: #dc087d;
   --angular-purple: #9717E7;
-  --idea-library: #BF3989;
+
+  /*
+   * GitHub's colours, one for each kind of contribution (`github-*` in styles/github-colors.css); its dark theme's
+   * are brighter. `--github-*-light` keep the light ones in both themes: the profile's stat tints.
+   */
+  --github-purple-light: #8250DF;
+  --github-blue-light: #0969DA;
+  --github-gold-light: #9A6700;
+  --github-green-light: #1A7F37;
+  --github-purple: var(--github-purple-light);
+  --github-red: #CF222E;
+  --github-blue: var(--github-blue-light);
+  --github-gold: var(--github-gold-light);
+  --github-green: var(--github-green-light);
+  --github-pink: #BF3989;
+  --github-orange: #BC4C00;
+
+  /* Gold, silver and bronze for the top three (styles/podium.css): the medal, and its text, darker on light. */
+  --medal-gold: #D29922;
+  --medal-gold-text: #9A6700;
+  --medal-silver: #A8B3BD;
+  --medal-silver-text: #59636E;
+  --medal-bronze: #B5561C;
+  --medal-bronze-text: #9A4510;
+
+  /* The kinds of project in "Forged something for Angular?" (claim-badge.css) */
+  --idea-library: var(--github-pink);
   --idea-tool: #59636E;
-  --idea-meetup: #BC4C00;
+  --idea-meetup: var(--github-orange);
   --idea-teaching: #1B7C83;
 
   --font-sans: "Manrope Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -73,9 +104,20 @@
   color-scheme: dark;
 
   --mark-empty: #4a525c;
-  --idea-library: #DB61A2;
+
+  --github-purple: #A371F7;
+  --github-red: #F85149;
+  --github-blue: #58A6FF;
+  --github-gold: #D29922;
+  --github-green: #3FB950;
+  --github-pink: #DB61A2;
+  --github-orange: #F0883E;
+
+  --medal-gold-text: var(--medal-gold);
+  --medal-silver-text: var(--medal-silver);
+  --medal-bronze-text: #D2691E;
+
   --idea-tool: #A8B3BD;
-  --idea-meetup: #F0883E;
   --idea-teaching: #39C5CF;
 
   --background: oklch(0.141 0.005 285.823);

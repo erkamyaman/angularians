@@ -71,7 +71,7 @@
   --pill-ring: color-mix(in oklab, var(--primary) 30%, transparent);
 }
 
-/* GitHub's colours (`styles/github-colors.css`); the text a shade darker on light, for contrast. */
+/* GitHub's colours (`--github-*` in styles.css); the text a shade darker on light, for contrast. */
 .tone-gold {
   --pill-bg: color-mix(in oklab, var(--github-gold) 10%, transparent);
   --pill-text: #7D4E00;

@@ -3,15 +3,15 @@
 }
 
 :host([intro]:hover) path:nth-of-type(3) {
-  fill: #194825;
+  fill: var(--mark-green-1);
 }
 
 :host([intro]:hover) path:nth-of-type(4) {
-  fill: #337343;
+  fill: var(--mark-green-2);
 }
 
 :host([intro]:hover) path:nth-of-type(5) {
-  fill: #5eb572;
+  fill: var(--mark-green-3);
 }
 
 :host(.compact) {
@@ -41,17 +41,17 @@
   }
 
   :host(.intro) path:nth-of-type(3) {
-    --green: #194825;
+    --green: var(--mark-green-1);
     animation: mark-square 0.4s ease-out 0.5s both, mark-gold 0.8s ease-in-out 2.3s both;
   }
 
   :host(.intro) path:nth-of-type(4) {
-    --green: #337343;
+    --green: var(--mark-green-2);
     animation: mark-square 0.4s ease-out 0.7s both, mark-gold 0.8s ease-in-out 2.4s both;
   }
 
   :host(.intro) path:nth-of-type(5) {
-    --green: #5eb572;
+    --green: var(--mark-green-3);
     animation: mark-square 0.4s ease-out 0.9s both, mark-gold 0.8s ease-in-out 2.5s both;
   }
 
