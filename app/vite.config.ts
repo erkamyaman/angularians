@@ -72,6 +72,7 @@ export default defineConfig(() => ({
           { baseName: 'client-manifest', dir: dirname(CLIENT_MANIFEST) },
           { baseName: 'card-fonts', dir: fileURLToPath(new URL('./src/server/card/fonts', import.meta.url)) },
           { baseName: 'brand-font', dir: fileURLToPath(new URL('./public/fonts', import.meta.url)) },
+          { baseName: 'credits', dir: fileURLToPath(new URL('./public/credits', import.meta.url)) },
         ],
         routeRules: {
           // Pages change with the data, once a night with a new deploy (which clears the CDN): browsers revalidate,

@@ -2,8 +2,9 @@ import { sendPng } from '../../data/http'
 import { createError, defineEventHandler, getQuery, getRouterParam } from 'h3'
 import * as v from 'valibot'
 import { countryCode, countryName } from '@angularians/shared'
-import { avatarData, cardFonts, flagData } from '../../card/assets'
-import { cardPeriod, cardTree, renderCard } from '../../card/card'
+import { avatarData, cardFonts, siteImage, flagData } from '../../card/assets'
+import { cardBadges } from '../../card/badges'
+import { ANGULAR_LOGO, cardPeriod, cardTree, renderCard } from '../../card/card'
 import { UsernameSchema } from '../../data/schemas'
 import { contributorsData } from '../../data/store'
 
@@ -21,7 +22,12 @@ export default defineEventHandler(async (event) => {
   // `?flag=TR`: the country the owner picked for this card. Otherwise their GitHub location.
   const code = countryCode(getQuery(event)['flag']) ?? profile.country ?? null
   const [avatar, flagSrc, fonts] = await Promise.all([avatarData(profile.githubId), code ? flagData(code) : null, cardFonts()])
-  const png = await renderCard(cardTree(profile, period, avatar, code && flagSrc ? { src: flagSrc, name: countryName(code) } : null), fonts)
+  const badges = (await Promise.all(cardBadges(profile).map(badge =>
+    'angular' in badge ? ANGULAR_LOGO
+      : 'path' in badge ? siteImage(badge.path)
+        : `data:image/svg+xml,${encodeURIComponent(badge.svg.replaceAll('currentColor', badge.color))}`,
+  ))).filter((src): src is string => !!src)
+  const png = await renderCard(cardTree(profile, period, avatar, code && flagSrc ? { src: flagSrc, name: countryName(code) } : null, badges), fonts)
   // A day in shared caches (GitHub's image proxy too): each night's deploy clears the CDN.
   return sendPng(event, png)
 })

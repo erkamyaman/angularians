@@ -177,6 +177,7 @@ export default class Profile {
   protected readonly plural = plural;
   protected readonly points = formatPoints;
   /** Earned from the data: the Angular team, the all-time top 10, #1 of a year, 100+ review comments. */
+  protected readonly badgeClass = 'inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-sm ring-1 transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none ';
   protected readonly badges = computed(() => {
     const person = this.loaded();
     if (!person) return [];
@@ -185,7 +186,7 @@ export default class Profile {
     const gold = 'bg-[#9A6700]/10 text-[#7D4E00] ring-[#9A6700]/30 dark:bg-[#D29922]/10 dark:text-[#D29922] dark:ring-[#D29922]/30';
     const green = 'bg-[#1A7F37]/10 text-[#116329] ring-[#1A7F37]/30 dark:bg-[#3FB950]/10 dark:text-[#3FB950] dark:ring-[#3FB950]/30';
     const purple = 'bg-[#8250DF]/10 text-[#8250DF] ring-[#8250DF]/30 dark:bg-[#A371F7]/10 dark:text-[#A371F7] dark:ring-[#A371F7]/30';
-    const badges: Array<{ label: string, title: string, icon: string, style: string, logo?: string }> = [];
+    const badges: Array<{ label: string, title: string, icon: string, style: string, logo?: string, href?: string }> = [];
     // The gradient Angular logo of the press kit, only to say "member of the Angular team" (the site's mark stays the A).
     if (person.team) badges.push({ label: 'Angular team', title: 'Public member of the Angular organization on GitHub', icon: 'angular', style: 'bg-[#dc087d]/10 text-foreground ring-[#dc087d]/40' });
     // Recognised by Google and by GitHub (lists in profile/recognitions.ts): Google's blue, GitHub's star yellow; their text a
@@ -193,9 +194,9 @@ export default class Profile {
     if (ANGULAR_GDES.has(person.githubId)) badges.push({ label: 'Angular GDE', title: 'Google Developer Expert for Angular', icon: 'gde', style: 'bg-[#1A73E8]/10 text-[#185ABC] ring-[#1A73E8]/30 dark:bg-[#8AB4F8]/10 dark:text-[#8AB4F8] dark:ring-[#8AB4F8]/30' });
     if (GITHUB_STARS.has(person.githubId)) badges.push({ label: 'GitHub Star', title: 'GitHub Star, recognised by GitHub for helping the community', icon: 'remixStarFill', style: 'bg-[#BF8700]/10 text-[#845A00] ring-[#BF8700]/30 dark:bg-[#E3B341]/10 dark:text-[#E3B341] dark:ring-[#E3B341]/30' });
     for (const { project, role } of projectBadgesOf(person.githubId)) {
-      badges.push({ label: `${project.badge ?? project.name} ${role}`, title: `${role[0].toUpperCase()}${role.slice(1)} of ${project.name}: ${project.does}`, icon: '', logo: project.logo, style: 'bg-muted/60 text-foreground ring-border' });
+      badges.push({ label: project.badge, title: `${role[0].toUpperCase()}${role.slice(1)} of ${project.name}: ${project.does}`, icon: '', logo: project.logo, href: project.href, style: project.style });
     }
-    const forged = projectBadgesOf(person.githubId).map(({ project }) => project.name);
+    const forged = projectBadgesOf(person.githubId).filter(({ project }) => project.builtOn).map(({ project }) => project.name);
     if (forged.length) badges.push({ label: 'Smith of ng-halla', title: `Forged a tool Angularians is built on: ${forged.join(', ')}`, icon: 'vikingAnvil', style: 'bg-primary/10 text-primary ring-primary/30' });
     // Every year at #1 in one badge: "#1 in 2024–2026", "#1 in 2019, 2024".
     const firsts = this.years().filter(row => row.rank === 1).map(row => Number(row.period)).sort((x, y) => x - y);
