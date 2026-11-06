@@ -1,0 +1,5 @@
+:host {
+  display: block;
+  scroll-margin-top: calc(var(--spacing) * 20);
+  outline-style: none;
+}

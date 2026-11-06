@@ -9,8 +9,8 @@ import type { EarnedBadge } from './earned-badges'
 @Component({
   selector: 'app-badge-pill',
   imports: [AngularLogo, HlmTooltip, NgIcon, NgTemplateOutlet],
-  host: { class: 'contents' },
   templateUrl: './badge-pill.html',
+  styleUrl: './badge-pill.css',
 })
 export class BadgePill {
   readonly badge = input.required<EarnedBadge>()

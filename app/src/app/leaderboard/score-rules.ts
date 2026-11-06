@@ -15,8 +15,8 @@ const { purple: PURPLE, red: RED, blue: BLUE, gold: GOLD, green: GREEN, pink: PI
   selector: 'app-score-rules',
   imports: [HlmButton, HlmDialogImports, NgIcon],
   providers: [provideIcons({ octComment, octIssueOpened, octShield, octSmiley, remixChatHeartLine, remixFileCodeLine, remixLightbulbLine, vikingAnvil, vikingBroom, vikingHammer, vikingScroll, vikingSword })],
-  host: { class: 'contents' },
   templateUrl: './score-rules.html',
+  styleUrl: './score-rules.css',
 })
 export class ScoreRules {
   protected readonly repos = REPOS

@@ -17,8 +17,8 @@ describe('RankShield', () => {
   it('widens the shield and drops its inner line from 10,000', () => {
     const small = render(9999);
     const large = render(10000);
-    expect(small.host.style.width).toBe('');
-    expect(large.host.style.width).toBe('2.17em');
+    expect(small.host.classList).not.toContain('wide');
+    expect(large.host.classList).toContain('wide');
     expect(large.lines).toBe(small.lines - 1);
   });
 });

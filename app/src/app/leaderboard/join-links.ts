@@ -11,8 +11,8 @@ const AUTHOR_ID = 88717125
   selector: 'app-join-links',
   imports: [AngularLogo, FirstPrGuides, NgIcon],
   providers: [provideIcons({ simpleDiscord })],
-  host: { class: 'mx-auto grid w-full max-w-4xl gap-6 text-left @min-[640px]:grid-cols-2' },
   templateUrl: './join-links.html',
+  styleUrl: './join-links.css',
 })
 export class JoinLinks {
   protected readonly guide = GUIDE

@@ -15,8 +15,8 @@ const ITEM = 'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left te
   selector: 'app-user-menu',
   imports: [HlmPopoverImports, LogoMark, NgIcon, RouterLink],
   providers: [provideIcons({ remixLogoutBoxRLine })],
-  host: { class: 'flex' },
   templateUrl: './user-menu.html',
+  styleUrl: './user-menu.css',
 })
 export class UserMenu {
   private readonly auth = inject(AuthService)

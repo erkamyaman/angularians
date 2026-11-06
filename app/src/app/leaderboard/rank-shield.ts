@@ -2,8 +2,9 @@ import { Component, computed, input } from '@angular/core'
 
 @Component({
   selector: 'app-rank-shield',
-  host: { class: 'relative inline-grid place-items-center', 'aria-hidden': 'true', '[style.width.em]': 'wide() ? 2.17 : null' },
+  host: { 'aria-hidden': 'true', '[class.wide]': 'wide()' },
   templateUrl: './rank-shield.html',
+  styleUrl: './rank-shield.css',
 })
 export class RankShield {
   readonly rank = input.required<number>()

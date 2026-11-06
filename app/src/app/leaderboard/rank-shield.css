@@ -1,0 +1,10 @@
+:host {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+}
+
+/* 10,000 and up: a wider shield, for a number that stays readable. */
+:host(.wide) {
+  width: 2.17em;
+}

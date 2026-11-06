@@ -1,0 +1,9 @@
+/* In the components layer, under the utilities: a parent can hide it or lay it out (`hidden lg:flex`, `contents`). */
+@layer components {
+  :host {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: calc(var(--spacing) * 2);
+  }
+}

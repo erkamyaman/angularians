@@ -25,8 +25,8 @@ export function untilNextCollection(now: Date): string {
   selector: 'app-next-update',
   imports: [HlmTooltip, NgIcon],
   providers: [provideIcons({ remixInformationLine })],
-  host: { class: 'inline-flex items-center gap-1' },
   templateUrl: './next-update.html',
+  styleUrl: './next-update.css',
 })
 export class NextUpdate {
   /** When the data on screen was collected. */

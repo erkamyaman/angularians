@@ -1,0 +1,14 @@
+:host {
+  margin-inline: auto;
+  display: grid;
+  width: 100%;
+  max-width: var(--container-4xl);
+  gap: calc(var(--spacing) * 6);
+  text-align: left;
+}
+
+@container (width >= 640px) {
+  :host {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

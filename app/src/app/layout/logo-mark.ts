@@ -14,7 +14,7 @@ let introPlayed = false;
  */
 @Component({
   selector: 'app-logo-mark',
-  host: { class: 'inline-block', '[class.compact]': 'compact()', '[class.intro]': 'playing()', '(animationend)': 'introEnded()' },
+  host: { '[class.compact]': 'compact()', '[class.intro]': 'playing()', '(animationend)': 'introEnded()' },
   styleUrl: './logo-mark.css',
   templateUrl: './logo-mark.html',
 })

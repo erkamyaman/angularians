@@ -39,8 +39,8 @@ const SINCE = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric'
   selector: 'app-me-card',
   imports: [AngularLogo, HlmButton, HlmSkeleton, HlmTooltip, JoinLinks, AngularianPill, NgIcon, RouterLink, ScoreDialog, Share],
   providers: [provideIcons({ vikingHead, remixMedalLine, octIssueOpened, octGitMerge, remixInformationLine, remixChatHeartLine, simpleGithub })],
-  host: { class: 'block w-full' },
   templateUrl: './me-card.html',
+  styleUrl: './me-card.css',
 })
 export class MeCard {
   protected readonly auth = inject(AuthService)
