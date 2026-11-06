@@ -13,11 +13,7 @@ export const routeMeta = {
 @Component({
   selector: 'app-not-found',
   imports: [HlmButton, PageSection, RouterLink],
-  template: `
-    <app-page-section title="Page not found" description="This page does not exist.">
-      <a hlmBtn routerLink="/">Back to the leaderboard</a>
-    </app-page-section>
-  `,
+  templateUrl: './[...not-found].page.html',
 })
 export default class NotFound {
   constructor() {

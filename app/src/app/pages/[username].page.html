@@ -1,0 +1,299 @@
+<app-container class="pt-8">
+  <nav aria-label="Breadcrumb">
+    <ol class="flex min-w-0 items-center gap-1.5 text-sm">
+      <li class="shrink-0">
+        <a hlmBtn variant="link" class="px-0" routerLink="/" [queryParams]="backQuery()">
+          <ng-icon name="remixArrowLeftLine" aria-hidden="true" />All contributors
+        </a>
+      </li>
+      <li class="flex shrink-0 items-center text-muted-foreground" aria-hidden="true"><ng-icon name="remixArrowRightSLine" /></li>
+      <li class="min-w-0 truncate text-muted-foreground" aria-current="page">{{ displayName() }}</li>
+    </ol>
+  </nav>
+</app-container>
+
+@if (loaded(); as person) {
+  <app-container class="py-8 lg:py-14">
+    <div class="grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-5 lg:gap-12">
+      <div class="flex min-w-0 flex-col items-start gap-5 lg:col-span-2">
+        <!-- w-full: a long name truncates instead of widening the page on phones -->
+        <div class="flex w-full min-w-0 items-center gap-4 lg:gap-5">
+          <img [src]="avatar(person)" [alt]="person.username" width="160" height="160" fetchpriority="high" class="size-32 shrink-0 rounded-xl bg-muted ring-1 ring-border sm:size-40" />
+          <div class="flex min-w-0 flex-1 flex-col gap-1">
+            <h1 class="truncate text-3xl font-bold tracking-tight sm:text-4xl" [title]="displayName()">{{ displayName() }}</h1>
+            @if (person.name) {
+              <p class="truncate text-lg text-muted-foreground">{{ person.username }}</p>
+            }
+            @if (isAngularian()) {
+              <app-angularian-pill class="my-1 w-fit" />
+            }
+            <ul class="-ml-2 flex flex-wrap items-center gap-0.5" aria-label="Links">
+              @for (link of links(); track link.url) {
+                <li>
+                  <a hlmBtn variant="ghost" size="icon-sm" [href]="link.url" target="_blank" [attr.rel]="link.rel" [attr.aria-label]="link.label" [hlmTooltip]="link.label" class="text-muted-foreground hover:text-foreground">
+                    <ng-icon [name]="link.icon" aria-hidden="true" />
+                  </a>
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+
+        <div class="flex w-full flex-col gap-4">
+          <div class="flex items-center gap-4">
+            <p class="brand text-7xl leading-none text-primary">#{{ number(current().rank) }}</p>
+            <div class="flex min-w-0 flex-col">
+              <p class="inline-flex items-center gap-1 text-lg tabular-nums">
+                <strong class="font-semibold text-primary">{{ points(current().score) }}</strong>
+                <app-score-dialog [stats]="current()" [phrase]="phrase(period())" />
+              </p>
+              <p class="text-sm text-muted-foreground">{{ phrase(period()) }}</p>
+            </div>
+          </div>
+          <div class="flex flex-col items-start gap-1.5 text-sm text-muted-foreground">
+            @if (person.country) {
+              <!-- nofollow: crawlers would render every country × period. -->
+              <a routerLink="/" [queryParams]="countryQuery(person.country)" fragment="leaderboard" rel="nofollow" class="inline-flex items-center gap-1.5 hover:text-foreground">
+                <img [src]="flag(person.country)" alt="" width="16" height="16" class="size-4 shrink-0 rounded-full" />{{ country(person.country) }}
+              </a>
+            }
+            @if (since(); as date) {
+              <span class="inline-flex items-center gap-1.5"><app-angular-logo class="size-4" /><span><span class="font-medium text-foreground">Angular contributor</span> since {{ date }}</span></span>
+            }
+            @if (best(); as year) {
+              <a [routerLink]="[]" [queryParams]="{ period: year.period }" replaceUrl class="inline-flex flex-wrap items-center gap-x-1.5 gap-y-1 font-medium tabular-nums transition-opacity hover:opacity-80" [class]="colors.gold">
+                <ng-icon name="vikingHelmet" size="1.25rem" aria-hidden="true" /><span class="brand relative top-[0.09em] text-base leading-none">Greatest saga</span> {{ year.period }}, <span class="brand text-base leading-none">#{{ number(year.rank) }}</span> with {{ points(year.score) }}
+              </a>
+            }
+          </div>
+          @if (badges().length) {
+            <ul class="flex flex-wrap gap-2" aria-label="Badges">
+              @for (badge of badges(); track badge.label) {
+                <li>
+                  <button type="button" [class]="'inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-sm ring-1 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none ' + badge.style" [hlmTooltip]="badge.title">
+                  @if (badge.icon === 'angular') {
+                    <app-angular-logo class="size-4" />
+                  } @else if (badge.icon === 'gde') {
+                    <img src="/credits/gde.svg" alt="" class="h-[0.8em] w-auto" />
+                  } @else if (badge.logo) {
+                    <img [src]="badge.logo" alt="" width="16" height="16" class="size-4 shrink-0 object-contain" />
+                  } @else {
+                    <ng-icon [name]="badge.icon" [size]="badge.icon.startsWith('viking') ? '1.25rem' : '1em'" aria-hidden="true" />
+                  }
+                  {{ badge.label }}
+                  </button>
+                </li>
+              }
+            </ul>
+          }
+          <!-- Your own profile: share it (the period on screen). In the browser only: the page is cached for everyone. -->
+          @if (isOwner()) {
+            <app-share class="hidden lg:flex" [username]="person.username" [period]="period()" [periods]="available()" [country]="person.country" />
+          }
+          <!-- Signed out, known only in the browser: the page is cached for everyone. -->
+          @if (signedOut()) {
+            <section class="flex w-full flex-col gap-3 rounded-xl bg-muted/40 p-4 ring-1 ring-border" aria-labelledby="profile-sign-in">
+              <div>
+                <div class="flex items-center justify-between gap-2">
+                  <p id="profile-sign-in" class="font-medium">Is this your profile?</p>
+                  <button hlmBtn variant="ghost" size="icon-sm" type="button" class="-my-1 -mr-1 text-muted-foreground" aria-label="Close" (click)="closePrompt()"><ng-icon name="remixCloseLine" aria-hidden="true" /></button>
+                </div>
+                <p class="mt-1 text-sm text-pretty text-muted-foreground">Sign in with GitHub to verify it and share your <span class="brand text-primary">Angularian</span> card.</p>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <app-card-preview [username]="person.username" [signInUrl]="signInUrl(person.username)" />
+                <a hlmBtn class="bg-foreground text-background hover:bg-foreground/90" [href]="signInUrl(person.username)"><ng-icon name="simpleGithub" aria-hidden="true" /> Sign in</a>
+              </div>
+            </section>
+          }
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-6 lg:col-span-3">
+        <div class="flex flex-col items-start gap-2 lg:items-end">
+          <app-period-tabs [period]="period()" [periods]="available()" [ranks]="ranks()" label="Profile period" (periodChange)="setPeriod($event)" />
+          @if (missingPeriod(); as missing) {
+            <p class="text-sm text-muted-foreground">No contributions {{ phrase(missing) }}. Showing all time instead.</p>
+          }
+        </div>
+
+        <ul class="grid grid-cols-2 gap-4" [attr.aria-label]="'Contributions ' + phrase(period())">
+          @for (stat of stats(); track stat.key) {
+            <li>
+              @if (stat.url) {
+                <a
+                  [href]="stat.url"
+                  target="_blank"
+                  rel="noopener"
+                  [attr.aria-label]="stat.label"
+                  [class]="'group relative block h-full rounded-xl p-5 ring-1 transition ' + stat.tint"
+                >
+                  <ng-icon name="remixArrowRightUpLine" size="20" class="absolute top-5 right-5 text-muted-foreground group-hover:text-foreground" aria-hidden="true" />
+                  <ng-container [ngTemplateOutlet]="statBody" [ngTemplateOutletContext]="{ $implicit: stat }" />
+                </a>
+              } @else {
+                <div [class]="'h-full rounded-xl p-5 ring-1 ' + stat.tint">
+                  <ng-container [ngTemplateOutlet]="statBody" [ngTemplateOutletContext]="{ $implicit: stat }" />
+                </div>
+              }
+            </li>
+          }
+        </ul>
+        <ng-template #statBody let-stat>
+          <ng-icon [name]="stat.icon" [class]="stat.text" size="24" aria-hidden="true" />
+          <p class="mt-3 text-4xl font-semibold tabular-nums">{{ number(stat.value) }}</p>
+          <p [class]="'mt-1 ' + stat.text">{{ stat.name }}</p>
+          <p class="mt-1 text-sm text-muted-foreground tabular-nums">{{ stat.detail }}</p>
+        </ng-template>
+
+      </div>
+    </div>
+  </app-container>
+
+  @if (packages().length) {
+    <app-container class="pb-12">
+      <section aria-labelledby="packages-title">
+        <h2 id="packages-title" class="mb-1 text-2xl font-medium tracking-tight">Contributed to</h2>
+        <p class="mb-6 text-muted-foreground">Merged PRs in {{ plural(packages().length, 'package', 'packages') }} of Angular, by PRs.</p>
+        <ul class="grid grid-cols-[minmax(0,1fr)] gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          @for (item of shownPackages(); track item.name) {
+            <li class="relative overflow-hidden rounded-xl bg-muted/30 p-4 ring-1 ring-border">
+              <span class="absolute inset-y-0 left-0 bg-primary/10" [style.width.%]="packageShare(item.pullRequests)" aria-hidden="true"></span>
+              <div class="relative flex items-center gap-3">
+                <ng-icon [name]="icon(item.name)" size="1.5rem" class="shrink-0 text-primary" aria-hidden="true" />
+                <span class="min-w-0 flex-1">
+                  <!-- title: the whole name when it is cut (@angular/material-moment-adapter) -->
+                  <span class="block truncate font-medium" [title]="item.name">{{ item.name }}</span>
+                  <span class="block truncate text-xs text-muted-foreground" [title]="packageLabel(item.name)">{{ packageLabel(item.name) }}</span>
+                </span>
+                <span class="shrink-0 text-right tabular-nums">
+                  <span class="text-lg font-semibold">{{ number(item.pullRequests) }}</span>
+                  <span class="text-xs text-muted-foreground"> {{ item.pullRequests === 1 ? 'PR' : 'PRs' }}</span>
+                </span>
+              </div>
+            </li>
+          }
+        </ul>
+        @if (packages().length > PACKAGES_SHOWN) {
+          <button hlmBtn variant="outline" type="button" class="mt-4" (click)="allPackages.set(!allPackages())">
+            {{ allPackages() ? 'Show less' : 'Show all ' + packages().length }}
+            <ng-icon [name]="allPackages() ? 'remixArrowUpSLine' : 'remixArrowDownSLine'" aria-hidden="true" />
+          </button>
+        }
+      </section>
+    </app-container>
+  }
+
+  @if (years().length > 1) {
+    <app-container class="pb-16">
+      <section aria-labelledby="years-title">
+        <h2 id="years-title" class="mb-1 text-2xl font-medium tracking-tight">Year by year</h2>
+        <p class="mb-6 text-muted-foreground">Points in every year {{ displayName() }} contributed. Pick a year to see it above.</p>
+        <ol class="flex gap-1 sm:gap-2" aria-labelledby="years-title">
+          @for (row of yearsOldestFirst(); track row.period) {
+            <li class="min-w-0 flex-1">
+              <a
+                [routerLink]="[]"
+                [queryParams]="{ period: row.period }"
+                replaceUrl
+                (click)="scrollToStats()"
+                [hlmTooltip]="row.period + ' · Rank #' + number(row.rank) + ' · ' + points(row.score)"
+                [attr.aria-label]="row.period + ', rank ' + number(row.rank) + ', ' + points(row.score) + (row === yearsOldestFirst()[0] ? ', the first year' : '')"
+                [attr.aria-current]="row.period === period() ? 'true' : null"
+                class="group flex flex-col items-center rounded-md transition-colors hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+              >
+                <span class="flex h-60 w-full flex-col items-center justify-end border-b border-border">
+                  @if (row === yearsOldestFirst()[0] && row !== best()) {
+                    <span class="mb-1.5 hidden flex-col items-center whitespace-nowrap text-muted-foreground sm:flex" aria-hidden="true">
+                      <ng-icon name="vikingLongship" size="1.75rem" />
+                      <span class="brand text-sm">The saga begins</span>
+                    </span>
+                  }
+                  @if (row.period === period() || row === best()) {
+                    <span class="mb-1.5 hidden text-center text-xs tabular-nums sm:block" aria-hidden="true">
+                      @if (row === best()) {
+                        <span class="flex flex-col items-center font-semibold whitespace-nowrap" [class]="colors.gold">
+                          <ng-icon name="vikingHelmet" size="1.75rem" aria-hidden="true" />
+                          <span class="brand text-sm">Greatest saga</span>
+                        </span>
+                      }
+                      <span class="brand block text-base leading-none">#{{ number(row.rank) }}</span>
+                      <span class="block text-muted-foreground">{{ number(row.score) }}</span>
+                    </span>
+                  }
+                  <span
+                    class="block w-full max-w-14 rounded-t transition-colors"
+                    [class]="yearColumn(row)"
+                    [style.height.px]="yearBar(row.score)"
+                  ></span>
+                </span>
+                <span class="py-1.5 text-xs tabular-nums" [class]="row.period === period() ? 'font-semibold text-foreground' : 'text-muted-foreground'" aria-hidden="true">
+                  <span class="sm:hidden">'{{ row.period.slice(2) }}</span><span class="hidden sm:inline">{{ row.period }}</span>
+                </span>
+              </a>
+            </li>
+          }
+        </ol>
+      </section>
+    </app-container>
+  }
+} @else if (profile.isLoading() && validUsername()) {
+  <!-- The shape of the profile below, so nothing jumps when it arrives. -->
+  <app-container class="py-8 lg:py-14" aria-busy="true">
+    <span class="sr-only">Loading the profile of {{ username() }}</span>
+    <div class="grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-5 lg:gap-12" aria-hidden="true">
+      <div class="flex flex-col items-start gap-5 lg:col-span-2">
+        <div class="flex w-full items-center gap-4 lg:gap-5">
+          <div hlmSkeleton class="size-32 shrink-0 rounded-xl sm:size-40"></div>
+          <div class="flex flex-1 flex-col gap-2">
+            <div hlmSkeleton class="h-9 w-3/4 max-w-72"></div>
+            <div hlmSkeleton class="h-5 w-32"></div>
+            <div class="flex gap-2 pt-1">
+              @for (i of [1, 2, 3, 4]; track i) { <div hlmSkeleton class="size-7 rounded-md"></div> }
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <div hlmSkeleton class="h-15 w-32"></div>
+          <div class="flex flex-col gap-2">
+            <div hlmSkeleton class="h-6 w-24"></div>
+            <div hlmSkeleton class="h-4 w-36"></div>
+          </div>
+        </div>
+        <div class="flex w-full flex-col gap-2">
+          @for (w of ['w-24', 'w-48', 'w-64']; track w) { <div hlmSkeleton [class]="'h-4 max-w-full ' + w"></div> }
+        </div>
+        <div class="flex flex-wrap gap-2">
+          @for (w of ['w-32', 'w-28', 'w-24']; track w) { <div hlmSkeleton [class]="'h-8 rounded-md ' + w"></div> }
+        </div>
+      </div>
+      <div class="flex flex-col gap-4 lg:col-span-3">
+        <div hlmSkeleton class="h-10 w-full max-w-md self-end rounded-lg"></div>
+        <div class="grid grid-cols-2 gap-4">
+          @for (i of [1, 2, 3, 4]; track i) { <div hlmSkeleton class="min-h-40 rounded-xl"></div> }
+        </div>
+      </div>
+    </div>
+    <div class="mt-14 flex flex-col gap-3" aria-hidden="true">
+      <div hlmSkeleton class="h-7 w-48"></div>
+      <div hlmSkeleton class="h-5 w-80 max-w-full"></div>
+      <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        @for (i of [1, 2, 3, 4, 5, 6]; track i) { <div hlmSkeleton class="h-[4.5rem] rounded-xl"></div> }
+      </div>
+    </div>
+  </app-container>
+} @else {
+  <app-container class="py-14">
+    @if (failedToLoad()) {
+      <h1 class="text-3xl font-bold tracking-tight">{{ username() }}</h1>
+      <p role="alert" class="mt-2 max-w-xl text-destructive">The profile could not be loaded.</p>
+      <button hlmBtn class="mt-6" type="button" (click)="profile.reload()">Try again</button>
+    } @else {
+      <h1 class="text-3xl font-bold tracking-tight">No contributions from {{ username() }}</h1>
+      <p class="mt-2 max-w-xl text-muted-foreground">
+        Nobody with this GitHub username has a merged pull request, an issue or a comment in Angular's repositories yet, or the data has not caught up: it updates every night.
+      </p>
+      <a hlmBtn class="mt-6" href="https://github.com/angular/angular/contribute" target="_blank" rel="noopener">Find a first issue</a>
+    }
+  </app-container>
+}

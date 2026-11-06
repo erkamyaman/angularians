@@ -1,0 +1,93 @@
+<ng-template #card let-shown>
+  <div class="rounded-lg border bg-background p-4 shadow-lg">
+    <div class="flex items-center gap-3">
+      <img [src]="flag(shown.code)" alt="" width="40" height="40" class="size-10 shrink-0" />
+      <div class="min-w-0 flex-1">
+        <p class="truncate font-semibold">{{ name(shown.code) }}</p>
+        <p class="text-sm text-muted-foreground">{{ number(shown.count) }} <span class="brand text-primary">{{ shown.count === 1 ? 'Angularian' : 'Angularians' }}</span> · #{{ rankOf(shown.code) }} country</p>
+      </div>
+      <button hlmBtn variant="ghost" size="icon-sm" type="button" aria-label="Show all countries" (click)="select.emit(null)">
+        <ng-icon name="remixCloseLine" aria-hidden="true" />
+      </button>
+    </div>
+    <ul class="mt-4 grid grid-cols-6 gap-2" [attr.aria-busy]="!people().length || null" [attr.aria-label]="'Best ranked from ' + name(shown.code)">
+      @for (tile of tiles(); track $index) {
+        <li class="aspect-square">
+          @if (tile) {
+            <a [routerLink]="['/', tile.username]" [hlmTooltip]="tile.username + ' · #' + number(tile.rank)" [attr.aria-label]="tile.username + ', #' + number(tile.rank)" class="block size-full overflow-hidden rounded-md bg-muted ring-1 ring-border transition hover:ring-primary">
+              <img [src]="avatar(tile)" alt="" width="56" height="56" loading="lazy" class="size-full object-cover" />
+            </a>
+          } @else {
+            <div hlmSkeleton class="size-full rounded-md"></div>
+          }
+        </li>
+      }
+    </ul>
+    <button hlmBtn variant="link" class="mt-3 px-0 text-muted-foreground hover:text-foreground" type="button" (click)="leaderboard.emit()">
+      <span>See the {{ shown.count === 1 ? '' : number(shown.count) + ' ' }}<span class="brand text-primary">{{ shown.count === 1 ? 'Angularian' : 'Angularians' }}</span> from {{ name(shown.code) }}</span>
+      <ng-icon name="remixArrowUpLine" aria-hidden="true" />
+    </button>
+  </div>
+</ng-template>
+
+<!-- The card floats on the globe: picking a country moves nothing on the page -->
+<!-- `when`, not `on viewport`: Angular's viewport trigger creates its IntersectionObserver during server rendering too
+     (after-render hooks run there in this app), where none exists. -->
+<div #globeBox class="relative mx-auto aspect-square w-full max-w-[36rem]">
+  @defer (when inView()) {
+    <app-globe [countries]="map().countries" [selected]="selected()" (select)="select.emit($event)" />
+  } @placeholder {
+    <div class="size-full rounded-full bg-muted/50 ring-1 ring-border"></div>
+  }
+  @if (current(); as shown) {
+    <div class="absolute right-0 bottom-0 w-80 max-sm:hidden">
+      <ng-container [ngTemplateOutlet]="card" [ngTemplateOutletContext]="{ $implicit: shown }" />
+    </div>
+  }
+</div>
+
+<div class="flex min-w-0 flex-col gap-3 rounded-xl bg-muted/40 p-4 ring-1 ring-border">
+  <div hlmInputGroup>
+    <input hlmInputGroupInput type="search" autocomplete="off" aria-label="Search a country" placeholder="Search a country" [value]="query()" (input)="search($event)" />
+    <hlm-input-group-addon><ng-icon name="remixSearchLine" aria-hidden="true" /></hlm-input-group-addon>
+  </div>
+  <ol class="-mx-1 flex max-h-100 flex-col gap-1 overflow-y-auto p-1 pt-2" [class.lg:h-100]="query().trim()" aria-label="Countries, from the most contributors">
+    @for (item of shownCountries(); track item.code) {
+      <li>
+        <button
+          type="button"
+          [class]="'relative flex w-full items-center gap-3 overflow-hidden rounded-md px-2 py-2 text-left ' + (medal(item.code)?.ring.replace('ring-2', 'ring-1') ?? '')"
+          class=" text-sm transition-colors hover:bg-muted/60 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none aria-pressed:bg-primary/15 aria-pressed:ring-1 aria-pressed:ring-primary/40"
+          [attr.aria-pressed]="item.code === selected()"
+          (click)="select.emit(item.code === selected() ? null : item.code)"
+        >
+          <span data-rank class="relative grid w-7 shrink-0 place-items-center"><span class="sr-only">Rank {{ number(rankOf(item.code)) }}</span>
+            @if (medal(item.code); as place) {
+              <app-rank-shield [rank]="rankOf(item.code)" metal="" [podium]="true" [class]="'h-8 w-7 text-sm ' + place.text" />
+            } @else {
+              <span class="brand relative top-[0.09em] text-base leading-none text-muted-foreground" aria-hidden="true">{{ number(rankOf(item.code)) }}</span>
+            }
+          </span>
+          <img [src]="flag(item.code)" alt="" width="24" height="24" loading="lazy" class="relative size-6 shrink-0" />
+          <span class="relative min-w-0 flex-1">
+            <span class="block truncate">{{ name(item.code) }}</span>
+            <span class="mt-1 block h-1 rounded-full bg-primary/60" [style.width.%]="barWidth(item)"></span>
+          </span>
+          <span class="relative text-muted-foreground tabular-nums">{{ number(item.count) }}</span>
+        </button>
+      </li>
+    } @empty {
+      <li class="py-2 text-center text-sm text-muted-foreground" role="status">No country found</li>
+    }
+  </ol>
+  <p class="text-xs text-muted-foreground">
+    From the location on each GitHub profile, matched to a country: {{ number(map().located) }} of {{ number(map().total) }} <span class="brand text-primary">Angularians</span> set one.
+  </p>
+</div>
+
+<!-- Phones: the globe is too small to float on, and often scrolled away from the list. A card at the bottom of the screen. -->
+@if (current(); as shown) {
+  <div class="sticky bottom-4 z-10 sm:hidden">
+    <ng-container [ngTemplateOutlet]="card" [ngTemplateOutletContext]="{ $implicit: shown }" />
+  </div>
+}

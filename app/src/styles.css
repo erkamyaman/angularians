@@ -20,18 +20,18 @@
 }
 
 /*
- * Spartan's zinc theme, with forest green as the primary colour: the brand (#14632E, brighter on dark).
+ * Spartan's zinc theme, with Viking gold as the primary colour: the brand (#9A6700, brighter on dark).
  * Dark mode, the default, is the `dark` class on <html>: in index.html, removed for a saved light theme by its
  * inline script before the first paint, then kept by ThemeService.
  */
 :root {
   color-scheme: light;
 
-  /* The mark's contribution graph: the grey of empty days, then three greens, darkest to brightest. */
+  /* The mark's contribution graph: the grey of empty days, then three golds, darkest to brightest. */
   --mark-empty: #d0d7de;
-  --mark-1: #194825;
-  --mark-2: #337343;
-  --mark-3: #5eb572;
+  --mark-1: #5c4000;
+  --mark-2: #9A6700;
+  --mark-3: #E3B341;
 
   --font-sans: "Manrope Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
@@ -47,8 +47,8 @@
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
-  /* #14632E on white: 7:1 as text, and under white text. */
-  --primary: oklch(0.44 0.112 149.5);
+  /* #9A6700 on white: 4.6:1 as text, and under white text. */
+  --primary: #9A6700;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
@@ -75,9 +75,9 @@
   color-scheme: dark;
 
   --mark-empty: #4a525c;
-  --mark-1: #194825;
-  --mark-2: #337343;
-  --mark-3: #5eb572;
+  --mark-1: #5c4000;
+  --mark-2: #9A6700;
+  --mark-3: #E3B341;
 
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
@@ -90,7 +90,7 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.7 0.129 149.5);
+  --primary: #D29922;
   --primary-foreground: oklch(0.141 0.005 285.823);
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
@@ -128,6 +128,7 @@
   font-family: var(--font-display);
   font-weight: 700;
   letter-spacing: 0.02em;
+  cursor: url(/cursors/hammer.png) 3 3, auto;
 }
 
 @layer base {

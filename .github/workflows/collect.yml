@@ -24,7 +24,7 @@ jobs:
   # alone takes about 3 hours). Each request limit is an hour's budget, so the jobs split them:
   # - angular/angular: the GitHub App's own 5,000 an hour (COLLECT_APP_ID, COLLECT_APP_KEY; collector/README.md);
   # - angular/components and angular/angular-cli: the personal token's 5,000 (COLLECT_TOKEN);
-  # - angular/dev-infra, a few hundred requests: this repository's built-in token (1,000).
+  # - angular/dev-infra and angular/domino: this repository's built-in token (1,000 shared).
   # Without the App, angular/angular uses COLLECT_TOKEN too. A job that runs out of requests waits for the next hour.
   repo:
     name: ${{ matrix.repo }}
@@ -34,7 +34,7 @@ jobs:
       # One repository failing fails the run: the site's data is never published with a repository missing.
       fail-fast: true
       matrix:
-        repo: [angular/angular, angular/components, angular/angular-cli, angular/dev-infra]
+        repo: [angular/angular, angular/components, angular/angular-cli, angular/dev-infra, angular/domino]
     steps:
       - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v6
@@ -55,7 +55,7 @@ jobs:
       - name: Collect
         run: pnpm --filter @angularians/collector collect --part --repos=${{ matrix.repo }} --out=${{ runner.temp }}/part ${{ inputs.since && format('--since={0}', inputs.since) || '' }}
         env:
-          GITHUB_TOKEN: ${{ matrix.repo == 'angular/dev-infra' && github.token || secrets.COLLECT_TOKEN }}
+          GITHUB_TOKEN: ${{ (matrix.repo == 'angular/dev-infra' || matrix.repo == 'angular/domino') && github.token || secrets.COLLECT_TOKEN }}
           COLLECT_APP_ID: ${{ matrix.repo == 'angular/angular' && secrets.COLLECT_APP_ID || '' }}
           COLLECT_APP_KEY: ${{ matrix.repo == 'angular/angular' && secrets.COLLECT_APP_KEY || '' }}
       - id: name
@@ -89,7 +89,7 @@ jobs:
         # The repositories in the matrix order: meta.json lists them so.
         run: |
           parts=""
-          for repo in angular/angular angular/components angular/angular-cli angular/dev-infra; do
+          for repo in angular/angular angular/components angular/angular-cli angular/dev-infra angular/domino; do
             parts="$parts $RUNNER_TEMP/parts/part-${repo//\//__}"
           done
           pnpm --filter @angularians/collector merge ${{ inputs.since && format('--out={0}/test-data', runner.temp) || '' }} $parts

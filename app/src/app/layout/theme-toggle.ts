@@ -9,11 +9,7 @@ import { ThemeService } from '../theme.service';
   selector: 'app-theme-toggle',
   imports: [HlmButton, NgIcon],
   providers: [provideIcons({ remixMoonLine, remixSunLine })],
-  template: `
-    <button hlmBtn variant="ghost" size="icon" type="button" [attr.aria-label]="label()" [attr.title]="label()" (click)="theme.toggle()">
-      <ng-icon [name]="theme.dark() ? 'remixSunLine' : 'remixMoonLine'" aria-hidden="true" />
-    </button>
-  `,
+  templateUrl: './theme-toggle.html',
 })
 export class ThemeToggle {
   protected readonly theme = inject(ThemeService)

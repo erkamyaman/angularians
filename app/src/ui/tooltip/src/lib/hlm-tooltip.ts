@@ -32,7 +32,7 @@ export const tooltipPositionVariants = cva("absolute", {
  * - any scroll closes it (any scroll container, not only the page), and cancels one still waiting for its delay;
  * - a trigger that moves while it is open (a board that swaps, a card that loads) closes it, instead of leaving it
  *   floating away from its trigger;
- * - pressing the trigger closes it (an avatar that navigates must not leave it behind);
+ * - pressing the trigger closes it (an avatar that navigates must not leave it behind), and a tap on a button opens it;
  * - focus opens it only from the keyboard (`:focus-visible`), not from a click or a dialog giving focus back.
  */
 @Directive({
@@ -74,11 +74,21 @@ export class HlmTooltip {
       // show still waiting for its delay. It has no public close; check this on an upgrade (tooltip spec).
       const brn = this.brn as unknown as { delay(isShow: boolean, delay?: number): void };
       const close = () => brn.delay(false, -1);
+      let tapped = false;
       const view = this.document.defaultView;
       const listeners: Array<[EventTarget, string, EventListener, AddEventListenerOptions]> = [
         [this.document, "scroll", close, { capture: true, passive: true }],
         [view ?? this.document, "resize", close, { passive: true }],
-        [this.host, "pointerdown", close, {}],
+        [this.host, "pointerdown", ((event: PointerEvent) => {
+          tapped = event.pointerType === "touch";
+          close();
+        }) as EventListener, {}],
+        // A tap on a button (an info icon) opens it: touch has no hover. After focus, which closes it. Links navigate instead.
+        [this.host, "click", () => {
+          if (!tapped || !this.host.matches("button")) return;
+          brn.delay(true);
+          this.document.addEventListener("pointerdown", close, { capture: true, once: true });
+        }, {}],
         // After the brain's own focus listener, which shows unconditionally.
         [this.host, "focus", () => queueMicrotask(() => {
           if (!this.host.matches(":focus-visible")) close();

@@ -30,26 +30,7 @@ const ICONS: Record<string, string> = {
     remixBookOpenLine, remixBrushLine, octIssueOpened, remixFileCodeLine, remixLightbulbLine, octComment, remixChatHeartLine,
     remixRocketLine, octSmiley, remixToolsLine,
   })],
-  template: `
-    <ul class="flex flex-col gap-4">
-      @for (row of rows(); track row.key) {
-        <li class="flex flex-col gap-1.5" [class.opacity-50]="!row.amount">
-          <div class="flex items-center justify-between gap-2 text-sm">
-            <span class="flex items-center gap-2">
-              <ng-icon [name]="icon(row.icon)" class="text-muted-foreground" aria-hidden="true" />
-              {{ row.label }}
-            </span>
-            <span class="text-muted-foreground tabular-nums">
-              {{ number(row.amount) }} × {{ row.points }} = <span class="font-medium text-foreground">{{ number(row.total) }}</span>
-            </span>
-          </div>
-          <hlm-progress [value]="row.total" [max]="max()" class="h-1.5" [attr.aria-label]="row.label + ': ' + points(row.total)">
-            <hlm-progress-indicator />
-          </hlm-progress>
-        </li>
-      }
-    </ul>
-  `,
+  templateUrl: './score-breakdown.html',
 })
 export class ScoreBreakdown {
   readonly stats = input.required<ScoredStats>()

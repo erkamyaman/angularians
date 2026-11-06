@@ -12,6 +12,7 @@
     "build": "vite build",
     "watch": "vite build --watch",
     "test": "vitest run",
+    "typecheck": "ngc -p tsconfig.app.json --noEmit",
     "preview": "node dist/analog/server/index.mjs",
     "bundle-data": "node scripts/bundle-data.ts",
     "predev": "node scripts/bundle-data.ts && node scripts/copy-flags.ts",

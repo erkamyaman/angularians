@@ -75,6 +75,11 @@ comes from the Angular press kit, https://angular.dev/press-kit: © Google, CC B
 (https://creativecommons.org/licenses/by/4.0/). It is used unchanged, to name Angular: the Angular team badge, the home
 page's text and "Angular contributor" on the card. The Angularians mark is our own.
 
+## The Google Developer Experts mark
+
+The `<>` mark on the Angular GDE badge (`app/public/credits/gde.svg`) is cut, unchanged otherwise, from Google's GDE
+lockup on https://developers.google.com/community/experts. It belongs to Google and is used only to name the programme.
+
 ## Norse
 
 The word "Angularian(s)" on the site and the cards is set in Norse Bold by Joël Carrouché (https://www.joelcarrouche.net),

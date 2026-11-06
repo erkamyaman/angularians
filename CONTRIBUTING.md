@@ -50,12 +50,25 @@ If its PR titles name packages, teach `pullRequestScopes` in `shared/src/pull-re
 Angularian" on the home page. The next nightly run collects its full history.
 
 **The mark or the brand colour.** The mark is built by `app/scripts/logo/build.py`: change it there and regenerate its
-uses (see the script). Colours live in `app/src/styles.css`; signed in, the colour picker in the header tries one live.
+uses (see the script). Colours live in `app/src/styles.css`.
 
 **A bot.** When a run's `Possible bots:` line shows an account that is a bot, add it to `KNOWN_BOT_ACCOUNTS` in
 `shared/src/bots.ts`. Check its profile first: a few people have "bot" in their username.
 
-**A badge.** Profile badges are in `badges()` of `app/src/app/pages/[username].page.ts`.
+**A badge.** Profile badges are in `badges()` of `app/src/app/pages/[username].page.ts`. The Angular GDE and GitHub Star badges
+come from hand-kept lists of GitHub ids in `app/src/app/profile/recognitions.ts`: add someone there when they become one.
+Project badges ("AnalogJS creator") are in `app/src/app/profile/special-badges.ts`: the community tools Angularians is
+built on, each with its logo in `app/public/credits/` and the GitHub ids of its creators. The home page shows them.
+
+**A special badge for your own project.** Open a "Badge request" issue, or a PR that:
+
+1. adds the project's logo as `app/public/credits/<project>.svg` (or `.png`), with its licence in `THIRD_PARTY_NOTICES.md`;
+2. adds the project to `PROJECT_BADGES` in `app/src/app/profile/special-badges.ts`: its name, site, logo, one line on what it
+   is, and each person's GitHub id (`gh api users/<username> -q .id`), username, name and role (`creator`, `maintainer` or
+   `organizer`);
+3. links the project in the PR description, so we can check it.
+
+The commit is `feat(app): the <project> badge`. The maintainer decides which badges join.
 
 **A change to the score.** The weights are in `shared/src/scoring.ts`; update [docs/SCORING.md](docs/SCORING.md) and the
 "How the score works" section of the home page with them.

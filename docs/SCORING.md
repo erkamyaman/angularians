@@ -5,7 +5,9 @@ plus review comments. The rules live in `shared/src/scoring.ts` and `shared/src/
 
 ## Merged pull requests, by type
 
-The type comes from the PR title, the convention the Angular repositories already enforce.
+The type comes from the PR title, the convention the Angular repositories already enforce. Leading tags are skipped:
+`[Backport 21.2.x] fix(router): …` and `[13.3.x]: fix(core): …` are fixes. A title without a type takes it from the labels (`bug` is a fix, `enhancement`
+a feat, `documentation` docs), else counts as a chore: these are mostly version bumps and housekeeping.
 
 | Type | Points | PR title prefixes |
 | --- | --- | --- |
@@ -33,6 +35,16 @@ A PR has landed if GitHub marks it merged, **or** a commit on the default branch
 tooling pushes the commits itself and closes the PR, so GitHub shows most PRs from 2017 to 2025 as closed, not merged.
 
 Bots are left out: GitHub apps, `-bot` accounts and the list in `shared/src/bots.ts`.
+
+## Packages on profiles
+
+"Contributed to" groups landed PRs by the packages their titles name. In angular/components a scope's first part names the
+npm package: `fix(aria/grid)` is `@angular/aria`, `fix(material/button)` and `fix(@angular/material/button)` are
+`@angular/material`; `multiple` names none. Reverts written as `Revert "…"` and backports (`[19.2.x] …`, `[Backport 21.2.x] …`,
+`[PATCH] …`) count toward no package: the change counts once, through the PR that landed it on main. Other leading tags are skipped:
+`[WIP] fix(core): …` counts toward `core`. The angular/domino repository provides `@angular/domino`,
+the DOM implementation bundled with `@angular/platform-server` for server-side rendering. Every landed PR in angular/domino
+counts toward `@angular/domino`, even without a scope in its title, and even a backport.
 
 ## Periods
 

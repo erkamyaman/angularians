@@ -26,10 +26,7 @@ export function untilNextCollection(now: Date): string {
   imports: [HlmTooltip, NgIcon],
   providers: [provideIcons({ remixInformationLine })],
   host: { class: 'inline-flex items-center gap-1' },
-  template: `
-    <span class="tabular-nums">{{ label() }}</span>
-    <ng-icon name="remixInformationLine" class="shrink-0" [hlmTooltip]="hint()" [attr.aria-label]="hint()" tabindex="0" />
-  `,
+  templateUrl: './next-update.html',
 })
 export class NextUpdate {
   /** When the data on screen was collected. */

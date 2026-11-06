@@ -1,0 +1,45 @@
+/* A fade, not a clip: zoomed in, a rounded canvas cut the globe along a false horizon */
+.globe__canvas { mask-image: radial-gradient(closest-side, #000 82%, transparent); }
+/* The mask would hide an outline on the canvas */
+:host:has(.globe__canvas:focus-visible)::after {
+  content: ""; position: absolute; inset: 4px; border-radius: 999px; outline: 2px solid var(--ring); pointer-events: none;
+}
+/* In light mode the library draws land black: the filter maps black to the theme's primary colour, and keeps white */
+.globe__canvas.is-light { filter: url(#globe-land); }
+.globe__ship {
+  position: absolute; inset: 0 auto auto 0; will-change: transform; pointer-events: none; color: var(--primary);
+  opacity: 0; transition: opacity 240ms ease-out;
+}
+.globe__ship[data-visible="true"] { opacity: 0.9; }
+.globe__ship ng-icon { display: block; animation: globe-sail 3.2s ease-in-out infinite; }
+@keyframes globe-sail { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-2px) rotate(3deg); } }
+.globe__marker {
+  position: absolute; inset: 0 auto auto 0; will-change: transform;
+  display: flex; align-items: center; height: 28px; padding: 0 9px;
+  border: 1px solid var(--border); border-radius: 999px; background: var(--background); color: var(--foreground);
+  font: 600 11px/1 var(--font-sans); font-variant-numeric: tabular-nums; white-space: nowrap;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 160ms ease-out, visibility 0s linear 160ms;
+}
+.globe__marker[data-visible="true"] { opacity: 1; visibility: visible; pointer-events: auto; transition-delay: 0s; }
+.globe__marker:hover, .globe__marker:focus-visible, .globe__marker.is-selected {
+  z-index: 2; border-color: var(--primary); outline: 2px solid color-mix(in oklab, var(--primary) 35%, transparent); outline-offset: 2px;
+}
+.globe__marker[data-tier="mid"] { height: 30px; padding: 0 10px; border-color: color-mix(in oklab, var(--primary) 60%, transparent); font-size: 12px; }
+.globe__marker[data-tier="top"] { height: 34px; padding: 0 12px; border-color: var(--primary); background: var(--primary); color: var(--primary-foreground); font-size: 13px; }
+.globe__marker[data-tier="top"]:not(.is-avatars)::after {
+  content: ""; position: absolute; inset: -1px; border: 2px solid var(--primary); border-radius: 999px; pointer-events: none;
+  animation: globe-pulse 2.4s ease-out infinite;
+}
+@keyframes globe-pulse { from { transform: scale(1); opacity: 0.7; } to { transform: scale(1.35); opacity: 0; } }
+.globe__label {
+  position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); pointer-events: none;
+  display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--popover); color: var(--popover-foreground); font-size: 12px; font-weight: 500;
+}
+.globe__marker.is-avatars { height: 32px; padding: 0; border: 0; background: transparent; }
+@media (prefers-reduced-motion: reduce) {
+  .globe__marker[data-tier="top"]::after { animation: none; opacity: 0; }
+  .globe__ship ng-icon { animation: none; }
+  .globe__marker { transition-duration: 80ms, 0s; transition-delay: 0s, 80ms; }
+}

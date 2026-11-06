@@ -1,0 +1,55 @@
+name: Badge request
+description: Ask for a special badge on your Angularians profile
+title: "Badge: "
+labels: [badge, needs triage]
+body:
+  - type: input
+    id: username
+    attributes:
+      label: Your GitHub username
+      placeholder: angie
+    validations:
+      required: true
+  - type: input
+    id: project
+    attributes:
+      label: Your project
+      description: Its name, as it should read on the badge.
+      placeholder: AnalogJS
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What it is
+      options:
+        - A library
+        - A tool
+        - A community, meetup or conference
+        - A course, blog, channel or book
+    validations:
+      required: true
+  - type: dropdown
+    id: role
+    attributes:
+      label: Your role
+      options:
+        - Creator
+        - Maintainer
+        - Organizer
+    validations:
+      required: true
+  - type: textarea
+    id: proof
+    attributes:
+      label: Links
+      description: The project's site or repository, a link to its logo (SVG or PNG, square works best) and, for a team, the other people to badge.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you submit
+      options:
+        - label: It's my own work, or I run it myself.
+          required: true

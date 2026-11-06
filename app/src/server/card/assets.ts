@@ -1,6 +1,7 @@
 import { useStorage } from 'nitropack/runtime'
 import { SITE_URL } from '../../app/site'
 import type { CardFonts } from './card'
+import { avatarUrl, flagUrl } from '../../app/leaderboard/format'
 
 let fonts: Promise<CardFonts> | undefined
 
@@ -29,7 +30,7 @@ export async function flagData(code: string): Promise<string | null> {
   const known = flags.get(code)
   if (known) return known
   try {
-    const response = await fetch(`${SITE_URL}/flags/${code.toLowerCase()}.svg`, { signal: AbortSignal.timeout(5000) })
+    const response = await fetch(`${SITE_URL}${flagUrl(code)}`, { signal: AbortSignal.timeout(5000) })
     if (!response.ok) return null
     const data = `data:image/svg+xml;base64,${Buffer.from(await response.arrayBuffer()).toString('base64')}`
     flags.set(code, data)
@@ -43,7 +44,7 @@ export async function flagData(code: string): Promise<string | null> {
 /** An avatar as a data URL, or `null`: a card still renders without it. `pixels`: its size on the card, ×2. */
 export async function avatarData(githubId: number, pixels = 352): Promise<string | null> {
   try {
-    const response = await fetch(`https://avatars.githubusercontent.com/u/${githubId}?s=${pixels}&v=4`, { signal: AbortSignal.timeout(5000) })
+    const response = await fetch(avatarUrl(githubId, pixels / 2), { signal: AbortSignal.timeout(5000) })
     const type = response.headers.get('content-type') ?? ''
     if (!response.ok || !/^image\/(png|jpeg|gif|webp)$/.test(type)) return null
     return `data:${type};base64,${Buffer.from(await response.arrayBuffer()).toString('base64')}`

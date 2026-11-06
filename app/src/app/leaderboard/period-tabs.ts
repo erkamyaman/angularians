@@ -14,50 +14,7 @@ const RANK = new Intl.NumberFormat('en-US')
   imports: [HlmSelectImports, HlmTabsImports],
   // One pill: the tabs, then the year picker inside it (Nuxters).
   host: { class: 'inline-flex max-w-full flex-wrap items-center rounded-lg bg-muted p-[3px]' },
-  template: `
-    @if (tabs().length) {
-      <hlm-tabs [tab]="activeTab()" (tabActivated)="pickTab($event)">
-        <hlm-tabs-list [attr.aria-label]="label()" class="bg-transparent p-0">
-          @for (tab of tabs(); track tab.value) {
-            <button [hlmTabsTrigger]="tab.value" type="button" class="px-3 hover:text-foreground data-active:border-primary/40! data-active:bg-primary/15! data-active:text-primary! data-active:shadow-none!">
-              {{ tab.label }}
-              <!-- No room on small screens: pages show the rank of the period on screen elsewhere -->
-              @if (rankOf(tab.value); as rank) {
-                <span class="hidden rounded bg-foreground/10 px-1 text-xs font-semibold text-current tabular-nums opacity-80 sm:inline">{{ rank }}</span>
-              }
-            </button>
-          }
-        </hlm-tabs-list>
-        <!-- The tabs switch the board below, which is not inside them: each tab still needs its panel (aria-controls),
-             so a panel per tab says so to screen readers. Out of sight and out of the tab order. -->
-        @for (tab of tabs(); track tab.value) {
-          <p [hlmTabsContent]="tab.value" class="sr-only" tabindex="-1">The board below shows {{ phraseOf(tab.value) }}.</p>
-        }
-      </hlm-tabs>
-    }
-    @if (years().length) {
-      <hlm-select [value]="year()" (valueChange)="pickYear($event)" [itemToString]="yearLabel">
-        <hlm-select-trigger
-          [class]="'h-[calc(100%-1px)] border-transparent bg-transparent shadow-none hover:text-foreground dark:bg-transparent '
-            + (year() ? 'border-primary/40! bg-primary/15! text-primary! dark:bg-primary/15! *:text-primary!' : 'text-foreground/60 dark:text-muted-foreground')"
-          size="sm"
-          buttonAriaLabel="Year"
-        >
-          <hlm-select-value placeholder="Year" />
-        </hlm-select-trigger>
-        <hlm-select-content *hlmSelectPortal>
-          @for (value of years(); track value) {
-            <hlm-select-item [value]="value">
-              <span class="flex-1">{{ value }}</span>
-              @if (rankOf(value); as rank) {
-                <span class="text-xs text-muted-foreground tabular-nums">{{ rank }}</span>
-              }
-            </hlm-select-item>
-          }
-        </hlm-select-content>
-      </hlm-select>
-    }
-  `,
+  templateUrl: './period-tabs.html',
 })
 export class PeriodTabs {
   /** The period on screen. */

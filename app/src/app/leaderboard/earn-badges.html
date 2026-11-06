@@ -1,0 +1,34 @@
+<header class="mx-auto mb-10 max-w-4xl text-center">
+  <h2 class="brand text-4xl text-balance sm:text-5xl">Built on <span class="text-primary">Angular</span> community tools</h2>
+  <p class="mt-4 text-lg text-pretty text-muted-foreground"><span class="inline-flex items-baseline gap-1.5 font-medium whitespace-nowrap text-foreground"><app-logo-mark class="size-[1.5em] self-center" /><span class="brand text-primary">Angularians</span></span> runs on these four. Their creators wear a special badge.</p>
+</header>
+<ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+  @for (project of projects; track project.name) {
+    <li hlmCard class="flex flex-col items-center gap-0 p-6 text-center">
+      <a [href]="project.href" target="_blank" rel="noopener" class="group flex flex-col items-center rounded-xl focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+        <span class="grid size-20 place-items-center rounded-2xl bg-muted ring-1 ring-border transition group-hover:ring-primary/50">
+          <img [src]="project.logo" alt="" width="44" height="44" class="size-11 object-contain" />
+        </span>
+        <span class="mt-4 inline-flex items-center gap-1 text-lg font-semibold">{{ project.name }}<ng-icon name="remixArrowRightUpLine" size="0.8em" class="text-muted-foreground transition group-hover:text-foreground" aria-hidden="true" /></span>
+      </a>
+      <p class="mt-1 text-pretty text-muted-foreground">{{ project.does }}</p>
+      <div class="mt-auto flex flex-col items-center gap-3 pt-6">
+        <div class="flex items-center gap-3">
+          <span class="flex -space-x-2">
+            @for (person of project.people; track person.githubId) {
+              <a [routerLink]="['/', person.username]" [attr.aria-label]="person.name + '\'s profile'" class="rounded-full transition hover:z-10 hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"><img [src]="avatar(person.githubId)" alt="" width="40" height="40" class="size-10 rounded-full ring-2 ring-card" /></a>
+            }
+          </span>
+          <span class="text-left leading-tight">
+            @for (person of project.people; track person.githubId; let last = $last) {
+              <a [routerLink]="['/', person.username]" class="font-medium underline-offset-4 hover:underline">{{ person.name }}</a>@if (!last) {<span class="text-muted-foreground"> & </span>}
+            }
+          </span>
+        </div>
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-muted/60 px-2.5 py-1 text-sm whitespace-nowrap ring-1 ring-border">
+          <img [src]="project.logo" alt="" width="16" height="16" class="size-4 object-contain" />{{ project.badge ?? project.name }} {{ project.people[0].role }}
+        </span>
+      </div>
+    </li>
+  }
+</ul>

@@ -12,38 +12,7 @@ const AUTHOR_ID = 88717125
   imports: [AngularLogo, FirstPrGuides, NgIcon],
   providers: [provideIcons({ simpleDiscord })],
   host: { class: 'mx-auto grid w-full max-w-4xl gap-6 text-left @min-[640px]:grid-cols-2' },
-  template: `
-    <section class="@container" aria-labelledby="join-angular">
-      <!-- Both headings one height (h-6), so the two columns of guides start on the same line -->
-      <h3 id="join-angular" class="mb-3 flex h-6 items-center gap-1.5 text-sm font-medium text-muted-foreground">
-        <app-angular-logo class="size-5" /> From the Angular team
-      </h3>
-      <div class="grid gap-2 @min-[460px]:grid-cols-2">
-        <a [class]="guide + ' hover:ring-[#9717E7]'" href="https://github.com/angular/angular/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">
-          <span class="grid size-10 shrink-0 place-items-center rounded-md bg-[#9717E7]/10 dark:bg-muted"><app-angular-logo class="size-6" /></span>
-          <span class="min-w-0">
-            <span class="block font-medium">Contribution guide</span>
-            <span class="block text-sm text-muted-foreground">How to send your first PR</span>
-          </span>
-        </a>
-        <a [class]="guide + ' hover:ring-[#5865F2]'" href="https://discord.gg/angular" target="_blank" rel="noopener">
-          <span class="grid size-10 shrink-0 place-items-center rounded-md bg-[#5865F2]/10 text-[#5865F2] dark:bg-muted"><ng-icon name="simpleDiscord" size="1.5rem" aria-hidden="true" /></span>
-          <span class="min-w-0">
-            <span class="block font-medium">Angular Discord</span>
-            <span class="block text-sm text-muted-foreground">Ask the community for help</span>
-          </span>
-        </a>
-      </div>
-    </section>
-    <section class="@container" aria-labelledby="join-author">
-      <h3 id="join-author" class="mb-3 flex h-6 items-center text-sm font-medium text-muted-foreground">
-        <a href="https://github.com/erkamyaman" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 rounded-md transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
-          <img [src]="authorAvatar" alt="" width="20" height="20" class="size-5 rounded-full bg-muted" /> By erkamyaman
-        </a>
-      </h3>
-      <app-first-pr-guides />
-    </section>
-  `,
+  templateUrl: './join-links.html',
 })
 export class JoinLinks {
   protected readonly guide = GUIDE

@@ -14,24 +14,7 @@ import { ScoreBreakdown } from './score-breakdown'
   imports: [HlmButton, HlmDialogImports, NgIcon, ScoreBreakdown],
   providers: [provideIcons({ remixInformationLine })],
   host: { class: 'inline-flex' },
-  template: `
-    <hlm-dialog>
-      <button hlmDialogTrigger hlmBtn variant="ghost" size="icon-xs" type="button" aria-label="Show score breakdown" class="text-muted-foreground">
-        <ng-icon name="remixInformationLine" aria-hidden="true" />
-      </button>
-      <hlm-dialog-content *hlmDialogPortal class="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
-        <hlm-dialog-header>
-          <h2 hlmDialogTitle>How is the score calculated?</h2>
-          <p hlmDialogDescription>Each contribution type has a weight. Merged PRs weigh the most.</p>
-        </hlm-dialog-header>
-        <div class="my-2 flex flex-col items-center gap-1 rounded-md bg-muted/60 py-4">
-          <span class="text-4xl font-bold tabular-nums">{{ number(stats().score) }}</span>
-          <span class="text-sm text-muted-foreground">total points {{ phrase() }}</span>
-        </div>
-        <app-score-breakdown [stats]="stats()" />
-      </hlm-dialog-content>
-    </hlm-dialog>
-  `,
+  templateUrl: './score-dialog.html',
 })
 export class ScoreDialog {
   readonly stats = input.required<ScoredStats & { score: number }>()

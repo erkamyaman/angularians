@@ -1,0 +1,32 @@
+<section class="rounded-xl bg-muted/40 px-6 py-10 ring-1 ring-border sm:px-10" aria-labelledby="claim-title">
+  <div class="mx-auto max-w-3xl text-center">
+    <h2 id="claim-title" class="brand text-4xl text-balance sm:text-5xl">Forged something for <a href="https://angular.dev" target="_blank" rel="noopener" translate="no" class="inline-flex items-baseline gap-2 rounded-sm font-sans font-semibold tracking-normal normal-case transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"><app-angular-logo class="size-[0.95em] self-center" />Angular</a>?</h2>
+    <p class="mt-3 text-lg text-pretty text-muted-foreground">Claim a custom badge in your profile, with your project&apos;s own logo, next to your rank.</p>
+
+    <div class="mx-auto mt-6 flex w-fit items-center gap-3 rounded-xl bg-background px-4 py-3 ring-1 ring-border" aria-hidden="true">
+      <span class="grid size-10 place-items-center rounded-full border-2 border-dashed border-muted-foreground/40 text-muted-foreground"><ng-icon name="remixUserLine" /></span>
+      <span class="flex flex-wrap items-center gap-2 text-sm">
+        <span class="font-medium">you</span>
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-muted/60 px-2.5 py-1 whitespace-nowrap ring-1 ring-border">
+          <span class="grid size-4 place-items-center rounded-sm border border-dashed border-primary/60 text-[10px] text-primary">?</span>Your project creator
+        </span>
+      </span>
+    </div>
+  </div>
+
+  <ul class="mx-auto mt-8 grid max-w-3xl gap-3 sm:grid-cols-2" aria-label="Who can claim one">
+    @for (idea of ideas; track idea.text) {
+      <li class="flex items-center gap-3 rounded-lg bg-background/60 p-3 text-left text-pretty ring-1 ring-border/60">
+        <span [class]="'grid size-9 shrink-0 place-items-center rounded-md bg-current/10 ' + idea.color"><ng-icon [name]="idea.icon" size="1.25rem" aria-hidden="true" /></span>
+        <span>{{ idea.text }}</span>
+      </li>
+    }
+  </ul>
+  <p class="mt-4 text-center text-sm text-muted-foreground">Something else? Ask anyway.</p>
+
+  <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+    <a hlmBtn [href]="issueUrl" target="_blank" rel="noopener"><ng-icon name="octIssueOpened" aria-hidden="true" /> Open an issue</a>
+    <a hlmBtn variant="outline" [href]="prUrl" target="_blank" rel="noopener"><ng-icon name="octGitPullRequest" aria-hidden="true" /> Open a PR</a>
+    <span class="text-sm text-muted-foreground">or <a href="https://erkamyaman.dev/links/" target="_blank" rel="author noopener" class="font-medium text-foreground underline underline-offset-4 hover:text-primary">ping.me</a></span>
+  </div>
+</section>

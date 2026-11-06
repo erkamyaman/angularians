@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { canonicalPackage, inferPullRequestType, landedPullRequests, packageRepo, prCloseNumbers, pullRequestScopes, type PullRequestInput } from '../src/pull-requests.ts'
 import { isBotAccount } from '../src/bots.ts'
+import { ContributorsAccumulator } from '../src/scoring.ts'
 
 describe('inferPullRequestType', () => {
   it.each([
@@ -18,21 +19,36 @@ describe('inferPullRequestType', () => {
     ['Revert "feat(core): add input signals"', 'chore'],
     ['revert: fix(router): keep the query params', 'chore'],
     ['  feat: leading spaces', 'feat'],
+    // Leading tags are not part of the commit message.
+    ['[Backport 21.2.X] fix(router): do not copy URL-sized objects', 'fix'],
+    ['[19.2.x] docs: a typo', 'docs'],
+    ['[PATCH] [19.2.x] build: bump', 'chore'],
+    ['[WIP] feat(core): x', 'feat'],
+    ['[19.2.x] Revert "feat(core): x"', 'chore'],
+    ['[13.3.x]: docs(material/tabs): x', 'docs'],
+    ['[19.2.x] - fix(core): x', 'fix'],
+    ['[WIP] -- fix(core): x', 'fix'],
+    ['[19.2.x] — fix(core): x', 'fix'],
+    // No type in the title or the labels: chore.
+    ['Bump version to "v22.2.3" with changelog.', 'chore'],
+    ['Forms: always use the provided injector', 'chore'],
+    ['', 'chore'],
   ] as const)('%s → %s', (title, type) => {
     expect(inferPullRequestType(title)).toBe(type)
   })
 
   it('does not read a prefix inside a word', () => {
     expect(inferPullRequestType('fixture cleanup', [{ name: 'docs' }])).toBe('docs')
-    expect(inferPullRequestType('feature flags')).toBe('feat')
+    expect(inferPullRequestType('feature flags')).toBe('chore')
     expect(inferPullRequestType('testing', [{ name: 'maintenance' }])).toBe('chore')
   })
 
-  it('falls back to the labels, then to feat', () => {
+  it('falls back to the labels, then to chore', () => {
     expect(inferPullRequestType('Update README', [{ name: 'Documentation' }])).toBe('docs')
     expect(inferPullRequestType('Something', [{ name: 'area: core' }, { name: 'bug' }])).toBe('fix')
-    expect(inferPullRequestType('Something', [{ name: null }])).toBe('feat')
-    expect(inferPullRequestType('Something')).toBe('feat')
+    expect(inferPullRequestType('Something', [{ name: 'enhancement' }])).toBe('feat')
+    expect(inferPullRequestType('Something', [{ name: null }])).toBe('chore')
+    expect(inferPullRequestType('Something')).toBe('chore')
   })
 })
 
@@ -61,6 +77,21 @@ const pull = (number: number, title: string, author: PullRequestInput['user'], m
   ({ number, title, user: author, labels: [], merged_at: mergedAt })
 
 describe('landedPullRequests', () => {
+  it('credits Domino merged PRs to its single package, with or without a title scope', () => {
+    const author = user('alice', 1)
+    const landed = landedPullRequests([
+      pull(1, 'fix: preserve element IDs', author, '2025-03-01T10:00:00Z'),
+      pull(2, 'test(parser): cover nested HTML', author, '2025-03-02T10:00:00Z'),
+      pull(3, 'fix: closed without landing', author),
+    ], [], 'angular/domino')
+    const accumulator = new ContributorsAccumulator(new Date('2025-03-03T00:00:00Z'))
+    for (const pr of landed) accumulator.addLandedPullRequest(pr)
+    expect(accumulator.packages()).toEqual([
+      { githubId: 1, packages: [{ name: '@angular/domino', pullRequests: 2 }] },
+    ])
+    expect(accumulator.records().get('all')?.[0]).toMatchObject({ score: 8, pullRequests: { all: 2, fix: 1, chore: 1 } })
+  })
+
   it('counts PRs GitHub marks merged, on their merge date', () => {
     expect(landedPullRequests([pull(1, 'feat: a', user('alice', 1), '2025-03-01T10:00:00Z')], [])).toEqual([
       { number: 1, author: user('alice', 1), type: 'feat', scopes: [], landedAt: '2025-03-01T10:00:00Z' },
@@ -127,6 +158,26 @@ describe('pullRequestScopes', () => {
     ['docs: update compiler-cli and core reference skills', ['skills']],
     ['docs: fix a typo in the signals guide', ['docs']],
     ['docs(forms): a skill for signal forms', ['forms']],
+    // Backports and patch ports: none, the change counts through the PR that landed it on main.
+    ['[Backport 21.2.X] fix(router): snapshots', []],
+    ['[PATCH] [19.2.x] fix(core, forms): x', []],
+    ['[19.2.x] docs: a typo', []],
+    ['[Patch port] fix(core): x', []],
+    ['[14.2 backport] perf(compiler-cli): x', []],
+    ['[v19.2.x] fix(core): x', []],
+    ['[1.2.3-rc.0] fix(core): x', []],
+    ['[Patch version for #29189] fix(core): x', []],
+    ['[WIP] [19.2.x] fix(core): x', []],
+    ['[19.2.x] - fix(core): x', []],
+    ['[WIP] - fix(core): x', ['core']],
+    // A revert written with a scope names its package, as before; `Revert "…"` does not.
+    ['revert(core): x', ['core']],
+    ['  [cherry-pick] fix(core): x', []],
+    ['[19.2.x] Revert "fix(core): y"', []],
+    // Other leading tags are skipped.
+    ['[WIP] fix(core): x', ['core']],
+    ['[skills] docs: x', ['docs']],
+    ['fix(core): see [19.2.x]', ['core']],
   ] as const)('%s → %j', (title, scopes) => {
     expect(pullRequestScopes(title)).toEqual(scopes)
   })
@@ -138,6 +189,13 @@ describe('pullRequestScopes in other repositories', () => {
     ['angular/components', 'fix(material/select): a\nfix(material/core): b', ['@angular/material']],
     ['angular/components', 'docs(multiple): typos', []],
     ['angular/components', 'feat(google-maps): add a marker clusterer', ['@angular/google-maps']],
+    ['angular/components', 'fix(aria/grid): keyboard navigation', ['@angular/aria']],
+    ['angular/components', 'fix(@angular/cdk/overlay): written as the npm name', ['@angular/cdk']],
+    ['angular/components', 'fix(@angular/aria): x', ['@angular/aria']],
+    ['angular/components', '[20.0.x] fix(aria/grid): a backport', []],
+    ['angular/components', 'fix(@angular/build): not a components package', []],
+    ['angular/angular-cli', '[19.2.x] fix(@angular/build): a backport', []],
+    ['angular/domino', '[19.2.x] fix(core): every domino PR counts', ['@angular/domino']],
     ['angular/angular-cli', 'fix(@angular/build): keep the base href', ['@angular/build']],
     ['angular/angular-cli', 'feat(@schematics/angular, @angular/cli): ai config', ['@schematics/angular', '@angular/cli']],
     ['angular/angular-cli', 'build: update dependency', []],
@@ -156,8 +214,10 @@ describe('packageRepo', () => {
     ['router', 'angular/angular'],
     ['@angular/material', 'angular/components'],
     ['@angular/cdk', 'angular/components'],
+    ['@angular/aria', 'angular/components'],
     ['@angular/build', 'angular/angular-cli'],
     ['@schematics/angular', 'angular/angular-cli'],
+    ['@angular/domino', 'angular/domino'],
   ])('%s → %s', (name, repo) => expect(packageRepo(name)).toBe(repo))
 })
 

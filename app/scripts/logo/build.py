@@ -5,7 +5,7 @@
 
 The mark: the Angular shield cut in two along the right leg of the capital A of Norse Bold. The left piece holds
 the A, which cuts through the shield from its tip out through its bottom. The right piece is a contribution graph:
-a grid of squares tilted to the shield's top edge, cut by its outline, in three greens and the grey of empty days.
+a grid of squares tilted to the shield's top edge, cut by its outline, in three shades of the brand colour and the grey of empty days.
 The parts: `solid` (the left piece), `empty`, `l1`, `l2`, `l3` (the squares, darkest to brightest).
 """
 import json, math, random

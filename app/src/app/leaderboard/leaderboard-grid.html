@@ -1,0 +1,82 @@
+<div class="mb-3 flex justify-end sm:hidden" role="group" aria-label="Leaderboard view">
+  <div class="inline-flex gap-1 rounded-lg bg-muted p-1">
+    <button type="button" aria-label="Show as a grid" [attr.aria-pressed]="view() === 'grid'" [class]="viewButton(view() === 'grid')" (click)="memory.view.set('grid')"><ng-icon name="remixLayoutGridLine" aria-hidden="true" /></button>
+    <button type="button" aria-label="Show as a list" [attr.aria-pressed]="view() === 'list'" [class]="viewButton(view() === 'list')" (click)="memory.view.set('list')"><ng-icon name="remixListUnordered" aria-hidden="true" /></button>
+  </div>
+</div>
+
+@if (view() === 'list') {
+  <ol class="flex flex-col gap-2 sm:hidden" [attr.aria-label]="listLabel()">
+    @for (item of items(); track item.githubId) {
+      <li>
+        <a [routerLink]="['/', item.username]" [queryParams]="query()" class="flex items-center gap-3 rounded-lg bg-muted/40 p-2 ring-1 ring-border transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none" [attr.aria-label]="label(item)">
+          @if (podium(item); as medal) {
+            <app-rank-shield [rank]="place(item)" metal="" [podium]="true" [class]="'h-8 w-7 shrink-0 text-sm ' + medal.text" />
+          } @else {
+            <app-rank-shield [rank]="place(item)" class="h-8 w-7 shrink-0 text-sm text-foreground" />
+          }
+          <img [src]="listAvatar(item)" alt="" width="40" height="40" loading="lazy" decoding="async" class="size-10 shrink-0 rounded-md bg-muted object-cover" />
+          <span class="min-w-0 flex-1">
+            <span class="block font-medium wrap-anywhere">{{ item.name || item.username }}</span>
+            @if (item.name) { <span class="block text-xs wrap-anywhere text-muted-foreground">{{ item.username }}</span> }
+          </span>
+          <span class="shrink-0 text-sm font-semibold tabular-nums">{{ points(item) }}</span>
+        </a>
+      </li>
+    }
+  </ol>
+}
+
+<ol
+  [class]="'grid-cols-5 gap-3 sm:grid sm:grid-cols-8 sm:gap-4 md:grid-cols-10 ' + (view() === 'list' ? 'hidden' : 'grid')"
+  [attr.aria-label]="listLabel()"
+  (pointerover)="showTip($event)"
+  (pointerout)="hideTip($event)"
+  (focusin)="showTip($event)"
+  (focusout)="tip.set(null)"
+  (pointerdown)="tip.set(null)"
+>
+  @for (item of items(); track item.githubId; let index = $index) {
+    <li class="relative">
+      <a
+        [routerLink]="['/', item.username]"
+        [queryParams]="query()"
+        [attr.data-index]="index"
+        [attr.aria-label]="label(item)"
+        [class]="'relative block aspect-square overflow-hidden rounded-xl bg-muted transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none ' + podiumRing(item)"
+      >
+        <img [src]="avatar(item)" [srcset]="avatars(item)" sizes="(min-width: 1280px) 124px, (min-width: 768px) 9vw, (min-width: 640px) 11vw, 17vw" alt="" [width]="AVATAR_SIZE" [height]="AVATAR_SIZE" loading="lazy" decoding="async" class="size-full object-cover" />
+        @if (podium(item)) {
+          <span class="absolute inset-x-0 bottom-0 hidden bg-black/75 px-1.5 py-1 text-center text-[0.6875rem] leading-tight font-medium wrap-anywhere text-white xl:block">{{ item.name || item.username }}</span>
+        }
+      </a>
+      @if (podium(item); as medal) {
+        <span [class]="'pointer-events-none absolute -top-2 -left-1 grid size-7 place-items-center rounded-md bg-background ring-1 ' + medal.badge" aria-hidden="true">
+          <ng-icon [name]="medal.icon" size="1.25rem" />
+        </span>
+        <app-rank-shield [rank]="place(item)" metal="" [podium]="true" [class]="'pointer-events-none absolute! -top-2 -right-1 h-8 w-7 text-sm ' + medal.text" />
+      } @else {
+        <app-rank-shield [rank]="place(item)" class="pointer-events-none absolute! -right-1 -bottom-1 h-5 w-4.5 text-[0.625rem] text-foreground sm:h-6 sm:w-5.5 sm:text-xs" />
+      }
+    </li>
+  }
+</ol>
+
+@if (tip(); as shown) {
+  <div #tipBox class="group pointer-events-none fixed z-50 w-max max-w-[calc(100vw-1rem)] -translate-x-1/2 -translate-y-full rounded-md bg-foreground px-3 py-1.5 text-xs text-background" [style.left.px]="shown.x" [style.top.px]="shown.y - 8" aria-hidden="true">
+    <span class="brand mr-1.5 text-sm leading-none">#{{ rank(shown.item) }}</span>{{ who(shown.item) }} · {{ points(shown.item) }}@if (shown.item.countryRank) { · #{{ overall(shown.item) }} overall }
+    <span data-arrow class="absolute top-full left-1/2 -mt-1.5 size-2.5 -translate-x-1/2 rotate-45 rounded-[2px] bg-foreground group-data-[side=bottom]:top-auto group-data-[side=bottom]:bottom-full group-data-[side=bottom]:mt-0 group-data-[side=bottom]:-mb-1.5"></span>
+  </div>
+}
+
+@if (items().length < page().total) {
+  <div class="mt-10 flex justify-center">
+    <button hlmBtn variant="outline" type="button" [disabled]="loading()" (click)="showMore()">
+      <ng-icon name="remixAddLine" aria-hidden="true" />
+      {{ loading() ? 'Loading…' : 'Show more' }}
+    </button>
+  </div>
+}
+@if (failed()) {
+  <p role="alert" class="mt-4 text-center text-sm text-destructive">The next page could not be loaded. Try again.</p>
+}

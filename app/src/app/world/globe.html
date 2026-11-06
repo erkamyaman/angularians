@@ -1,0 +1,87 @@
+<!-- Clipped: a hidden marker keeps its last position, out of the frame it would widen the page -->
+<svg class="absolute size-0" aria-hidden="true">
+  <filter id="globe-land" color-interpolation-filters="sRGB">
+    <feComponentTransfer>
+      <feFuncR type="table" [attr.tableValues]="land()[0] + ' 1'" />
+      <feFuncG type="table" [attr.tableValues]="land()[1] + ' 1'" />
+      <feFuncB type="table" [attr.tableValues]="land()[2] + ' 1'" />
+    </feComponentTransfer>
+  </filter>
+</svg>
+<canvas
+  #canvas
+  [class.is-light]="!theme.dark()"
+  [hidden]="failed()"
+  tabindex="0"
+  role="img"
+  aria-label="Contributors around the world. Arrow keys rotate the globe, plus and minus zoom, zero resets. Every country is also in the list."
+  class="globe__canvas block size-full cursor-grab touch-none outline-none active:cursor-grabbing"
+  (pointerdown)="pointerDown($event)"
+  (pointermove)="pointerMove($event)"
+  (pointerup)="pointerEnd($event)"
+  (pointercancel)="pointerEnd($event)"
+  (lostpointercapture)="pointerEnd($event)"
+  (keydown)="keydown($event)"
+  (webglcontextlost)="contextLost($event)"
+></canvas>
+
+@if (ready() && !failed()) {
+  @for (ship of SHIPS; track $index) {
+    <span class="globe__ship" [attr.data-ship]="$index" data-visible="false" aria-hidden="true"><ng-icon name="vikingLongship" size="1.75rem" /></span>
+  }
+  @for (marker of markers(); track marker.code) {
+    <button
+      type="button"
+      class="globe__marker"
+      [attr.data-code]="marker.code"
+      data-visible="false"
+      inert
+      [class.is-selected]="selected() === marker.code"
+      [class.is-avatars]="avatars()"
+      [attr.data-tier]="tier(marker.count)"
+      [attr.aria-label]="marker.name + ', ' + count(marker.count)"
+      [attr.aria-pressed]="selected() === marker.code"
+      (click)="select.emit(selected() === marker.code ? null : marker.code)"
+      (pointerenter)="hovered.set(marker.code)"
+      (pointerleave)="hovered.set(null)"
+      (focus)="hovered.set(marker.code)"
+      (blur)="hovered.set(null)"
+    >
+      @if (hovered() === marker.code) {
+        <span class="globe__label" aria-hidden="true">
+          <img [src]="flag(marker.code)" alt="" width="16" height="16" class="size-4 shrink-0" />{{ marker.name }}
+        </span>
+      }
+      @if (avatars()) {
+        <span class="flex pl-2" aria-hidden="true">
+          @for (username of (marker.code === selected() ? marker.top : marker.top.slice(0, 1)); track username) {
+            <img [src]="avatar(username)" alt="" width="32" height="32" loading="lazy" class="-ml-2 size-8 max-w-none rounded-full bg-muted object-cover ring-2 ring-background" />
+          }
+        </span>
+      } @else {
+        <span [class]="tier(marker.count) === 'top' ? 'brand relative top-[0.06em] text-lg leading-none' : ''">{{ number(marker.count) }}</span>
+      }
+    </button>
+  }
+}
+
+@if (failed()) {
+  <p class="absolute inset-[20%] grid place-content-center text-center text-sm text-muted-foreground" role="status">The globe needs WebGL. Every country is in the list.</p>
+}
+
+@if (ready() && !failed()) {
+  <div class="absolute bottom-1 left-1/2 flex -translate-x-1/2 gap-0.5 rounded-lg bg-background/80 p-1 ring-1 ring-border backdrop-blur" role="group" aria-label="Globe controls">
+    <button hlmBtn variant="ghost" size="icon-sm" type="button" [attr.aria-label]="paused() ? 'Resume rotation' : 'Pause rotation'" [attr.aria-pressed]="paused()" (click)="togglePause()">
+      <ng-icon [name]="paused() ? 'remixPlayLine' : 'remixPauseLine'" aria-hidden="true" />
+    </button>
+    <button hlmBtn variant="ghost" size="icon-sm" type="button" aria-label="Zoom in" [disabled]="zoom() >= MAX_ZOOM" (click)="setZoom(zoom() + 0.25)">
+      <ng-icon name="remixAddLine" aria-hidden="true" />
+    </button>
+    <button hlmBtn variant="ghost" size="icon-sm" type="button" aria-label="Zoom out" [disabled]="zoom() <= 1" (click)="setZoom(zoom() - 0.25)">
+      <ng-icon name="remixSubtractLine" aria-hidden="true" />
+    </button>
+    <button hlmBtn variant="ghost" size="icon-sm" type="button" aria-label="Reset the globe" (click)="reset()">
+      <ng-icon name="remixRestartLine" aria-hidden="true" />
+    </button>
+  </div>
+}

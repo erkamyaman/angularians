@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-page-grid',
   host: { class: 'grid gap-4 sm:grid-cols-2 lg:grid-cols-3' },
-  template: `<ng-content />`,
+  templateUrl: './page-grid.html',
 })
 export class PageGrid {}

@@ -1,26 +1,27 @@
 {
-  "collectedAt": "2026-11-05T08:21:11.671Z",
+  "collectedAt": "2026-11-05T19:33:54.137Z",
   "repos": [
     "angular/angular",
     "angular/components",
     "angular/angular-cli",
-    "angular/dev-infra"
+    "angular/dev-infra",
+    "angular/domino"
   ],
   "partial": false,
   "since": null,
   "activity": true,
-  "contributors": 59360,
-  "profiles": 45121,
+  "contributors": 59365,
+  "profiles": 45126,
   "team": 30,
-  "pulls": 76947,
-  "commits": 78320,
+  "pulls": 77008,
+  "commits": 78864,
   "prCloseCommits": 26789,
   "multiPrCommits": 46,
-  "landedMerged": 32369,
+  "landedMerged": 32419,
   "landedByPrClose": 17436,
-  "landedPullRequests": 49805,
-  "issues": 64479,
-  "comments": 575427,
-  "reviewComments": 145493,
-  "activityPages": 9600
+  "landedPullRequests": 49855,
+  "issues": 64485,
+  "comments": 575489,
+  "reviewComments": 145588,
+  "activityPages": 9604
 }

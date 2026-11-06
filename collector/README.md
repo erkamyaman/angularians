@@ -1,7 +1,7 @@
 # Collector
 
 Collects what everyone contributed to the Angular repositories (`REPOS` in `shared/src/repos.ts`: angular/angular,
-angular/components, angular/angular-cli and angular/dev-infra; landed pull requests, issues, conversation comments, inline
+angular/components, angular/angular-cli, angular/dev-infra and angular/domino; landed pull requests, issues, conversation comments, inline
 review comments, reactions received) and writes the contributor files the app reads.
 Based on [nuxt/nuxters](https://github.com/nuxt/nuxters) (MIT, Copyright (c) 2023 Nuxt).
 
@@ -10,7 +10,7 @@ Based on [nuxt/nuxters](https://github.com/nuxt/nuxters) (MIT, Copyright (c) 202
 Every night it re-collects everything, like nuxt/nuxters: no cache, every score recomputed.
 
 A PR has landed if GitHub marks it merged, **or** a commit on the default branch has a `PR Close #N` line for it.
-Angular's merge tool (used by all four repositories) pushes the commits itself and closes the PR, so GitHub shows most PRs from
+Angular's merge tool pushes the commits itself and closes the PR, so GitHub shows most PRs from
 2017 to 2025 as closed, not merged. The landed PR is credited to its author. Scoring rules are in
 `shared/src/scoring.ts` and `shared/src/pull-requests.ts`.
 
@@ -23,7 +23,7 @@ GITHUB_TOKEN=… pnpm collect -- --since=90d --out=/tmp/test  # a quick test run
 
 | Flag | Env var | Default | |
 |---|---|---|---|
-| `--repos=a/b,c/d` | `COLLECT_REPOS` | the four repositories | |
+| `--repos=a/b,c/d` | `COLLECT_REPOS` | the five repositories | |
 | `--part` | | off | Write the repositories as a part for `merge.ts`, not the site's data |
 | `--since=90d` or `--since=2026-08-01` | `COLLECT_SINCE` | full history | Test runs only |
 | `--pulls=rest\|search` | `COLLECT_PULLS` | `rest` | `search` when `/pulls` is not reachable: same data, more requests |
@@ -39,7 +39,7 @@ The built-in Actions token (1,000 requests an hour) is not enough: use a persona
 
 ### In CI: one job per repository
 
-One after the other, the four repositories take longer than a job may run. The workflow collects each in a job of its
+One after the other, the repositories take longer than a job may run. The workflow collects each in a job of its
 own, in parallel (`collect --part --repos=…`), and a last job merges the parts into `data/` (`merge`): counts added up
 per contributor, scores recomputed, then the team and the profiles. If one repository fails, nothing is published.
 

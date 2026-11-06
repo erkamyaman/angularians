@@ -23,6 +23,13 @@ describe('globe math', () => {
   });
 });
 
+/** A row as a screen reader reads it: without what is hidden from it. */
+const spoken = (button: Element) => {
+  const copy = button.cloneNode(true) as Element;
+  copy.querySelectorAll('[aria-hidden="true"], app-rank-shield').forEach(hidden => hidden.remove());
+  return copy.textContent!.replace(/\s+/g, ' ').trim();
+};
+
 describe('World', () => {
   const map = {
     period: '12m',
@@ -51,7 +58,7 @@ describe('World', () => {
       fixture.detectChanges();
     };
     type('tÜr');
-    const rows = [...element.querySelectorAll('ol li button')].map(button => button.textContent!.replace(/\s+/g, ' ').trim());
+    const rows = [...element.querySelectorAll('ol li button')].map(spoken);
     expect(rows).toEqual(['Rank 2Turkey2']);
     type('nowhere');
     expect(element.querySelector('ol')!.textContent).toContain('No country found');
@@ -67,7 +74,7 @@ describe('World', () => {
       countries: [{ code: 'US', count: 4, top: [] }, { code: 'TR', count: 1, top: [] }, { code: 'BG', count: 1, top: [] }, { code: 'FR', count: 1, top: [] }],
     });
     fixture.detectChanges();
-    const ranks = [...fixture.nativeElement.querySelectorAll('ol li button')].map((button: HTMLElement) => button.querySelector('[data-rank]')!.textContent!.replace('Rank', '').trim());
+    const ranks = [...fixture.nativeElement.querySelectorAll('ol li button')].map((button: HTMLElement) => button.querySelector('[data-rank] .sr-only')!.textContent!.replace('Rank', '').trim());
     expect(ranks).toEqual(['1', '2', '2', '2']);
   });
 
@@ -81,13 +88,13 @@ describe('World', () => {
       countries: [{ code: 'US', count: 3, top: [] }, { code: 'TR', count: 1, top: [] }, { code: 'BG', count: 1, top: [] }, { code: 'FR', count: 1, top: [] }, { code: 'DE', count: 0, top: [] }],
     });
     fixture.detectChanges();
-    const ranks = [...fixture.nativeElement.querySelectorAll('ol li button')].map((button: HTMLElement) => button.querySelector('[data-rank]')!.textContent!.replace('Rank', '').trim());
+    const ranks = [...fixture.nativeElement.querySelectorAll('ol li button')].map((button: HTMLElement) => button.querySelector('[data-rank] .sr-only')!.textContent!.replace('Rank', '').trim());
     expect(ranks).toEqual(['1', '2', '2', '2', '5']);
   });
 
   it('lists countries from the most contributors, with how many set a location', () => {
     const element: HTMLElement = render(null).nativeElement;
-    const rows = [...element.querySelectorAll('ol li button')].map(button => button.textContent!.replace(/\s+/g, ' ').trim());
+    const rows = [...element.querySelectorAll('ol li button')].map(spoken);
     expect(rows).toEqual(['Rank 1United States4', 'Rank 2Turkey2']);
     expect(element.textContent).toContain('6 of 10 Angularians set one');
   });

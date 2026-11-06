@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-container',
   host: { class: 'mx-auto block w-full max-w-[90rem] px-4 sm:px-6 lg:px-8' },
-  template: `<ng-content />`,
+  templateUrl: './container.html',
 })
 export class Container {}

@@ -4,6 +4,8 @@ import { defineConfig, type Plugin } from 'vite';
 import analog from '@analogjs/platform';
 import tailwindcss from '@tailwindcss/vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import { existsSync, mkdirSync, readFileSync, renameSync, rmSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const DEV_IMAGES = '/api/__dev-images';
@@ -21,6 +23,25 @@ function forwardImagesInDev(): Plugin {
   };
 }
 
+const CLIENT_MANIFEST = fileURLToPath(new URL('./dist/client-manifest/manifest.json', import.meta.url));
+
+function keepManifestPrivate(): Plugin {
+  return {
+    name: 'keep-manifest-private',
+    apply: 'build',
+    writeBundle(options) {
+      const built = join(options.dir ?? '', '.vite');
+      const manifest = join(built, 'manifest.json');
+      if (!existsSync(manifest)) return;
+      if (!readFileSync(manifest, 'utf8').includes('"src/main.server.ts"')) {
+        mkdirSync(dirname(CLIENT_MANIFEST), { recursive: true });
+        renameSync(manifest, CLIENT_MANIFEST);
+      }
+      rmSync(built, { recursive: true });
+    },
+  };
+}
+
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
   server: {
@@ -28,12 +49,14 @@ export default defineConfig(() => ({
   },
   build: {
     target: ['es2020'],
+    manifest: true,
   },
   resolve: {
     mainFields: ['module'],
   },
   plugins: [
     forwardImagesInDev(),
+    keepManifestPrivate(),
     analog({
       // No static pages: `/` reads `?period=` and `?country=`, so a build-time `index.html` would show the
       // default board for every shared link until the browser corrected it. Every page is server-rendered.
@@ -46,6 +69,7 @@ export default defineConfig(() => ({
         // The two fonts of the Angularian card (src/server/card), inlined in the server: about 60 KB.
         // And the brand font, Norse Bold, for the word "Angularian" (public/fonts), about 30 KB.
         serverAssets: [
+          { baseName: 'client-manifest', dir: dirname(CLIENT_MANIFEST) },
           { baseName: 'card-fonts', dir: fileURLToPath(new URL('./src/server/card/fonts', import.meta.url)) },
           { baseName: 'brand-font', dir: fileURLToPath(new URL('./public/fonts', import.meta.url)) },
         ],
@@ -53,12 +77,15 @@ export default defineConfig(() => ({
           // Pages change with the data, once a night with a new deploy (which clears the CDN): browsers revalidate,
           // the CDN keeps a page an hour and may serve a stale one for a day while it refreshes it.
           // 400s and 404s too: they only change with the data. The API routes set their own, longer browser cache.
-          // Netlify-Vary: a copy per query string, or the CDN can answer with another URL's response (the wrong country);
+          // Netlify-Vary: a copy per parameter the routes read, or the CDN can answer with another URL's response (the wrong
+          // country). Any other one (`?utm_source=`) shares the page's copy. A route reading a new parameter must add it here.
           // and per value of the signed-in hint cookie (app/src/app/auth/hint.ts), whose pages start with the signed-in
           // card's skeleton. Every other cookie is ignored by the cache.
-          '/**': { headers: { 'cache-control': 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400', 'netlify-vary': 'query,cookie=angularians-signed-in' } },
+          '/**': { headers: { 'cache-control': 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400', 'netlify-cdn-cache-control': 'public, durable, s-maxage=3600, stale-while-revalidate=86400', 'netlify-vary': 'query=period|country|page|q|flag|v,cookie=angularians-signed-in' } },
           // Sign-in: per person, with cookies. Never in a shared cache.
-          '/api/auth/**': { headers: { 'cache-control': 'private, no-store' } },
+          '/api/auth/**': { headers: { 'cache-control': 'private, no-store', 'netlify-cdn-cache-control': 'no-store' } },
+          // Server functions are POSTs whose input is in the body, which no cache key sees: never cached.
+          '/_analog/**': { headers: { 'cache-control': 'private, no-store', 'netlify-cdn-cache-control': 'no-store' } },
           // Hashed file names: never change.
           '/assets/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
         },

@@ -6,7 +6,13 @@ import * as v from 'valibot'
  * shared caches an hour, and may serve a stale one for a day while they refresh it.
  */
 export function cacheJson(event: H3Event): void {
-  setResponseHeader(event, 'cache-control', 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400')
+  cacheFor(event, { browser: 300, shared: 3600, stale: 86400 })
+}
+
+export function cacheFor(event: H3Event, seconds: { browser: number, shared: number, stale: number }): void {
+  const shared = `s-maxage=${seconds.shared}, stale-while-revalidate=${seconds.stale}`
+  setResponseHeader(event, 'cache-control', `public, max-age=${seconds.browser}, ${shared}`)
+  setResponseHeader(event, 'netlify-cdn-cache-control', `public, durable, ${shared}`)
 }
 
 /** Validate the query string against a schema, or answer 400 with what is wrong. */
@@ -16,4 +22,10 @@ export function parseQuery<S extends v.GenericSchema>(event: H3Event, schema: S,
     throw createError({ statusCode: 400, statusMessage: 'Bad Request', data: { issues: v.flatten(result.issues).nested } })
   }
   return result.output
+}
+
+export function sendPng<T extends Uint8Array>(event: H3Event, png: T): T {
+  setResponseHeader(event, 'content-type', 'image/png')
+  cacheFor(event, { browser: 3600, shared: 86400, stale: 604800 })
+  return png
 }

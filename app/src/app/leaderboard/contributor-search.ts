@@ -18,32 +18,7 @@ const DEBOUNCE_MS = 200
   selector: 'app-contributor-search',
   imports: [HlmAutocompleteImports, HlmKbd, NgIcon],
   providers: [provideIcons({ remixCloseLine })],
-  template: `
-    <hlm-autocomplete [search]="term()" (searchChange)="term.set($event ?? '')" (valueChange)="open($event)" [itemToString]="username" class="w-full sm:w-64">
-      <label [for]="inputId" class="sr-only">Search a contributor</label>
-      <hlm-autocomplete-input #input [inputId]="inputId" placeholder="Search a contributor">
-        @if (!term()) {
-          <kbd hlmKbd class="me-2 hidden sm:inline-flex" aria-hidden="true">/</kbd>
-        } @else {
-          <button type="button" aria-label="Clear search" class="me-1 grid size-6 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none" (click)="clear()">
-            <ng-icon name="remixCloseLine" aria-hidden="true" />
-          </button>
-        }
-      </hlm-autocomplete-input>
-      <hlm-autocomplete-content *hlmAutocompletePortal>
-        <hlm-autocomplete-empty>{{ !term().trim() ? 'Type a GitHub username' : loading() ? 'Searching…' : nobodyFound() }}</hlm-autocomplete-empty>
-        <div hlmAutocompleteList aria-label="Contributors">
-          @for (item of results(); track item.githubId) {
-            <hlm-autocomplete-item [value]="item">
-              <img [src]="avatar(item)" alt="" width="24" height="24" class="size-6 rounded-md bg-muted" loading="lazy" />
-              <span class="flex-1 truncate">{{ item.username }}</span>
-              <span class="text-xs text-muted-foreground tabular-nums">#{{ rank(item) }} · {{ points(item) }}</span>
-            </hlm-autocomplete-item>
-          }
-        </div>
-      </hlm-autocomplete-content>
-    </hlm-autocomplete>
-  `,
+  templateUrl: './contributor-search.html',
 })
 export class ContributorSearch {
   /** The profile opens on this period. */

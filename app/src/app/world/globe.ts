@@ -30,7 +30,7 @@ const KEY_MOVES: Record<string, [number, number]> = { ArrowLeft: [-0.15, 0], Arr
 
 const clamp = (value: number, low: number, high: number) => Math.min(high, Math.max(low, value));
 const angleDelta = (from: number, to: number) => ((to - from + Math.PI) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2) - Math.PI;
-/** The theme's green as WebGL wants it: the colour picker and both themes recolour the land through it. */
+/** The theme's primary colour as WebGL wants it: both themes recolour the land through it. */
 const primaryColor = (fallback: [number, number, number]): [number, number, number] => {
   const context = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
   const value = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
@@ -54,142 +54,8 @@ interface GlobeMarker extends CountryStats {
   imports: [HlmButton, NgIcon],
   providers: [provideIcons({ vikingLongship, remixSubtractLine, remixPauseLine, remixPlayLine, remixAddLine, remixRestartLine })],
   host: { class: 'globe relative block size-full isolate overflow-hidden', '[attr.data-ready]': 'ready() || null' },
-  template: `
-    <!-- Clipped: a hidden marker keeps its last position, out of the frame it would widen the page -->
-    <svg class="absolute size-0" aria-hidden="true">
-      <filter id="globe-land" color-interpolation-filters="sRGB">
-        <feComponentTransfer>
-          <feFuncR type="table" [attr.tableValues]="land()[0] + ' 1'" />
-          <feFuncG type="table" [attr.tableValues]="land()[1] + ' 1'" />
-          <feFuncB type="table" [attr.tableValues]="land()[2] + ' 1'" />
-        </feComponentTransfer>
-      </filter>
-    </svg>
-    <canvas
-      #canvas
-      [class.is-light]="!theme.dark()"
-      [hidden]="failed()"
-      tabindex="0"
-      role="img"
-      aria-label="Contributors around the world. Arrow keys rotate the globe, plus and minus zoom, zero resets. Every country is also in the list."
-      class="globe__canvas block size-full cursor-grab touch-none outline-none active:cursor-grabbing"
-      (pointerdown)="pointerDown($event)"
-      (pointermove)="pointerMove($event)"
-      (pointerup)="pointerEnd($event)"
-      (pointercancel)="pointerEnd($event)"
-      (lostpointercapture)="pointerEnd($event)"
-      (keydown)="keydown($event)"
-      (webglcontextlost)="contextLost($event)"
-    ></canvas>
-
-    @if (ready() && !failed()) {
-      @for (ship of SHIPS; track $index) {
-        <span class="globe__ship" [attr.data-ship]="$index" data-visible="false" aria-hidden="true"><ng-icon name="vikingLongship" size="1.75rem" /></span>
-      }
-      @for (marker of markers(); track marker.code) {
-        <button
-          type="button"
-          class="globe__marker"
-          [attr.data-code]="marker.code"
-          data-visible="false"
-          inert
-          [class.is-selected]="selected() === marker.code"
-          [class.is-avatars]="avatars()"
-          [attr.data-tier]="tier(marker.count)"
-          [attr.aria-label]="marker.name + ', ' + count(marker.count)"
-          [attr.aria-pressed]="selected() === marker.code"
-          (click)="select.emit(selected() === marker.code ? null : marker.code)"
-          (pointerenter)="hovered.set(marker.code)"
-          (pointerleave)="hovered.set(null)"
-          (focus)="hovered.set(marker.code)"
-          (blur)="hovered.set(null)"
-        >
-          @if (hovered() === marker.code) {
-            <span class="globe__label" aria-hidden="true">
-              <img [src]="flag(marker.code)" alt="" width="16" height="16" class="size-4 shrink-0" />{{ marker.name }}
-            </span>
-          }
-          @if (avatars()) {
-            <span class="flex pl-2" aria-hidden="true">
-              @for (username of (marker.code === selected() ? marker.top : marker.top.slice(0, 1)); track username) {
-                <img [src]="avatar(username)" alt="" width="32" height="32" loading="lazy" class="-ml-2 size-8 max-w-none rounded-full bg-muted object-cover ring-2 ring-background" />
-              }
-            </span>
-          } @else {
-            <span [class]="tier(marker.count) === 'top' ? 'brand relative top-[0.06em] text-lg leading-none' : ''">{{ number(marker.count) }}</span>
-          }
-        </button>
-      }
-    }
-
-    @if (failed()) {
-      <p class="absolute inset-[20%] grid place-content-center text-center text-sm text-muted-foreground" role="status">The globe needs WebGL. Every country is in the list.</p>
-    }
-
-    @if (ready() && !failed()) {
-      <div class="absolute bottom-1 left-1/2 flex -translate-x-1/2 gap-0.5 rounded-lg bg-background/80 p-1 ring-1 ring-border backdrop-blur" role="group" aria-label="Globe controls">
-        <button hlmBtn variant="ghost" size="icon-sm" type="button" [attr.aria-label]="paused() ? 'Resume rotation' : 'Pause rotation'" [attr.aria-pressed]="paused()" (click)="togglePause()">
-          <ng-icon [name]="paused() ? 'remixPlayLine' : 'remixPauseLine'" aria-hidden="true" />
-        </button>
-        <button hlmBtn variant="ghost" size="icon-sm" type="button" aria-label="Zoom in" [disabled]="zoom() >= MAX_ZOOM" (click)="setZoom(zoom() + 0.25)">
-          <ng-icon name="remixAddLine" aria-hidden="true" />
-        </button>
-        <button hlmBtn variant="ghost" size="icon-sm" type="button" aria-label="Zoom out" [disabled]="zoom() <= 1" (click)="setZoom(zoom() - 0.25)">
-          <ng-icon name="remixSubtractLine" aria-hidden="true" />
-        </button>
-        <button hlmBtn variant="ghost" size="icon-sm" type="button" aria-label="Reset the globe" (click)="reset()">
-          <ng-icon name="remixRestartLine" aria-hidden="true" />
-        </button>
-      </div>
-    }
-  `,
-  styles: `
-    /* A fade, not a clip: zoomed in, a rounded canvas cut the globe along a false horizon */
-    .globe__canvas { mask-image: radial-gradient(closest-side, #000 82%, transparent); }
-    /* The mask would hide an outline on the canvas */
-    :host:has(.globe__canvas:focus-visible)::after {
-      content: ""; position: absolute; inset: 4px; border-radius: 999px; outline: 2px solid var(--ring); pointer-events: none;
-    }
-    /* In light mode the library draws land black: the filter maps black to the theme's green, and keeps white */
-    .globe__canvas.is-light { filter: url(#globe-land); }
-    .globe__ship {
-      position: absolute; inset: 0 auto auto 0; will-change: transform; pointer-events: none; color: var(--primary);
-      opacity: 0; transition: opacity 240ms ease-out;
-    }
-    .globe__ship[data-visible="true"] { opacity: 0.9; }
-    .globe__ship ng-icon { display: block; animation: globe-sail 3.2s ease-in-out infinite; }
-    @keyframes globe-sail { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-2px) rotate(3deg); } }
-    .globe__marker {
-      position: absolute; inset: 0 auto auto 0; will-change: transform;
-      display: flex; align-items: center; height: 28px; padding: 0 9px;
-      border: 1px solid var(--border); border-radius: 999px; background: var(--background); color: var(--foreground);
-      font: 600 11px/1 var(--font-sans); font-variant-numeric: tabular-nums; white-space: nowrap;
-      opacity: 0; visibility: hidden; pointer-events: none;
-      transition: opacity 160ms ease-out, visibility 0s linear 160ms;
-    }
-    .globe__marker[data-visible="true"] { opacity: 1; visibility: visible; pointer-events: auto; transition-delay: 0s; }
-    .globe__marker:hover, .globe__marker:focus-visible, .globe__marker.is-selected {
-      z-index: 2; border-color: var(--primary); outline: 2px solid color-mix(in oklab, var(--primary) 35%, transparent); outline-offset: 2px;
-    }
-    .globe__marker[data-tier="mid"] { height: 30px; padding: 0 10px; border-color: color-mix(in oklab, var(--primary) 60%, transparent); font-size: 12px; }
-    .globe__marker[data-tier="top"] { height: 34px; padding: 0 12px; border-color: var(--primary); background: var(--primary); color: var(--primary-foreground); font-size: 13px; }
-    .globe__marker[data-tier="top"]:not(.is-avatars)::after {
-      content: ""; position: absolute; inset: -1px; border: 2px solid var(--primary); border-radius: 999px; pointer-events: none;
-      animation: globe-pulse 2.4s ease-out infinite;
-    }
-    @keyframes globe-pulse { from { transform: scale(1); opacity: 0.7; } to { transform: scale(1.35); opacity: 0; } }
-    .globe__label {
-      position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); pointer-events: none;
-      display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 1px solid var(--border); border-radius: 8px;
-      background: var(--popover); color: var(--popover-foreground); font-size: 12px; font-weight: 500;
-    }
-    .globe__marker.is-avatars { height: 32px; padding: 0; border: 0; background: transparent; }
-    @media (prefers-reduced-motion: reduce) {
-      .globe__marker[data-tier="top"]::after { animation: none; opacity: 0; }
-      .globe__ship ng-icon { animation: none; }
-      .globe__marker { transition-duration: 80ms, 0s; transition-delay: 0s, 80ms; }
-    }
-  `,
+  templateUrl: './globe.html',
+  styleUrl: './globe.css',
 })
 export class Globe {
   readonly countries = input.required<CountryStats[]>();
@@ -346,13 +212,13 @@ export class Globe {
         this.schedule();
       });
     });
-    // The colour picker writes --primary on the root element.
+    // The theme toggle switches the `dark` class on the root element.
     const recolour = new MutationObserver(() => {
       this.land.set(primaryColor(this.land()));
       this.globe?.update(palette(this.theme.dark()));
       this.schedule();
     });
-    recolour.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style'] });
+    recolour.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     inject(DestroyRef).onDestroy(() => recolour.disconnect());
   }
 
