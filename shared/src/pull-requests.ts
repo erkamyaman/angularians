@@ -152,6 +152,8 @@ export function pullRequestScopes(title: string, repo = 'angular/angular'): stri
 }
 
 const PR_CLOSE_RE = /^PR Close #(\d+)\s*$/gm
+/** `Closes #123` at the start of a line, as angular/angular's merge script wrote it before `PR Close` (to January 2017). */
+const CLOSES_RE = /^\s*(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?):?\s+#(\d+)\b/gim
 
 /**
  * The PR numbers a commit message closes. angular/angular's merge tool lands a PR by pushing its commits
@@ -160,6 +162,13 @@ const PR_CLOSE_RE = /^PR Close #(\d+)\s*$/gm
 export function prCloseNumbers(message: string): number[] {
   const numbers = new Set<number>()
   for (const match of message.matchAll(PR_CLOSE_RE)) numbers.add(Number(match[1]))
+  return [...numbers]
+}
+
+/** The numbers a commit message closes with GitHub's keywords, `Closes #N` or `Fixes #N` at the start of a line: issues or PRs. */
+export function closingNumbers(message: string): number[] {
+  const numbers = new Set<number>()
+  for (const match of message.matchAll(CLOSES_RE)) numbers.add(Number(match[1]))
   return [...numbers]
 }
 
@@ -184,16 +193,25 @@ export interface CommitInput {
  * - GitHub marks it merged: it landed on `merged_at`.
  * - Otherwise, a commit on the main branch has `PR Close #N` for it: it landed on the earliest such commit.
  *   A PR of several commits has the line in each, and still counts once.
+ * - Before a repository's first `PR Close` (angular/angular to January 2017), its merge script wrote `Closes #N`:
+ *   such a commit lands PR N too. Only in repositories that use `PR Close`, and only before it, where `Closes #N`
+ *   naming a PR meant that PR landed; elsewhere it closes issues, or a PR replaced by another one.
  * PRs by bots, or by deleted accounts, are left out.
  */
 export function landedPullRequests(pulls: Iterable<PullRequestInput>, commits: Iterable<CommitInput>, repo = 'angular/angular'): LandedPullRequest[] {
+  const dated = [...commits].map(commit => ({ commit, time: Date.parse(commit.date) })).filter(({ time }) => !Number.isNaN(time))
+  let firstPrClose = Infinity
+  for (const { commit, time } of dated) if (time < firstPrClose && prCloseNumbers(commit.message).length) firstPrClose = time
   const closedOn = new Map<number, number>()
-  for (const commit of commits) {
-    const time = Date.parse(commit.date)
-    if (Number.isNaN(time)) continue
-    for (const number of prCloseNumbers(commit.message)) {
-      const earliest = closedOn.get(number)
-      if (earliest === undefined || time < earliest) closedOn.set(number, time)
+  const close = (number: number, time: number) => {
+    const earliest = closedOn.get(number)
+    if (earliest === undefined || time < earliest) closedOn.set(number, time)
+  }
+  for (const { commit, time } of dated) {
+    for (const number of prCloseNumbers(commit.message)) close(number, time)
+    // No `PR Close` anywhere: Infinity is not finite, so this era never applies.
+    if (Number.isFinite(firstPrClose) && time < firstPrClose) {
+      for (const number of closingNumbers(commit.message)) close(number, time)
     }
   }
 

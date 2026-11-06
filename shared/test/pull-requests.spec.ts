@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { canonicalPackage, inferPullRequestType, landedPullRequests, packageRepo, prCloseNumbers, pullRequestScopes, type PullRequestInput } from '../src/pull-requests.ts'
+import { canonicalPackage, closingNumbers, inferPullRequestType, landedPullRequests, packageRepo, prCloseNumbers, pullRequestScopes, type PullRequestInput } from '../src/pull-requests.ts'
 import { isBotAccount } from '../src/bots.ts'
 import { ContributorsAccumulator } from '../src/scoring.ts'
 
@@ -128,6 +128,41 @@ describe('landedPullRequests', () => {
     ]
     const landed = landedPullRequests(pulls, [{ message: 'PR Close #9', date: 'not a date' }])
     expect(landed.map(pr => pr.number)).toEqual([8])
+  })
+
+  it('counts `Closes #N` commits as landing PR N before the repository\'s first PR Close, not after', () => {
+    const pulls = [
+      pull(10, 'feat(core): landed by the old merge script', user('alice', 1)),
+      pull(11, 'fix(router): closed by a commit after PR Close started', user('bob', 2)),
+      pull(12, 'fix(forms): closed by a PR Close commit', user('carol', 3)),
+    ]
+    const commits = [
+      { message: 'feat(core): landed by the old merge script\n\nCloses #10\nCloses #5', date: '2015-06-01T00:00:00Z' },
+      { message: 'fix(forms): x\n\nPR Close #12', date: '2017-01-13T00:00:00Z' },
+      { message: 'fix(router): y\n\nFixes #11', date: '2017-02-01T00:00:00Z' },
+    ]
+    expect(landedPullRequests(pulls, commits).map(pr => [pr.number, pr.landedAt])).toEqual([
+      [10, '2015-06-01T00:00:00.000Z'],
+      [12, '2017-01-13T00:00:00.000Z'],
+    ])
+  })
+
+  it('never reads `Closes #N` in a repository without PR Close commits', () => {
+    const pulls = [pull(20, 'fix(material/button): replaced by another PR', user('dave', 4))]
+    expect(landedPullRequests(pulls, [{ message: 'fix: the other PR\n\nCloses #20', date: '2020-01-01T00:00:00Z' }], 'angular/components')).toEqual([])
+  })
+})
+
+describe('closingNumbers', () => {
+  it.each([
+    ['feat: x\n\nCloses #123', [123]],
+    ['fix: x\n\nFixes #1\nCloses #2\nresolves: #3', [1, 2, 3]],
+    ['Typo in web_workers.md Closes #6694', []],
+    ['fix: x\n\nCloses #12, #13', [12]],
+    ['see #5 and PR Close #6', []],
+    ['Closes #7\nCloses #7', [7]],
+  ] as const)('%j → %j', (message, numbers) => {
+    expect(closingNumbers(message)).toEqual(numbers)
   })
 })
 
