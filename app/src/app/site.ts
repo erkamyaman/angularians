@@ -3,6 +3,17 @@ import type { Meta } from '@angular/platform-browser'
 /** The public address of the site: shared links, the README card, og:image (which must be absolute). */
 export const SITE_URL = 'https://angularians.dev'
 
+/** Who made the site, for search engines (schema.org `Person`): the author of every page. */
+export const SITE_AUTHOR = {
+  '@type': 'Person',
+  name: 'Erkam Yaman',
+  url: 'https://erkamyaman.dev',
+  sameAs: ['https://github.com/erkamyaman', `${SITE_URL}/erkamyaman`],
+} as const
+
+/** The site as schema.org sees it, made by its author: on the home page, and the site every page is part of. */
+export const SITE_SCHEMA = { '@type': 'WebSite', name: 'Angularians', url: `${SITE_URL}/`, inLanguage: 'en', author: SITE_AUTHOR, creator: SITE_AUTHOR } as const
+
 /** The link preview of a page: its description, a 2400×1260 card (large on X, LinkedIn, Slack…) and its canonical URL. */
 export function setShareMeta(meta: Meta, document: Document, page: { title: string, description: string, url: string, image: string, canonical: string }): void {
   meta.updateTag({ name: 'description', content: page.description })

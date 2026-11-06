@@ -27,7 +27,7 @@ import { CountrySelect } from '../leaderboard/country-select';
 import { NextUpdate } from '../leaderboard/next-update';
 import { MeCard } from '../leaderboard/me-card';
 import { ScoreRules } from '../leaderboard/score-rules';
-import { breadcrumbs, setJsonLd, setShareMeta, SITE_URL } from '../site';
+import { breadcrumbs, setJsonLd, setShareMeta, SITE_SCHEMA, SITE_URL } from '../site';
 import { boardDescription, formatDate, formatNumber, plural } from '../leaderboard/format';
 import { JoinLinks } from '../leaderboard/join-links';
 import { LeaderboardGrid } from '../leaderboard/leaderboard-grid';
@@ -131,7 +131,7 @@ export default class Home {
       // The site itself, and a country's board as a step below it.
       setJsonLd(this.document, country
         ? breadcrumbs([{ name: 'Angularians', path: '/' }, { name: `Angular contributors in ${countryName(country)}`, path: canonical }])
-        : { '@type': 'WebSite', name: 'Angularians', url: `${SITE_URL}/`, description: SITE_DESCRIPTION, inLanguage: 'en' });
+        : { ...SITE_SCHEMA, description: SITE_DESCRIPTION });
     });
   }
 

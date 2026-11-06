@@ -35,7 +35,7 @@ import { ScoreDialog } from '../profile/score-dialog';
 import { Share } from '../profile/share';
 import { AuthService } from '../auth/auth.service';
 import { AngularianPill } from '../layout/angularian-pill';
-import { breadcrumbs, setJsonLd, setShareMeta, SITE_URL } from '../site';
+import { breadcrumbs, setJsonLd, setShareMeta, SITE_SCHEMA, SITE_URL } from '../site';
 import { GITHUB_TEXT } from '../leaderboard/github-colors';
 
 export const routeMeta = {
@@ -313,6 +313,7 @@ export default class Profile {
           url,
           name: `${title} · Angularians`,
           description,
+          isPartOf: SITE_SCHEMA,
           mainEntity: {
             '@type': 'Person',
             name: person.name || person.username,
