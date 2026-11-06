@@ -26,7 +26,7 @@
           </span>
         </div>
         <span [class]="'inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm font-medium whitespace-nowrap ring-1 ' + project.style">
-          <img [src]="project.logo" alt="" width="16" height="16" class="size-4 object-contain" />{{ project.badge }}
+          <img [src]="project.logo" alt="" width="16" height="16" class="size-4 object-contain" />{{ project.badge }}<ng-icon [name]="project.emblem" size="0.9em" class="opacity-70" aria-hidden="true" />
         </span>
       </div>
     </li>

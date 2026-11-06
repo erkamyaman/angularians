@@ -66,8 +66,8 @@ ng-halla".
 
 1. adds the project's logo as `app/public/credits/<project>.svg` (or `.png`), with its licence in `THIRD_PARTY_NOTICES.md`;
 2. adds the project to `PROJECT_BADGES` in `app/src/app/profile/special-badges.ts`: its name, badge title, site, logo, brand
-   colour (`style`), one line on what it is, and each person's GitHub id (`gh api users/<username> -q .id`), username, name and role (`creator`, `maintainer` or
-   `organizer`);
+   colour (`style`), one line on what it is, and each person's GitHub id (`gh api users/<username> -q .id`), username, name and role (`creator`, `co-creator`,
+   `maintainer` or `organizer`);
 3. links the project in the PR description, so we can check it.
 
 The commit is `feat(app): the <project> badge`. The maintainer decides which badges join.

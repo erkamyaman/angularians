@@ -5,12 +5,12 @@ import { HlmCardImports } from '@spartan-ng/helm/card'
 import { RouterLink } from '@angular/router'
 import { LogoMark } from '../layout/logo-mark'
 import { avatarUrl } from './format'
-import { BUILT_ON } from '../profile/special-badges'
+import { BUILT_ON, EMBLEMS } from '../profile/special-badges'
 
 @Component({
   selector: 'app-earn-badges',
   imports: [LogoMark, HlmCardImports, NgIcon, RouterLink],
-  providers: [provideIcons({ remixArrowRightUpLine })],
+  providers: [provideIcons({ ...EMBLEMS, remixArrowRightUpLine })],
   host: { class: 'block' },
   templateUrl: './earn-badges.html',
 })

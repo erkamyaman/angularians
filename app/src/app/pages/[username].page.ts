@@ -16,7 +16,7 @@ import {
   simpleYoutube,
 } from '@ng-icons/simple-icons';
 import { ANGULAR_GDES, GITHUB_STARS } from '../profile/recognitions';
-import { projectBadgesOf } from '../profile/special-badges';
+import { EMBLEMS, projectBadgesOf } from '../profile/special-badges';
 import { injectParams } from 'ngxtension/inject-params';
 import { injectQueryParams } from 'ngxtension/inject-query-params';
 import { HlmButton } from '@spartan-ng/helm/button';
@@ -79,6 +79,7 @@ function githubSearch(q: string, type: 'pullrequests' | 'issues'): string {
   selector: 'app-profile',
   imports: [AngularLogo, CardPreview, Container, HlmButton, HlmSkeleton, HlmTooltip, AngularianPill, NgIcon, NgTemplateOutlet, PeriodTabs, RouterLink, ScoreDialog, Share],
   providers: [provideIcons({
+    ...EMBLEMS,
     vikingAnvil,
     vikingAxes, vikingLongship, remixCloseLine, remixArrowLeftLine, remixArrowRightSLine, remixArrowRightUpLine, remixMedalLine, octIssueOpened, octGitMerge, remixInformationLine,
     remixVerifiedBadgeLine, remixArrowDownSLine, remixArrowUpSLine, vikingHelmet, remixLinkM, remixLinkedinBoxLine, octComment,
@@ -186,7 +187,7 @@ export default class Profile {
     const gold = 'bg-[#9A6700]/10 text-[#7D4E00] ring-[#9A6700]/30 dark:bg-[#D29922]/10 dark:text-[#D29922] dark:ring-[#D29922]/30';
     const green = 'bg-[#1A7F37]/10 text-[#116329] ring-[#1A7F37]/30 dark:bg-[#3FB950]/10 dark:text-[#3FB950] dark:ring-[#3FB950]/30';
     const purple = 'bg-[#8250DF]/10 text-[#8250DF] ring-[#8250DF]/30 dark:bg-[#A371F7]/10 dark:text-[#A371F7] dark:ring-[#A371F7]/30';
-    const badges: Array<{ label: string, title: string, icon: string, style: string, logo?: string, href?: string }> = [];
+    const badges: Array<{ label: string, title: string, icon: string, style: string, logo?: string, href?: string, emblem?: string }> = [];
     // The gradient Angular logo of the press kit, only to say "member of the Angular team" (the site's mark stays the A).
     if (person.team) badges.push({ label: 'Angular team', title: 'Public member of the Angular organization on GitHub', icon: 'angular', style: 'bg-[#dc087d]/10 text-foreground ring-[#dc087d]/40' });
     // Recognised by Google and by GitHub (lists in profile/recognitions.ts): Google's blue, GitHub's star yellow; their text a
@@ -194,7 +195,7 @@ export default class Profile {
     if (ANGULAR_GDES.has(person.githubId)) badges.push({ label: 'Angular GDE', title: 'Google Developer Expert for Angular', icon: 'gde', style: 'bg-[#1A73E8]/10 text-[#185ABC] ring-[#1A73E8]/30 dark:bg-[#8AB4F8]/10 dark:text-[#8AB4F8] dark:ring-[#8AB4F8]/30' });
     if (GITHUB_STARS.has(person.githubId)) badges.push({ label: 'GitHub Star', title: 'GitHub Star, recognised by GitHub for helping the community', icon: 'remixStarFill', style: 'bg-[#BF8700]/10 text-[#845A00] ring-[#BF8700]/30 dark:bg-[#E3B341]/10 dark:text-[#E3B341] dark:ring-[#E3B341]/30' });
     for (const { project, role } of projectBadgesOf(person.githubId)) {
-      badges.push({ label: project.badge, title: `${role[0].toUpperCase()}${role.slice(1)} of ${project.name}: ${project.does}`, icon: '', logo: project.logo, href: project.href, style: project.style });
+      badges.push({ label: project.badge, title: `${role[0].toUpperCase()}${role.slice(1)} of ${project.name}: ${project.does}`, icon: '', logo: project.logo, href: project.href, emblem: project.emblem, style: project.style });
     }
     const forged = projectBadgesOf(person.githubId).filter(({ project }) => project.builtOn).map(({ project }) => project.name);
     if (forged.length) badges.push({ label: 'Smith of ng-halla', title: `Forged a tool Angularians is built on: ${forged.join(', ')}`, icon: 'vikingAnvil', style: 'bg-primary/10 text-primary ring-primary/30' });
