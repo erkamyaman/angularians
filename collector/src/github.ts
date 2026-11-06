@@ -9,6 +9,8 @@ const USER_AGENT = 'angularians-collector'
 const MAX_ATTEMPTS = 6
 /** A rate-limit wait longer than this fails the run instead: the next nightly run starts over. */
 const MAX_WAIT_MS = 65 * 60 * 1000
+/** GraphQL answers a rate limit with 200 and a `RATE_LIMITED` error: wait 1, 2, 4, 8, 16 minutes and ask again. */
+const GRAPHQL_RATE_LIMIT_RETRIES = 5
 
 export class GitHubError extends Error {
   readonly status: number
@@ -113,7 +115,17 @@ export async function* paginate<T>(url: string): AsyncGenerator<T[]> {
   }
 }
 
-export async function graphql<T>(query: string, variables: Record<string, unknown>): Promise<{ data: T | null, errors?: Array<{ type?: string, message?: string }> }> {
+type GraphQLResult<T> = { data: T | null, errors?: Array<{ type?: string, message?: string }> }
+
+/** A GraphQL query, asked again while it is rate limited; any other error is the caller's to read. */
+export async function graphql<T>(query: string, variables: Record<string, unknown>): Promise<GraphQLResult<T>> {
   if (!hasToken()) throw new GitHubError(401, 'GraphQL needs GITHUB_TOKEN or a GitHub App')
-  return (await fetchJson<{ data: T | null, errors?: Array<{ type?: string, message?: string }> }>('/graphql', { method: 'POST', body: JSON.stringify({ query, variables }) })).data
+  const ask = async () => (await fetchJson<GraphQLResult<T>>('/graphql', { method: 'POST', body: JSON.stringify({ query, variables }) })).data
+  let result = await ask()
+  for (let attempt = 0; attempt < GRAPHQL_RATE_LIMIT_RETRIES && result.errors?.some(error => error.type === 'RATE_LIMITED'); attempt++) {
+    console.warn(`GraphQL rate limited, retrying in ${2 ** attempt} min`)
+    await sleep(2 ** attempt * 60_000)
+    result = await ask()
+  }
+  return result
 }

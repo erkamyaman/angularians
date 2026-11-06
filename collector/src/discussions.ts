@@ -1,6 +1,6 @@
 // GitHub Discussions (angular/angular's RFCs) through GraphQL: the REST API does not list them.
 import type { CommentInput, ContributorsAccumulator, IssueInput } from '@angularians/shared'
-import { graphql, retryTiming } from './github.ts'
+import { graphql } from './github.ts'
 
 type Repo = { owner: string, name: string }
 
@@ -42,17 +42,12 @@ const MORE_REPLIES = `query($id: ID!, $after: String) { node(id: $id) { ... on D
 const user = (author: Author): CommentInput['user'] =>
   author?.login ? { login: author.login, id: author.databaseId ?? null, type: author.__typename === 'Bot' ? 'Bot' : 'User' } : null
 
-/** A rate limit (`RATE_LIMITED`): wait 1, 2, 4, 8, 16 minutes and ask again; any other error fails the run. */
 /** GitHub refuses a query that would return too much at once. */
 class TooBig extends Error {}
 
+/** A query's data; any error fails the run (`graphql` has already waited out the rate limits). */
 async function query<T>(text: string, variables: Record<string, unknown>): Promise<T> {
-  let { data, errors } = await graphql<T>(text, variables)
-  for (let attempt = 0; attempt < 5 && errors?.some(error => error.type === 'RATE_LIMITED'); attempt++) {
-    console.warn(`GraphQL rate limited, retrying discussions in ${2 ** attempt} min`)
-    await new Promise(resolve => setTimeout(resolve, 2 ** attempt * 60_000 * retryTiming.scale))
-    ;({ data, errors } = await graphql<T>(text, variables))
-  }
+  const { data, errors } = await graphql<T>(text, variables)
   if (errors?.some(error => error.type === 'RESOURCE_LIMITS_EXCEEDED')) throw new TooBig('GraphQL: resource limits exceeded')
   if (!data || errors?.length) throw new Error(`GraphQL discussions failed: ${JSON.stringify(errors).slice(0, 300)}`)
   return data
