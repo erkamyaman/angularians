@@ -1,11 +1,15 @@
 <button hlmBtn variant="secondary" type="button" (click)="copyLink()">
   <ng-icon [name]="copied() === 'link' ? 'remixCheckLine' : 'remixLinkM'" size="1.25rem" aria-hidden="true" />
-  <!-- Both labels share one cell, so the button keeps its width when the label changes -->
-  <span class="grid">
-    <span class="invisible col-start-1 row-start-1" aria-hidden="true">Copy profile link</span>
-    <span class="col-start-1 row-start-1 text-center">{{ copied() === 'link' ? 'Link copied' : 'Copy profile link' }}</span>
-  </span>
+  <ng-container [ngTemplateOutlet]="steadyLabel" [ngTemplateOutletContext]="{ $implicit: copied() === 'link' ? 'Link copied' : 'Copy profile link', widest: 'Copy profile link' }" />
 </button>
+
+<!-- Both labels share one cell, so a copy button keeps its width when its label changes -->
+<ng-template #steadyLabel let-label let-widest="widest">
+  <span class="grid">
+    <span class="invisible col-start-1 row-start-1" aria-hidden="true">{{ widest }}</span>
+    <span class="col-start-1 row-start-1 text-center">{{ label }}</span>
+  </span>
+</ng-template>
 
 <ng-template #preview>
       @if (cardPeriods().length > 1) {
@@ -97,10 +101,7 @@
           href="https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/customizing-your-profile/managing-your-profile-readme">How to set up a profile README</a>
         <button hlmBtn type="button" (click)="copyMarkdown()">
           <ng-icon [name]="copied() === 'markdown' ? 'remixCheckLine' : 'remixFileCopyLine'" aria-hidden="true" />
-          <span class="grid">
-            <span class="invisible col-start-1 row-start-1" aria-hidden="true">Markdown copied</span>
-            <span class="col-start-1 row-start-1 text-center">{{ copied() === 'markdown' ? 'Markdown copied' : 'Copy Markdown' }}</span>
-          </span>
+          <ng-container [ngTemplateOutlet]="steadyLabel" [ngTemplateOutletContext]="{ $implicit: copied() === 'markdown' ? 'Markdown copied' : 'Copy Markdown', widest: 'Markdown copied' }" />
         </button>
       </div>
     </div>

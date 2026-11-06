@@ -15,6 +15,10 @@ import { shareQuery } from '../leaderboard/format'
 
 /** The skeleton shows at least this long, so a fast card does not flicker it. */
 const MIN_LOADING_MS = 500
+
+/** " in 2025" after a sentence about a period; nothing for all time. */
+const periodSuffix = (period: Period) => (period === 'all' ? '' : ` ${periodPhrase(period)}`)
+
 /** Raise it when the card's design changes, so the preview does not show a copy the browser kept. */
 export const CARD_DESIGN = 15
 
@@ -54,15 +58,16 @@ export class Share {
   protected readonly cardPeriods = computed(() => sortPeriods(['all', ...this.periods()]))
 
   private readonly profileUrl = computed(() => `${SITE_URL}/${this.username()}${shareQuery(this.period())}`)
+  /** The profile with the card's period and flag: what a post links to, and the README card's link. */
+  private readonly cardProfileUrl = computed(() => `${SITE_URL}/${this.username()}${shareQuery(this.cardPeriod(), this.flag())}`)
   protected readonly cardUrl = computed(() => `${SITE_URL}/${this.username()}/card.png${shareQuery(this.cardPeriod(), this.flag())}`)
   /** The same card from this site: right on a preview deploy or locally too. The Markdown keeps the public address. */
   protected readonly previewUrl = computed(() => `/${this.username()}/card.png${shareQuery(this.cardPeriod(), this.flag(), { v: String(CARD_DESIGN) })}`)
   protected readonly fileName = computed(() => `${this.username()}-angularian${this.cardPeriod() === 'all' ? '' : `-${this.cardPeriod()}`}.png`)
   /** The profile's link preview is this card, so a post only needs the link. */
   protected readonly shareLinks = computed(() => {
-    const period = this.cardPeriod()
-    const url = `${SITE_URL}/${this.username()}${shareQuery(period, this.flag())}`
-    const text = `My contributions to Angular${period === 'all' ? '' : ` ${periodPhrase(period)}`} on Angularians`
+    const url = this.cardProfileUrl()
+    const text = `My contributions to Angular${periodSuffix(this.cardPeriod())} on Angularians`
     return {
       x: `https://x.com/intent/post?${new URLSearchParams({ text, url })}`,
       linkedin: `https://www.linkedin.com/sharing/share-offsite/?${new URLSearchParams({ url })}`,
@@ -70,8 +75,8 @@ export class Share {
     }
   })
   protected readonly markdown = computed(() => {
-    const alt = `${this.username()}'s Angularian profile${this.cardPeriod() === 'all' ? '' : ` ${periodPhrase(this.cardPeriod())}`}`
-    return `[![${alt}](${this.cardUrl()})](${SITE_URL}/${this.username()}${shareQuery(this.cardPeriod(), this.flag())})`
+    const alt = `${this.username()}'s Angularian profile${periodSuffix(this.cardPeriod())}`
+    return `[![${alt}](${this.cardUrl()})](${this.cardProfileUrl()})`
   })
 
   private timer: ReturnType<typeof setTimeout> | undefined
