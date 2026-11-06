@@ -7,7 +7,7 @@ A pnpm workspace of three packages and the data they share.
 | [`shared/`](../shared) | Types, scoring, PR type rules, periods, countries, the repositories on the board. Used by both others. |
 | [`collector/`](../collector) | Collects landed PRs, issues, comments, review comments and GitHub profiles, writes `data/`. Runs nightly in GitHub Actions. |
 | [`app/`](../app) | The site: [Analog](https://analogjs.org) (Angular 22, server-rendered), [spartan/ui](https://www.spartan.ng), Tailwind 4. |
-| [`data/`](../data) | The collector's output: `contributors*.json`, `profiles.json`, `packages.json`, `team.json`, `meta.json`. Committed. |
+| [`data/`](../data) | The collector's output: `contributors*.json`, `profiles.json`, `packages.json`, `team.json`, `renames.json`, `meta.json`. Committed. |
 
 ## Data
 
@@ -47,6 +47,10 @@ The brand font, Norse Bold (the word "Angularian" on the site and the cards), is
 - Structured data (`setJsonLd` in `app/src/app/site.ts`): `WebSite` on the home page, `ProfilePage` with its `Person`
   and a `BreadcrumbList` on profiles, a `BreadcrumbList` on a country's board.
 - The cards (`/og.png`, `/:username/card.png`) keep their bottom-left corner free: X lays the page's title over it.
+- Renamed accounts: each run compares usernames with the previous run's by GitHub id and keeps the old ones in
+  `data/renames.json`. `/oldname` and `/oldname/card.png` answer 301 to the new name
+  (`app/src/server/middleware/renamed-user.ts`), so a README card keeps working; a name someone contributes under now
+  stays theirs.
 
 ## Sign in with GitHub
 

@@ -4,9 +4,13 @@ import { join } from 'node:path'
 import {
   PACKAGES_FILE,
   periodFile,
+  parseRenamesFile,
+  parseTeamFile,
   PROFILES_FILE,
+  RENAMES_FILE,
   TEAM_FILE,
   toJsonLines,
+  updatedRenames,
   type ContributorRecord,
   type PackagesRecord,
   type Period,
@@ -76,10 +80,18 @@ export async function writeData(outputDir: string, collected: Collected, options
   }
 
   await mkdir(outputDir, { recursive: true })
+  // Before the new files replace them: who had which username last time, and the renames known so far.
+  const previous = collected.since ? [] : await readRecords(join(outputDir, periodFile('all')), parseTeamFile)
+  const knownRenames = await readRecords(join(outputDir, RENAMES_FILE), parseRenamesFile)
   for (const [period, records] of files) {
     await writeFile(join(outputDir, periodFile(period)), toJsonLines(records), 'utf8')
   }
   console.log(`Wrote ${files.size} period files to ${outputDir} (${allTime.length} contributors all time)`)
+
+  // Renamed accounts: `/:oldname` and its card redirect to the new name.
+  const renames = updatedRenames(knownRenames, previous, allTime)
+  await writeFile(join(outputDir, RENAMES_FILE), toJsonLines(renames), 'utf8')
+  console.log(`Wrote ${renames.length} renamed usernames (${renames.length - knownRenames.length} new)`)
 
   // The packages each contributor's merged PRs named (`fix(router)`), all time.
   await writeFile(join(outputDir, PACKAGES_FILE), toJsonLines(collected.packages), 'utf8')
@@ -141,4 +153,15 @@ export async function writeData(outputDir: string, collected: Collected, options
     console.log('Busiest commenters:', commenters.map(r => `${r.username} ${r.comments}+${r.reviewComments}`).join(', '))
   }
   console.log('Top 25:', allTime.slice(0, 25).map(r => `${r.username} ${r.score}`).join(', '))
+}
+
+/** A data file's records, or none when it is missing or cannot be read (the first run, a test run). */
+async function readRecords<T>(path: string, parse: (data: unknown) => T[]): Promise<T[]> {
+  if (!existsSync(path)) return []
+  try {
+    return parse(JSON.parse(await readFile(path, 'utf8')))
+  }
+  catch {
+    return []
+  }
 }

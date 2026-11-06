@@ -9,7 +9,7 @@ import { existsSync } from 'node:fs'
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { PACKAGES_FILE, parseContributorsFile, parsePackagesFile, parseProfilesFile, parseTeamFile, periodFromFile, PROFILES_FILE, TEAM_FILE } from '@angularians/shared'
+import { PACKAGES_FILE, parseContributorsFile, parsePackagesFile, parseProfilesFile, parseRenamesFile, parseTeamFile, periodFromFile, PROFILES_FILE, RENAMES_FILE, TEAM_FILE } from '@angularians/shared'
 import type { DataBundle } from '../src/server/data/bundle.ts'
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -17,7 +17,7 @@ const dataDir = resolve(process.argv[2] ?? process.env['CONTRIBUTORS_DATA_DIR'] 
 const output = join(here, '../src/server/data/bundle.generated.json')
 
 const files = existsSync(dataDir) ? await readdir(dataDir) : []
-const bundle: DataBundle = { meta: null, periods: {}, profiles: [], packages: [], team: [] }
+const bundle: DataBundle = { meta: null, periods: {}, profiles: [], packages: [], team: [], renames: [] }
 
 for (const file of files.sort()) {
   const period = periodFromFile(file)
@@ -35,6 +35,9 @@ if (files.includes(PACKAGES_FILE)) {
 }
 if (files.includes(TEAM_FILE)) {
   bundle.team = parseTeamFile(JSON.parse(await readFile(join(dataDir, TEAM_FILE), 'utf8')))
+}
+if (files.includes(RENAMES_FILE)) {
+  bundle.renames = parseRenamesFile(JSON.parse(await readFile(join(dataDir, RENAMES_FILE), 'utf8')))
 }
 if (files.includes('meta.json')) {
   const meta = JSON.parse(await readFile(join(dataDir, 'meta.json'), 'utf8')) as Record<string, unknown>

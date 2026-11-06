@@ -9,4 +9,6 @@ export interface DataBundle {
   /** Empty before the collector wrote packages.json and team.json. */
   packages: PackagesRecord[]
   team: TeamRecord[]
+  /** Old usernames of renamed contributors (`renames.json`): empty before the collector wrote one. */
+  renames?: TeamRecord[]
 }

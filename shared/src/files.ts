@@ -165,3 +165,32 @@ export function parseTeamFile(data: unknown): TeamRecord[] {
     return id !== null && username ? [{ githubId: id, username }] : []
   })
 }
+
+/** Old usernames of renamed contributors, by GitHub id: links to `/:oldname` and its card follow the person. */
+export const RENAMES_FILE = 'renames.json'
+export function parseRenamesFile(data: unknown): TeamRecord[] {
+  if (!Array.isArray(data)) throw new TypeError(`${RENAMES_FILE} must be an array`)
+  return parseTeamFile(data)
+}
+
+/**
+ * The renames after a run: the known ones, and each contributor whose username differs from the previous run's,
+ * by GitHub id (`previous` and `current`: the all-time records). An old name someone uses now is not a rename
+ * any more: the person who has it wins. Sorted by username.
+ */
+export function updatedRenames(
+  known: ReadonlyArray<{ githubId: number, username: string }>,
+  previous: ReadonlyArray<{ githubId: number, username: string }>,
+  current: ReadonlyArray<{ githubId: number, username: string }>,
+): Array<{ githubId: number, username: string }> {
+  const now = new Map(current.map(row => [row.githubId, row.username]))
+  const taken = new Set(current.map(row => row.username.toLowerCase()))
+  const renames = new Map<string, { githubId: number, username: string }>()
+  for (const record of known) renames.set(record.username.toLowerCase(), record)
+  for (const row of previous) {
+    const name = now.get(row.githubId)
+    if (name && name.toLowerCase() !== row.username.toLowerCase()) renames.set(row.username.toLowerCase(), { githubId: row.githubId, username: row.username })
+  }
+  return [...renames.entries()].filter(([name]) => !taken.has(name)).map(([, record]) => record)
+    .sort((a, b) => a.username.toLowerCase().localeCompare(b.username.toLowerCase()))
+}

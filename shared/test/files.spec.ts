@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseContributorsFile, parsePackagesFile, parseProfilesFile, safeUrl, toJsonLines } from '../src/files.ts'
+import { updatedRenames, parseContributorsFile, parsePackagesFile, parseProfilesFile, safeUrl, toJsonLines } from '../src/files.ts'
 
 const record = (githubId: unknown, username: unknown, pullRequests: Record<string, unknown> = { feat: 1 }, extra: Record<string, unknown> = {}) =>
   ({ githubId, username, score: 999, pullRequests, firstContributionAt: '2020-01-01T00:00:00Z', ...extra })
@@ -94,5 +94,19 @@ describe('parsePackagesFile', () => {
       ] },
       { githubId: 2, packages: [{ name: 'Not Valid', pullRequests: 1 }] },
     ])).toEqual([{ githubId: 1, packages: [{ name: 'router', pullRequests: 2 }, { name: '@angular/build', pullRequests: 3 }, { name: '@schematics/angular', pullRequests: 1 }] }])
+  })
+})
+
+describe('updatedRenames', () => {
+  const row = (githubId: number, username: string) => ({ githubId, username })
+  it('adds a contributor whose username changed, keeps the known ones, sorted', () => {
+    expect(updatedRenames([row(9, 'zed-old')], [row(1, 'alice'), row(2, 'bob')], [row(1, 'alice'), row(2, 'robert'), row(9, 'zed')]))
+      .toEqual([row(2, 'bob'), row(9, 'zed-old')])
+  })
+  it('ignores a change of case, and people who left the board', () => {
+    expect(updatedRenames([], [row(1, 'Alice'), row(3, 'carol')], [row(1, 'alice')])).toEqual([])
+  })
+  it('drops an old name someone else contributes under now', () => {
+    expect(updatedRenames([row(2, 'bob')], [], [row(2, 'robert'), row(5, 'bob')])).toEqual([])
   })
 })

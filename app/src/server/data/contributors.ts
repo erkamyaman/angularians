@@ -40,6 +40,8 @@ export class ContributorsData {
   private readonly team: Set<number>
   /** GitHub id → username, all time. */
   private readonly usernames: Map<number, string>
+  /** Old username, lowercased → GitHub id. */
+  private readonly renames: Map<string, number>
 
   constructor(bundle: DataBundle) {
     this.byPeriod = new Map(Object.entries(bundle.periods))
@@ -50,6 +52,7 @@ export class ContributorsData {
     this.packages = new Map((bundle.packages ?? []).map(record => [record.githubId, record.packages]))
     this.team = new Set((bundle.team ?? []).map(member => member.githubId))
     this.usernames = new Map((this.byPeriod.get('all') ?? []).map(row => [row.githubId, row.username]))
+    this.renames = new Map((bundle.renames ?? []).map(record => [record.username.toLowerCase(), record.githubId]))
     for (const [period, rows] of this.byPeriod) {
       this.byUsername.set(period, new Map(rows.map(row => [row.username.toLowerCase(), row])))
     }
@@ -78,6 +81,13 @@ export class ContributorsData {
     const usernames = all.filter(row => row.pullRequests.all > 0).slice(0, limit).map(row => row.username)
     const countries = [...new Set(all.map(row => this.countryOf(row.githubId)).filter(code => code !== null))].sort()
     return { usernames, countries }
+  }
+
+  /** The current username of someone who had `username` before, `null` when nobody did or it is still theirs. */
+  renamedTo(username: string): string | null {
+    const id = this.renames.get(username.toLowerCase())
+    const current = id === undefined ? undefined : this.usernames.get(id)
+    return current && current.toLowerCase() !== username.toLowerCase() ? current : null
   }
 
   countryOf(githubId: number): string | null {
