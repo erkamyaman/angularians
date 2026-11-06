@@ -45,6 +45,12 @@ export const PROJECT_BADGES: readonly ProjectBadge[] = [
   { name: 'slide.ng', badge: 'Slide master', style: 'bg-[#CC4209]/10 text-[#A33A08] ring-[#CC4209]/30 dark:text-[#F0883E] dark:ring-[#CC4209]/40', href: 'https://slide-ng.dev', logo: '/credits/slide-ng.svg', does: 'Slides in markdown, compiled with Angular', people: [
     { githubId: 88717125, username: 'erkamyaman', name: 'Erkam Yaman', role: 'creator' },
   ] },
+  { name: 'Angular Native', badge: 'Native navigator', style: 'bg-[#F0224F]/10 text-[#C4002D] ring-[#F0224F]/30 dark:text-[#FF6B88] dark:ring-[#F0224F]/40', href: 'https://ng-native.com', logo: '/credits/ng-native.svg', does: 'Angular apps as real native iOS and Android views', people: [
+    { githubId: 20795331, username: 'ashley-hunter', name: 'Ashley Hunter', role: 'creator' },
+  ] },
+  { name: 'Angular Primitives', badge: 'Primitive mason', style: 'bg-[#E90364]/10 text-[#B8024F] ring-[#E90364]/30 dark:text-[#FF5C9A] dark:ring-[#E90364]/40', href: 'https://angularprimitives.com', logo: '/credits/ng-primitives.svg', does: 'Headless, accessible UI primitives', people: [
+    { githubId: 20795331, username: 'ashley-hunter', name: 'Ashley Hunter', role: 'creator' },
+  ] },
 ]
 
 export const BUILT_ON = PROJECT_BADGES.filter(project => project.builtOn)

@@ -14,5 +14,5 @@ import type { EarnedBadge } from './earned-badges'
 })
 export class BadgePill {
   readonly badge = input.required<EarnedBadge>()
-  protected readonly pill = 'inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm font-medium whitespace-nowrap ring-1 transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none'
+  protected readonly pill = 'inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-sm whitespace-nowrap ring-1 transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none'
 }

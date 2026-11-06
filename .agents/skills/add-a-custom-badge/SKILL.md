@@ -53,7 +53,7 @@ pnpm dev
 ```
 
 With `pnpm dev` running, open:
-- `/<username>`: the badge shows with the logo and title, its tooltip reads "<Role> of <Project>: <does>", and clicking it opens the website.
+- `/<username>`: the badge shows with the logo and title, its tooltip reads "<Role> of <Project>", and clicking it opens the website.
 - Both themes, and phone width.
 - `/<username>/card.png`: the logo shows in the card's footer.
 
