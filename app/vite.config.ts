@@ -84,6 +84,8 @@ export default defineConfig(() => ({
           '/**': { headers: { 'cache-control': 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400', 'netlify-cdn-cache-control': 'public, durable, s-maxage=3600, stale-while-revalidate=86400', 'netlify-vary': 'query=period|country|page|q|flag|v,cookie=angularians-signed-in' } },
           // Sign-in: per person, with cookies. Never in a shared cache.
           '/api/auth/**': { headers: { 'cache-control': 'private, no-store', 'netlify-cdn-cache-control': 'no-store' } },
+          // Server functions are POSTs whose input is in the body, which no cache key sees: never cached.
+          '/_analog/**': { headers: { 'cache-control': 'private, no-store', 'netlify-cdn-cache-control': 'no-store' } },
           // Hashed file names: never change.
           '/assets/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
         },
