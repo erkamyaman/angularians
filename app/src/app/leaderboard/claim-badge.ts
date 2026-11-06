@@ -5,12 +5,12 @@ import { remixUserLine } from '@ng-icons/remixicon'
 import { HlmButton } from '@spartan-ng/helm/button'
 import { AngularLogo } from '../layout/angular-logo'
 import { REPO_URL } from '../site'
-import { vikingAnvil, vikingHammer, vikingLongship, vikingScroll } from '../layout/viking-icons'
+import { vikingAnvil, vikingHammer, vikingLongship, vikingRaven, vikingScroll } from '../layout/viking-icons'
 
 @Component({
   selector: 'app-claim-badge',
   imports: [AngularLogo, HlmButton, NgIcon],
-  providers: [provideIcons({ octGitPullRequest, octIssueOpened, remixUserLine, vikingAnvil, vikingHammer, vikingLongship, vikingScroll })],
+  providers: [provideIcons({ octGitPullRequest, octIssueOpened, remixUserLine, vikingAnvil, vikingHammer, vikingLongship, vikingRaven, vikingScroll })],
   host: { class: 'block' },
   templateUrl: './claim-badge.html',
 })

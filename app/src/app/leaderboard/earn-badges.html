@@ -2,24 +2,24 @@
   <h2 class="brand text-4xl text-balance sm:text-5xl">Built on <span class="text-primary">Angular</span> community tools</h2>
   <p class="mt-4 text-lg text-pretty text-muted-foreground"><span class="inline-flex items-baseline gap-1.5 font-medium whitespace-nowrap text-foreground"><app-logo-mark class="size-[1.5em] self-center" /><span class="brand text-primary">Angularians</span></span> runs on these four. Their creators wear a special badge.</p>
 </header>
-<ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+<ul class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
   @for (project of projects; track project.name) {
-    <li hlmCard class="flex flex-col items-center gap-0 p-6 text-center">
+    <li hlmCard class="flex flex-col items-center gap-0 p-3 text-center sm:p-6">
       <a [href]="project.href" target="_blank" rel="noopener" class="group flex flex-col items-center rounded-xl focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
-        <span class="grid size-20 place-items-center rounded-2xl bg-muted ring-1 ring-border transition group-hover:ring-primary/50">
-          <img [src]="project.logo" alt="" width="44" height="44" class="size-11 object-contain" />
+        <span class="grid size-14 place-items-center rounded-2xl sm:size-20 bg-muted ring-1 ring-border transition group-hover:ring-primary/50">
+          <img [src]="project.logo" alt="" width="44" height="44" class="size-8 object-contain sm:size-11" />
         </span>
-        <span class="mt-4 inline-flex items-center gap-1 text-lg font-semibold">{{ project.name }}<ng-icon name="remixArrowRightUpLine" size="0.8em" class="text-muted-foreground transition group-hover:text-foreground" aria-hidden="true" /></span>
+        <span class="mt-3 inline-flex items-center gap-1 font-semibold sm:mt-4 sm:text-lg">{{ project.name }}<ng-icon name="remixArrowRightUpLine" size="0.8em" class="text-muted-foreground transition group-hover:text-foreground" aria-hidden="true" /></span>
       </a>
-      <p class="mt-1 text-pretty text-muted-foreground">{{ project.does }}</p>
-      <div class="mt-auto flex flex-col items-center gap-3 pt-6">
-        <div class="flex items-center gap-3">
+      <p class="mt-1 text-sm text-pretty text-muted-foreground sm:text-base">{{ project.does }}</p>
+      <div class="mt-auto flex flex-col items-center gap-3 pt-4 max-sm:[&_app-badge-pill_a]:px-2 max-sm:[&_app-badge-pill_a]:text-xs sm:pt-6">
+        <div class="flex flex-col items-center gap-2 sm:flex-row sm:gap-3">
           <span class="flex -space-x-2">
             @for (person of project.people; track person.githubId) {
-              <a [routerLink]="['/', person.username]" [attr.aria-label]="person.name + '\'s profile'" class="rounded-full transition hover:z-10 hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"><img [src]="avatar(person.githubId)" alt="" width="40" height="40" class="size-10 rounded-full ring-2 ring-card" /></a>
+              <a [routerLink]="['/', person.username]" [attr.aria-label]="person.name + '\'s profile'" class="rounded-full transition hover:z-10 hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"><img [src]="avatar(person.githubId)" alt="" width="40" height="40" class="size-9 rounded-full ring-2 ring-card sm:size-10" /></a>
             }
           </span>
-          <span class="text-left leading-tight">
+          <span class="text-sm leading-tight max-sm:text-center sm:text-left sm:text-base">
             @for (person of project.people; track person.githubId; let last = $last) {
               <a [routerLink]="['/', person.username]" class="font-medium underline-offset-4 hover:underline">{{ person.name }}</a>@if (!last) {<span class="text-muted-foreground"> & </span>}
             }

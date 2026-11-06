@@ -21,20 +21,26 @@ export const PODIUM: Record<number, { icon: string, ring: string, badge: string,
   3: { icon: 'vikingAxes', ring: 'ring-2 ring-[#B5561C]', badge: 'ring-[#B5561C] text-[#9A4510] dark:text-[#D2691E]', text: 'text-[#9A4510] dark:text-[#D2691E]' },
 }
 
-/** The first page comes server-rendered; "Show more" loads the next ones. */
+/** How many contributors the board shows at first, and how many more each "Show more" adds: a page on wider screens, fewer on phones. */
+const STEP = { wide: 100, phone: 50 }
+
+/** The pages loaded after the first, and how many of the loaded ones are on screen, wide and on a phone. */
+type Shown = { more: ContributorSummary[], wide: number, phone: number }
+
+/** The first page comes server-rendered (50 of it on phones); "Show more" shows the rest, then loads the next pages. */
 /** The extra pages of each board, for as long as the tab is open: a board is its period, country and data night. */
 @Service()
 export class LeaderboardMemory {
-  private readonly pages = new Map<string, ContributorSummary[]>()
+  private readonly pages = new Map<string, Shown>()
   readonly view = signal<'grid' | 'list'>('grid')
   private key(page: LeaderboardPage): string {
     return `${page.period}|${page.country ?? ''}|${page.collectedAt ?? ''}`
   }
-  get(page: LeaderboardPage): ContributorSummary[] {
-    return this.pages.get(this.key(page)) ?? []
+  get(page: LeaderboardPage): Shown {
+    return this.pages.get(this.key(page)) ?? { more: [], wide: STEP.wide, phone: STEP.phone }
   }
-  set(page: LeaderboardPage, items: ContributorSummary[]): void {
-    this.pages.set(this.key(page), items)
+  set(page: LeaderboardPage, shown: Shown): void {
+    this.pages.set(this.key(page), shown)
   }
 }
 
@@ -58,11 +64,16 @@ export class LeaderboardGrid {
    * The pages after the first, as "Show more" loaded them: remembered per board, so coming back from a profile shows
    * the same list (and the browser's scroll position lands where it was). Another period or country: its own.
    */
-  private readonly more = linkedSignal<LeaderboardPage, ContributorSummary[]>({ source: () => this.page(), computation: page => this.memory.get(page) })
+  private readonly shown = linkedSignal<LeaderboardPage, Shown>({ source: () => this.page(), computation: page => this.memory.get(page) })
   /** Both belong to one board: a failure or a request of the last one must not show on the next. */
   protected readonly loading = linkedSignal({ source: () => this.page(), computation: () => false })
   protected readonly failed = linkedSignal({ source: () => this.page(), computation: () => false })
-  protected readonly items = computed(() => [...this.page().items, ...this.more()])
+  private readonly loaded = computed(() => [...this.page().items, ...this.shown().more])
+  protected readonly items = computed(() => this.loaded().slice(0, Math.max(this.shown().wide, this.shown().phone)))
+  /** On a phone, the ones past this are hidden. */
+  protected readonly phoneShown = computed(() => this.shown().phone)
+  protected readonly moreWide = computed(() => this.shown().wide < this.page().total)
+  protected readonly morePhone = computed(() => this.shown().phone < this.page().total)
   protected readonly query = computed(() => profileQuery(this.page().period, this.page().country))
   protected readonly listLabel = computed(() => `Contributors, ranked: ${formatNumber(this.items().length)} of ${formatNumber(this.page().total)} shown`)
   protected readonly AVATAR_SIZE = AVATAR_SIZE
@@ -134,15 +145,20 @@ export class LeaderboardGrid {
   protected async showMore(): Promise<void> {
     // The period or the country can change while this loads: its items must not join the new board.
     const first = this.page()
-    const next = Math.floor(this.items().length / first.items.length) + 1
+    const phone = window.matchMedia('(max-width: 639.98px)').matches
+    const shown = { ...this.shown(), [phone ? 'phone' : 'wide']: this.shown()[phone ? 'phone' : 'wide'] + STEP[phone ? 'phone' : 'wide'] }
+    const needed = Math.min(Math.max(shown.wide, shown.phone), first.total)
+    const reveal = (more: ContributorSummary[]) => {
+      this.shown.set({ ...shown, more })
+      this.memory.set(first, this.shown())
+    }
+    if (this.loaded().length >= needed) return reveal(this.shown().more)
+    const next = Math.floor(this.loaded().length / first.items.length) + 1
     this.loading.set(true)
     this.failed.set(false)
     try {
       const page = await this.fetchPage({ period: first.period, country: first.country, page: next })
-      if (first === this.page()) {
-        this.more.update(items => [...items, ...page.items])
-        this.memory.set(first, this.more())
-      }
+      if (first === this.page()) reveal([...this.shown().more, ...page.items])
     }
     catch {
       if (first === this.page()) this.failed.set(true)
@@ -151,4 +167,5 @@ export class LeaderboardGrid {
       if (first === this.page()) this.loading.set(false)
     }
   }
+
 }

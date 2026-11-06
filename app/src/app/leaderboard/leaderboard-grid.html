@@ -7,8 +7,8 @@
 
 @if (view() === 'list') {
   <ol class="flex flex-col gap-2 sm:hidden" [attr.aria-label]="listLabel()">
-    @for (item of items(); track item.githubId) {
-      <li>
+    @for (item of items(); track item.githubId; let index = $index) {
+      <li [class.hidden]="index >= phoneShown()">
         <a [routerLink]="['/', item.username]" [queryParams]="query()" class="flex items-center gap-3 rounded-lg bg-muted/40 p-2 ring-1 ring-border transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none" [attr.aria-label]="label(item)">
           @if (podium(item); as medal) {
             <app-rank-shield [rank]="place(item)" metal="" [podium]="true" [class]="'h-8 w-7 shrink-0 text-sm ' + medal.text" />
@@ -37,7 +37,7 @@
   (pointerdown)="tip.set(null)"
 >
   @for (item of items(); track item.githubId; let index = $index) {
-    <li class="relative">
+    <li class="relative" [class.max-sm:hidden]="index >= phoneShown()">
       <a
         [routerLink]="['/', item.username]"
         [queryParams]="query()"
@@ -69,8 +69,8 @@
   </div>
 }
 
-@if (items().length < page().total) {
-  <div class="mt-10 flex justify-center">
+@if (moreWide() || morePhone()) {
+  <div class="mt-10 flex justify-center" [class.max-sm:hidden]="!morePhone()" [class.sm:hidden]="!moreWide()">
     <button hlmBtn variant="outline" type="button" [disabled]="loading()" (click)="showMore()">
       <ng-icon name="remixAddLine" aria-hidden="true" />
       {{ loading() ? 'Loading…' : 'Show more' }}

@@ -18,4 +18,22 @@ import { REPO_URL } from '../site';
 })
 export class SiteFooter {
   protected readonly repo = REPO_URL;
+  /** The footer's links: the board, how to take part, and the people behind it. */
+  protected readonly groups: ReadonlyArray<{ title: string, links: ReadonlyArray<{ label: string, route?: string, fragment?: string, href?: string }> }> = [
+    { title: 'The board', links: [
+      { label: 'Leaderboard', route: '/', fragment: 'leaderboard' },
+      { label: 'Around the world', route: '/', fragment: 'world' },
+      { label: 'Built on', route: '/', fragment: 'built-on' },
+      { label: 'Claim a badge', route: '/', fragment: 'claim-a-badge' },
+    ] },
+    { title: 'Take part', links: [
+      { label: 'Contributing guide', href: `${REPO_URL}/blob/main/CONTRIBUTING.md` },
+      { label: 'Request a badge', href: `${REPO_URL}/issues/new?template=badge-request.yml` },
+      { label: 'Report a bug', href: `${REPO_URL}/issues/new?template=bug_report.yml` },
+    ] },
+    { title: 'People', links: [
+      { label: 'Sponsor', href: 'https://github.com/sponsors/erkamyaman' },
+      { label: 'Send a raven (ping me)', href: 'https://erkamyaman.dev/links/' },
+    ] },
+  ];
 }

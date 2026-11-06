@@ -1,13 +1,13 @@
 <hlm-dialog>
   <button hlmDialogTrigger hlmBtn variant="outline" type="button"><ng-icon name="remixEyeLine" aria-hidden="true" /> See the card</button>
-  <hlm-dialog-content *hlmDialogPortal class="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
+  <hlm-dialog-content *hlmDialogPortal class="max-h-[90dvh] overflow-y-auto max-sm:w-[calc(100vw-1rem)] max-sm:max-w-[calc(100%-1rem)] max-sm:gap-4 max-sm:p-4 sm:max-w-2xl">
     <hlm-dialog-header>
       <h2 hlmDialogTitle>The <span class="brand text-primary">Angularian</span> card</h2>
       <p hlmDialogDescription>Sign in with GitHub as {{ username() }} to download it or share it.</p>
     </hlm-dialog-header>
-    <img [src]="image()" [alt]="username() + '’s Angularian card'" width="1200" height="630" class="block h-auto w-full rounded-lg bg-muted ring-1 ring-border" />
+    <img [src]="image()" [alt]="username() + '’s Angularian card'" width="1200" height="630" class="block h-auto w-full rounded-lg bg-muted ring-1 ring-border max-sm:-mx-4 max-sm:w-[calc(100%+2rem)] max-sm:max-w-none max-sm:rounded-none max-sm:ring-0" />
     <div class="flex justify-end">
-      <a hlmBtn class="bg-foreground text-background hover:bg-foreground/90" [href]="signInUrl()"><ng-icon name="simpleGithub" aria-hidden="true" /> Sign in to share</a>
+      <a hlmBtn class="bg-foreground text-background hover:bg-foreground/90 max-sm:w-full" [href]="signInUrl()"><ng-icon name="simpleGithub" aria-hidden="true" /> Sign in to share</a>
     </div>
   </hlm-dialog-content>
 </hlm-dialog>

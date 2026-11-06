@@ -14,9 +14,9 @@
     </div>
   </div>
 
-  <ul class="mx-auto mt-8 grid max-w-3xl gap-3 sm:grid-cols-2" aria-label="Who can claim one">
+  <ul class="mx-auto mt-8 grid max-w-3xl grid-cols-2 gap-3" aria-label="Who can claim one">
     @for (idea of ideas; track idea.text) {
-      <li class="flex items-center gap-3 rounded-lg bg-background/60 p-3 text-left text-pretty ring-1 ring-border/60">
+      <li class="flex flex-col items-start gap-2 rounded-lg bg-background/60 p-3 text-left text-sm text-pretty ring-1 ring-border/60 sm:flex-row sm:items-center sm:gap-3 sm:text-base">
         <span [class]="'grid size-9 shrink-0 place-items-center rounded-md bg-current/10 ' + idea.color"><ng-icon [name]="idea.icon" size="1.25rem" aria-hidden="true" /></span>
         <span>{{ idea.text }}</span>
       </li>
@@ -24,9 +24,9 @@
   </ul>
   <p class="mt-4 text-center text-sm text-muted-foreground">Something else? Ask anyway.</p>
 
-  <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+  <div class="mt-8 grid gap-3 sm:flex sm:flex-wrap sm:items-center sm:justify-center">
     <a hlmBtn [href]="issueUrl" target="_blank" rel="noopener"><ng-icon name="octIssueOpened" aria-hidden="true" /> Open an issue</a>
     <a hlmBtn variant="outline" [href]="prUrl" target="_blank" rel="noopener"><ng-icon name="octGitPullRequest" aria-hidden="true" /> Open a PR: the guide</a>
-    <span class="text-sm text-muted-foreground">or <a href="https://erkamyaman.dev/links/" target="_blank" rel="author noopener" class="font-medium text-foreground underline underline-offset-4 hover:text-primary">ping.me</a></span>
+    <a hlmBtn variant="outline" href="https://erkamyaman.dev/links/" target="_blank" rel="author noopener"><ng-icon name="vikingRaven" size="1.25rem" aria-hidden="true" /> Send a raven <span class="text-muted-foreground">(ping me)</span></a>
   </div>
 </section>

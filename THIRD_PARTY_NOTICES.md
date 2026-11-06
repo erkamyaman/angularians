@@ -93,7 +93,7 @@ The Viking icons in `app/src/app/layout/viking-icons.ts` are from [Game Icons](h
 (https://creativecommons.org/licenses/by/3.0/), unmodified:
 
 - by [Delapouite](https://delapouite.com): "Viking helmet", "Viking head", "Viking shield", "Thor hammer", "Broom" and "Drakkar";
-- by [Lorc](https://lorcblog.blogspot.com): "Crossed axes", "Scroll unfurled", "Broadsword" and "Anvil".
+- by [Lorc](https://lorcblog.blogspot.com): "Crossed axes", "Scroll unfurled", "Broadsword", "Anvil" and "Raven".
 
 The other icons come through [ng-icons](https://github.com/ng-icons/ng-icons): [Remix Icon](https://remixicon.com)
 (`@ng-icons/remixicon`, declared Apache), [Octicons](https://github.com/primer/octicons) (`@ng-icons/octicons`, MIT) and

@@ -151,6 +151,8 @@ export default class Profile {
     ];
   });
   protected readonly PACKAGES_SHOWN = 12;
+  /** Phones show fewer packages before "Show all". */
+  protected readonly PACKAGES_SHOWN_PHONE = 5;
   protected readonly allPackages = signal(false);
   /** A package's fill: its PRs against the package with the most, so the tiles compare. */
   protected readonly packageShare = (count: number) => Math.max(2, count / Math.max(1, this.packages()[0]?.pullRequests ?? 1) * 100);
