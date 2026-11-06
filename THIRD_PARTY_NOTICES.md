@@ -101,7 +101,7 @@ The other icons come through [ng-icons](https://github.com/ng-icons/ng-icons): [
 
 ## Flags
 
-The round flags in `public/flags/` are copied at build time from [circle-flags](https://github.com/HatScripts/circle-flags),
+The round flags in `app/public/flags/` are copied at build time from [circle-flags](https://github.com/HatScripts/circle-flags),
 MIT, Copyright (c) 2026 HatScripts. The full licence ships with the package.
 
 ## Other software in the site
