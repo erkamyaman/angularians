@@ -14,6 +14,14 @@ describe('canonicalRedirect', () => {
     ['deploy-preview-12--angularians.netlify.app', '/erkamyaman', null],
     ['localhost:4202', '/erkamyaman', null],
     [undefined, '/', null],
+    // Never to another site: a path starting with `//` or `/\` would be read as a host.
+    ['angularians.dev', '//evil.com/', '/evil.com'],
+    ['angularians.dev', '//evil.com//', '/evil.com'],
+    ['angularians.dev', '/\\evil.com/', '/evil.com'],
+    ['angularians.dev', '///evil.com/?x=1', '/evil.com?x=1'],
+    ['angularians.dev', '//', '/'],
+    ['angularians.dev', '//evil.com', '/evil.com'],
+    ['angularians.netlify.app', '//evil.com/', 'https://angularians.dev/evil.com'],
   ] as const)('%s %s → %s', (host, url, target) => {
     expect(canonicalRedirect(host, url)).toBe(target)
   })

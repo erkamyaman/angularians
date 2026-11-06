@@ -6,11 +6,13 @@ const NETLIFY_HOST = 'angularians.netlify.app'
 /**
  * Where a request should go instead, so every page has one address for search engines: the domain for the Netlify
  * subdomain, and a path without its trailing slash (`/erkamyaman/` → `/erkamyaman`). `null` when it is fine as it is.
- * `url` is the path with its query string.
+ * `url` is the path with its query string. Leading slashes or backslashes collapse into one: `//evil.com` or `/\evil.com`
+ * as a Location would send the browser to another site.
  */
 export function canonicalRedirect(host: string | undefined, url: string): string | null {
   const [path = '/', query] = splitQuery(url)
-  const trimmed = path.length > 1 && path.endsWith('/') ? path.replace(/\/+$/, '') || '/' : path
+  const single = path.replace(/^[/\\]+/, '/')
+  const trimmed = single.length > 1 && single.endsWith('/') ? single.replace(/\/+$/, '') || '/' : single
   const onSubdomain = host?.toLowerCase().split(':')[0] === NETLIFY_HOST
   if (!onSubdomain && trimmed === path) return null
   const target = trimmed + (query === undefined ? '' : `?${query}`)
