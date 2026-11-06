@@ -52,6 +52,14 @@ async function query<T>(text: string, variables: Record<string, unknown>): Promi
   return data
 }
 
+/** Each node of a connection: its first page, then the next ones, which `more` asks for from the cursor. */
+async function eachNode<T>(first: Page<T>, more: (after: string | null) => Promise<Page<T>>, visit: (node: T | null) => unknown): Promise<void> {
+  for (let page = first; ; page = await more(page.pageInfo.endCursor)) {
+    for (const node of page.nodes ?? []) await visit(node)
+    if (!page.pageInfo.hasNextPage) return
+  }
+}
+
 /**
  * Every discussion of a repository, with its comments and their replies, scored as issues and comments are:
  * a discussion counts as an issue, a comment or a reply as a comment, the accepted answer as a helpful comment.
@@ -71,13 +79,7 @@ export async function collectDiscussions({ owner, name }: Repo, since: Date | nu
   const addComment = async (comment: Comment | null) => {
     if (!comment) return
     addReply(comment, comment.isAnswer)
-    for (const reply of comment.replies.nodes ?? []) addReply(reply)
-    let page = comment.replies.pageInfo
-    while (page.hasNextPage) {
-      const data = await query<{ node: { replies: Page<Reply> } }>(MORE_REPLIES, { id: comment.id, after: page.endCursor })
-      for (const reply of data.node.replies.nodes ?? []) addReply(reply)
-      page = data.node.replies.pageInfo
-    }
+    await eachNode(comment.replies, async after => (await query<{ node: { replies: Page<Reply> } }>(MORE_REPLIES, { id: comment.id, after })).node.replies, reply => addReply(reply))
   }
 
   let after: string | null = null
@@ -104,13 +106,7 @@ export async function collectDiscussions({ owner, name }: Repo, since: Date | nu
         accumulator.addIssue(issue)
         stats.discussions++
       }
-      for (const comment of discussion.comments.nodes ?? []) await addComment(comment)
-      let page = discussion.comments.pageInfo
-      while (page.hasNextPage) {
-        const more = await query<{ node: { comments: Page<Comment> } }>(MORE_COMMENTS, { id: discussion.id, after: page.endCursor })
-        for (const comment of more.node.comments.nodes ?? []) await addComment(comment)
-        page = more.node.comments.pageInfo
-      }
+      await eachNode(discussion.comments, async after => (await query<{ node: { comments: Page<Comment> } }>(MORE_COMMENTS, { id: discussion.id, after })).node.comments, addComment)
     }
     if (!discussions.pageInfo.hasNextPage) break
     after = discussions.pageInfo.endCursor
