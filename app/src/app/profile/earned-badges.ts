@@ -12,20 +12,16 @@ export const BADGE_ICONS = { octShield, remixStarFill, simpleNx, vikingAnvil, vi
 
 /**
  * A badge on a profile and on its card. `icon`: `angular`, `gde` or `logo` (`logo` is its image), or a key of
- * `BADGE_ICONS`. `style`: the page's classes.
+ * `BADGE_ICONS`. `tone`: its colours, a `tone-*` class of `badge-pill.css`.
  */
 export interface EarnedBadge {
   label: string
   title: string
   icon: 'angular' | 'gde' | 'logo' | keyof typeof BADGE_ICONS
-  style: string
+  tone: string
   logo?: string
   href?: string
 }
-
-const GOLD = 'bg-[#9A6700]/10 text-[#7D4E00] ring-[#9A6700]/30 dark:bg-[#D29922]/10 dark:text-[#D29922] dark:ring-[#D29922]/30'
-const GREEN = 'bg-[#1A7F37]/10 text-[#116329] ring-[#1A7F37]/30 dark:bg-[#3FB950]/10 dark:text-[#3FB950] dark:ring-[#3FB950]/30'
-const PURPLE = 'bg-[#8250DF]/10 text-[#8250DF] ring-[#8250DF]/30 dark:bg-[#A371F7]/10 dark:text-[#A371F7] dark:ring-[#A371F7]/30'
 
 /** Years as ranges: [2019, 2024, 2025, 2026] → "2019, 2024–2026". */
 export function yearRanges(years: readonly number[]): string {
@@ -41,26 +37,26 @@ export function yearRanges(years: readonly number[]): string {
 
 /** A project's badge for one of its people: its title, logo and colour, linked to the project. */
 export function projectBadge(project: ProjectBadge, role: ProjectRole): EarnedBadge {
-  return { label: project.badge, title: `${role[0]!.toUpperCase()}${role.slice(1)} of ${project.name}`, icon: 'logo', logo: project.logo, href: project.href, style: project.style }
+  return { label: project.badge, title: `${role[0]!.toUpperCase()}${role.slice(1)} of ${project.name}`, icon: 'logo', logo: project.logo, href: project.href, tone: project.tone }
 }
 
 /** Every badge a contributor has, in the order the profile and the card show them. */
 export function earnedBadges(person: ContributorProfile): EarnedBadge[] {
   const badges: EarnedBadge[] = []
-  if (person.team) badges.push({ label: 'Angular team', title: 'Member of the Angular org on GitHub', icon: 'angular', style: 'bg-[#dc087d]/10 text-foreground ring-[#dc087d]/40' })
+  if (person.team) badges.push({ label: 'Angular team', title: 'Member of the Angular org on GitHub', icon: 'angular', tone: 'team' })
   const gde = ANGULAR_GDES.get(person.githubId)
-  if (gde !== undefined) badges.push({ label: 'Angular GDE', title: 'Google Developer Expert for Angular', href: gde ? `https://me.developers.google.com/u/${gde}` : undefined, icon: 'gde', logo: '/credits/gde.svg', style: 'bg-[#1A73E8]/10 text-[#185ABC] ring-[#1A73E8]/30 dark:bg-[#8AB4F8]/10 dark:text-[#8AB4F8] dark:ring-[#8AB4F8]/30' })
-  if (GITHUB_STARS.has(person.githubId)) badges.push({ label: 'GitHub Star', title: '', href: `https://stars.github.com/profiles/${person.username}`, icon: 'remixStarFill', style: 'bg-[#BF8700]/10 text-[#845A00] ring-[#BF8700]/30 dark:bg-[#E3B341]/10 dark:text-[#E3B341] dark:ring-[#E3B341]/30' })
-  if (NX_CHAMPIONS.has(person.githubId)) badges.push({ label: 'Nx Champion', title: '', href: 'https://nx.dev/community', icon: 'simpleNx', style: 'bg-[#143055]/10 text-[#143055] ring-[#143055]/30 dark:bg-[#96D7E8]/10 dark:text-[#96D7E8] dark:ring-[#96D7E8]/30' })
+  if (gde !== undefined) badges.push({ label: 'Angular GDE', title: 'Google Developer Expert for Angular', href: gde ? `https://me.developers.google.com/u/${gde}` : undefined, icon: 'gde', logo: '/credits/gde.svg', tone: 'gde' })
+  if (GITHUB_STARS.has(person.githubId)) badges.push({ label: 'GitHub Star', title: '', href: `https://stars.github.com/profiles/${person.username}`, icon: 'remixStarFill', tone: 'star' })
+  if (NX_CHAMPIONS.has(person.githubId)) badges.push({ label: 'Nx Champion', title: '', href: 'https://nx.dev/community', icon: 'simpleNx', tone: 'nx' })
   const advisories = ANGULAR_SECURITY.get(person.githubId)
-  if (advisories) badges.push({ label: 'Shieldwall', title: `Credited on ${plural(advisories, 'Angular security advisory', 'Angular security advisories')}`, href: `https://github.com/advisories?query=credit%3A${person.username}`, icon: 'octShield', style: 'bg-[#CF222E]/10 text-[#CF222E] ring-[#CF222E]/30 dark:bg-[#FF7B72]/10 dark:text-[#FF7B72] dark:ring-[#FF7B72]/30' })
+  if (advisories) badges.push({ label: 'Shieldwall', title: `Credited on ${plural(advisories, 'Angular security advisory', 'Angular security advisories')}`, href: `https://github.com/advisories?query=credit%3A${person.username}`, icon: 'octShield', tone: 'shieldwall' })
   const projects = projectBadgesOf(person.githubId)
   for (const { project, role } of projects) badges.push(projectBadge(project, role))
   const forged = projects.filter(({ project, role }) => project.builtOn && (role === 'creator' || role === 'co-creator')).map(({ project }) => project.name)
-  if (forged.length) badges.push({ label: 'Smith of ng-halla', title: `Forged ${forged.join(' and ')}`, icon: 'vikingAnvil', style: 'bg-primary/10 text-primary ring-primary/30' })
+  if (forged.length) badges.push({ label: 'Smith of ng-halla', title: `Forged ${forged.join(' and ')}`, icon: 'vikingAnvil', tone: 'primary' })
   const firsts = person.periods.filter(row => /^\d{4}$/.test(row.period) && row.rank === 1).map(row => Number(row.period)).sort((x, y) => x - y)
-  if (firsts.length) badges.push({ label: `#1 in ${yearRanges(firsts)}`, title: `The top Angularian of ${plural(firsts.length, 'year', 'years')}`, icon: 'vikingHelmet', style: GOLD })
-  if (person.rank <= 10) badges.push({ label: 'Top 10 all time', title: `#${formatNumber(person.rank)} of all time`, icon: 'vikingShield', style: GREEN })
-  if (person.reviewComments >= 100) badges.push({ label: 'Reviewer', title: `${formatNumber(person.reviewComments)} review comments on code`, icon: 'vikingAxes', style: PURPLE })
+  if (firsts.length) badges.push({ label: `#1 in ${yearRanges(firsts)}`, title: `The top Angularian of ${plural(firsts.length, 'year', 'years')}`, icon: 'vikingHelmet', tone: 'gold' })
+  if (person.rank <= 10) badges.push({ label: 'Top 10 all time', title: `#${formatNumber(person.rank)} of all time`, icon: 'vikingShield', tone: 'green' })
+  if (person.reviewComments >= 100) badges.push({ label: 'Reviewer', title: `${formatNumber(person.reviewComments)} review comments on code`, icon: 'vikingAxes', tone: 'purple' })
   return badges
 }

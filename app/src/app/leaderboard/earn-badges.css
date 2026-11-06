@@ -1,3 +1,11 @@
 :host {
   display: block;
 }
+
+/* Phones: the project's badge a size down (`--pill-*` in badge-pill.css) */
+@media (width < 40rem) {
+  .people {
+    --pill-font-size: var(--text-xs);
+    --pill-line-height: var(--text-xs--line-height);
+  }
+}
