@@ -73,7 +73,12 @@ export default class Home {
   /** Countries of the same period, for the filter and the globe. */
   protected readonly map = injectSeededServerFn(getContributorsMap, () => ({ period: this.period() }));
   private readonly boardValue = loadedValue(this.leaderboard);
-  protected readonly mapValue = loadedValue(this.map);
+  private readonly loadedMap = loadedValue(this.map);
+  /** The last countries stay too, so the country filter does not vanish while the next period loads. */
+  protected readonly mapValue = linkedSignal<ReturnType<typeof this.loadedMap>, ReturnType<typeof this.loadedMap>>({
+    source: () => this.loadedMap(),
+    computation: (value, previous) => value ?? previous?.value,
+  });
   /** The last board stays on screen, dimmed, while the next one loads, or if it fails: no jump to skeletons. */
   protected readonly board = linkedSignal<ReturnType<typeof this.boardValue>, ReturnType<typeof this.boardValue>>({
     source: () => this.boardValue(),
