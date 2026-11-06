@@ -95,7 +95,7 @@ export function cardTree(profile: ContributorProfile, period: Period, avatar: st
       { label: label(stats.reactions, 'Reaction', 'Reactions'), value: stats.reactions, color: COLORS.reactions, icon: ICONS.reactions },
     ],
   ]
-  return h('div', { width: '100%', height: '100%', flexDirection: 'column', justifyContent: 'space-between', backgroundColor: '#0a0a0a', color: '#ffffff', paddingTop: 56, paddingRight: 64, paddingBottom: 44, paddingLeft: 64, fontFamily: 'Manrope' }, [
+  return h('div', { width: '100%', height: '100%', flexDirection: 'column', justifyContent: 'space-between', backgroundColor: '#0a0a0a', color: '#ffffff', paddingTop: 44, paddingRight: 64, paddingBottom: 36, paddingLeft: 64, fontFamily: 'Manrope' }, [
     h('div', { flexDirection: 'row', gap: 64 }, [
       h('div', { flexDirection: 'column', width: 380 }, [
         avatar
@@ -109,6 +109,11 @@ export function cardTree(profile: ContributorProfile, period: Period, avatar: st
           h('img', { width: 30, height: 30 }, undefined, { src: flag.src, width: 30, height: 30 }),
           h('div', {}, flag.name),
         ])] : []),
+        h('div', { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 14, whiteSpace: 'nowrap' }, [
+          h('img', { width: 30, height: 32 }, undefined, { src: ANGULAR_LOGO, width: 30, height: 32 }),
+          h('div', { fontSize: 22, fontWeight: 600 }, 'Angular contributor'),
+          ...(since ? [h('div', { fontSize: 22, color: '#a3a3a3' }, `since ${since}`)] : []),
+        ]),
       ]),
       h('div', { flexDirection: 'column', flex: 1, gap: 24 }, rows.map(row =>
         h('div', { flexDirection: 'row', gap: 24 }, row.map(stat =>
@@ -121,14 +126,8 @@ export function cardTree(profile: ContributorProfile, period: Period, avatar: st
           ])),
         ))),
     ]),
-    h('div', { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #262626', paddingTop: 18 }, [
-      h('div', { flexDirection: 'row', alignItems: 'center', gap: 14 }, [
-        h('img', { width: 58, height: 62 }, undefined, { src: ANGULAR_LOGO, width: 58, height: 62 }),
-        h('div', { flexDirection: 'column' }, [
-          h('div', { fontSize: 26, fontWeight: 600, lineHeight: 1.15, whiteSpace: 'nowrap' }, 'Angular contributor'),
-          ...(since ? [h('div', { fontSize: 20, lineHeight: 1.2, color: '#a3a3a3' }, `since ${since}`)] : []),
-        ]),
-      ]),
+    // The footer's left stays empty: X lays the page's title over a card's bottom-left corner.
+    h('div', { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', borderTop: '1px solid #262626', paddingTop: 18 }, [
       h('div', { flexDirection: 'row', alignItems: 'center', gap: 12 }, [
         markSvg(68),
         h('div', { flexDirection: 'column' }, [
@@ -156,11 +155,12 @@ export function homeTree(input: { title: string, description: string, avatars: A
       branded(input.title, { fontSize: 76, fontWeight: 600, marginTop: 48, lineHeight: 1.1 }, BRAND),
       withAngular(input.description, { fontSize: 32, color: '#a3a3a3', marginTop: 24, maxWidth: 1040, lineHeight: 1.35 }),
     ]),
+    // The avatars on the right: X lays the page's title over a card's bottom-left corner.
     h('div', { alignItems: 'center', justifyContent: 'space-between' }, [
+      h('div', { fontSize: 26, color: '#737373' }, 'angularians.dev'),
       h('div', { alignItems: 'center' }, avatars.map((avatar, index) => avatar
         ? h('img', { width: 88, height: 88, borderRadius: 9999, border: '4px solid #0a0a0a', marginLeft: index ? -18 : 0 }, undefined, { src: avatar, width: 88, height: 88 })
         : h('div', { width: 88, height: 88, borderRadius: 9999, border: '4px solid #0a0a0a', backgroundColor: '#262626', marginLeft: index ? -18 : 0 }))),
-      h('div', { fontSize: 26, color: '#737373' }, 'angularians.dev'),
     ]),
   ])
 }
