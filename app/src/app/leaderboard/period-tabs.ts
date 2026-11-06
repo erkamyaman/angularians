@@ -13,7 +13,7 @@ const RANK = new Intl.NumberFormat('en-US')
   selector: 'app-period-tabs',
   imports: [HlmSelectImports, HlmTabsImports],
   // One pill: the tabs, then the year picker inside it (Nuxters).
-  host: { class: 'inline-flex max-w-full flex-wrap items-center rounded-lg bg-muted p-[3px]' },
+  host: { class: 'flex w-full flex-wrap items-center rounded-lg bg-muted p-[3px] sm:inline-flex sm:w-auto sm:max-w-full' },
   templateUrl: './period-tabs.html',
 })
 export class PeriodTabs {

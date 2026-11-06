@@ -9,7 +9,8 @@
     }
     <!-- Or a description with markup (a logo, a highlighted word) -->
     <p class="mt-5 max-w-2xl text-lg text-pretty text-muted-foreground empty:hidden"><ng-content select="[heroDescription]" /></p>
-    <div class="mt-8 flex flex-wrap gap-3 empty:hidden"><ng-content select="[heroActions]" /></div>
+    <!-- Phones: one column of full-width buttons (hlm-dialog wraps a trigger) -->
+    <div class="mt-8 grid gap-3 empty:hidden sm:flex sm:flex-wrap [&_[hlmdialogtrigger]]:max-sm:w-full"><ng-content select="[heroActions]" /></div>
     <ng-content />
   </div>
   <ng-content select="[heroAside]" />
