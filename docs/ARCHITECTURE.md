@@ -5,7 +5,7 @@ A pnpm workspace of three packages and the data they share.
 | Folder | |
 | --- | --- |
 | [`shared/`](../shared) | Types, scoring, PR type rules, periods, countries, the repositories on the board. Used by both others. |
-| [`collector/`](../collector) | Collects landed PRs, issues, comments, review comments, security advisories and GitHub profiles, writes `data/`. Runs nightly in GitHub Actions. |
+| [`collector/`](../collector) | Collects landed PRs, issues, discussions, comments, review comments, security advisories, the Angular team and GitHub profiles, writes `data/`. Runs nightly in GitHub Actions. |
 | [`app/`](../app) | The site: [Analog](https://analogjs.org) (Angular 22, server-rendered), [spartan/ui](https://www.spartan.ng), Tailwind 4. |
 | [`data/`](../data) | The collector's output: `contributors*.json`, `profiles.json`, `packages.json`, `team.json`, `renames.json`, `meta.json`. Committed. |
 
@@ -43,7 +43,7 @@ The brand font, Norse Bold (the word "Angularian" on the site and the cards), is
   everyone with a merged PR, dated with the last collection. `robots.txt` points to it and keeps crawlers out of `/api/`.
 - One address per page: `angularians.netlify.app` and a trailing slash (`/erkamyaman/`) answer 301 to the canonical URL
   (`app/src/server/middleware/canonical-url.ts`); every page sets `<link rel="canonical">`. A period (`?period=`) is the
-  same page as all time; a country (`?country=TR`) is a page of its own, with its own title.
+  same page as the home page without one (the last 12 months); a country (`?country=TR`) is a page of its own, with its own title.
 - Structured data (`setJsonLd` in `app/src/app/site.ts`): `WebSite` on the home page, `ProfilePage` with its `Person`
   and a `BreadcrumbList` on profiles, a `BreadcrumbList` on a country's board.
 - The cards (`/og.png`, `/:username/card.png`) keep their bottom-left corner free: X lays the page's title over it.

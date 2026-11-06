@@ -22,7 +22,7 @@ pnpm test    # Vitest
 | `src/app/data/contributors.server.ts` | Server functions the pages call (in-process during SSR) |
 | `src/server/routes/` | The public JSON API, sign-in (`api/auth`) and the Angularian card (`[username]/card.png`) |
 | `src/server/data/` | The data bundle and its queries, shared by both |
-| `src/ui/` | spartan/ui helm components, owned and editable (two local fixes, see THIRD_PARTY_NOTICES.md) |
+| `src/ui/` | spartan/ui helm components, owned and editable (three local changes, see THIRD_PARTY_NOTICES.md) |
 | `scripts/bundle-data.ts` | Validates `../data` and bundles it before `dev`, `build` and `test` |
 
 Every page is server-rendered (no pre-rendering): `/` reads `?period=` and `?country=`.
