@@ -1,5 +1,5 @@
 name: Recognition request
-description: Ask for the Angular GDE or GitHub Star badge on an Angularians profile
+description: Ask for the Angular GDE, GitHub Star or Nx Champion badge on an Angularians profile
 title: "Recognition: "
 labels: [recognition, needs triage]
 body:
@@ -18,13 +18,14 @@ body:
       options:
         - Angular GDE
         - GitHub Star
+        - Nx Champion
     validations:
       required: true
   - type: input
     id: source
     attributes:
       label: Official profile
-      description: The page on g.dev/experts (Angular specialization) or stars.github.com that shows it.
+      description: The page on g.dev/experts (Angular specialization), stars.github.com or nx.dev/community that shows it.
       placeholder: https://g.dev/...
     validations:
       required: true
