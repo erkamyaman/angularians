@@ -1,0 +1,19 @@
+name: Bot report
+description: An automated account is on the board
+title: "Bot: "
+labels: [data, needs triage]
+body:
+  - type: input
+    id: login
+    attributes:
+      label: The account
+      description: Its GitHub login, as on angularians.dev/<login>.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Why it is a bot
+      description: The GitHub "bot" label, a description saying it is automated, or links to its machine-written PRs or comments.
+    validations:
+      required: true

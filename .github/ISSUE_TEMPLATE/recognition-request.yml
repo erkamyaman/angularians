@@ -1,0 +1,30 @@
+name: Recognition request
+description: Ask for the Angular GDE or GitHub Star badge on an Angularians profile
+title: "Recognition: "
+labels: [badge, needs triage]
+body:
+  - type: input
+    id: username
+    attributes:
+      label: GitHub username
+      description: The profile on Angularians, angularians.dev/<username>.
+      placeholder: angie
+    validations:
+      required: true
+  - type: dropdown
+    id: recognition
+    attributes:
+      label: Recognition
+      options:
+        - Angular GDE
+        - GitHub Star
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Official profile
+      description: The page on g.dev/experts (Angular specialization) or stars.github.com that shows it.
+      placeholder: https://g.dev/...
+    validations:
+      required: true

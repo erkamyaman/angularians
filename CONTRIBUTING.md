@@ -44,28 +44,18 @@ Small files, plain comments, few dependencies. Comments say why, not what. A new
 
 ## Adding things
 
-**A repository on the board.** Add it to `REPOS` in `shared/src/repos.ts` and to the matrix of `.github/workflows/collect.yml`.
-If its PR titles name packages, teach `pullRequestScopes` in `shared/src/pull-requests.ts` how, and `packageLabel` in
-`app/src/app/profile/packages.ts` what to show. Then list it in the README and "How to become an
-Angularian" on the home page. The next nightly run collects its full history.
+Each common change has a skill in [`.agents/skills/`](.agents/skills): the steps, the rules and the checks, written for people and coding agents alike. An issue form asks for what the change needs, when you would rather someone else made it.
 
-**The mark or the brand colour.** The mark is built by `app/scripts/logo/build.py`: change it there and regenerate its
-uses (see the script). Colours live in `app/src/styles.css`.
+| Change | Skill | Or open an issue |
+| --- | --- | --- |
+| A custom badge for your project | [`add-a-custom-badge`](.agents/skills/add-a-custom-badge/SKILL.md) | [Badge request](https://github.com/erkamyaman/angularians/issues/new?template=badge-request.yml) |
+| The Angular GDE or GitHub Star badge | [`add-a-recognition`](.agents/skills/add-a-recognition/SKILL.md) | [Recognition request](https://github.com/erkamyaman/angularians/issues/new?template=recognition-request.yml) |
+| A bot on the board | [`flag-a-bot`](.agents/skills/flag-a-bot/SKILL.md) | [Bot report](https://github.com/erkamyaman/angularians/issues/new?template=bot-report.yml) |
+| A repository on the board | [`add-a-repository`](.agents/skills/add-a-repository/SKILL.md) | an issue first: the maintainer decides |
+| The score | [`change-the-score`](.agents/skills/change-the-score/SKILL.md) | an issue first: it moves every rank |
+| Any change to the site, before the PR | [`check-a-site-change`](.agents/skills/check-a-site-change/SKILL.md) | |
 
-**A bot.** When a run's `Possible bots:` line shows an account that is a bot, add it to `KNOWN_BOT_ACCOUNTS` in
-`shared/src/bots.ts`. Check its profile first: a few people have "bot" in their username.
-
-**A badge.** Badges are in `earnedBadges()` of `app/src/app/profile/earned-badges.ts`, which both the profile page and the card use. The Angular GDE and GitHub Star badges
-come from hand-kept lists of GitHub ids in `app/src/app/profile/recognitions.ts`: add someone there when they become one.
-Project badges ("Analog alchemist") are in `app/src/app/profile/special-badges.ts`: each project has its own short,
-fun title, its brand colour, its logo in `app/public/credits/` and the GitHub ids of its people; the badge links to the
-project's site. The tools Angularians is built on (`builtOn`) are on the home page, and their creators also get "Smith of
-ng-halla".
-
-**A custom badge for your own project.** Open a ["Badge request" issue](https://github.com/erkamyaman/angularians/issues/new?template=badge-request.yml) with the project's website, repository, logo and proof of your role, or open the pull request yourself: the steps, rules and checks are in [`.agents/skills/add-a-custom-badge/SKILL.md`](.agents/skills/add-a-custom-badge/SKILL.md), written for people and coding agents alike. One badge per pull request, titled `feat(app): the <project> badge`. The maintainer decides which badges join.
-
-**A change to the score.** The weights are in `shared/src/scoring.ts`; update [docs/SCORING.md](docs/SCORING.md) and the
-"How the score works" section of the home page with them.
+Badges are in `earnedBadges()` of `app/src/app/profile/earned-badges.ts`, which both the profile page and the card use; the project badges are in `app/src/app/profile/special-badges.ts`. The mark is built by `app/scripts/logo/build.py`: change it there and regenerate its uses (see the script). Colours live in `app/src/styles.css`.
 
 ## Pull requests
 

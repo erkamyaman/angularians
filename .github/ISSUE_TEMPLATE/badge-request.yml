@@ -45,6 +45,7 @@ body:
         - A tool
         - A community, meetup or conference
         - A course, blog, channel or book
+        - Something else (tell us below)
     validations:
       required: true
   - type: input
