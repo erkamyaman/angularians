@@ -20,12 +20,15 @@ a feat, `documentation` docs), else counts as a chore: these are mostly version 
 
 | Contribution | Points |
 | --- | --- |
-| Issue | 1 |
-| Helpful issue (closed as completed, or 3+ reactions, or 5+ comments) | +3 |
+| Issue, or GitHub Discussion | 1 |
+| Helpful issue (closed as completed, or 3+ reactions, or 5+ comments; a discussion by reactions or comments) | +3 |
 | Review comment (inline, on the code of a PR) | 1 |
-| Comment (on an issue or a PR) | 0.5 |
-| Helpful comment (3+ reactions) | +2 |
+| Comment (on an issue, a PR or a discussion, replies too) | 0.5 |
+| Helpful comment (3+ reactions, or marked as a discussion's answer) | +2 |
 | Reaction received (on the day of the issue, PR or comment) | 0.1 |
+
+Discussions (angular/angular's RFCs) come from GitHub's GraphQL API: they are counted as issues and comments are, in
+the issue and comment totals.
 
 The sum is rounded once.
 

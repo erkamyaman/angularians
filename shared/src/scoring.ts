@@ -171,6 +171,16 @@ export class ContributorsAccumulator {
     })
   }
 
+  /**
+   * A discussion comment marked as the answer: a helpful comment, on top of the comment itself (`addComment`),
+   * unless its reactions already made it one.
+   */
+  addAcceptedAnswer(comment: CommentInput): void {
+    const user = toUser(comment.user)
+    if (!user || (comment.reactions?.total_count ?? 0) >= HELPFUL_COMMENT_REACTIONS) return
+    this.add(user, comment.created_at, false, counts => (counts.helpfulComments += 1))
+  }
+
   /** Inline review comments: 1 point each, no "helpful" rule (they rarely get reactions). */
   addReviewComment(comment: CommentInput): void {
     const user = toUser(comment.user)

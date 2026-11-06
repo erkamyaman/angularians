@@ -11,7 +11,9 @@ Every night it re-collects everything, like nuxt/nuxters: no cache, every score 
 
 A PR has landed if GitHub marks it merged, **or** a commit on the default branch has a `PR Close #N` line for it.
 Angular's merge tool pushes the commits itself and closes the PR, so GitHub shows most PRs from
-2017 to 2025 as closed, not merged. The landed PR is credited to its author. Scoring rules are in
+2017 to 2025 as closed, not merged. The landed PR is credited to its author. GitHub Discussions (the RFCs) come from
+GraphQL (`src/discussions.ts`) and count as issues and comments do; the token needs no extra permission for public
+repositories. Scoring rules are in
 `shared/src/scoring.ts` and `shared/src/pull-requests.ts`.
 
 ## Run it

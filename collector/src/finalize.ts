@@ -27,12 +27,12 @@ export const PART_FILE = 'part.json'
 
 export type Stats = Record<
   'pulls' | 'commits' | 'prCloseCommits' | 'multiPrCommits' | 'landedMerged' | 'landedByPrClose' | 'landedPullRequests'
-  | 'issues' | 'comments' | 'reviewComments' | 'activityPages',
+  | 'issues' | 'comments' | 'reviewComments' | 'activityPages' | 'discussions' | 'discussionComments',
   number
 >
 export const emptyStats = (): Stats => ({
   pulls: 0, commits: 0, prCloseCommits: 0, multiPrCommits: 0, landedMerged: 0, landedByPrClose: 0, landedPullRequests: 0,
-  issues: 0, comments: 0, reviewComments: 0, activityPages: 0,
+  issues: 0, comments: 0, reviewComments: 0, activityPages: 0, discussions: 0, discussionComments: 0,
 })
 
 /** What one run collected, from one or several repositories. */

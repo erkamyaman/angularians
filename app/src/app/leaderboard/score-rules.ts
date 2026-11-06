@@ -27,10 +27,10 @@ export class ScoreRules {
     { title: 'Chores', description: 'Refactors, tests, builds, CI and releases.', icon: 'vikingBroom', color: GOLD, points: PULL_REQUEST_POINTS.chore },
   ]
   protected readonly rules = [
-    { what: 'Issue', when: 'Every issue you open.', value: `${ACTIVITY_POINTS.issues}`, unit: 'pt', icon: 'octIssueOpened', color: GREEN },
+    { what: 'Issue', when: 'Every issue or discussion you open.', value: `${ACTIVITY_POINTS.issues}`, unit: 'pt', icon: 'octIssueOpened', color: GREEN },
     { what: 'Helpful issue', when: 'On top, when completed or with 3+ reactions or 5+ comments.', value: `+${ACTIVITY_POINTS.helpfulIssues}`, unit: 'pts', icon: 'remixLightbulbLine', color: GOLD },
-    { what: 'Comment', when: 'Every comment on an issue or a pull request.', value: `${ACTIVITY_POINTS.comments}`, unit: 'pt', icon: 'octComment', color: BLUE },
-    { what: 'Helpful comment', when: 'On top, with 3+ reactions.', value: `+${ACTIVITY_POINTS.helpfulComments}`, unit: 'pts', icon: 'remixChatHeartLine', color: PINK },
+    { what: 'Comment', when: 'Every comment on an issue, a pull request or a discussion.', value: `${ACTIVITY_POINTS.comments}`, unit: 'pt', icon: 'octComment', color: BLUE },
+    { what: 'Helpful comment', when: 'On top, with 3+ reactions, or as a discussion\'s accepted answer.', value: `+${ACTIVITY_POINTS.helpfulComments}`, unit: 'pts', icon: 'remixChatHeartLine', color: PINK },
     { what: 'Review comment', when: 'Every comment on the code of a pull request.', value: `${ACTIVITY_POINTS.reviewComments}`, unit: 'pt', icon: 'remixFileCodeLine', color: PURPLE },
     { what: 'Reaction', when: 'Received on your issues, pull requests and comments.', value: `${ACTIVITY_POINTS.reactions}`, unit: 'pt', icon: 'octSmiley', color: ORANGE },
   ]

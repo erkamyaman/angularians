@@ -1,5 +1,6 @@
 import { ContributorsAccumulator, landedPullRequests, prCloseNumbers } from '@angularians/shared'
 import { collectActivity } from './activity.ts'
+import { collectDiscussions } from './discussions.ts'
 import { gitCommits } from './commits.ts'
 import { parseConfig } from './config.ts'
 import { emptyStats, writeData, writePart, type Collected } from './finalize.ts'
@@ -40,6 +41,11 @@ for (const repo of config.repos) {
     stats.reviewComments += activity.reviewComments
     stats.activityPages += activity.pages
     console.log(`${fullName}: ${activity.issues} issues, ${activity.comments} comments, ${activity.reviewComments} review comments (${activity.pages} pages)`)
+    // GitHub Discussions (RFCs): scored as issues and comments.
+    const discussions = await collectDiscussions(repo, config.since, accumulator)
+    stats.discussions += discussions.discussions
+    stats.discussionComments += discussions.discussionComments
+    console.log(`${fullName}: ${discussions.discussions} discussions, ${discussions.discussionComments} discussion comments`)
   }
 }
 
