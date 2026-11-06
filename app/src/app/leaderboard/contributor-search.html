@@ -16,7 +16,7 @@
         <hlm-autocomplete-item [value]="item">
           <img [src]="avatar(item)" alt="" width="24" height="24" class="size-6 rounded-md bg-muted" loading="lazy" />
           <span class="flex-1 truncate">{{ item.username }}</span>
-          <span class="text-xs text-muted-foreground tabular-nums">#{{ rank(item) }} · {{ points(item) }}</span>
+          <span class="text-xs text-muted-foreground tabular-nums"><span class="brand text-sm leading-none text-foreground">#{{ rank(item) }}</span> · {{ points(item) }}</span>
         </hlm-autocomplete-item>
       }
     </div>

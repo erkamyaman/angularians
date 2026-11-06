@@ -27,7 +27,7 @@ import { CountrySelect } from '../leaderboard/country-select';
 import { NextUpdate } from '../leaderboard/next-update';
 import { MeCard } from '../leaderboard/me-card';
 import { ScoreRules } from '../leaderboard/score-rules';
-import { setShareMeta, SITE_URL } from '../site';
+import { breadcrumbs, setJsonLd, setShareMeta, SITE_URL } from '../site';
 import { boardDescription, formatDate, formatNumber, plural } from '../leaderboard/format';
 import { JoinLinks } from '../leaderboard/join-links';
 import { LeaderboardGrid } from '../leaderboard/leaderboard-grid';
@@ -37,8 +37,11 @@ import { GITHUB_TEXT } from '../leaderboard/github-colors';
 
 const SITE_DESCRIPTION = 'Everyone who has contributed to Angular since 2014, ranked: merged pull requests, issues, comments and code reviews in angular/angular, Components, the CLI, dev-infra and Domino.';
 
+/** The home page's title: the name, then what the site is, for search results. */
+const SITE_TITLE = 'Angularians · Every Angular contributor, ranked';
+
 export const routeMeta = {
-  title: 'Angularians',
+  title: SITE_TITLE,
   meta: [{ name: 'description', content: SITE_DESCRIPTION }],
 } satisfies RouteMeta;
 
@@ -106,17 +109,29 @@ export default class Home {
       });
     });
 
-    // A shared `?period=` link gets its own title and description; the plain page keeps the generic ones.
+    // A shared `?period=` link gets its own title and description, and so does a country's board (its own page for
+    // search engines too); the plain page keeps the generic ones.
     effect(() => {
       const page = this.boardValue();
       if ((this.leaderboard.error() || this.map.error()) && this.response) markFailed(this.response);
       const shared = this.requestedPeriod() && page?.total ? page : null;
-      const title = shared ? `Top Angularians ${periodPhrase(shared.period)}` : 'Angularians';
-      const description = shared ? boardDescription(shared, shared.period) : SITE_DESCRIPTION;
+      const country = this.country() && page?.total ? this.country() : null;
+      const where = country ? ` in ${countryName(country)}` : '';
+      const title = shared
+        ? `Top Angularians${where} ${periodPhrase(shared.period)}`
+        : country ? `Top Angularians in ${countryName(country)} · Angular contributors` : SITE_TITLE;
+      const description = shared
+        ? boardDescription(shared, shared.period)
+        : country ? `The ${formatNumber(page!.total)} people from ${countryName(country)} who have contributed to Angular since 2014, ranked: merged pull requests, issues, comments and code reviews.` : SITE_DESCRIPTION;
       this.title.setTitle(title);
-      // The site's card, or the card of the shared period; the canonical URL has no `?period=`.
+      // The site's card, or the card of the shared period. The canonical URL has no `?period=`; a country keeps its own.
       const query = shared ? `?period=${shared.period}` : '';
-      setShareMeta(this.meta, this.document, { title, description, url: `${SITE_URL}/${query}`, image: `${SITE_URL}/og.png${query}`, canonical: '/' });
+      const canonical = country ? `/?country=${country}` : '/';
+      setShareMeta(this.meta, this.document, { title, description, url: `${SITE_URL}/${query}`, image: `${SITE_URL}/og.png${query}`, canonical });
+      // The site itself, and a country's board as a step below it.
+      setJsonLd(this.document, country
+        ? breadcrumbs([{ name: 'Angularians', path: '/' }, { name: `Angular contributors in ${countryName(country)}`, path: canonical }])
+        : { '@type': 'WebSite', name: 'Angularians', url: `${SITE_URL}/`, description: SITE_DESCRIPTION, inLanguage: 'en' });
     });
   }
 

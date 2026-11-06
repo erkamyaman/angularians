@@ -37,6 +37,17 @@ To try the site with another data folder: `CONTRIBUTORS_DATA_DIR=/path/to/data p
 
 The brand font, Norse Bold (the word "Angularian" on the site and the cards), is in `app/public/fonts/`. The mark is built by `app/scripts/logo/build.py`.
 
+## Search engines
+
+- `/sitemap.xml` (`app/src/server/routes/sitemap.xml.get.ts`): the home page, each country's board and the profile of
+  everyone with a merged PR, dated with the last collection. `robots.txt` points to it and keeps crawlers out of `/api/`.
+- One address per page: `angularians.netlify.app` and a trailing slash (`/erkamyaman/`) answer 301 to the canonical URL
+  (`app/src/server/middleware/canonical-url.ts`); every page sets `<link rel="canonical">`. A period (`?period=`) is the
+  same page as all time; a country (`?country=TR`) is a page of its own, with its own title.
+- Structured data (`setJsonLd` in `app/src/app/site.ts`): `WebSite` on the home page, `ProfilePage` with its `Person`
+  and a `BreadcrumbList` on profiles, a `BreadcrumbList` on a country's board.
+- The cards (`/og.png`, `/:username/card.png`) keep their bottom-left corner free: X lays the page's title over it.
+
 ## Sign in with GitHub
 
 Through the user authorization of the `angularians-collector` GitHub App. Only the GitHub id and login are kept, in a sealed,

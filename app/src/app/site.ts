@@ -27,3 +27,28 @@ export function setCanonical(document: Document, path: string): void {
   }
   link.setAttribute('href', `${SITE_URL}${path}`)
 }
+
+/** The page's structured data for search engines (schema.org JSON-LD), replaced on each call; `null` removes it. */
+export function setJsonLd(document: Document, data: object | null): void {
+  let script = document.head.querySelector<HTMLScriptElement>('script#ld-json')
+  if (!data) {
+    script?.remove()
+    return
+  }
+  if (!script) {
+    script = document.createElement('script')
+    script.id = 'ld-json'
+    script.type = 'application/ld+json'
+    document.head.appendChild(script)
+  }
+  // `<` escaped: a name with `</script>` in it cannot end the tag.
+  script.textContent = JSON.stringify({ '@context': 'https://schema.org', ...data }).replace(/</g, '\\u003c')
+}
+
+/** A breadcrumb trail for search results: each step's name and path, the last one the page itself. */
+export function breadcrumbs(steps: ReadonlyArray<{ name: string, path: string }>): object {
+  return {
+    '@type': 'BreadcrumbList',
+    itemListElement: steps.map((step, index) => ({ '@type': 'ListItem', position: index + 1, name: step.name, item: `${SITE_URL}${step.path}` })),
+  }
+}

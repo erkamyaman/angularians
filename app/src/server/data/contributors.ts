@@ -69,6 +69,17 @@ export class ContributorsData {
     return this.byPeriod.has(period)
   }
 
+  /**
+   * What the sitemap lists: the profiles of everyone with a merged PR, best ranked first, and the countries that have
+   * contributors. At most `limit` profiles (a sitemap file holds 50,000 URLs).
+   */
+  sitemap(limit: number): { usernames: string[], countries: string[] } {
+    const all = this.byPeriod.get('all') ?? []
+    const usernames = all.filter(row => row.pullRequests.all > 0).slice(0, limit).map(row => row.username)
+    const countries = [...new Set(all.map(row => this.countryOf(row.githubId)).filter(code => code !== null))].sort()
+    return { usernames, countries }
+  }
+
   countryOf(githubId: number): string | null {
     return this.profiles.get(githubId)?.country ?? null
   }

@@ -87,7 +87,7 @@
       </ul>
 
       @if (!me.badges.length) {
-        <p class="text-sm text-muted-foreground">One merged PR, helpful issue or helpful comment unlocks the <span class="brand text-primary">Angularian</span> badge.</p>
+        <p class="text-sm text-muted-foreground">One merged PR, helpful issue or helpful comment earns you the <span class="brand text-primary">Angularian</span> badge.</p>
       }
 
       @if (!me.angularian) {
@@ -117,7 +117,7 @@
       <p id="me-card-title" class="font-medium sm:text-lg">Discover your contributions</p>
       <p class="-mt-2 max-w-sm text-muted-foreground max-sm:hidden">
         @if (state()?.enabled !== false) {
-          Sign in with GitHub to see your score, share your <span class="brand text-primary">Angularian</span> profile and unlock your badges.
+          Sign in with GitHub to see your score and badges, and share your <span class="brand text-primary">Angularian</span> profile.
         } @else {
           Sign-in with GitHub is coming soon: your score, your <span class="brand text-primary">Angularian</span> profile to share, and your badges.
         }

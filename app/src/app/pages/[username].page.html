@@ -1,7 +1,15 @@
 <app-container class="pt-8">
-  <a hlmBtn variant="link" class="px-0" routerLink="/" [queryParams]="backQuery()">
-    <ng-icon name="remixArrowLeftLine" aria-hidden="true" />All contributors
-  </a>
+  <nav aria-label="Breadcrumb">
+    <ol class="flex min-w-0 items-center gap-1.5 text-sm">
+      <li class="shrink-0">
+        <a hlmBtn variant="link" class="px-0" routerLink="/" [queryParams]="backQuery()">
+          <ng-icon name="remixArrowLeftLine" aria-hidden="true" />All contributors
+        </a>
+      </li>
+      <li class="flex shrink-0 items-center text-muted-foreground" aria-hidden="true"><ng-icon name="remixArrowRightSLine" /></li>
+      <li class="min-w-0 truncate text-muted-foreground" aria-current="page">{{ displayName() }}</li>
+    </ol>
+  </nav>
 </app-container>
 
 @if (loaded(); as person) {
@@ -10,7 +18,7 @@
       <div class="flex min-w-0 flex-col items-start gap-5 lg:col-span-2">
         <!-- w-full: a long name truncates instead of widening the page on phones -->
         <div class="flex w-full min-w-0 items-center gap-4 lg:gap-5">
-          <img [src]="avatar(person)" [alt]="person.username" width="160" height="160" class="size-32 shrink-0 rounded-xl bg-muted ring-1 ring-border sm:size-40" />
+          <img [src]="avatar(person)" [alt]="person.username" width="160" height="160" fetchpriority="high" class="size-32 shrink-0 rounded-xl bg-muted ring-1 ring-border sm:size-40" />
           <div class="flex min-w-0 flex-1 flex-col gap-1">
             <h1 class="truncate text-3xl font-bold tracking-tight sm:text-4xl" [title]="displayName()">{{ displayName() }}</h1>
             @if (person.name) {
@@ -54,7 +62,7 @@
             }
             @if (best(); as year) {
               <a [routerLink]="[]" [queryParams]="{ period: year.period }" replaceUrl class="inline-flex items-center gap-1.5 font-medium tabular-nums transition-opacity hover:opacity-80" [class]="colors.gold">
-                <ng-icon name="vikingHelmet" size="1.25rem" aria-hidden="true" /><span class="brand relative top-[0.09em] text-base leading-none">Greatest saga</span> {{ year.period }}, #{{ number(year.rank) }} with {{ points(year.score) }}
+                <ng-icon name="vikingHelmet" size="1.25rem" aria-hidden="true" /><span class="brand relative top-[0.09em] text-base leading-none">Greatest saga</span> {{ year.period }}, <span class="brand text-base leading-none">#{{ number(year.rank) }}</span> with {{ points(year.score) }}
               </a>
             }
           </div>
@@ -207,7 +215,7 @@
                           <span class="brand text-sm">Greatest saga</span>
                         </span>
                       }
-                      <span class="block font-semibold">#{{ number(row.rank) }}</span>
+                      <span class="brand block text-base leading-none">#{{ number(row.rank) }}</span>
                       <span class="block text-muted-foreground">{{ number(row.score) }}</span>
                     </span>
                   }

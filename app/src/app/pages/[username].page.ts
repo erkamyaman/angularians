@@ -8,7 +8,7 @@ import { type RouteMeta } from '@analogjs/router';
 import { injectResponse } from '@analogjs/router/tokens';
 import { countryCode, countryName, DEFAULT_PERIOD, GITHUB_USERNAME_RE, periodOrNull, periodPhrase, reposQuery, type ContributorProfile, type Period } from '@angularians/shared';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { remixArrowDownSLine, remixArrowLeftLine, remixArrowRightUpLine, remixArrowUpSLine, remixCloseLine, remixInformationLine, remixLinkM, remixLinkedinBoxLine, remixMedalLine, remixStarFill, remixVerifiedBadgeLine } from '@ng-icons/remixicon';
+import { remixArrowDownSLine, remixArrowLeftLine, remixArrowRightSLine, remixArrowRightUpLine, remixArrowUpSLine, remixCloseLine, remixInformationLine, remixLinkM, remixLinkedinBoxLine, remixMedalLine, remixStarFill, remixVerifiedBadgeLine } from '@ng-icons/remixicon';
 import { vikingAxes, vikingHelmet, vikingLongship, vikingShield } from '../layout/viking-icons';
 import { octComment, octGitMerge, octIssueOpened, octSmiley } from '@ng-icons/octicons';
 import {
@@ -35,7 +35,7 @@ import { ScoreDialog } from '../profile/score-dialog';
 import { Share } from '../profile/share';
 import { AuthService } from '../auth/auth.service';
 import { AngularianPill } from '../layout/angularian-pill';
-import { setShareMeta, SITE_URL } from '../site';
+import { breadcrumbs, setJsonLd, setShareMeta, SITE_URL } from '../site';
 import { GITHUB_TEXT } from '../leaderboard/github-colors';
 
 export const routeMeta = {
@@ -78,7 +78,7 @@ function githubSearch(q: string, type: 'pullrequests' | 'issues'): string {
   selector: 'app-profile',
   imports: [AngularLogo, CardPreview, Container, HlmButton, HlmSkeleton, HlmTooltip, AngularianPill, NgIcon, NgTemplateOutlet, PeriodTabs, RouterLink, ScoreDialog, Share],
   providers: [provideIcons({
-    vikingAxes, vikingLongship, remixCloseLine, remixArrowLeftLine, remixArrowRightUpLine, remixMedalLine, octIssueOpened, octGitMerge, remixInformationLine,
+    vikingAxes, vikingLongship, remixCloseLine, remixArrowLeftLine, remixArrowRightSLine, remixArrowRightUpLine, remixMedalLine, octIssueOpened, octGitMerge, remixInformationLine,
     remixVerifiedBadgeLine, remixArrowDownSLine, remixArrowUpSLine, vikingHelmet, remixLinkM, remixLinkedinBoxLine, octComment,
     octSmiley, vikingShield,
     simpleBluesky, simpleFacebook, simpleGithub, simpleInstagram, simpleMastodon, simpleNpm, simpleReddit, simpleThreads, simpleTwitch, simpleX,
@@ -143,14 +143,14 @@ export default class Profile {
       },
       {
         key: 'issues', icon: 'octIssueOpened', value: n.issues, name: n.issues === 1 ? 'Issue' : 'Issues', detail: `${formatNumber(n.helpfulIssues)} helpful`,
-        url: githubSearch(`is:issue author:${person.username}`, 'issues'), label: `${plural(n.issues, 'issue', 'issues')} ${periodPhrase(this.period())}. Opens ${person.username}'s issues on GitHub`,
+        url: githubSearch(`is:issue author:${person.username}`, 'issues'), label: `${formatNumber(n.issues)} ${n.issues === 1 ? 'Issue' : 'Issues'} ${periodPhrase(this.period())}. Opens ${person.username}'s issues on GitHub`,
         tint: 'bg-[#1A7F37]/5 ring-[#1A7F37] hover:bg-[#1A7F37]/10 dark:ring-[#3FB950]', text: 'text-[#1A7F37] dark:text-[#3FB950]',
       },
       {
         key: 'comments', icon: 'octComment', value: n.comments, name: n.comments === 1 ? 'Comment' : 'Comments',
         // Inline review comments score on their own (1 pt each): their count goes with the comments.
         detail: `${formatNumber(n.helpfulComments)} helpful · ${plural(n.reviewComments, 'review comment', 'review comments')} on code`,
-        url: githubSearch(`commenter:${person.username}`, 'issues'), label: `${plural(n.comments, 'comment', 'comments')} ${periodPhrase(this.period())}. Opens the issues and pull requests ${person.username} commented on, on GitHub`,
+        url: githubSearch(`commenter:${person.username}`, 'issues'), label: `${formatNumber(n.comments)} ${n.comments === 1 ? 'Comment' : 'Comments'} ${periodPhrase(this.period())}. Opens the issues and pull requests ${person.username} commented on, on GitHub`,
         tint: 'bg-[#0969DA]/5 ring-[#0969DA] hover:bg-[#0969DA]/10 dark:ring-[#58A6FF]', text: 'text-[#0969DA] dark:text-[#58A6FF]',
       },
       {
@@ -276,8 +276,9 @@ export default class Profile {
   }
 
   protected githubLabel(person: ContributorProfile): string {
+    // Starts with the card's visible text ("253 Merged PRs"), so speech input can name it.
     const count = this.current().pullRequests.all;
-    return `${plural(count, 'merged pull request', 'merged pull requests')} ${periodPhrase(this.period())}. Opens ${person.username}'s pull requests on GitHub`;
+    return `${formatNumber(count)} ${count === 1 ? 'Merged PR' : 'Merged PRs'} ${periodPhrase(this.period())}. Opens ${person.username}'s pull requests on GitHub`;
   }
 
   /** Shared links show the period on screen; the canonical URL has none, so search engines see one page per profile. */
@@ -285,6 +286,7 @@ export default class Profile {
     if (!person) {
       this.title.setTitle(`${this.username()} · Angularians`);
       this.meta.updateTag({ name: 'robots', content: 'noindex' });
+      setJsonLd(this.document, null);
       return;
     }
     const current = this.current();
@@ -300,6 +302,29 @@ export default class Profile {
       url: `${SITE_URL}/${person.username}${shareQuery(this.period())}`,
       image: `${SITE_URL}/${person.username}/card.png${shareQuery(this.period(), this.cardFlag())}`,
       canonical: `/${person.username}`,
+    });
+    // A profile page about a person (the GitHub account; its other links are user input, so not vouched for here),
+    // and its place in the site, for search results.
+    const url = `${SITE_URL}/${person.username}`;
+    setJsonLd(this.document, {
+      '@graph': [
+        {
+          '@type': 'ProfilePage',
+          url,
+          name: `${title} · Angularians`,
+          description,
+          mainEntity: {
+            '@type': 'Person',
+            name: person.name || person.username,
+            alternateName: person.username,
+            identifier: String(person.githubId),
+            url,
+            image: avatarUrl(person.githubId, 320),
+            sameAs: [`https://github.com/${person.username}`],
+          },
+        },
+        breadcrumbs([{ name: 'Angularians', path: '/' }, { name: person.name || person.username, path: `/${person.username}` }]),
+      ],
     });
   }
 }

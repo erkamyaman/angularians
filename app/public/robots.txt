@@ -3,3 +3,5 @@ Allow: /
 # Every country × period of the board is a URL: let crawlers index the pages, not the API.
 Disallow: /api/
 Disallow: /_analog/
+
+Sitemap: https://angularians.dev/sitemap.xml
