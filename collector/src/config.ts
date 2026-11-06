@@ -2,8 +2,13 @@ import { resolve } from 'node:path'
 import { REPOS } from '@angularians/shared'
 import { fileURLToPath } from 'node:url'
 
+export type Repo = { owner: string, name: string }
+
+/** `angular/angular`. */
+export const fullName = (repo: Repo): string => `${repo.owner}/${repo.name}`
+
 export interface Config {
-  repos: Array<{ owner: string, name: string }>
+  repos: Repo[]
   /** Only PRs closed and commits made since then: a test run, its files are marked partial. */
   since: Date | null
   pulls: 'rest' | 'search'
@@ -68,7 +73,7 @@ export function parseConfig(argv: string[], env: NodeJS.ProcessEnv, now = new Da
     since: since ? parseSince(since, now) : null,
     pulls,
     activity,
-    advisories: advisories === undefined ? activity && repos.some(r => `${r.owner}/${r.name}` === REPOS[0]) : advisories !== 'false',
+    advisories: advisories === undefined ? activity && repos.some(r => fullName(r) === REPOS[0]) : advisories !== 'false',
     profiles: (flags.get('profiles') ?? env['COLLECT_PROFILES'] ?? 'true') !== 'false',
     outputDir: resolve(flags.get('out') ?? env['CONTRIBUTORS_OUTPUT_DIR'] ?? `${ROOT}data`),
     cacheDir: resolve(env['COLLECT_CACHE_DIR'] ?? `${ROOT}.cache`),
