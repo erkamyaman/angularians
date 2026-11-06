@@ -3,7 +3,7 @@
  * can change. Lists, not data from the collector: update them by hand.
  *
  * - Angular GDEs: Google Developer Experts for Angular, from https://g.dev/experts?specialization=angular (the
- *   GitHub link on their card, else the same name on their GitHub profile). Only those on the board.
+ *   GitHub link on their card, else the same name on their GitHub profile), also those not on the board yet: their badge shows the day they are.
  * - GitHub Stars: https://stars.github.com/profiles. Only those on the board.
  * - Nx Champions: https://nx.dev/community (names only: matched to their GitHub profile by hand). Only those on the board.
  */
@@ -17,6 +17,7 @@ export const ANGULAR_GDES: ReadonlyMap<number, string | null> = new Map([
   [4699771, 'alain-chautard'], // alcfeoh
   [6283346, 'alejandrocubaruiz'], // alejandrocuba
   [2830407, 'alex-okrushko'], // alex-okrushko
+  [35979379, 'alfredo-perez'], // alfredo-perez
   [7586237, 'alisaduncan'], // alisaduncan
   [17092119, 'alvaro'], // alvarocamillont
   [46297789, 'ezchilamen'], // amilamen
@@ -44,6 +45,7 @@ export const ANGULAR_GDES: ReadonlyMap<number, string | null> = new Map([
   [11162114, '113784963826671278615'], // devpato
   [8568104, 'dmezhenskyi'], // DMezhenskyi
   [88981, 'will'], // doggy8088
+  [5419161, 'eduardoroth'], // eduardoRoth
   [6004537, 'elad'], // EladBezalel
   [790704, 'elecash'], // Elecash
   [18899577, 'eliassy'], // eliraneliassy
@@ -52,11 +54,14 @@ export const ANGULAR_GDES: ReadonlyMap<number, string | null> = new Map([
   [1772083, 'biondifabio'], // fabiobiondi
   [37409120, 'famzil'], // famzila
   [1683147, 'fmalcher'], // fmalcher
+  [86971182, 'ghabryel'], // GhabryelHenrique
   [444278, 'gregor'], // GregOnNet
   [4660316, 'gerardsans'], // gsans
   [8426937, 'emrehizli'], // hizliemre
   [1511551, 'iliya-idakiev'], // IliaIdakiev
+  [8780414, 'jrchristiansen'], // jc12996
   [1870060, 'jeff'], // jeffwhelpley
+  [{"message":"Not, 'jimydolores'], // jimydolores
   [10909792, 'jimydolores'], // jimyhdolores
   [640639, 'JohannesHoppe'], // JohannesHoppe
   [1202528, '111068699697656810962'], // johnpapa
@@ -68,6 +73,7 @@ export const ANGULAR_GDES: ReadonlyMap<number, string | null> = new Map([
   [5073455, 'jaroslawzolnowski'], // jzolnowski
   [6573939, 'ngKalbarczyk'], // kalbarczyk
   [34801008, 'browser-person'], // korneevamg
+  [{"message":"Not, '113405312579221112887'], // kreuzerk
   [1283734, 'kuncevic'], // kuncevic
   [1529180, 'laco'], // lacolaco
   [8270563, 'ladyleet'], // ladyleet
@@ -85,6 +91,7 @@ export const ANGULAR_GDES: ReadonlyMap<number, string | null> = new Map([
   [17507258, 'martine'], // martine-dowden
   [890800, 'mashhoodr'], // mashhoodr
   [6124091, 'maxkoretskyi'], // maxkoretskyi
+  [15218336, 'mayrarodriguez'], // mayrascript
   [2835826, 'mhartington'], // mhartington
   [3712277, 'mikeryan'], // MikeRyanDev
   [25516557, 'chautran'], // nartc
@@ -112,24 +119,31 @@ export const ANGULAR_GDES: ReadonlyMap<number, string | null> = new Map([
   [59734, 'sonukapoor'], // sonukapoor
   [7772451, 'srashtisj'], // srashtisj
   [165056, 'stephen'], // StephenFluin
+  [108273068, '104928605743968735749'], // TechSharmit
+  [1688683, 'jenniferwadella'], // tehfedaykin
   [30832608, 'thomas-laforge'], // tomalaforge
   [3764868, 'tomastrajan'], // tomastrajan
   [6767322, 'trungvose'], // trungvose
   [4145169, 'balramchavan'], // ultrasonicsoft
   [19549842, 'michelestieven'], // UserGalileo
   [1107171, 'valorkin'], // valorkin
+  [4331491, 'vanessamarely'], // vanessamarely
   [1209238, 'villanuevand'], // Villanuevand
   [7274335, 'vmasek'], // vmasek
   [1506722, 'yadong'], // vthinkxie
   [11832552, 'alexander'], // waterplea
+  [30318171, 'waynegakuo'], // waynegakuo
   [8777127, 'webdave_de'], // web-dave
   [1560278, 'salnikov'], // webmaxru
+  [25071700, 'danielherrerasanchez'], // weincoder
   [8186117, 'mikehuang'], // wellwind
   [2189998, 'willgm'], // willgm
   [1252570, 'willmendesneto'], // willmendesneto
   [5797213, 'xocomil'], // xocomil
+  [5797213, 'xocomil'], // xocomil
   [9469090, 'jaycooperbell'], // yharaskrik
   [2674658, 'younes'], // yjaaidi
+  [21971232, '101275950125265926044'], // yshashi
 ]);
 
 /** GitHub Stars, as of November 2026. */

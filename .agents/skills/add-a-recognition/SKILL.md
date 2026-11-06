@@ -11,9 +11,9 @@ The Angular GDE, GitHub Star and Nx Champion badges come from three lists of Git
 
 1. Find the person in the official source the header names.
 2. Match that entry to a GitHub account: the GitHub link on their card, else the same name on a GitHub profile.
-3. Check they are on the board: `/<username>` on the site shows a profile.
+3. For a GitHub Star or an Nx Champion, check they are on the board: `/<username>` on the site shows a profile. An Angular GDE can join the list before, so the badge shows the day they are on the board.
 
-Done when you hold the source link, the GitHub username, and a profile on the board. Missing any one: stop and report which, since only people on the board get the badge.
+Done when you hold the source link and the GitHub username, plus a profile on the board for a Star or a Champion. Missing one: stop and report which.
 
 ## 2. Add it
 
