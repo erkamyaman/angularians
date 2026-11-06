@@ -57,8 +57,8 @@
                 <img [src]="flag(person.country)" alt="" width="16" height="16" class="size-4 shrink-0 rounded-full" />{{ country(person.country) }}
               </a>
             }
-            @if (since(); as date) {
-              <span class="inline-flex items-center gap-1.5"><app-angular-logo class="size-4" /><span><span class="font-medium text-foreground">Angular contributor</span> since {{ date }}</span></span>
+            @if (person.firstContributionAt; as first) {
+              <span class="inline-flex items-center gap-1.5"><app-contributor-since [date]="first" /></span>
             }
             @if (best(); as year) {
               <a [routerLink]="[]" [queryParams]="{ period: year.period }" replaceUrl class="github-gold inline-flex flex-wrap items-center gap-x-1.5 gap-y-1 font-medium tabular-nums transition-opacity hover:opacity-80">
