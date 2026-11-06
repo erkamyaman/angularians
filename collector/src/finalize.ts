@@ -47,11 +47,14 @@ export interface Collected {
   stats: Stats
 }
 
+/** Records as a data file: one JSON line each (`toJsonLines`). */
+const writeLines = (dir: string, file: string, records: readonly unknown[]) => writeFile(join(dir, file), toJsonLines(records), 'utf8')
+
 /** A `--part` run: its records, as the site's files would be, and what it collected. Empty records are fine. */
 export async function writePart(dir: string, collected: Collected): Promise<void> {
   await mkdir(dir, { recursive: true })
-  for (const [period, records] of collected.files) await writeFile(join(dir, periodFile(period)), toJsonLines(records), 'utf8')
-  await writeFile(join(dir, PACKAGES_FILE), toJsonLines(collected.packages), 'utf8')
+  for (const [period, records] of collected.files) await writeLines(dir, periodFile(period), records)
+  await writeLines(dir, PACKAGES_FILE, collected.packages)
   const { files, packages, ...part } = collected
   await writeFile(join(dir, PART_FILE), `${JSON.stringify({ ...part, periods: [...files.keys()] }, null, 2)}\n`, 'utf8')
   console.log(`Wrote the part of ${collected.repos.join(', ')} to ${dir} (${files.get('all')?.length ?? 0} contributors all time)`)
@@ -83,18 +86,16 @@ export async function writeData(outputDir: string, collected: Collected, options
   // Before the new files replace them: who had which username last time, and the renames known so far.
   const previous = collected.since ? [] : await readRecords(join(outputDir, periodFile('all')), parseTeamFile)
   const knownRenames = await readRecords(join(outputDir, RENAMES_FILE), parseRenamesFile)
-  for (const [period, records] of files) {
-    await writeFile(join(outputDir, periodFile(period)), toJsonLines(records), 'utf8')
-  }
+  for (const [period, records] of files) await writeLines(outputDir, periodFile(period), records)
   console.log(`Wrote ${files.size} period files to ${outputDir} (${allTime.length} contributors all time)`)
 
   // Renamed accounts: `/:oldname` and its card redirect to the new name.
   const renames = updatedRenames(knownRenames, previous, allTime)
-  await writeFile(join(outputDir, RENAMES_FILE), toJsonLines(renames), 'utf8')
+  await writeLines(outputDir, RENAMES_FILE, renames)
   console.log(`Wrote ${renames.length} renamed usernames (${renames.length - knownRenames.length} new)`)
 
   // The packages each contributor's merged PRs named (`fix(router)`), all time.
-  await writeFile(join(outputDir, PACKAGES_FILE), toJsonLines(collected.packages), 'utf8')
+  await writeLines(outputDir, PACKAGES_FILE, collected.packages)
   console.log(`Wrote ${collected.packages.length} contributors' packages`)
 
   // The public members of the organizations of the repositories: the "Angular team" badge.
@@ -107,7 +108,7 @@ export async function writeData(outputDir: string, collected: Collected, options
       }
     }
     const records = [...members.values()].sort((a, b) => a.githubId - b.githubId)
-    await writeFile(join(outputDir, TEAM_FILE), toJsonLines(records), 'utf8')
+    await writeLines(outputDir, TEAM_FILE, records)
     team = records.length
     console.log(`Wrote ${records.length} public organization members`)
   }
@@ -119,7 +120,7 @@ export async function writeData(outputDir: string, collected: Collected, options
   if (options.profiles) {
     try {
       const records = await collectProfiles(allTime.map(({ username, githubId }) => ({ username, githubId })))
-      await writeFile(join(outputDir, PROFILES_FILE), toJsonLines(records), 'utf8')
+      await writeLines(outputDir, PROFILES_FILE, records)
       profiles = records.length
       console.log(`Wrote ${records.length} profiles (${records.filter(r => r.country).length} with a country)`)
     }
