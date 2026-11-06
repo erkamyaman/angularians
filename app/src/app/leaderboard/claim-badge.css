@@ -1,3 +1,17 @@
 :host {
   display: block;
 }
+
+/* Each kind of project in its colour from the theme (`--idea-*` in styles.css) */
+.idea-library {
+  color: var(--idea-library);
+}
+.idea-tool {
+  color: var(--idea-tool);
+}
+.idea-meetup {
+  color: var(--idea-meetup);
+}
+.idea-teaching {
+  color: var(--idea-teaching);
+}

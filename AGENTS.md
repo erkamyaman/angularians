@@ -37,7 +37,7 @@ pnpm build        # the site, as Netlify builds it
 ## Rules
 
 - Small files, short plain comments, few dependencies.
-- A component in `app/src/app` keeps its template in its own `.html` and its styles, if any, in its own `.css`, next to its `.ts`: never inline. `app/src/ui` is copied from spartan/ui and keeps its form.
+- A component in `app/src/app` keeps its template in its own `.html` and its styles, if any, in its own `.css`, next to its `.ts`: never inline. No styling in TypeScript: no classes in `host` or in constants; TypeScript picks a name (a tone, a medal) and the `.css` styles it, in plain CSS with the theme's variables. Classes several components share are in `app/src/styles/`. `app/src/ui` is copied from spartan/ui and keeps its form.
 - Commit messages are `type(scope): summary`, with no trailer lines.
 - Run `pnpm test`, `pnpm typecheck` and `pnpm build` before you commit; look at a change to the site in both themes and at phone width.
 - Update `docs/` in the same change as the code.
