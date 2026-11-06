@@ -36,6 +36,9 @@
   --mark-1: #5c4000;
   --mark-2: #9A6700;
   --mark-3: #E3B341;
+  /* Angular's own colours, from its logo: the team's pink and the purple. The same in both themes. */
+  --angular-pink: #dc087d;
+  --angular-purple: #9717E7;
   --idea-library: #BF3989;
   --idea-tool: #59636E;
   --idea-meetup: #BC4C00;
@@ -99,6 +102,9 @@
 @theme inline {
   /* The brand colour (flat: no gradients), per theme: the mark, the word Angularians. */
   --color-brand-from: var(--primary);
+  /* Angular's colours as utilities: `bg-angular-pink/10`, `ring-angular-pink/40`. */
+  --color-angular-pink: var(--angular-pink);
+  --color-angular-purple: var(--angular-purple);
   /* In @theme, so Tailwind makes the font-display utility: the hero's "Angularians". */
   --font-display: "Norse", Georgia, serif;
 }

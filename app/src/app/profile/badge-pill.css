@@ -37,9 +37,9 @@
 }
 
 .tone-team {
-  --pill-bg: color-mix(in oklab, #dc087d 10%, transparent);
+  --pill-bg: color-mix(in oklab, var(--angular-pink) 10%, transparent);
   --pill-text: var(--foreground);
-  --pill-ring: color-mix(in oklab, #dc087d 40%, transparent);
+  --pill-ring: color-mix(in oklab, var(--angular-pink) 40%, transparent);
 }
 
 .tone-gde {
