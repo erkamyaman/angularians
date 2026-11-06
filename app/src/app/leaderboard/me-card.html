@@ -61,8 +61,8 @@
             @if (lastYear(); as year) {
               <p class="text-sm text-muted-foreground"><span class="brand text-base leading-none">#{{ number(year.rank) }}</span> in the last 12 months</p>
             }
-            @if (contributorSince(); as since) {
-              <p class="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground"><app-angular-logo class="size-4" /><span><span class="font-medium text-foreground">Angular contributor</span>&ngsp;<span class="whitespace-nowrap">since {{ since }}</span></span></p>
+            @if (person.firstContributionAt; as first) {
+              <p class="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground"><app-contributor-since [date]="first" /></p>
             }
           } @else {
             <p class="text-muted-foreground">No contributions on record yet.</p>

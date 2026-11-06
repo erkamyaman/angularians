@@ -13,17 +13,18 @@ import { HlmTooltip } from '@spartan-ng/helm/tooltip'
 import { AuthService } from '../auth/auth.service'
 import { AngularLogo } from '../layout/angular-logo'
 import { AngularianPill } from '../layout/angularian-pill'
+import { ContributorSince } from '../profile/contributor-since'
 import { ScoreDialog } from '../profile/score-dialog'
 import { JoinLinks } from './join-links'
 import { Share } from '../profile/share'
-import { avatarUrl, formatMonth, formatNumber, formatPoints } from './format'
+import { avatarUrl, formatNumber, formatPoints } from './format'
 import type { GithubColor } from './github-color'
 import { HELPFUL_COMMENT_REACTIONS, HELPFUL_ISSUE_COMMENTS, HELPFUL_ISSUE_REACTIONS } from '@angularians/shared'
 
 /** The signed-in Angularian, or a sign-in. */
 @Component({
   selector: 'app-me-card',
-  imports: [AngularLogo, HlmButton, HlmSkeleton, HlmTooltip, JoinLinks, AngularianPill, NgIcon, RouterLink, ScoreDialog, Share],
+  imports: [AngularLogo, ContributorSince, HlmButton, HlmSkeleton, HlmTooltip, JoinLinks, AngularianPill, NgIcon, RouterLink, ScoreDialog, Share],
   providers: [provideIcons({ vikingHead, remixMedalLine, octIssueOpened, octGitMerge, remixInformationLine, remixChatHeartLine, simpleGithub })],
   templateUrl: './me-card.html',
   styleUrl: './me-card.css',
@@ -33,10 +34,6 @@ export class MeCard {
   protected readonly state = this.auth.state
   protected readonly me = computed(() => this.state()?.user ?? null)
   protected readonly loginUrl = this.auth.loginUrl('/')
-  protected readonly contributorSince = computed(() => {
-    const first = this.me()?.angularian?.firstContributionAt
-    return first ? formatMonth(first) : null
-  })
   protected readonly lastYear = computed(() => this.me()?.angularian?.periods.find(row => row.period === '12m') ?? null)
   protected readonly periods = computed(() => this.me()?.angularian?.periods.map(row => row.period) ?? [])
   protected readonly unlocks = computed(() => {

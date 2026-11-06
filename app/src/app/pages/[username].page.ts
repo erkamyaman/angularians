@@ -26,12 +26,12 @@ import { injectSeededServerFn } from '../data/seeded-server-fn';
 import { loadedValue, markFailed } from '../data/loaded';
 import { missingPeriod, shownPeriod } from '../profile/period-choice';
 import { getContributor } from '../data/contributors.server';
-import { AngularLogo } from '../layout/angular-logo';
 import { Container } from '../layout/container';
-import { avatarUrl, flagUrl, formatMonth, formatNumber, formatPoints, formatRank, plural, pluralWord, profileQuery, shareQuery } from '../leaderboard/format';
+import { avatarUrl, flagUrl, formatNumber, formatPoints, formatRank, plural, pluralWord, profileQuery, shareQuery } from '../leaderboard/format';
 import { PeriodTabs } from '../leaderboard/period-tabs';
 import { foldPackages, PACKAGE_ICONS, packageIcon, packageLabel } from '../profile/packages';
 import { CardPreview } from '../profile/card-preview';
+import { ContributorSince } from '../profile/contributor-since';
 import { ScoreDialog } from '../profile/score-dialog';
 import { Share } from '../profile/share';
 import { AuthService } from '../auth/auth.service';
@@ -63,7 +63,7 @@ function githubSearch(q: string, type: 'pullrequests' | 'issues'): string {
 
 @Component({
   selector: 'app-profile',
-  imports: [AngularLogo, BadgePill, CardPreview, Container, HlmButton, HlmSkeleton, HlmTooltip, AngularianPill, NgIcon, NgTemplateOutlet, PeriodTabs, RouterLink, ScoreDialog, Share],
+  imports: [BadgePill, CardPreview, Container, ContributorSince, HlmButton, HlmSkeleton, HlmTooltip, AngularianPill, NgIcon, NgTemplateOutlet, PeriodTabs, RouterLink, ScoreDialog, Share],
   providers: [provideIcons({
     ...BADGE_ICONS,
     vikingAxes, vikingLongship, remixCloseLine, remixArrowLeftLine, remixArrowRightSLine, remixArrowRightUpLine, remixMedalLine, octIssueOpened, octGitMerge, remixInformationLine,
@@ -180,10 +180,6 @@ export default class Profile {
   protected readonly best = computed(() => this.years().reduce<ReturnType<typeof this.years>[number] | undefined>(
     (top, row) => (!top || row.rank < top.rank || (row.rank === top.rank && row.score > top.score) ? row : top), undefined));
   protected readonly displayName = computed(() => this.loaded()?.name || this.loaded()?.username || this.username());
-  protected readonly since = computed(() => {
-    const date = this.loaded()?.firstContributionAt;
-    return date ? formatMonth(date) : null;
-  });
   protected readonly links = computed(() => {
     const person = this.loaded();
     if (!person) return [];
