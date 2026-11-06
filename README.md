@@ -8,7 +8,9 @@
 </p>
 
 <p align="center">
-  Every pull request, issue and review that made Angular, remembered in ng-halla.<br>
+  <b>Carve your name in ng-halla.</b><br>
+  Every Angular contributor's pull request, issue, discussion and review is remembered here, in ng-halla.<br>
+  Take your seat among the Angularians and earn your place in the saga.<br><br>
   Everyone who has contributed since 2014, ranked at <b><a href="https://angularians.dev">angularians.dev</a></b> and updated every night.<br>
   Inspired by <a href="https://nuxt.com/nuxters">Nuxters</a>, built for Angular.
 </p>

@@ -260,10 +260,11 @@ export default class Profile {
       return;
     }
     const current = this.current();
+    const who = person.name?.trim() || person.username;
     const title = this.period() === 'all'
-      ? `${person.username}, Angularian #${formatNumber(current.rank)}`
-      : `${person.username}: #${formatNumber(current.rank)} ${periodPhrase(this.period())}`;
-    const description = `${person.username} merged ${plural(current.pullRequests.all, 'pull request', 'pull requests')}, opened ${plural(current.issues, 'issue', 'issues')} and wrote ${plural(current.comments + current.reviewComments, 'comment', 'comments')} in Angular ${periodPhrase(this.period())}: #${formatNumber(current.rank)} with ${formatPoints(current.score)}.`;
+      ? `${who}, Angularian #${formatNumber(current.rank)}`
+      : `${who}: #${formatNumber(current.rank)} ${periodPhrase(this.period())}`;
+    const description = `${who === person.username ? who : `${who} (@${person.username})`} merged ${plural(current.pullRequests.all, 'pull request', 'pull requests')}, opened ${plural(current.issues, 'issue', 'issues')} and wrote ${plural(current.comments + current.reviewComments, 'comment', 'comments')} in Angular ${periodPhrase(this.period())}: #${formatNumber(current.rank)} with ${formatPoints(current.score)}.`;
     this.title.setTitle(`${title} · Angularians`);
     this.meta.removeTag('name="robots"');
     setShareMeta(this.meta, this.document, {
