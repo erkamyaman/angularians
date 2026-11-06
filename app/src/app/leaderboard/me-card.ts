@@ -27,7 +27,9 @@ const CARD = 'flex w-full flex-col rounded-xl bg-muted/40 p-6 ring-1 ring-border
  */
 const SIGNED_IN = 'min-h-[25rem] @min-[400px]:min-h-[23rem] @min-[520px]:min-h-[22rem]'
 /** Signed out: as tall as the hero's text on wide screens, so the card does not look lost beside it. */
-const SIGNED_OUT = 'max-sm:p-4 sm:min-h-64 lg:min-h-80'
+const SIGNED_OUT = 'sm:min-h-64 lg:min-h-80'
+/** Phones, signed out: only the sign-in button, as a third button under the hero's two (the hero's gap, closed up). */
+const SIGN_IN_ONLY = 'max-sm:-mt-[1.375rem] max-sm:bg-transparent max-sm:p-0 max-sm:ring-0'
 
 /** `Apr 2025`, as on the profile and the card. */
 const SINCE = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })
@@ -45,6 +47,7 @@ export class MeCard {
   protected readonly card = CARD
   protected readonly signedIn = SIGNED_IN
   protected readonly signedOut = SIGNED_OUT
+  protected readonly signInOnly = SIGN_IN_ONLY
   protected readonly state = this.auth.state
   protected readonly me = computed(() => this.state()?.user ?? null)
   protected readonly loginUrl = this.auth.loginUrl('/')

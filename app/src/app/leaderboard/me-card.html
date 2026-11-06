@@ -114,10 +114,10 @@
   </section>
 } @else {
   <!-- Signed out, or not known yet (and not signed in last time): the sign-in, at once -->
-  <section [class]="card + ' ' + signedOut" aria-labelledby="me-card-title">
+  <section [class]="card + ' ' + signedOut + ' ' + (state()?.enabled !== false ? signInOnly : 'max-sm:p-4')" aria-labelledby="me-card-title">
     <div class="my-auto flex items-center justify-between gap-3 sm:flex-col sm:justify-center sm:gap-4 sm:text-center">
-      <ng-icon name="simpleGithub" size="2rem" class="max-sm:hidden" aria-hidden="true" />
-      <p id="me-card-title" class="font-medium sm:text-lg">Discover your contributions</p>
+      <ng-icon name="simpleGithub" size="2rem" class="max-sm:!hidden" aria-hidden="true" />
+      <p id="me-card-title" class="font-medium sm:text-lg" [class.max-sm:sr-only]="state()?.enabled !== false">Discover your contributions</p>
       <p class="-mt-2 max-w-sm text-muted-foreground max-sm:hidden">
         @if (state()?.enabled !== false) {
           Sign in with GitHub to see your score and badges, and share your <span class="brand text-primary">Angularian</span> profile.
@@ -126,8 +126,8 @@
         }
       </p>
       @if (state()?.enabled !== false) {
-        <a hlmBtn class="bg-foreground text-background hover:bg-foreground/90" [href]="loginUrl">
-          <ng-icon name="simpleGithub" aria-hidden="true" /> <span class="max-sm:sr-only">Sign in with GitHub</span><span class="sm:hidden" aria-hidden="true">Sign in</span>
+        <a hlmBtn class="bg-foreground text-background hover:bg-foreground/90 max-sm:w-full" [href]="loginUrl">
+          <ng-icon name="simpleGithub" aria-hidden="true" /> Sign in with GitHub
         </a>
       }
     </div>
