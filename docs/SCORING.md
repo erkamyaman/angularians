@@ -46,7 +46,9 @@ npm package: `fix(aria/grid)` is `@angular/aria`, `fix(material/button)` and `fi
 `[PATCH] …`) count toward no package: the change counts once, through the PR that landed it on main. Other leading tags are skipped:
 `[WIP] fix(core): …` counts toward `core`. The angular/domino repository provides `@angular/domino`,
 the DOM implementation bundled with `@angular/platform-server` for server-side rendering. Every landed PR in angular/domino
-counts toward `@angular/domino`, even without a scope in its title, and even a backport.
+counts toward `@angular/domino`, even without a scope in its title, and even a backport. The same goes for the archived
+angular/zone.js and `zone.js`, the package angular/angular has published since 2019. The archived angular/universal's
+scopes are npm packages (`@nguniversal/express-engine`).
 
 ## Periods
 

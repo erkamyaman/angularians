@@ -47,7 +47,7 @@ describe('parseConfig', () => {
   it('defaults to a full run of the Angular repositories from the REST API', () => {
     const config = parseConfig([], {}, now)
     expect(config).toMatchObject({ since: null, pulls: 'rest', activity: true, profiles: true, part: false })
-    expect(config.repos.map(repo => `${repo.owner}/${repo.name}`)).toEqual(['angular/angular', 'angular/components', 'angular/angular-cli', 'angular/dev-infra', 'angular/domino'])
+    expect(config.repos.map(repo => `${repo.owner}/${repo.name}`)).toEqual(['angular/angular', 'angular/components', 'angular/angular-cli', 'angular/dev-infra', 'angular/domino', 'angular/zone.js', 'angular/universal'])
     expect(config.outputDir).toMatch(/data$/)
   })
 

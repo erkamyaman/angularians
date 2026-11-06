@@ -105,6 +105,7 @@ const REPO_ICONS: Record<string, string> = {
   'angular/components': 'remixPuzzleLine',
   'angular/angular-cli': 'remixTerminalBoxLine',
   'angular/domino': 'remixServerLine',
+  'angular/universal': 'remixServerLine',
 }
 
 export function packageIcon(name: string): string {

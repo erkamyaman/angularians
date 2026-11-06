@@ -37,7 +37,7 @@ import { PeriodTabs } from '../leaderboard/period-tabs';
 import { World } from '../world/world';
 import { GITHUB_TEXT } from '../leaderboard/github-colors';
 
-const SITE_DESCRIPTION = 'Everyone who has contributed to Angular since 2014, ranked: merged pull requests, issues, comments and code reviews in angular/angular, Components, the CLI, dev-infra and Domino.';
+const SITE_DESCRIPTION = 'Everyone who has contributed to Angular since 2014, ranked: merged pull requests, issues, comments and code reviews in angular/angular, Components, the CLI, dev-infra, Domino, zone.js and Universal.';
 
 /** The home page's title: the name, then what the site is, for search results. */
 const SITE_TITLE = 'Angularians · Every Angular contributor, ranked';

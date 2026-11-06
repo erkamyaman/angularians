@@ -130,7 +130,7 @@ The special badges also show, unchanged, the marks of Pangular Inspector (https:
 
 - Country names and coordinates: [GeoNames](https://www.geonames.org), CC BY 4.0.
 - Contributions: the public GitHub API, for the public repositories angular/angular, angular/components,
-  angular/angular-cli and angular/dev-infra.
+  angular/angular-cli, angular/dev-infra, angular/domino, and the archived angular/zone.js and angular/universal.
 - Avatars are served by GitHub (avatars.githubusercontent.com), not stored here.
 
 Angular is a trademark of Google LLC. This project is not affiliated with Google or the Angular team.

@@ -1,7 +1,7 @@
 # Collector
 
 Collects what everyone contributed to the Angular repositories (`REPOS` in `shared/src/repos.ts`: angular/angular,
-angular/components, angular/angular-cli, angular/dev-infra and angular/domino; landed pull requests, issues, conversation comments, inline
+angular/components, angular/angular-cli, angular/dev-infra, angular/domino, and the archived angular/zone.js and angular/universal; landed pull requests, issues, conversation comments, inline
 review comments, reactions received) and writes the contributor files the app reads.
 Based on [nuxt/nuxters](https://github.com/nuxt/nuxters) (MIT, Copyright (c) 2023 Nuxt).
 
