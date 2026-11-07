@@ -1,5 +1,5 @@
 import type { PullRequestInput } from '@angularians/shared'
-import type { Repo } from './config.ts'
+import { fullName, type Repo } from './config.ts'
 import { getJson, paginate } from './github.ts'
 
 interface RestPull extends PullRequestInput {
@@ -11,10 +11,10 @@ interface RestPull extends PullRequestInput {
  * With `since`, newest updates first, stopping at the first PR not updated since: a PR that landed after
  * `since` was updated after it too.
  */
-export async function restPulls({ owner, name }: Repo, since: Date | null): Promise<PullRequestInput[]> {
+export async function restPulls(repo: Repo, since: Date | null): Promise<PullRequestInput[]> {
   const params = new URLSearchParams({ state: 'closed', per_page: '100', ...(since ? { sort: 'updated', direction: 'desc' } : { sort: 'created', direction: 'asc' }) })
   const pulls: PullRequestInput[] = []
-  for await (const page of paginate<RestPull>(`/repos/${owner}/${name}/pulls?${params}`)) {
+  for await (const page of paginate<RestPull>(`/repos/${fullName(repo)}/pulls?${params}`)) {
     for (const pull of page) {
       if (since && Date.parse(pull.updated_at) < since.getTime()) return pulls
       pulls.push(toInput(pull))
@@ -41,13 +41,13 @@ const day = (time: number) => new Date(time).toISOString().slice(0, 10)
  * Closed PRs from the search API, by closing day. A fallback for where `/pulls` is not reachable
  * (search has its own rate limit, 30 requests a minute with a token): same fields, more requests.
  */
-export async function searchPulls({ owner, name }: Repo, since: Date | null, until = new Date()): Promise<PullRequestInput[]> {
+export async function searchPulls(repo: Repo, since: Date | null, until = new Date()): Promise<PullRequestInput[]> {
   const pulls = new Map<number, PullRequestInput>()
   const start = since ?? new Date('2014-01-01T00:00:00Z')
   const ranges: Array<[number, number]> = [[Date.parse(day(start.getTime())), Date.parse(day(until.getTime()))]]
   while (ranges.length) {
     const [from, to] = ranges.shift()!
-    const q = `repo:${owner}/${name} is:pr is:closed closed:${day(from)}..${day(to)}`
+    const q = `repo:${fullName(repo)} is:pr is:closed closed:${day(from)}..${day(to)}`
     const base = `/search/issues?${new URLSearchParams({ q, per_page: '100', sort: 'created', order: 'asc' })}`
     const first = await getJson<{ total_count: number, items: SearchItem[] }>(base)
     if (first.total_count > SEARCH_CAP && to > from) {

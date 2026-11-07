@@ -1,7 +1,7 @@
 // Ported from nuxt/nuxters `collectIssues` and `collectComments` (MIT, Copyright (c) 2023 Nuxt), plus inline review
 // comments. Every page is counted as it arrives: a full run of angular/angular streams ~500,000 comments.
 import type { CommentInput, ContributorsAccumulator, IssueInput } from '@angularians/shared'
-import type { Repo } from './config.ts'
+import { fullName, type Repo } from './config.ts'
 import { GitHubError, paginate } from './github.ts'
 
 export interface ActivityStats {
@@ -72,24 +72,24 @@ export async function* walkCappedList<T extends Listed>(path: string, params: Re
  * Issues (and the PRs the issues API also lists, for their reactions), conversation comments on both,
  * and inline review comments. With `since` (test runs), only items created since then.
  */
-export async function collectActivity({ owner, name }: Repo, since: Date | null, accumulator: ContributorsAccumulator, pageCap = LIST_PAGE_CAP): Promise<ActivityStats> {
+export async function collectActivity(repo: Repo, since: Date | null, accumulator: ContributorsAccumulator, pageCap = LIST_PAGE_CAP): Promise<ActivityStats> {
   const stats: ActivityStats = { issues: 0, pullRequestItems: 0, comments: 0, reviewComments: 0, pages: 0 }
   // `since` filters on the last update: an old item updated since would be counted.
   const created = (item: { created_at: string }) => !since || Date.parse(item.created_at) >= since.getTime()
-  const repo = `/repos/${owner}/${name}`
+  const api = `/repos/${fullName(repo)}`
 
   const streams: Array<[string, AsyncGenerator<Array<IssueInput & CommentInput>>, (item: IssueInput & CommentInput) => void]> = [
     // The issues list is not capped (angular/angular: ~700 pages in one go).
-    ['issues', paginate(`${repo}/issues?${new URLSearchParams({ per_page: '100', state: 'all', sort: 'created', direction: 'asc', ...(since ? { since: since.toISOString() } : {}) })}`), (item) => {
+    ['issues', paginate(`${api}/issues?${new URLSearchParams({ per_page: '100', state: 'all', sort: 'created', direction: 'asc', ...(since ? { since: since.toISOString() } : {}) })}`), (item) => {
       accumulator.addIssue(item)
       if (item.pull_request) stats.pullRequestItems++
       else stats.issues++
     }],
-    ['comments', walkCappedList(`${repo}/issues/comments`, {}, since, pageCap), (item) => {
+    ['comments', walkCappedList(`${api}/issues/comments`, {}, since, pageCap), (item) => {
       accumulator.addComment(item)
       stats.comments++
     }],
-    ['review comments', walkCappedList(`${repo}/pulls/comments`, {}, since, pageCap), (item) => {
+    ['review comments', walkCappedList(`${api}/pulls/comments`, {}, since, pageCap), (item) => {
       accumulator.addReviewComment(item)
       stats.reviewComments++
     }],
