@@ -157,7 +157,11 @@ export function pullRequestScopes(title: string, repo = 'angular/angular'): stri
 }
 
 const PR_CLOSE_RE = /^PR Close #(\d+)\s*$/gm
-/** `Closes #123` at the start of a line, as angular/angular's merge script wrote it before `PR Close` (to January 2017). */
+/**
+ * GitHub's closing keywords at the start of a line: close, closes, closed, fix, fixes, fixed, resolve, resolves or
+ * resolved, in any case, with an optional colon, then `#123`. angular/angular's merge script wrote `Closes #123` before
+ * `PR Close` (to January 2017).
+ */
 const CLOSES_RE = /^\s*(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?):?\s+#(\d+)\b/gim
 
 /**
@@ -170,7 +174,7 @@ export function prCloseNumbers(message: string): number[] {
   return [...numbers]
 }
 
-/** The numbers a commit message closes with GitHub's keywords, `Closes #N`, `Fixes #N` or `Resolves #N` at the start of a line: issues or PRs. */
+/** The numbers a commit message closes with GitHub's keywords (`CLOSES_RE`: `Closes #N`, `fixed: #N`, `Resolve #N`…) at the start of a line: issues or PRs. */
 export function closingNumbers(message: string): number[] {
   const numbers = new Set<number>()
   for (const match of message.matchAll(CLOSES_RE)) numbers.add(Number(match[1]))
@@ -199,8 +203,9 @@ export interface CommitInput {
  * - Otherwise, a commit on the main branch has `PR Close #N` for it: it landed on the earliest such commit.
  *   A PR of several commits has the line in each, and still counts once.
  * - Before a repository's first `PR Close` (angular/angular to January 2017), its merge script wrote `Closes #N`:
- *   such a commit lands PR N too. Only in repositories that use `PR Close`, and only before it, where `Closes #N`
- *   naming a PR meant that PR landed; elsewhere it closes issues, or a PR replaced by another one.
+ *   a commit with any of GitHub's closing keywords for N (`closingNumbers`: close, fix or resolve in any form) lands
+ *   PR N too. Only in repositories that use `PR Close`, and only before it, where such a line naming a PR meant that
+ *   PR landed; elsewhere it closes issues, or a PR replaced by another one.
  * PRs by bots, or by deleted accounts, are left out.
  */
 export function landedPullRequests(pulls: Iterable<PullRequestInput>, commits: Iterable<CommitInput>, repo = 'angular/angular'): LandedPullRequest[] {

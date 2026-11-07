@@ -43,7 +43,8 @@ The sum is rounded once.
 A PR has landed if GitHub marks it merged, **or** a commit on the default branch has a `PR Close #N` line for it. Angular's merge
 tooling pushes the commits itself and closes the PR, so GitHub shows most PRs from 2017 to 2025 as closed, not merged.
 Before its first `PR Close` (January 2017), angular/angular's merge script wrote `Closes #N` instead: in that era, a
-commit with `Closes`, `Fixes` or `Resolves #N` at the start of a line lands PR N too. Only in repositories that use
+commit that closes #N with one of GitHub's keywords at the start of a line (close, closes, closed, fix, fixes, fixed,
+resolve, resolves or resolved, in any case, with an optional colon) lands PR N too. Only in repositories that use
 `PR Close`, and only before it: elsewhere these keywords close issues.
 
 Bots are left out: GitHub apps, `[bot]` and `-bot` accounts and the list in `shared/src/bots.ts`; so are deleted accounts (`ghost`).
