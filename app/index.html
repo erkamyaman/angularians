@@ -26,7 +26,7 @@
         if (!navigation || (navigation.type !== 'reload' && navigation.type !== 'back_forward')) return
         var expect = document.createElement('link')
         expect.rel = 'expect'
-        expect.href = '#site-footer'
+        expect.href = location.pathname + location.search + '#site-footer'
         expect.setAttribute('blocking', 'render')
         document.head.appendChild(expect)
       })()

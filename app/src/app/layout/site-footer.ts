@@ -14,7 +14,7 @@ import { REPO_URL } from '../site';
   selector: 'app-site-footer',
   imports: [AngularLogo, Container, HlmButton, LogoMark, NgIcon, RouterLink],
   providers: [provideIcons({ simpleGithub })],
-  host: { role: 'contentinfo' },
+  host: { role: 'contentinfo', id: 'site-footer' },
   templateUrl: './site-footer.html',
   styleUrl: './site-footer.css',
 })
