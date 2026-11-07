@@ -36,6 +36,8 @@ in both themes and at phone width.
 
 Small files, plain comments, few dependencies. Comments say why, not what. A new dependency needs a reason in the pull request.
 
+The app follows the [Angular style guide](https://angular.dev/style-guide); [AGENTS.md](AGENTS.md#rules) lists how it applies here.
+
 ## Commit messages
 
 `type(scope): summary`, for example `fix(profile): truncate long names on phones`. The types are `feat`, `fix`, `docs`, `chore`,
