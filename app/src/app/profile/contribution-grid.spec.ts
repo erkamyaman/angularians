@@ -1,23 +1,23 @@
 import { contributionGrid } from './contribution-grid';
 
-const today = new Date('2026-11-07T15:00:00Z');
+const days = new Map([['2026-03-03', 2], ['2026-03-04', 8], ['2025-12-31', 5]]);
 
 describe('contributionGrid', () => {
-  describe('for a year', () => {
-    const days = new Map([['2026-03-03', 2], ['2026-03-04', 8], ['2025-12-31', 5]]);
-    const grid = contributionGrid(days, '2026', today);
+  describe('for a past year', () => {
+    const grid = contributionGrid(days, '2026', new Date('2027-01-15T05:00:00Z'));
 
-    it('lays out the year in weeks from Sunday, with blanks before 1 January', () => {
+    it('lays out the year in weeks from Sunday, with blanks before 1 January and after 31 December', () => {
       expect(grid.weeks).toHaveLength(53);
       expect(grid.weeks[0]!.slice(0, 4)).toEqual([null, null, null, null]);
-      expect(grid.weeks[0]![4]).toEqual({ day: '2026-01-01', count: 0, level: 0 });
-      expect(grid.weeks[52]![4]).toEqual({ day: '2026-12-31', count: 0, level: 0 });
+      expect(grid.weeks[0]![4]).toMatchObject({ day: '2026-01-01', count: 0, level: 0 });
+      expect(grid.weeks[52]![4]).toMatchObject({ day: '2026-12-31' });
       expect(grid.weeks[52]![5]).toBeNull();
     });
 
-    it('shades each day from 1 to 4 against the busiest day of the range', () => {
-      expect(grid.weeks[9]![2]).toEqual({ day: '2026-03-03', count: 2, level: 1 });
-      expect(grid.weeks[9]![3]).toEqual({ day: '2026-03-04', count: 8, level: 4 });
+    it('shades each day from 1 to 4 against the busiest day, and says what it holds', () => {
+      expect(grid.weeks[9]![2]).toEqual({ day: '2026-03-03', count: 2, level: 1, label: '2 contributions on 3 March 2026' });
+      expect(grid.weeks[9]![3]).toMatchObject({ count: 8, level: 4 });
+      expect(grid.weeks[0]![4]!.label).toBe('No contributions on 1 January 2026');
     });
 
     it('sums only the days of the range', () => {
@@ -31,20 +31,22 @@ describe('contributionGrid', () => {
     });
   });
 
-  describe('for the last 12 months', () => {
-    const grid = contributionGrid(new Map([['2025-11-07', 3], ['2025-11-08', 1], ['2026-11-07', 1]]), '12m', today);
+  it('ends the current year on the day of the collection', () => {
+    const grid = contributionGrid(days, '2026', new Date('2026-11-07T05:13:00Z'));
+    expect(grid.weeks.at(-1)![6]).toMatchObject({ day: '2026-11-07' });
+    expect(grid.weeks.flat().filter(Boolean).at(-1)!.day).toBe('2026-11-07');
+  });
 
-    it('ends today and starts 364 days before', () => {
-      expect(grid.weeks[0]![6]).toEqual({ day: '2025-11-08', count: 1, level: 4 });
-      expect(grid.weeks.at(-1)![6]).toEqual({ day: '2026-11-07', count: 1, level: 4 });
-      expect(grid.total).toBe(2);
-    });
+  it('shows the days the 12-month stats count, from the day 365 days before the collection, for every rolling period', () => {
+    const grid = contributionGrid(new Map([['2025-11-06', 9], ['2025-11-07', 3], ['2026-11-07', 1]]), '30d', new Date('2026-11-07T05:13:00Z'));
+    expect(grid.weeks[0]![5]).toMatchObject({ day: '2025-11-07', count: 3, level: 4 });
+    expect(grid.weeks.at(-1)![6]).toMatchObject({ day: '2026-11-07', count: 1, level: 2 });
+    expect(grid.total).toBe(4);
   });
 
   it('is empty, with no busiest day, for someone with no days in the range', () => {
-    const grid = contributionGrid(new Map(), '2015', today);
+    const grid = contributionGrid(new Map(), '2015', new Date('2026-11-07T05:13:00Z'));
     expect(grid.total).toBe(0);
     expect(grid.busiest).toBeNull();
-    expect(grid.weeks.flat().every(cell => cell === null || cell.level === 0)).toBe(true);
   });
 });

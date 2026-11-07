@@ -139,18 +139,6 @@ export function parseProfilesFile(data: unknown): ProfileRecord[] {
 /** The packages of every contributor, from `packages.json`. Invalid entries are skipped. */
 export const PACKAGES_FILE = 'packages.json'
 export const CALENDAR_FILE = 'calendar.json'
-export function parseCalendarFile(data: unknown): Record<number, number[]> {
-  if (!data || typeof data !== 'object' || Array.isArray(data)) throw new TypeError(`${CALENDAR_FILE} must be an object`)
-  const people: Record<number, number[]> = {}
-  for (const [key, days] of Object.entries(data)) {
-    const id = githubId(Number(key))
-    if (id === null || !Array.isArray(days) || days.length % 2) continue
-    const valid = days.every((value: unknown, i) => Number.isSafeInteger(value) && (i % 2 ? (value as number) > 0 : (value as number) >= 0 && (i === 0 || (value as number) > (days[i - 2] as number))))
-    if (valid && days.length) people[id] = days as number[]
-  }
-  return people
-}
-
 export function parsePackagesFile(data: unknown): PackagesRecord[] {
   if (!Array.isArray(data)) throw new TypeError(`${PACKAGES_FILE} must be an array`)
   const records: PackagesRecord[] = []
@@ -166,6 +154,23 @@ export function parsePackagesFile(data: unknown): PackagesRecord[] {
     if (packages.length) records.push({ githubId: id, packages })
   }
   return records
+}
+
+export function parseCalendarFile(data: unknown): Record<number, number[]> {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) throw new TypeError(`${CALENDAR_FILE} must be an object`)
+  const people: Record<number, number[]> = {}
+  for (const [key, days] of Object.entries(data)) {
+    const id = githubId(Number(key))
+    if (id === null || !Array.isArray(days) || days.length % 2) continue
+    const numbers = days as unknown[]
+    const valid = numbers.every((value, i) => {
+      if (typeof value !== 'number' || !Number.isSafeInteger(value)) return false
+      if (i % 2) return value > 0
+      return value >= 0 && (i === 0 || value > (numbers[i - 2] as number))
+    })
+    if (valid && days.length) people[id] = days as number[]
+  }
+  return people
 }
 
 /** The public members of the organization, from `team.json`. */

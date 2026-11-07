@@ -3,7 +3,7 @@
 // Differences: no core bonus (one repository), and inline review comments count too (1 point each).
 import type { Calendar } from './calendar.ts'
 import { isBotAccount } from './bots.ts'
-import { allPeriods, periodsFor } from './periods.ts'
+import { allPeriods, periodsFor, utcDay } from './periods.ts'
 import type { ActivityCounts, ContributorRecord, GitHubUser, LandedPullRequest, PackagesRecord, Period, PullRequestCounts, PullRequestType } from './types.ts'
 
 export const PULL_REQUEST_POINTS: Readonly<Record<PullRequestType, number>> = {
@@ -260,7 +260,7 @@ export class ContributorsAccumulator {
     if (contribution && !Number.isNaN(time)) {
       let days = this.days.get(user.id)
       if (!days) this.days.set(user.id, (days = new Map()))
-      const day = new Date(time).toISOString().slice(0, 10)
+      const day = utcDay(time)
       days.set(day, (days.get(day) ?? 0) + 1)
     }
     for (const period of periodsFor(date, this.now)) {

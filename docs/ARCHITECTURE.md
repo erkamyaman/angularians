@@ -20,7 +20,8 @@ Each profile has an Angular-only contribution graph: `calendar.json` holds every
 per UTC day (merged PRs on the day they landed, issues, discussions, comments, review comments, security reports; not
 reactions received), as day numbers from 1 January 2014 and counts (`encodeCalendar` in `shared/src/calendar.ts`). The
 profile sends a person their days with their profile; `profile/contribution-grid.ts` lays out the year picked, or the
-12 months to the collection, in weeks, each day shaded against that person's busiest day.
+days the 12-month stats count (`periodDays` in `shared/src/periods.ts`), in weeks, each day shaded against that person's
+busiest day.
 
 Angular 22 uses OnPush change detection and standalone components by default; omit explicit declarations of those defaults.
 Root services use `@Service()` (available since Angular 22.1), which preserves the application-wide, tree-shakable scope of
@@ -72,7 +73,7 @@ that are not variables are the fixed hex listed below.
 | Badges | `--shieldwall` | the Shieldwall badge, for Angular's security advisories (`badge-pill.css`) |
 | Projects | `--idea-library`, `--idea-tool`, `--idea-meetup`, `--idea-teaching` | the kinds of project in "Forged something for Angular?" |
 | The globe | `--globe-base`, `--globe-glow` (and `--primary` for its land) | the world globe's WebGL colours, read by `world/globe.ts` |
-| The contribution graph | `--calendar-0` (an empty day) to `--calendar-4` (the busiest), from the mark's grey and golds; lighter is fewer on light, darker is fewer on dark | `profile/contribution-calendar.css` |
+| The contribution graph | `--calendar-0` (an empty day) to `--calendar-4` (the busiest): the mark's grey, its three golds and the gold halfway between two of them; on light the lightest gold is the fewest, on dark the darkest | `profile/contribution-calendar.css` |
 | The storm | `--lightning`, `--lightning-inner`, `--angie-shadow` (the same in both themes) | Angie's storm, `layout/hammer-strike.css` |
 
 A token that means another one is written as it (`--primary: var(--mark-2)`, `--idea-library: var(--github-pink)`,

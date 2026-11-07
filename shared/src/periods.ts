@@ -6,7 +6,7 @@ import type { Period } from './types.ts'
 export const FIRST_YEAR = 2014
 export const DEFAULT_PERIOD: Period = '12m'
 
-const DAY_MS = 24 * 60 * 60 * 1000
+export const DAY_MS = 24 * 60 * 60 * 1000
 /** Rolling windows ending at the collection time. */
 export const ROLLING_WINDOWS = [
   ['30d', 30],
@@ -47,6 +47,17 @@ export function periodsFor(date: string | null | undefined, now: Date): Period[]
   const year = new Date(time).getUTCFullYear()
   if (year >= FIRST_YEAR) periods.push(`${year}`)
   return periods
+}
+
+export const utcDay = (time: number): string => new Date(time).toISOString().slice(0, 10)
+
+export const isYear = (period: Period): boolean => /^\d{4}$/.test(period)
+
+export function periodDays(period: Period, now: Date): [string, string] {
+  const today = utcDay(now.getTime())
+  if (isYear(period)) return [`${period}-01-01`, `${period}-12-31` < today ? `${period}-12-31` : today]
+  const window = ROLLING_WINDOWS.find(([rolling]) => rolling === period)?.[1]
+  return [window ? utcDay(now.getTime() - window * DAY_MS) : `${FIRST_YEAR}-01-01`, today]
 }
 
 /** `all` → `contributors.json`, `30d` → `contributors-30d.json`. */

@@ -49,7 +49,7 @@
   --mark-3: #E3B341;
   --calendar-0: var(--mark-empty);
   --calendar-1: var(--mark-3);
-  --calendar-2: #D29922;
+  --calendar-2: color-mix(in oklab, var(--mark-3), var(--mark-2));
   --calendar-3: var(--mark-2);
   --calendar-4: var(--mark-1);
   /*
@@ -147,7 +147,7 @@
   --calendar-0: color-mix(in oklab, var(--mark-empty) 55%, transparent);
   --calendar-1: var(--mark-1);
   --calendar-2: var(--mark-2);
-  --calendar-3: #D29922;
+  --calendar-3: color-mix(in oklab, var(--mark-2), var(--mark-3));
   --calendar-4: var(--mark-3);
 
   --github-purple: #A371F7;

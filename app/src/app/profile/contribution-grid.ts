@@ -1,12 +1,14 @@
-import type { Period } from '@angularians/shared';
+import { DAY_MS, isYear, periodDays, utcDay, type Period } from '@angularians/shared';
+import { formatDay } from '../text/date-format';
+import { plural } from '../text/plural';
 
-const DAY_MS = 24 * 60 * 60 * 1000;
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export interface ContributionDay {
   day: string;
   count: number;
   level: 0 | 1 | 2 | 3 | 4;
+  label: string;
 }
 
 export interface ContributionGrid {
@@ -17,10 +19,12 @@ export interface ContributionGrid {
   busiest: { day: string, count: number } | null;
 }
 
-export function contributionGrid(days: ReadonlyMap<string, number>, period: Period, today: Date): ContributionGrid {
-  const [start, end] = range(period, today);
+export function contributionGrid(days: ReadonlyMap<string, number>, period: Period, collectedAt: Date): ContributionGrid {
+  const [first, last] = periodDays(isYear(period) ? period : '12m', collectedAt);
+  const start = Date.parse(first);
+  const end = Date.parse(last);
   const inRange: Array<[number, number]> = [];
-  for (let time = start; time <= end; time += DAY_MS) inRange.push([time, days.get(isoDay(time)) ?? 0]);
+  for (let time = start; time <= end; time += DAY_MS) inRange.push([time, days.get(utcDay(time)) ?? 0]);
   const max = Math.max(0, ...inRange.map(([, count]) => count));
 
   const weeks: ContributionGrid['weeks'] = [];
@@ -31,15 +35,16 @@ export function contributionGrid(days: ReadonlyMap<string, number>, period: Peri
   let activeDays = 0;
   for (const [time, count] of inRange) {
     const date = new Date(time);
+    const day = utcDay(time);
     if (date.getUTCDate() === 1 || time === start) {
       const at = weeks.length;
       if (!months.length || at - months.at(-1)!.week >= 2) months.push({ label: MONTHS[date.getUTCMonth()]!, week: at });
     }
-    week.push({ day: isoDay(time), count, level: level(count, max) });
+    week.push({ day, count, level: level(count, max), label: `${count ? plural(count, 'contribution', 'contributions') : 'No contributions'} on ${formatDay(day)}` });
     if (count) {
       total += count;
       activeDays += 1;
-      if (!busiest || count > busiest.count) busiest = { day: isoDay(time), count };
+      if (!busiest || count > busiest.count) busiest = { day, count };
     }
     if (week.length === 7) {
       weeks.push(week);
@@ -50,15 +55,7 @@ export function contributionGrid(days: ReadonlyMap<string, number>, period: Peri
   return { weeks, months, total, activeDays, busiest };
 }
 
-function range(period: Period, today: Date): [number, number] {
-  if (/^\d{4}$/.test(period)) return [Date.UTC(Number(period), 0, 1), Date.UTC(Number(period), 11, 31)];
-  const end = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
-  return [end - 364 * DAY_MS, end];
-}
-
 function level(count: number, max: number): ContributionDay['level'] {
   if (!count || !max) return 0;
   return Math.min(4, Math.max(1, Math.ceil((count / max) * 4))) as ContributionDay['level'];
 }
-
-const isoDay = (time: number) => new Date(time).toISOString().slice(0, 10);

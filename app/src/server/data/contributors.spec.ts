@@ -70,6 +70,11 @@ describe('ContributorsData', () => {
     expect(new ContributorsData({ ...bundle, calendar: undefined }).profile('crisbeto')?.calendar).toEqual([])
   })
 
+  it('keeps the days out of the leaderboard and the search, which only the profile needs', () => {
+    expect(data.leaderboard({ period: 'all' }).items.some(item => 'calendar' in item)).toBe(false)
+    expect(data.search('cris').some(item => 'calendar' in item)).toBe(false)
+  })
+
   it('searches prefixes first, then usernames and names containing the query', () => {
     expect(data.search('cris').map(item => item.username)).toEqual(['crisbeto', 'Cristina'])
     expect(data.search('  CHR ').map(item => item.username)).toEqual(['christian'])

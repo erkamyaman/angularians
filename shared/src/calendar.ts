@@ -1,4 +1,4 @@
-import { FIRST_YEAR } from './periods.ts'
+import { DAY_MS, FIRST_YEAR, utcDay } from './periods.ts'
 
 export type Calendar = Map<number, Map<string, number>>
 
@@ -14,7 +14,6 @@ export function mergeCalendars(calendars: readonly Calendar[]): Calendar {
   return merged
 }
 
-const DAY_MS = 24 * 60 * 60 * 1000
 const EPOCH = Date.UTC(FIRST_YEAR, 0, 1)
 
 export function encodeCalendar(calendar: Calendar): Record<number, number[]> {
@@ -30,6 +29,6 @@ export function encodeCalendar(calendar: Calendar): Record<number, number[]> {
 
 export function decodeCalendar(pairs: readonly number[]): Map<string, number> {
   const days = new Map<string, number>()
-  for (let i = 0; i + 1 < pairs.length; i += 2) days.set(new Date(EPOCH + pairs[i]! * DAY_MS).toISOString().slice(0, 10), pairs[i + 1]!)
+  for (let i = 0; i + 1 < pairs.length; i += 2) days.set(utcDay(EPOCH + pairs[i]! * DAY_MS), pairs[i + 1]!)
   return days
 }

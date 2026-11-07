@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { allPeriods, isPeriod, periodFile, periodFromFile, periodLabel, periodPhrase, periodsFor, sortPeriods } from '../src/periods.ts'
+import { allPeriods, isPeriod, periodDays, periodFile, periodFromFile, periodLabel, periodPhrase, periodsFor, sortPeriods } from '../src/periods.ts'
 
 const now = new Date('2026-11-03T12:00:00Z')
 
@@ -43,5 +43,19 @@ describe('periods', () => {
   it('labels each period and puts it in a sentence', () => {
     expect(['30d', '12m', 'all', '2024'].map(periodLabel)).toEqual(['Last 30 days', 'Last 12 months', 'All time', '2024'])
     expect(['30d', '12m', 'all', '2024'].map(periodPhrase)).toEqual(['in the last 30 days', 'in the last 12 months', 'of all time', 'in 2024'])
+  })
+})
+
+describe('periodDays', () => {
+  const at = new Date('2026-11-07T05:13:00Z')
+
+  it('gives the UTC days a rolling window touches, from the day 365 days before the collection to its day', () => {
+    expect(periodDays('12m', at)).toEqual(['2025-11-07', '2026-11-07'])
+    expect(periodDays('30d', at)).toEqual(['2026-10-08', '2026-11-07'])
+  })
+
+  it('gives a past year whole, and the current one up to the collection', () => {
+    expect(periodDays('2024', at)).toEqual(['2024-01-01', '2024-12-31'])
+    expect(periodDays('2026', at)).toEqual(['2026-01-01', '2026-11-07'])
   })
 })
