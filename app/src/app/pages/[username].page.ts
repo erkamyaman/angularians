@@ -89,9 +89,16 @@ export default class Profile {
   protected readonly validUsername = computed(() => GITHUB_USERNAME_RE.test(this.username()));
   protected readonly failedToLoad = computed(() => !!this.profile.error() && this.validUsername());
   private readonly promptClosed = signal(false);
+  /**
+   * The "Is this your profile?" prompt. The page is cached for everyone, so the server draws it for the visitors with no
+   * sign-in hint (most are signed out), and the browser keeps it until the session says otherwise; a visitor signed in
+   * last time (the hint) gets a page without it, and keeps it that way even if their session has ended, rather than
+   * have the page jump under them.
+   */
   protected readonly signedOut = computed(() => {
     const state = this.auth.state();
-    return !!state?.enabled && !state.user && !this.promptClosed();
+    if (this.promptClosed() || this.auth.wasSignedIn()) return false;
+    return state === null || (state.enabled && !state.user);
   });
   protected readonly isAngularian = computed(() => {
     const person = this.loaded();

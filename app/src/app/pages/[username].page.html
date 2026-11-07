@@ -1,5 +1,5 @@
-<app-container class="pt-8">
-  <nav aria-label="Breadcrumb">
+<app-container class="flex items-center gap-4 pt-8">
+  <nav class="min-w-0 flex-1" aria-label="Breadcrumb">
     <ol class="flex min-w-0 items-center gap-1.5 text-sm">
       <li class="shrink-0">
         <a hlmBtn variant="link" class="px-0" routerLink="/" [queryParams]="backQuery()">
@@ -10,6 +10,11 @@
       <li class="min-w-0 truncate text-muted-foreground" aria-current="page">{{ displayName() }}</li>
     </ol>
   </nav>
+  <!-- Your own profile: share it (the period on screen). In the browser only, as the page is cached for everyone; so
+       here, in the breadcrumb's row and as tall as it, where it moves nothing when it appears. -->
+  @if (isOwner() && loaded(); as person) {
+    <app-share class="hidden shrink-0 lg:flex" [username]="person.username" [period]="period()" [periods]="available()" [country]="person.country" />
+  }
 </app-container>
 
 @if (loaded(); as person) {
@@ -73,11 +78,7 @@
               }
             </ul>
           }
-          <!-- Your own profile: share it (the period on screen). In the browser only: the page is cached for everyone. -->
-          @if (isOwner()) {
-            <app-share class="hidden lg:flex" [username]="person.username" [period]="period()" [periods]="available()" [country]="person.country" />
-          }
-          <!-- Signed out, known only in the browser: the page is cached for everyone. -->
+          <!-- Signed out: drawn by the server too (most visitors are), so it is there from the first paint -->
           @if (signedOut()) {
             <section class="flex w-full flex-col gap-3 rounded-xl bg-muted/40 p-4 ring-1 ring-border" aria-labelledby="profile-sign-in">
               <div>
