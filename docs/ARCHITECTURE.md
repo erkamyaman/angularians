@@ -91,7 +91,12 @@ needs it as a utility, and remove any token nothing uses any more.
 
 Through the user authorization of the `angularians-collector` GitHub App. Only the GitHub id and login are kept, in a sealed,
 http-only cookie; GitHub's access token is used once, to ask who signed in. The session is read in the browser
-(`/api/auth/me`), never in a cached page. Sign-in stays hidden until the site has these environment variables:
+(`/api/auth/me`), never in a cached page. A readable hint cookie, `angularians-signed-in` (`app/src/app/auth/hint.ts`),
+says the browser was signed in last time; the CDN keeps a copy of each page per value, so the server draws the signed-in
+card's skeleton (laid out as an Angularian's card, at its height) and leaves out the profile's "Is this your profile?"
+prompt for it, and draws the sign-in and the prompt for everyone else: nothing jumps when the session answers. A hint
+whose session has ended gets the sign-in in the skeleton's place and size, once: `/api/auth/me` clears it.
+Sign-in stays hidden until the site has these environment variables:
 
 | Variable | |
 | --- | --- |
