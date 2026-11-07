@@ -1,10 +1,12 @@
-import { afterNextRender, afterRenderEffect, Component, computed, ElementRef, input, output, signal, viewChild } from '@angular/core'
+import { DOCUMENT } from '@angular/common'
+import { afterNextRender, afterRenderEffect, Component, computed, ElementRef, inject, input, output, signal, viewChild } from '@angular/core'
 import { NgIcon, provideIcons } from '@ng-icons/core'
 import { octComment, octGitMerge, octIssueOpened, octShield } from '@ng-icons/octicons'
 import { remixArrowRightUpLine, remixInformationLine } from '@ng-icons/remixicon'
 import { simpleGithub } from '@ng-icons/simple-icons'
 import { HlmButton } from '@spartan-ng/helm/button'
 import { HlmDialogImports } from '@spartan-ng/helm/dialog'
+import { HlmSelectImports } from '@spartan-ng/helm/select'
 import { decodeCalendar, isYear, periodPhrase, REPOS, type Period } from '@angularians/shared'
 import { formatDay, formatDayInYear } from '../text/date-format'
 import { formatNumber } from '../text/number-format'
@@ -12,12 +14,12 @@ import { plural } from '../text/plural'
 import { contributionGrid } from './contribution-grid'
 
 const COLORS_KEY = 'angularians-graph-colors'
+const GREEN_CLASS = 'graph-green'
 
 @Component({
   selector: 'app-contribution-calendar',
-  imports: [HlmButton, HlmDialogImports, NgIcon],
+  imports: [HlmButton, HlmDialogImports, HlmSelectImports, NgIcon],
   providers: [provideIcons({ octComment, octGitMerge, octIssueOpened, octShield, remixArrowRightUpLine, remixInformationLine, simpleGithub })],
-  host: { '[class.green]': 'green()' },
   templateUrl: './contribution-calendar.html',
   styleUrl: './contribution-calendar.css',
 })
@@ -30,6 +32,7 @@ export class ContributionCalendar {
 
   private readonly scroller = viewChild.required<ElementRef<HTMLElement>>('scroller')
   private readonly yearList = viewChild.required<ElementRef<HTMLElement>>('yearList')
+  private readonly document = inject(DOCUMENT)
 
   protected readonly grid = computed(() => contributionGrid(decodeCalendar(this.days()), this.period(), new Date(this.collectedAt())))
   protected readonly summary = computed(() => {
@@ -47,6 +50,7 @@ export class ContributionCalendar {
     { period: '12m' as Period, label: 'Last 12 months' },
     ...this.years().filter(isYear).sort((a, b) => Number(b) - Number(a)).map(period => ({ period, label: period })),
   ])
+  protected readonly choiceLabel = (period: Period) => this.choices().find(choice => choice.period === period)?.label ?? period
   protected readonly shown = computed<Period>(() => (isYear(this.period()) || this.period() === '30d' ? this.period() : '12m'))
   protected readonly hovered = signal<{ label: string, x: number, y: number } | null>(null)
   protected readonly weekdays = ['', 'Mon', '', 'Wed', '', 'Fri', '']
@@ -75,8 +79,13 @@ export class ContributionCalendar {
     this.restoreColors()
   }
 
+  protected pickPeriod(period: string | null | undefined): void {
+    if (period) this.periodChange.emit(period as Period)
+  }
+
   protected pickColors(green: boolean): void {
     this.green.set(green)
+    this.document.documentElement.classList.toggle(GREEN_CLASS, green)
     try {
       localStorage.setItem(COLORS_KEY, green ? 'green' : 'gold')
     }
@@ -102,23 +111,12 @@ export class ContributionCalendar {
       if (!picked) return
       const smooth = !first && !matchMedia('(prefers-reduced-motion: reduce)').matches
       first = false
-      list.scrollTo({
-        top: picked.offsetTop - (list.clientHeight - picked.offsetHeight) / 2,
-        left: picked.offsetLeft - (list.clientWidth - picked.offsetWidth) / 2,
-        behavior: smooth ? 'smooth' : 'instant',
-      })
+      list.scrollTo({ top: picked.offsetTop - (list.clientHeight - picked.offsetHeight) / 2, behavior: smooth ? 'smooth' : 'instant' })
     })
   }
 
   private restoreColors(): void {
-    afterNextRender(() => {
-      try {
-        this.green.set(localStorage.getItem(COLORS_KEY) === 'green')
-      }
-      catch {
-        // Storage blocked: gold.
-      }
-    })
+    afterNextRender(() => this.green.set(this.document.documentElement.classList.contains(GREEN_CLASS)))
   }
 
 }

@@ -37,7 +37,7 @@ describe('ContributionCalendar', () => {
     day.dispatchEvent(new MouseEvent('pointerover', { bubbles: true }));
     TestBed.tick();
     expect(element.querySelector('.tip')?.textContent?.trim()).toBe('3 contributions on 4 March 2026');
-    expect(element.querySelector('.calendar')?.getAttribute('aria-hidden')).toBe('true');
+    expect(element.querySelector('.plot')?.getAttribute('aria-hidden')).toBe('true');
   });
 
   it('lists the last 12 months and each year, newest first, with the shown one pressed, and asks for the one clicked', () => {
@@ -60,6 +60,7 @@ describe('ContributionCalendar', () => {
 
   it('switches between the gold of the mark and GitHub green, and remembers the choice in this browser', () => {
     localStorage.removeItem('angularians-graph-colors');
+    document.documentElement.classList.remove('graph-green');
     const fixture = TestBed.createComponent(ContributionCalendar);
     fixture.componentRef.setInput('years', ['2026']);
     fixture.componentRef.setInput('days', []);
@@ -68,10 +69,10 @@ describe('ContributionCalendar', () => {
     fixture.detectChanges();
     const host = fixture.nativeElement as HTMLElement;
     const [gold, green] = [...host.querySelectorAll<HTMLButtonElement>('.colors button')];
-    expect([gold!.textContent?.trim(), gold!.getAttribute('aria-pressed'), green!.textContent?.trim(), green!.getAttribute('aria-pressed')]).toEqual(['Gold', 'true', 'Green', 'false']);
+    expect([gold!.textContent?.trim(), gold!.getAttribute('aria-pressed'), green!.textContent?.trim(), green!.getAttribute('aria-pressed')]).toEqual(['Viking gold', 'true', 'GitHub green', 'false']);
     green!.click();
     fixture.detectChanges();
-    expect(host.classList.contains('green')).toBe(true);
+    expect(document.documentElement.classList.contains('graph-green')).toBe(true);
     expect(localStorage.getItem('angularians-graph-colors')).toBe('green');
   });
 

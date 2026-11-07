@@ -39,30 +39,42 @@
     </hlm-dialog>
   </div>
   <p id="calendar-summary" class="mb-4 text-muted-foreground">{{ summary() }}</p>
+  <hlm-select class="year-select" [value]="shown()" (valueChange)="pickPeriod($event)" [itemToString]="choiceLabel">
+    <hlm-select-trigger size="sm" buttonAriaLabel="Contributions in">
+      <hlm-select-value />
+    </hlm-select-trigger>
+    <hlm-select-content *hlmSelectPortal>
+      @for (choice of choices(); track choice.period) {
+        <hlm-select-item [value]="choice.period">{{ choice.label }}</hlm-select-item>
+      }
+    </hlm-select-content>
+  </hlm-select>
   <div class="body">
     <div class="graph">
-      <div #scroller class="scroller">
-        <div class="calendar" [style.--weeks]="grid().weeks.length" aria-hidden="true">
-          <div class="months">
-            @for (month of grid().months; track month.week) {
-              <span [style.grid-column]="month.week + 1">{{ month.label }}</span>
-            }
-          </div>
-          <div class="weekdays">
-            @for (weekday of weekdays; track $index) {
-              <span>{{ weekday }}</span>
-            }
-          </div>
-          <div class="days" (pointerover)="hover($event)" (pointerleave)="hovered.set(null)">
-            @for (week of grid().weeks; track $index) {
-              @for (cell of week; track $index) {
-                @if (cell) {
-                  <span class="day" [class.outside]="cell.outside" [attr.data-level]="cell.level" [attr.data-label]="cell.label"></span>
-                } @else {
-                  <span></span>
+      <div class="plot" [style.--weeks]="grid().weeks.length" aria-hidden="true">
+        <div class="weekdays">
+          @for (weekday of weekdays; track $index) {
+            <span>{{ weekday }}</span>
+          }
+        </div>
+        <div #scroller class="scroller">
+          <div class="calendar">
+            <div class="months">
+              @for (month of grid().months; track month.week) {
+                <span [style.grid-column]="month.week + 1">{{ month.label }}</span>
+              }
+            </div>
+            <div class="days" (pointerover)="hover($event)" (pointerleave)="hovered.set(null)">
+              @for (week of grid().weeks; track $index) {
+                @for (cell of week; track $index) {
+                  @if (cell) {
+                    <span class="day" [class.outside]="cell.outside" [attr.data-level]="cell.level" [attr.data-label]="cell.label"></span>
+                  } @else {
+                    <span></span>
+                  }
                 }
               }
-            }
+            </div>
           </div>
         </div>
       </div>
@@ -71,8 +83,8 @@
       }
       <div class="footer">
         <div class="colors" role="group" aria-label="Graph colours">
-          <button type="button" [attr.aria-pressed]="!green()" (click)="pickColors(false)">Gold</button>
-          <button type="button" [attr.aria-pressed]="green()" (click)="pickColors(true)">Green</button>
+          <button type="button" class="gold" [attr.aria-pressed]="!green()" (click)="pickColors(false)">Viking gold</button>
+          <button type="button" class="green" [attr.aria-pressed]="green()" (click)="pickColors(true)">GitHub green</button>
         </div>
         <p class="legend" aria-hidden="true">
           Less

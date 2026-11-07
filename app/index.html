@@ -31,11 +31,13 @@
         document.head.appendChild(expect)
       })()
     </script>
-    <!-- Before the first paint: dark (the class above), or a saved light theme. Same key as ThemeService. -->
+    <!-- Before the first paint: dark (the class above), or a saved light theme. Same key as ThemeService. And the graph's
+         colours, the same key as the profile's contribution graph. -->
     <script>
       (function () {
         var theme = null
         try { theme = localStorage.getItem('theme') } catch (e) {}
+        try { if (localStorage.getItem('angularians-graph-colors') === 'green') document.documentElement.classList.add('graph-green') } catch (e) {}
         if (theme === 'light') {
           document.documentElement.classList.remove('dark')
           document.documentElement.style.colorScheme = 'light'
