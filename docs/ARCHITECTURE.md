@@ -37,6 +37,36 @@ To try the site with another data folder: `CONTRIBUTORS_DATA_DIR=/path/to/data p
 
 The brand font, Norse Bold (the word "Angularian" on the site and the cards), is in `app/public/fonts/`. The mark is built by `app/scripts/logo/build.py`.
 
+## Design tokens
+
+Every colour of the site is a variable in [`app/src/styles.css`](../app/src/styles.css): its light value in `:root`, its
+dark value, when it differs, in `:root.dark` just below. Components use them as `var(--name)` in their `.css`, or as a
+utility where `@theme inline` exposes one (`text-brand`, `bg-angular-pink/10`).
+
+| Group | Tokens | Used by |
+| --- | --- | --- |
+| Spartan's theme | `--background`, `--foreground`, `--card`, `--popover`, `--primary`, `--secondary`, `--muted`, `--accent`, `--destructive`, `--border`, `--input`, `--ring` (and their `-foreground`), `--radius` | the UI components and every page, as Tailwind utilities (`bg-muted`, `rounded-lg`) |
+| The brand | `--primary` (Viking gold), `--color-brand` (utility `text-brand`), `--font-display` (Norse) | the mark, the word Angularians |
+| The mark | `--mark-empty`, `--mark-1` to `--mark-3`, `--mark-green-1` to `--mark-green-3` | `logo-mark` |
+| Angular | `--angular-pink`, `--angular-purple` (utilities `*-angular-pink`, `*-angular-purple`) | the team badge, the Angular guide |
+| GitHub | `--github-purple`, `-red`, `-blue`, `-gold`, `-green`, `-pink`, `-orange`; `--github-*-light`, the light ones in both themes | the kinds of contribution, with the `github-*` classes of `styles/github-colors.css` |
+| Medals | `--medal-gold`, `--medal-silver`, `--medal-bronze` and their `-text` | the top three, with the classes of `styles/podium.css` |
+| Badges | `--shieldwall` | the Shieldwall badge, for Angular's security advisories (`badge-pill.css`) |
+| Projects | `--idea-library`, `--idea-tool`, `--idea-meetup`, `--idea-teaching` | the kinds of project in "Forged something for Angular?" |
+
+Spacing, font sizes, shadows and z-indexes are Tailwind's own scale (`--spacing`, `--text-*`, `--shadow-*`); a one-off
+size for one element (`text-[5.5rem]` for the hero's word) stays an arbitrary value where it is used.
+
+Fixed hex stays only where no theme applies: another project's own colour (a badge's tone in `badge-pill.css`, the
+Discord and YouTube guides), set once in a variable on the element when it is used more than once; the artwork of a
+logo (`angular-logo.html`, YouTube's); black or white as a shade or over a photo (the rank shield's darker half, the
+leaderboard's names on avatars); and the server-drawn cards (`app/src/server/card` and their preview in the share
+dialog), which have no theme.
+
+To add a colour: give it a name for what it is, not how it looks (`--medal-gold`, not `--yellow`), put it in its group in
+`styles.css` with its dark value next to it if it changes, add a `--color-*` line to `@theme inline` only when a template
+needs it as a utility, and remove any token nothing uses any more.
+
 ## Search engines
 
 - `/sitemap.xml` (`app/src/server/routes/sitemap.xml.get.ts`): the home page, each country's board and the profile of
