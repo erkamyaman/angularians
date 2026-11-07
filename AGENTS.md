@@ -73,3 +73,10 @@ pnpm build        # the site, as Netlify builds it
 - Branches are `feat/…`, `fix/…`, `docs/…` or `chore/…`; one change per branch.
 
 Adding a custom badge, a recognition or a bot: follow its skill in `.agents/skills/` (the table in [CONTRIBUTING.md](CONTRIBUTING.md#adding-things)). Before committing a site change: `check-a-site-change`. A repository or a score change is the maintainer's: their recipes are `add-a-repository` and `change-the-score`.
+
+Skills from outside the repository, once installed (`npx skills add https://github.com/angular/skills` and `npx skills add https://github.com/mattpocock/skills`):
+
+- Angular code: `angular-developer` (angular/skills). Where it and the rules above differ, the rules above win.
+- A bug: `diagnosing-bugs`, a loop that goes red on the bug before any fix.
+- New logic: `tdd`, the test first.
+- After opening a PR: `code-review` against `main`, with this file, CONTRIBUTING.md and `docs/` as the standards and the PR description as the spec. Fix what it finds before asking for a review.
