@@ -14,24 +14,27 @@ let introPlayed = false;
  */
 @Component({
   selector: 'app-logo-mark',
-  host: { '[class.compact]': 'compact()', '[class.intro]': 'playing()', '(animationend)': 'introEnded()' },
+  host: { '[class.compact]': 'compact()', '[class.intro]': 'playing()', '(animationend)': 'endIntroWhenDone()' },
   styleUrl: './logo-mark.css',
   templateUrl: './logo-mark.html',
 })
 export class LogoMark {
   readonly compact = input(false, { transform: booleanAttribute });
   readonly intro = input(false, { transform: booleanAttribute });
-  private readonly firstLoad = !introPlayed;
+
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
+  private readonly firstLoad = !introPlayed;
   protected readonly playing = linkedSignal(() => this.intro() && this.firstLoad);
 
   constructor() {
+    // Once per page load: the next marks on the page, and on later pages, start still.
     afterNextRender(() => {
       if (this.intro()) introPlayed = true;
     });
   }
 
-  protected introEnded(): void {
+  /** The intro ends with its last animation (each piece of the mark has its own). */
+  protected endIntroWhenDone(): void {
     if (!this.host.getAnimations({ subtree: true }).some(animation => animation.playState === 'running')) this.playing.set(false);
   }
 }

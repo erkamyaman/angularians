@@ -1,6 +1,5 @@
 // Ported from nuxt.com `app/components/nuxters/NuxtersSearch.vue` (MIT, Copyright (c) 2022-2023 NuxtLabs).
-import { DOCUMENT } from '@angular/common'
-import { Component, computed, DestroyRef, effect, ElementRef, inject, input, signal, viewChild } from '@angular/core'
+import { Component, computed, effect, ElementRef, inject, input, signal, viewChild } from '@angular/core'
 import { Router } from '@angular/router'
 import { injectServerFnMutation } from '@analogjs/router'
 import { countryName, type ContributorSummary, type Period } from '@angularians/shared'
@@ -20,6 +19,7 @@ const DEBOUNCE_MS = 200
   selector: 'app-contributor-search',
   imports: [HlmAutocompleteImports, HlmKbd, NgIcon],
   providers: [provideIcons({ remixCloseLine })],
+  host: { '(document:keydown)': 'focusOnSlash($event)' },
   templateUrl: './contributor-search.html',
 })
 export class ContributorSearch {
@@ -28,7 +28,6 @@ export class ContributorSearch {
   readonly country = input<string | null>(null)
 
   private readonly router = inject(Router)
-  private readonly document = inject(DOCUMENT)
   private readonly search = injectServerFnMutation(searchContributors)
   private readonly input = viewChild('input', { read: ElementRef })
 
@@ -36,7 +35,10 @@ export class ContributorSearch {
   protected readonly term = signal('')
   protected readonly results = signal<ContributorSummary[]>([])
   protected readonly loading = signal(false)
-  protected readonly nobodyFound = computed(() => {
+  /** What the list says with no results: what to type, that it is searching, or that nobody matched. */
+  protected readonly emptyText = computed(() => {
+    if (!this.term().trim()) return 'Type a GitHub username'
+    if (this.loading()) return 'Searching…'
     const country = this.country()
     return country ? `Nobody found in ${countryName(country)}` : 'Nobody found'
   })
@@ -48,13 +50,46 @@ export class ContributorSearch {
   private request = 0
 
   constructor() {
-    // Results of another country are never left to pick while the new ones load.
+    this.clearResultsOnCountryChange()
+    this.searchAsYouType()
+  }
+
+  protected clear(): void {
+    this.term.set('')
+    this.focusInput()
+  }
+
+  protected openProfile(item: unknown): void {
+    if (!item || typeof item !== 'object' || !('username' in item)) return
+    const { username } = item as ContributorSummary
+    this.term.set('')
+    this.results.set([])
+    void this.router.navigate(['/', username], { queryParams: profileQuery(this.period(), this.country()) })
+  }
+
+  /** `/` anywhere but in a field focuses the search. */
+  protected focusOnSlash(event: KeyboardEvent): void {
+    const target = event.target as HTMLElement | null
+    const typing = target?.closest('input, textarea, select, [contenteditable="true"]')
+    if (event.key !== '/' || typing || event.metaKey || event.ctrlKey || event.altKey) return
+    event.preventDefault()
+    this.focusInput()
+  }
+
+  private focusInput(): void {
+    this.input()?.nativeElement.querySelector('input')?.focus()
+  }
+
+  /** Results of another country are never left to pick while the new ones load. */
+  private clearResultsOnCountryChange(): void {
     effect(() => {
       this.country()
       this.results.set([])
     })
+  }
 
-    // One request per pause in typing; a slower, older answer never replaces a newer one.
+  /** One request per pause in typing; a slower, older answer never replaces a newer one. */
+  private searchAsYouType(): void {
     effect((onCleanup) => {
       const query = this.term().trim()
       const country = this.country()
@@ -74,28 +109,5 @@ export class ContributorSearch {
       }, DEBOUNCE_MS)
       onCleanup(() => clearTimeout(timer))
     })
-
-    const onKeydown = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement | null
-      const typing = target?.closest('input, textarea, select, [contenteditable="true"]')
-      if (event.key !== '/' || typing || event.metaKey || event.ctrlKey || event.altKey) return
-      event.preventDefault()
-      this.input()?.nativeElement.querySelector('input')?.focus()
-    }
-    this.document.addEventListener('keydown', onKeydown)
-    inject(DestroyRef).onDestroy(() => this.document.removeEventListener('keydown', onKeydown))
-  }
-
-  protected clear(): void {
-    this.term.set('')
-    this.input()?.nativeElement.querySelector('input')?.focus()
-  }
-
-  protected open(item: unknown): void {
-    if (!item || typeof item !== 'object' || !('username' in item)) return
-    const { username } = item as ContributorSummary
-    this.term.set('')
-    this.results.set([])
-    void this.router.navigate(['/', username], { queryParams: profileQuery(this.period(), this.country()) })
   }
 }

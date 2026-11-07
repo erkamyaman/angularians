@@ -1,5 +1,5 @@
 @if (items().length) {
-  <div brnCombobox brnPopover #combobox="brnCombobox" class="relative block w-full sm:w-52" [value]="value() ?? ALL" (valueChange)="pick($event)" [itemToString]="label" [filter]="matches" autoHighlight>
+  <div brnCombobox brnPopover #combobox="brnCombobox" class="relative block w-full sm:w-52" [value]="value() ?? ALL" (valueChange)="pickCountry($event)" [itemToString]="label" [filter]="matches" autoHighlight>
     <button
       #trigger
       type="button"
@@ -8,8 +8,8 @@
       [attr.aria-label]="ariaLabel()"
       aria-haspopup="dialog"
       [attr.aria-expanded]="combobox.isExpanded()"
-      (keydown.arrowdown)="$event.preventDefault(); combobox.open()"
-      (keydown.arrowup)="$event.preventDefault(); combobox.open()"
+      (keydown.arrowdown)="openList($event)"
+      (keydown.arrowup)="openList($event)"
       class="w-full sm:w-52"
     >
       @if (value(); as code) {

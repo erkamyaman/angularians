@@ -77,9 +77,12 @@ export class Share {
     return `[![${alt}](${this.cardUrl()})](${this.cardProfileUrl()})`
   })
 
-  private timer: ReturnType<typeof setTimeout> | undefined
+  private copiedTimer: ReturnType<typeof setTimeout> | undefined
+  private loadingSince = 0
+  private loadedTimer: ReturnType<typeof setTimeout> | undefined
 
-  protected opened(state: string): void {
+  /** Each opening starts from the period on screen and the GitHub location's flag. */
+  protected resetOnOpen(state: string): void {
     if (state !== 'open') return
     this.cardPeriod.set(this.period())
     this.flag.set(null)
@@ -87,7 +90,7 @@ export class Share {
     this.startLoading()
   }
 
-  protected pick(value: Period | null | undefined): void {
+  protected pickPeriod(value: Period | null | undefined): void {
     if (!value || value === this.cardPeriod()) return
     this.cardPeriod.set(value)
     this.startLoading()
@@ -99,16 +102,7 @@ export class Share {
     this.startLoading()
   }
 
-  private loadingSince = 0
-  private loadedTimer: ReturnType<typeof setTimeout> | undefined
-
-  private startLoading(): void {
-    clearTimeout(this.loadedTimer)
-    this.loadingSince = Date.now()
-    this.cardState.set('loading')
-  }
-
-  protected loaded(url: string): void {
+  protected showLoadedCard(url: string): void {
     clearTimeout(this.loadedTimer)
     this.loadedTimer = setTimeout(() => {
       // A later pick may have started another card meanwhile: only the one on screen counts.
@@ -118,8 +112,7 @@ export class Share {
     }, Math.max(0, MIN_LOADING_MS - (Date.now() - this.loadingSince)))
   }
 
-
-  protected select(event: Event): void {
+  protected selectAll(event: Event): void {
     (event.target as HTMLTextAreaElement).select()
   }
 
@@ -131,6 +124,12 @@ export class Share {
     void this.copy(this.markdown(), 'markdown')
   }
 
+  private startLoading(): void {
+    clearTimeout(this.loadedTimer)
+    this.loadingSince = Date.now()
+    this.cardState.set('loading')
+  }
+
   private async copy(text: string, what: 'link' | 'markdown'): Promise<void> {
     try {
       await navigator.clipboard.writeText(text)
@@ -139,7 +138,7 @@ export class Share {
       return
     }
     this.copied.set(what)
-    clearTimeout(this.timer)
-    this.timer = setTimeout(() => this.copied.set(null), 2000)
+    clearTimeout(this.copiedTimer)
+    this.copiedTimer = setTimeout(() => this.copied.set(null), 2000)
   }
 }

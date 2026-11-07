@@ -26,10 +26,14 @@ const ALL = 'all'
 export class CountrySelect {
   readonly countries = input.required<CountryStats[]>()
   readonly value = input<string | null>(null)
-  readonly valueChange = output<string | null>()
   readonly allLabel = input('All countries')
   readonly ariaLabel = input('Filter by country')
   readonly showCounts = input(true)
+  readonly valueChange = output<string | null>()
+
+  private readonly combobox = viewChild(BrnCombobox)
+  private readonly options = viewChildren(BrnComboboxItem)
+  private readonly trigger = viewChild('trigger', { read: ElementRef })
 
   protected readonly ALL = ALL
   protected readonly flag = flagUrl
@@ -46,18 +50,8 @@ export class CountrySelect {
   protected readonly matches = (code: string, search: string) =>
     code === ALL ? matchesName(this.label(code), search) : matchesCountry(code, search)
 
-  private readonly combobox = viewChild(BrnCombobox)
-  private readonly options = viewChildren(BrnComboboxItem)
-  private readonly trigger = viewChild('trigger', { read: ElementRef })
-
   constructor() {
-    effect(() => {
-      const combobox = this.combobox()
-      if (!combobox?.isExpanded() || combobox.search()) return
-      const selected = this.value() ?? ALL
-      const option = this.options().find(item => item.value() === selected)
-      if (option) untracked(() => combobox.keyManager.setActiveItem(option))
-    })
+    this.highlightSelectedOnOpen()
   }
 
   protected clear(): void {
@@ -65,8 +59,24 @@ export class CountrySelect {
     this.trigger()?.nativeElement.focus()
   }
 
-  protected pick(value: unknown): void {
+  protected pickCountry(value: unknown): void {
     const code = typeof value === 'string' && value !== ALL ? value : null
     if (code !== this.value()) this.valueChange.emit(code)
+  }
+
+  /** The arrow keys open the list, as on a native select. */
+  protected openList(event: Event): void {
+    event.preventDefault()
+    this.combobox()?.open()
+  }
+
+  private highlightSelectedOnOpen(): void {
+    effect(() => {
+      const combobox = this.combobox()
+      if (!combobox?.isExpanded() || combobox.search()) return
+      const selected = this.value() ?? ALL
+      const option = this.options().find(item => item.value() === selected)
+      if (option) untracked(() => combobox.keyManager.setActiveItem(option))
+    })
   }
 }

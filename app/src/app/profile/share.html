@@ -13,7 +13,7 @@
 
 <ng-template #preview>
       @if (cardPeriods().length > 1) {
-        <app-period-tabs class="self-start" [period]="cardPeriod()" [periods]="cardPeriods()" label="Period of the card" (periodChange)="pick($event)" />
+        <app-period-tabs class="self-start" [period]="cardPeriod()" [periods]="cardPeriods()" label="Period of the card" (periodChange)="pickPeriod($event)" />
       }
       <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
         <app-country-select class="shrink-0" [countries]="allCountries" [value]="flag()" [allLabel]="flagLabel()" ariaLabel="Country on the card" [showCounts]="false" (valueChange)="pickFlag($event)" />
@@ -32,7 +32,7 @@
         @for (url of [previewUrl()]; track url) {
           <img [src]="url" [alt]="username() + '’s Angularian card'" width="1200" height="630"
             class="relative size-full transition-opacity duration-300" [class.opacity-0]="cardState() !== 'loaded'"
-            (load)="loaded(url)" (error)="cardState.set('error')" />
+            (load)="showLoadedCard(url)" (error)="cardState.set('error')" />
         }
         @if (cardState() === 'loading') {
           <div class="absolute inset-0" role="status">
@@ -62,7 +62,7 @@
       </div>
 </ng-template>
 
-<hlm-dialog (stateChanged)="opened($event)">
+<hlm-dialog (stateChanged)="resetOnOpen($event)">
   <button hlmDialogTrigger hlmBtn variant="secondary" type="button">
     <ng-icon name="remixShareLine" size="1.25rem" aria-hidden="true" /> Share card
   </button>
@@ -83,7 +83,7 @@
   </hlm-dialog-content>
 </hlm-dialog>
 
-<hlm-dialog (stateChanged)="opened($event)">
+<hlm-dialog (stateChanged)="resetOnOpen($event)">
   <button hlmDialogTrigger hlmBtn variant="secondary" type="button">
     <ng-icon name="remixMarkdownLine" size="1.25rem" aria-hidden="true" /> Add to README
   </button>
@@ -95,7 +95,7 @@
     <div class="flex flex-col gap-4">
       <ng-container [ngTemplateOutlet]="preview" />
       <textarea readonly rows="3" class="w-full resize-none rounded-md border border-input bg-background px-3 py-2 font-mono text-xs shadow-xs focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-        aria-label="Markdown of the card" (focus)="select($event)">{{ markdown() }}</textarea>
+        aria-label="Markdown of the card" (focus)="selectAll($event)">{{ markdown() }}</textarea>
       <div class="flex flex-wrap items-center justify-between gap-2">
         <a class="text-sm text-primary transition-opacity hover:opacity-80" target="_blank" rel="noopener"
           href="https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/customizing-your-profile/managing-your-profile-readme">How to set up a profile README</a>

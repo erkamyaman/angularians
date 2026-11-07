@@ -21,14 +21,17 @@ export class AuthService {
     const browser = isPlatformBrowser(inject(PLATFORM_ID))
     const request = injectRequest()
     this.wasSignedIn.set(hasSignedInHint(browser ? inject(DOCUMENT).cookie : request?.headers.cookie))
-    if (!browser) return
-    fetch('/api/auth/me', { credentials: 'same-origin', headers: { accept: 'application/json' } })
-      .then(response => (response.ok ? response.json() as Promise<SignedIn> : { enabled: false, user: null }))
-      .then(state => this.state.set(state), () => this.state.set({ enabled: false, user: null }))
+    if (browser) this.loadState()
   }
 
   /** Sign in, then come back to this path. */
   loginUrl(returnTo: string): string {
     return `/api/auth/login?${new URLSearchParams({ returnTo })}`
+  }
+
+  private loadState(): void {
+    fetch('/api/auth/me', { credentials: 'same-origin', headers: { accept: 'application/json' } })
+      .then(response => (response.ok ? response.json() as Promise<SignedIn> : { enabled: false, user: null }))
+      .then(state => this.state.set(state), () => this.state.set({ enabled: false, user: null }))
   }
 }

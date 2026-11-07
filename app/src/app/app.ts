@@ -18,17 +18,20 @@ export class App {
   /** `<base href="/">` would send a plain `#main` link to the home page, before hydration too. */
   protected readonly skipHref = signal(`${inject(Location).path()}#main`)
 
+  constructor() {
+    if (isPlatformBrowser(inject(PLATFORM_ID))) this.followNavigation(inject(Router), inject(Injector), inject(DestroyRef))
+  }
+
   protected skipToMain(event: Event): void {
     event.preventDefault()
     document.getElementById('main')?.focus()
   }
 
-  constructor() {
-    if (!isPlatformBrowser(inject(PLATFORM_ID))) return
-    // A new page starts at the top. Only when the page itself changes: a period or a country on the same page
-    // (query parameters) keeps the place, and back and forward keep the browser's own.
-    const router = inject(Router)
-    const injector = inject(Injector)
+  /**
+   * A new page starts at the top. Only when the page itself changes: a period or a country on the same page
+   * (query parameters) keeps the place, and back and forward keep the browser's own.
+   */
+  private followNavigation(router: Router, injector: Injector, destroyRef: DestroyRef): void {
     let path = location.pathname
     let section: string | null = null
     let back = false
@@ -52,6 +55,6 @@ export class App {
         section = fragment
       }
     })
-    inject(DestroyRef).onDestroy(() => subscription.unsubscribe())
+    destroyRef.onDestroy(() => subscription.unsubscribe())
   }
 }
