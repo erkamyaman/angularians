@@ -58,16 +58,15 @@ export interface ScoreRow {
   total: number
 }
 
-/** The rows' order when their totals tie: PRs, then security reports, the helpful ones, and the rest. */
-const ROW_ORDER: readonly ScoreRowKey[] = ['feat', 'fix', 'docs', 'chore', 'advisories', 'helpfulIssues', 'helpfulComments', 'issues', 'reviewComments', 'comments', 'reactions']
+/** The rows' order when their totals tie: PRs, then by points, then in the order of `KINDS`. */
+const ROW_ORDER: readonly Kind[] = [...KINDS].sort((a, b) => Number(b.pullRequest) - Number(a.pullRequest) || b.points - a.points)
 
 /** One row per contribution type, sorted by total (ties in `ROW_ORDER`). Rounded, the totals add up to the score. */
 export function scoreBreakdown(stats: ScoredStats): ScoreRow[] {
   return ROW_ORDER
-    .map((key) => {
-      const kind = KINDS.find(kind => kind.key === key)!
+    .map((kind) => {
       const amount = amountOf(stats, kind)
-      return { key, label: kind.label, icon: kind.icon, points: kind.points, amount, total: Math.round(amount * kind.points * 10) / 10 }
+      return { key: kind.key, label: kind.label, icon: kind.icon, points: kind.points, amount, total: Math.round(amount * kind.points * 10) / 10 }
     })
     .sort((a, b) => b.total - a.total)
 }

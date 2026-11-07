@@ -159,7 +159,7 @@ export const TEAM_FILE = 'team.json'
 export const RENAMES_FILE = 'renames.json'
 
 /** Validate `team.json` or `renames.json`: GitHub ids and usernames. Invalid entries are skipped. */
-export function parseTeamFile(data: unknown): TeamRecord[] {
+export function parseUserIdsFile(data: unknown): TeamRecord[] {
   if (!Array.isArray(data)) throw new TypeError(`${TEAM_FILE} and ${RENAMES_FILE} must be arrays`)
   return data.flatMap((entry: unknown) => {
     const record = (entry && typeof entry === 'object' ? entry : {}) as Record<string, unknown>

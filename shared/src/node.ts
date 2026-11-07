@@ -3,7 +3,7 @@
 import { existsSync } from 'node:fs'
 import { readdir, readFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { META_FILE, PACKAGES_FILE, parseContributorsFile, parseMetaFile, parsePackagesFile, parseProfilesFile, parseTeamFile, PROFILES_FILE, RENAMES_FILE, TEAM_FILE } from './files.ts'
+import { META_FILE, PACKAGES_FILE, parseContributorsFile, parseMetaFile, parsePackagesFile, parseProfilesFile, parseUserIdsFile, PROFILES_FILE, RENAMES_FILE, TEAM_FILE } from './files.ts'
 import { periodFromFile } from './periods.ts'
 import type { DataFolder } from './types.ts'
 
@@ -11,8 +11,8 @@ import type { DataFolder } from './types.ts'
 const DATA_FILES = {
   profiles: [PROFILES_FILE, parseProfilesFile],
   packages: [PACKAGES_FILE, parsePackagesFile],
-  team: [TEAM_FILE, parseTeamFile],
-  renames: [RENAMES_FILE, parseTeamFile],
+  team: [TEAM_FILE, parseUserIdsFile],
+  renames: [RENAMES_FILE, parseUserIdsFile],
   meta: [META_FILE, parseMetaFile],
 } as const satisfies { [K in Exclude<keyof DataFolder, 'periods'>]: readonly [string, (data: unknown) => NonNullable<DataFolder[K]>] }
 

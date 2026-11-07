@@ -5,7 +5,7 @@ import {
   META_FILE,
   PACKAGES_FILE,
   periodFile,
-  parseTeamFile,
+  parseUserIdsFile,
   PROFILES_FILE,
   RENAMES_FILE,
   TEAM_FILE,
@@ -74,8 +74,6 @@ export interface Sources {
   profiles: (contributors: TeamRecord[]) => Promise<ProfileRecord[]>
 }
 
-const GITHUB: Sources = { team: publicMembers, profiles: collectProfiles }
-
 /** What the previous run left in the data folder: who had which username, and the renames known so far. */
 export interface Previous {
   contributors: TeamRecord[]
@@ -92,8 +90,10 @@ export interface DataFiles {
   meta: Record<string, unknown>
   /** The team or the profiles, when their source failed. */
   failures: Array<{ file: string, what: string, error: unknown }>
-  /** Lines to check the run by. */
-  log: unknown[]
+  /** What was written, printed before meta.json. */
+  written: string[]
+  /** Lines to check the run by, printed after meta.json. */
+  checks: string[]
 }
 
 /** The period files, renames, packages, team and profiles, and meta.json of a run. Throws `RefusedRun`. */
@@ -107,18 +107,19 @@ export async function buildData(collected: Collected, previous: Previous, source
 
   const files = new Map<string, readonly unknown[]>()
   const failures: DataFiles['failures'] = []
-  const log: unknown[] = []
+  const written: string[] = []
+  const checks: string[] = []
   for (const [period, records] of periods) files.set(periodFile(period), records)
-  log.push(`Wrote ${periods.size} period files (${allTime.length} contributors all time)`)
+  written.push(`Wrote ${periods.size} period files (${allTime.length} contributors all time)`)
 
   // Renamed accounts: `/:oldname` and its card redirect to the new name. A test run's usernames are only a window.
   const renames = updatedRenames(previous.renames, collected.since ? [] : previous.contributors, allTime)
   files.set(RENAMES_FILE, renames)
-  log.push(`Wrote ${renames.length} renamed usernames (${renames.length - previous.renames.length} new)`)
+  written.push(`Wrote ${renames.length} renamed usernames (${renames.length - previous.renames.length} new)`)
 
   // The packages each contributor's merged PRs named (`fix(router)`), all time.
   files.set(PACKAGES_FILE, collected.packages)
-  log.push(`Wrote ${collected.packages.length} contributors' packages`)
+  written.push(`Wrote ${collected.packages.length} contributors' packages`)
 
   // The public members of the organizations of the repositories: the "Angular team" badge.
   let team: number | null = null
@@ -126,7 +127,7 @@ export async function buildData(collected: Collected, previous: Previous, source
     const records = await sources.team([...new Set(collected.repos.map(repo => repo.split('/')[0]!))])
     files.set(TEAM_FILE, records)
     team = records.length
-    log.push(`Wrote ${records.length} public organization members`)
+    written.push(`Wrote ${records.length} public organization members`)
   }
   catch (error) {
     failures.push({ file: TEAM_FILE, what: 'Team members', error })
@@ -138,7 +139,7 @@ export async function buildData(collected: Collected, previous: Previous, source
       const records = await sources.profiles(allTime.map(({ username, githubId }) => ({ username, githubId })))
       files.set(PROFILES_FILE, records)
       profiles = records.length
-      log.push(`Wrote ${records.length} profiles (${records.filter(r => r.country).length} with a country)`)
+      written.push(`Wrote ${records.length} profiles (${records.filter(r => r.country).length} with a country)`)
     }
     catch (error) {
       // Profiles are a bonus: keep the previous file rather than publishing a partial one, still publish the stats.
@@ -159,24 +160,23 @@ export async function buildData(collected: Collected, previous: Previous, source
     team,
     ...stats,
   }
-  log.push(meta)
 
   // Logins to check by hand for bots that `isBotAccount` does not catch yet: by name, and the busiest commenters.
   const suspects = allTime.filter(r => /bot|robot|automation|machine|\bci\b|release|sync|cla\b/i.test(r.username))
-  log.push(`Possible bots: ${suspects.length ? suspects.map(r => `${r.username} (${r.pullRequests.all} PRs, ${r.comments} comments)`).join(', ') : 'none'}`)
+  checks.push(`Possible bots: ${suspects.length ? suspects.map(r => `${r.username} (${r.pullRequests.all} PRs, ${r.comments} comments)`).join(', ') : 'none'}`)
   if (collected.activity) {
     const commenters = [...allTime].sort((a, b) => b.comments + b.reviewComments - a.comments - a.reviewComments).slice(0, 20)
-    log.push(`Busiest commenters: ${commenters.map(r => `${r.username} ${r.comments}+${r.reviewComments}`).join(', ')}`)
+    checks.push(`Busiest commenters: ${commenters.map(r => `${r.username} ${r.comments}+${r.reviewComments}`).join(', ')}`)
   }
-  log.push(`Top 25: ${allTime.slice(0, 25).map(r => `${r.username} ${r.score}`).join(', ')}`)
-  return { files, meta, failures, log }
+  checks.push(`Top 25: ${allTime.slice(0, 25).map(r => `${r.username} ${r.score}`).join(', ')}`)
+  return { files, meta, failures, written, checks }
 }
 
 /** The site's data in `outputDir`, from `buildData`; a refused run exits with an error and writes nothing. */
-export async function writeData(outputDir: string, collected: Collected, options: { profiles: boolean }, sources = GITHUB): Promise<void> {
+export async function writeData(outputDir: string, collected: Collected, options: { profiles: boolean }): Promise<void> {
   let data: DataFiles
   try {
-    data = await buildData(collected, await readPrevious(outputDir), sources, options)
+    data = await buildData(collected, await readPrevious(outputDir), { team: publicMembers, profiles: collectProfiles }, options)
   }
   catch (error) {
     if (!(error instanceof RefusedRun)) throw error
@@ -191,7 +191,9 @@ export async function writeData(outputDir: string, collected: Collected, options
   }
   await writeFile(join(outputDir, META_FILE), `${JSON.stringify(data.meta, null, 2)}\n`, 'utf8')
   console.log(`Wrote the data to ${outputDir}`)
-  for (const line of data.log) console.log(line)
+  for (const line of data.written) console.log(line)
+  console.log(data.meta)
+  for (const line of data.checks) console.log(line)
 }
 
 /** Before the new files replace them: the previous run's usernames and renames, none on the first run. */
@@ -202,7 +204,7 @@ async function readPrevious(dir: string): Promise<Previous> {
 /** The GitHub ids and usernames of a data file, or none when it is missing or cannot be read. */
 async function readRecords(dir: string, file: string): Promise<TeamRecord[]> {
   try {
-    return await readDataFile(dir, file, parseTeamFile) ?? []
+    return await readDataFile(dir, file, parseUserIdsFile) ?? []
   }
   catch {
     return []
