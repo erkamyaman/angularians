@@ -52,7 +52,7 @@ export function contributionGrid(days: ReadonlyMap<string, number>, period: Peri
     }
   }
   if (week.length) weeks.push([...week, ...Array.from({ length: 7 - week.length }, () => null)]);
-  return { weeks, months, total, activeDays, busiest };
+  return { weeks, months: months.filter(month => month.week < weeks.length - 1), total, activeDays, busiest };
 }
 
 function level(count: number, max: number): ContributionDay['level'] {

@@ -142,7 +142,7 @@
   @if (loaded(); as person) {
     @if (person.calendar.length && person.collectedAt) {
       <app-container class="pb-12">
-        <app-contribution-calendar [days]="person.calendar" [period]="period()" [collectedAt]="person.collectedAt" />
+        <app-contribution-calendar [days]="person.calendar" [period]="period()" [years]="available()" [collectedAt]="person.collectedAt" (periodChange)="setPeriod($event)" />
       </app-container>
     }
   }

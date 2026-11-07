@@ -52,6 +52,11 @@
   --calendar-2: color-mix(in oklab, var(--mark-3), var(--mark-2));
   --calendar-3: var(--mark-2);
   --calendar-4: var(--mark-1);
+  --graph-green-0: #ebedf0;
+  --graph-green-1: #9be9a8;
+  --graph-green-2: #40c463;
+  --graph-green-3: #30a14e;
+  --graph-green-4: #216e39;
   /*
    * The intro: the greens of a GitHub contribution graph its three squares start as, before they turn gold, and
    * turn back to on hover. The same in both themes.
@@ -149,6 +154,11 @@
   --calendar-2: var(--mark-2);
   --calendar-3: color-mix(in oklab, var(--mark-2), var(--mark-3));
   --calendar-4: var(--mark-3);
+  --graph-green-0: #161b22;
+  --graph-green-1: #0e4429;
+  --graph-green-2: #006d32;
+  --graph-green-3: #26a641;
+  --graph-green-4: #39d353;
 
   --github-purple: #A371F7;
   --github-red: #F85149;

@@ -1,36 +1,54 @@
 <section aria-labelledby="calendar-title" aria-describedby="calendar-summary">
   <h2 id="calendar-title" class="mb-1 text-2xl font-medium tracking-tight">Contributions</h2>
-  <p id="calendar-summary" class="mb-6 text-muted-foreground">{{ summary() }}</p>
-  <div #scroller class="scroller">
-    <div class="calendar" [style.--weeks]="grid().weeks.length" aria-hidden="true">
-      <div class="months">
-        @for (month of grid().months; track month.week) {
-          <span [style.grid-column]="month.week + 1">{{ month.label }}</span>
-        }
-      </div>
-      <div class="weekdays">
-        @for (weekday of weekdays; track $index) {
-          <span>{{ weekday }}</span>
-        }
-      </div>
-      <div class="days">
-        @for (week of grid().weeks; track $index) {
-          @for (cell of week; track $index) {
-            @if (cell) {
-              <span class="day" [attr.data-level]="cell.level" [title]="cell.label"></span>
-            } @else {
-              <span></span>
+  <p id="calendar-summary" class="mb-4 text-muted-foreground">{{ summary() }}</p>
+  <div class="body">
+    <div class="graph">
+      <div #scroller class="scroller">
+        <div class="calendar" [style.--weeks]="grid().weeks.length" aria-hidden="true">
+          <div class="months">
+            @for (month of grid().months; track month.week) {
+              <span [style.grid-column]="month.week + 1">{{ month.label }}</span>
             }
+          </div>
+          <div class="weekdays">
+            @for (weekday of weekdays; track $index) {
+              <span>{{ weekday }}</span>
+            }
+          </div>
+          <div class="days" (pointerover)="hover($event)" (pointerleave)="hovered.set(null)">
+            @for (week of grid().weeks; track $index) {
+              @for (cell of week; track $index) {
+                @if (cell) {
+                  <span class="day" [attr.data-level]="cell.level" [attr.data-label]="cell.label"></span>
+                } @else {
+                  <span></span>
+                }
+              }
+            }
+          </div>
+        </div>
+      </div>
+      @if (hovered(); as tip) {
+        <span class="tip" role="presentation" [style.left.px]="tip.x" [style.top.px]="tip.y">{{ tip.label }}</span>
+      }
+      <div class="footer">
+        <div class="colors" role="group" aria-label="Graph colours">
+          <button type="button" [attr.aria-pressed]="!green()" (click)="pickColors(false)">Gold</button>
+          <button type="button" [attr.aria-pressed]="green()" (click)="pickColors(true)">Green</button>
+        </div>
+        <p class="legend" aria-hidden="true">
+          Less
+          @for (level of levels; track level) {
+            <span class="day" [attr.data-level]="level"></span>
           }
-        }
+          More
+        </p>
       </div>
     </div>
+    <nav class="years" aria-label="Contributions in">
+      @for (choice of choices(); track choice.period) {
+        <button type="button" [attr.aria-pressed]="choice.period === shown()" (click)="periodChange.emit(choice.period)">{{ choice.label }}</button>
+      }
+    </nav>
   </div>
-  <p class="legend" aria-hidden="true">
-    Less
-    @for (level of levels; track level) {
-      <span class="day" [attr.data-level]="level"></span>
-    }
-    More
-  </p>
 </section>

@@ -31,6 +31,11 @@ describe('contributionGrid', () => {
     });
   });
 
+  it('leaves out a month label that would only have its last week to stand over', () => {
+    const grid = contributionGrid(days, '2026', new Date('2026-11-03T05:13:00Z'));
+    expect(grid.months.at(-1)).toEqual({ label: 'Oct', week: 39 });
+  });
+
   it('ends the current year on the day of the collection', () => {
     const grid = contributionGrid(days, '2026', new Date('2026-11-07T05:13:00Z'));
     expect(grid.weeks.at(-1)![6]).toMatchObject({ day: '2026-11-07' });
