@@ -31,6 +31,8 @@ interface ElementClassManager {
   nextOrder: number;
   hasInitialized: boolean;
   restoreRafId: number | null;
+  /** The server's classes were put back after Angular's hydration overwrote them with the static `class` attribute */
+  restoredServerClasses: boolean;
   /** Transitions are suppressed until the first effect writes correct classes */
   transitionsSuppressed: boolean;
   /** Original inline transition value to restore after suppression (empty string = none was set) */
@@ -84,6 +86,7 @@ export function classes(
         isUpdating: false,
         nextOrder: 0,
         hasInitialized: false,
+        restoredServerClasses: false,
         restoreRafId: null,
         transitionsSuppressed: false,
         previousTransition: "",
@@ -200,6 +203,17 @@ function setupGlobalObserver(platformId: Object): void {
           if (manager && observedElements.has(element)) {
             if (manager.isUpdating) continue; // Ignore changes we're making
 
+            // Hydrating, Angular writes the template's static `class` over the server's classes before this
+            // element's first effect runs, and the browser can paint in between (a button without its size).
+            // Put the server's classes back until then: this callback runs before the next paint.
+            if (!manager.hasInitialized) {
+              if (!manager.restoredServerClasses && manager.sources.size === 0 && mutation.oldValue) {
+                manager.restoredServerClasses = true;
+                element.className = mutation.oldValue;
+              }
+              if (manager.restoredServerClasses) continue; // the first effect sets the classes
+            }
+
             // Update base classes to include any externally added classes
             const currentClasses = toClassList(element.className);
             const allSourceClasses = new Set<string>();
@@ -230,6 +244,7 @@ function setupGlobalObserver(platformId: Object): void {
     globalObserver.observe(document, {
       attributes: true,
       attributeFilter: ["class"],
+      attributeOldValue: true,
       subtree: true, // Watch all descendants
     });
   }
@@ -253,7 +268,8 @@ function updateElement(manager: ElementClassManager): void {
 
     // Only consider classes as "base" if they're not produced by any source
     // This prevents SSR-rendered classes from being preserved as base classes
-    currentClasses.forEach((className) => {
+    // (restored server classes are not: the static `class` is already in the base classes)
+    if (!manager.restoredServerClasses) currentClasses.forEach((className) => {
       if (!allSourceClasses.has(className)) {
         manager.baseClasses.add(className);
       }
