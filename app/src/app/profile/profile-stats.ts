@@ -1,5 +1,6 @@
 import { periodPhrase, reposQuery, type ContributorPeriodStats, type Period } from '@angularians/shared'
-import { formatNumber, plural } from '../text/number-format'
+import { formatNumber } from '../text/number-format'
+import { plural } from '../text/plural'
 import { STAT_NAMES, statWord } from '../text/stat-names'
 
 /** One card of the profile: a kind of contribution in the period on screen. */

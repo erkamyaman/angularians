@@ -1,11 +1,7 @@
 import { countryName, periodPhrase, type LeaderboardPage, type Period } from '@angularians/shared'
 import { boardDescription } from './board-description'
 import { formatNumber } from '../text/number-format'
-
-export const SITE_DESCRIPTION = 'Everyone who has contributed to Angular since 2014, ranked: merged pull requests, issues, comments and code reviews in angular/angular, Components, the CLI, dev-infra, Domino, zone.js and Universal.'
-
-/** The home page's title: the name, then what the site is, for search results. */
-export const SITE_TITLE = 'Angularians · Every Angular contributor, ranked'
+import { SITE_DESCRIPTION, SITE_TITLE } from '../site'
 
 /**
  * The home page's title and description. A shared `?period=` link gets its own, and so does a country's board (its own

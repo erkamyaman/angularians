@@ -5,9 +5,3 @@ export function profileQuery(period: Period, country: string | null = null): Rec
   // The country only takes the profile's back link to the board it came from.
   return { ...(period === 'all' ? {} : { period }), ...(country ? { country } : {}) }
 }
-
-/** `?period=&flag=` of a profile or card link: all time and no flag leave it out. `extra` goes first (`?v=`). */
-export function shareQuery(period?: Period, flag?: string | null, extra: Record<string, string> = {}): string {
-  const params = new URLSearchParams({ ...extra, ...(period && period !== 'all' ? { period } : {}), ...(flag ? { flag } : {}) }).toString()
-  return params ? `?${params}` : ''
-}

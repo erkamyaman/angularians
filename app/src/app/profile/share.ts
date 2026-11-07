@@ -11,7 +11,7 @@ import { CountrySelect } from '../leaderboard/country-select'
 import { PeriodTabs } from '../leaderboard/period-tabs'
 import { HlmSkeleton } from '@spartan-ng/helm/skeleton'
 import { SITE_URL } from '../site'
-import { shareQuery } from '../leaderboard/profile-query'
+import { shareQuery } from './share-query'
 import { CARD_DESIGN } from './card-design'
 
 /** The skeleton shows at least this long, so a fast card does not flicker it. */

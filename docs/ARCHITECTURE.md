@@ -86,7 +86,7 @@ needs it as a utility, and remove any token nothing uses any more.
 - One address per page: `angularians.netlify.app` and a trailing slash (`/erkamyaman/`) answer 301 to the canonical URL
   (`app/src/server/middleware/canonical-url.ts`); every page sets `<link rel="canonical">`. A period (`?period=`) is the
   same page as the home page without one (the last 12 months); a country (`?country=TR`) is a page of its own, with its own title.
-- Structured data (`setJsonLd` in `app/src/app/site.ts`): `WebSite` on the home page, `ProfilePage` with its `Person`
+- Structured data (`setJsonLd` in `app/src/app/seo-head.ts`): `WebSite` on the home page, `ProfilePage` with its `Person`
   and a `BreadcrumbList` on profiles, a `BreadcrumbList` on a country's board.
 - The cards (`/og.png`, `/:username/card.png`) keep their bottom-left corner free: X lays the page's title over it.
 - Renamed accounts: each run compares usernames with the previous run's by GitHub id and keeps the old ones in

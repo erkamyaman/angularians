@@ -1,7 +1,7 @@
 import { countryName } from '@angularians/shared'
 import type { BoardCounts } from './board-description'
 import type { GithubColor } from './github-color'
-import { pluralWord } from '../text/number-format'
+import { pluralWord } from '../text/plural'
 
 /** The totals over a board, each in its GitHub colour (none for the people): `2,194` and `contributors from Germany`. */
 export function boardTotals(board: BoardCounts & { country: string | null }): { icon: string, color: GithubColor | null, value: number, words: string }[] {

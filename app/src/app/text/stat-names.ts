@@ -1,4 +1,4 @@
-import { pluralWord } from './number-format'
+import { pluralWord } from './plural'
 
 /** What the profile's stat cards and the Angularian card call each count: `[one, many]`. */
 export const STAT_NAMES = {

@@ -1,5 +1,6 @@
 import type { LeaderboardPage } from '@angularians/shared';
-import { boardHead, SITE_DESCRIPTION, SITE_TITLE } from './board-head';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../site';
+import { boardHead } from './board-head';
 
 const page = { period: '2025', country: 'TR', total: 12, landedPullRequests: 3, issues: 1, comments: 2, reviewComments: 0 } as LeaderboardPage;
 

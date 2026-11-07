@@ -23,14 +23,17 @@ import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import { injectSeededServerFn } from '../data/seeded-server-fn';
-import { loadedValue, markFailed } from '../data/loaded';
+import { loadedValue } from '../data/loaded';
+import { markFailed } from '../data/mark-failed';
 import { missingPeriod, shownPeriod } from '../profile/shown-period';
 import { getContributor } from '../data/contributors.server';
 import { Container } from '../layout/container';
 import { avatarUrl } from '../contributors/avatar-url';
 import { flagUrl } from '../contributors/flag-url';
-import { formatNumber, formatPoints, formatRank, plural, pluralWord } from '../text/number-format';
-import { profileQuery, shareQuery } from '../leaderboard/profile-query';
+import { formatNumber, formatPoints, formatRank } from '../text/number-format';
+import { plural, pluralWord } from '../text/plural';
+import { profileQuery } from '../leaderboard/profile-query';
+import { shareQuery } from '../profile/share-query';
 import { PeriodTabs } from '../leaderboard/period-tabs';
 import { foldPackages, PACKAGE_ICONS, packageIcon, packageLabel } from '../profile/packages';
 import { CardPreview } from '../profile/card-preview';
@@ -42,7 +45,8 @@ import { ScoreDialog } from '../profile/score-dialog';
 import { Share } from '../profile/share';
 import { AuthService } from '../auth/auth.service';
 import { AngularianPill } from '../layout/angularian-pill';
-import { breadcrumbs, setJsonLd, setShareMeta, SITE_SCHEMA, SITE_URL } from '../site';
+import { SITE_SCHEMA, SITE_URL } from '../site';
+import { breadcrumbs, setJsonLd, setShareMeta } from '../seo-head';
 
 export const routeMeta = {
   title: 'Contributor · Angularians',
