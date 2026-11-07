@@ -29,7 +29,6 @@ import { NextUpdate } from '../leaderboard/next-update';
 import { MeCard } from '../leaderboard/me-card';
 import { ScoreRules } from '../leaderboard/score-rules';
 import { LAUNCH_POST, SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '../site';
-import { AnnouncementCallout } from '../layout/announcement-callout';
 import { setJsonLd, setShareMeta } from '../seo-head';
 import { boardHead } from '../leaderboard/board-head';
 import { boardJsonLd } from '../leaderboard/board-json-ld';
@@ -38,6 +37,7 @@ import { formatNumber } from '../text/number-format';
 import { ClaimBadge } from '../leaderboard/claim-badge';
 import { EarnBadges } from '../leaderboard/earn-badges';
 import { JoinLinks } from '../leaderboard/join-links';
+import { LaunchPostCallout } from '../leaderboard/launch-post-callout';
 import { LeaderboardGrid } from '../leaderboard/leaderboard-grid';
 import { PeriodTabs } from '../leaderboard/period-tabs';
 import { World } from '../world/world';
@@ -51,7 +51,7 @@ export const routeMeta = {
 @Component({
   selector: 'app-home',
   imports: [
-    AnnouncementCallout,
+    LaunchPostCallout,
     ClaimBadge, EarnBadges, JoinLinks,
     AngularLogo, ContributorSearch, CountrySelect, HlmButton, HlmCardImports, HlmSkeleton, LeaderboardGrid, LogoMark, MeCard, NextUpdate, NgIcon, ScoreRules,
     PageGrid, PageHero, PageSection, PeriodTabs, World,
@@ -68,7 +68,6 @@ export default class Home {
 
   /** `?period=` and `?country=` are the state: shareable, and kept on reload. Unknown values fall back. */
   private readonly requestedPeriod = injectQueryParams(params => periodOrNull(params['period']));
-  protected readonly launchPost = LAUNCH_POST;
   protected readonly country = injectQueryParams(params => countryCode(params['country']));
   protected readonly period = computed(() => this.requestedPeriod() ?? DEFAULT_PERIOD);
 
@@ -103,6 +102,7 @@ export default class Home {
     return this.board() ? 'This board could not be loaded.' : 'The leaderboard could not be loaded.';
   });
   protected readonly placeholders = Array.from({ length: 30 }, (_, index) => index);
+  protected readonly launchPost = LAUNCH_POST;
   /** The three ways onto the board (Nuxters' "How to become a Nuxter"). */
   protected readonly becomeWays = [
     { title: 'Merge a pull request', action: 'Read the guide', description: 'Fix a bug, ship a feature or improve the docs in any Angular repository.', icon: 'octGitMerge', color: 'purple', url: 'https://github.com/angular/angular/blob/main/CONTRIBUTING.md' },

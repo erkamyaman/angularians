@@ -48,6 +48,8 @@ On a reload or back/forward, an inline script in `app/index.html` makes the page
 (`#site-footer`) is parsed: the browser restores the scroll position in the first paint instead of drawing the top of
 the page first. A first visit is not held back.
 
+A launch post, once out, goes in `LAUNCH_POST` (`app/src/app/site.ts`): the home page then shows a dashed callout linking to it under its introduction (`leaderboard/launch-post-callout.ts`).
+
 ## Design tokens
 
 The site's colours are variables in [`app/src/styles.css`](../app/src/styles.css), each set there once per theme: its light
@@ -90,8 +92,6 @@ Fixed hex stays only where no theme applies, in four cases (AGENTS.md lists the 
 To add a colour: give it a name for what it is, not how it looks (`--medal-gold`, not `--yellow`), put it in its group in
 `styles.css` with its dark value next to it if it changes, add a `--color-*` line to `@theme inline` only when a template
 needs it as a utility, and remove any token nothing uses any more.
-
-A launch post, once out, goes in `LAUNCH_POST` (`app/src/app/site.ts`): the home page then shows a dashed callout linking to it under its introduction (`layout/announcement-callout.ts`).
 
 An easter egg: the word "Angularian(s)" or "ng-halla", or a click on the header's or footer's logo, calls Angie (`app/public/angie/`) to bring down a storm with thunder (`app/public/sounds/`), on a click on the word, once a visit on a click on a logo, or once a visit on hover after a first click; `app/src/app/layout/hammer-strike.ts`, the bolt's shape in `lightning.ts`.
 
