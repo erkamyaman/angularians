@@ -15,6 +15,7 @@ import { avatarUrl } from '../leaderboard/avatar-url';
 import { flagUrl } from '../leaderboard/flag-url';
 import { formatNumber } from '../leaderboard/number-format';
 import { matchesCountry } from '../leaderboard/country-match';
+import { countryRanks } from './country-ranks';
 import { Globe } from './globe';
 
 /** People shown on the card of a country. */
@@ -28,13 +29,49 @@ const CARD_TILES = 12;
   styleUrl: './world.css',
 })
 export class World {
+  readonly map = input.required<ContributorsMap>();
+  readonly selected = input<string | null>(null);
+  /** The best ranked contributors of the selected country: the first page of its board, empty while it loads. */
+  readonly people = input<ContributorSummary[]>([]);
+  readonly select = output<string | null>();
+  /** "See the N contributors": scroll up to the board, already filtered. */
+  readonly leaderboard = output<void>();
+
   private readonly globeBox = viewChild.required<ElementRef<HTMLElement>>('globeBox');
+
   /** Set once the globe's box nears the screen, in the browser only: then the globe loads. */
   protected readonly inView = signal(false);
+  protected readonly query = signal('');
+
+  protected readonly current = computed(() => this.map().countries.find(item => item.code === this.selected()) ?? null);
+  /** One tile per person shown, known from the count: the card keeps its size while they load. */
+  protected readonly tiles = computed(() => Array.from({ length: Math.min(CARD_TILES, this.current()?.count ?? 0) }, (_, index) => this.people()[index] ?? null));
+  private readonly ranks = computed(() => countryRanks(this.map().countries));
+  protected readonly shownCountries = computed(() => this.map().countries.filter(item => matchesCountry(item.code, this.query())));
+  private readonly largest = computed(() => this.map().countries[0]?.count ?? 1);
+
+  protected readonly name = countryName;
+  protected readonly number = formatNumber;
+  protected readonly flag = flagUrl;
+  protected readonly avatar = (person: ContributorSummary) => avatarUrl(person.githubId, 56);
+  protected readonly rankOf = (code: string) => this.ranks().get(code) ?? 0;
+  protected readonly barWidth = (item: CountryStats) => Math.max(2, item.count / this.largest() * 100);
+  protected readonly medal = (code: string) => PODIUM[this.rankOf(code)] ?? null;
 
   constructor() {
-    if (!isPlatformBrowser(inject(PLATFORM_ID))) return;
-    const destroyRef = inject(DestroyRef);
+    if (isPlatformBrowser(inject(PLATFORM_ID))) this.loadGlobeWhenNear(inject(DestroyRef));
+  }
+
+  protected filterCountries(event: Event): void {
+    this.query.set((event.target as HTMLInputElement).value);
+  }
+
+  /** A country of the list becomes the selection, or stops being it. */
+  protected toggleCountry(code: string): void {
+    this.select.emit(code === this.selected() ? null : code);
+  }
+
+  private loadGlobeWhenNear(destroyRef: DestroyRef): void {
     afterNextRender(() => {
       if (typeof IntersectionObserver === 'undefined') {
         this.inView.set(true);
@@ -48,44 +85,5 @@ export class World {
       observer.observe(this.globeBox().nativeElement);
       destroyRef.onDestroy(() => observer.disconnect());
     });
-  }
-
-  readonly map = input.required<ContributorsMap>();
-  readonly selected = input<string | null>(null);
-  /** The best ranked contributors of the selected country: the first page of its board, empty while it loads. */
-  readonly people = input<ContributorSummary[]>([]);
-  readonly select = output<string | null>();
-  /** "See the N contributors": scroll up to the board, already filtered. */
-  readonly leaderboard = output<void>();
-
-  protected readonly current = computed(() => this.map().countries.find(item => item.code === this.selected()) ?? null);
-  /** One tile per person shown, known from the count: the card keeps its size while they load. */
-  protected readonly tiles = computed(() => Array.from({ length: Math.min(CARD_TILES, this.current()?.count ?? 0) }, (_, index) => this.people()[index] ?? null));
-  /** Countries with the same count share a rank: 1, 2, 2, 4. */
-  private readonly ranks = computed(() => {
-    const firstAt = new Map<number, number>();
-    return new Map(this.map().countries.map((item, index) => {
-      if (!firstAt.has(item.count)) firstAt.set(item.count, index + 1);
-      return [item.code, firstAt.get(item.count)!];
-    }));
-  });
-
-  protected readonly query = signal('');
-  protected readonly shownCountries = computed(() => {
-    return this.map().countries.filter(item => matchesCountry(item.code, this.query()));
-  });
-
-  protected readonly name = countryName;
-  protected readonly number = formatNumber;
-  protected readonly flag = flagUrl;
-  protected readonly avatar = (person: ContributorSummary) => avatarUrl(person.githubId, 56);
-  protected readonly rankOf = (code: string) => this.ranks().get(code) ?? 0;
-
-  private readonly largest = computed(() => this.map().countries[0]?.count ?? 1);
-  protected readonly barWidth = (item: CountryStats) => Math.max(2, item.count / this.largest() * 100);
-  protected readonly medal = (code: string) => PODIUM[this.rankOf(code)] ?? null;
-
-  protected search(event: Event): void {
-    this.query.set((event.target as HTMLInputElement).value);
   }
 }

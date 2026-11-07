@@ -163,7 +163,7 @@
           }
         </ul>
         @if (packages().length > PACKAGES_SHOWN_PHONE) {
-          <button hlmBtn variant="outline" type="button" class="mt-4" [class.sm:hidden]="packages().length <= PACKAGES_SHOWN" (click)="allPackages.set(!allPackages())">
+          <button hlmBtn variant="outline" type="button" class="mt-4" [class.sm:hidden]="packages().length <= PACKAGES_SHOWN" (click)="toggleAllPackages()">
             {{ allPackages() ? 'Show less' : 'Show all ' + packages().length }}
             <ng-icon [name]="allPackages() ? 'remixArrowUpSLine' : 'remixArrowDownSLine'" aria-hidden="true" />
           </button>
@@ -186,12 +186,12 @@
                 replaceUrl
                 (click)="scrollToStats()"
                 [hlmTooltip]="row.period + ' · Rank #' + number(row.rank) + ' · ' + points(row.score)"
-                [attr.aria-label]="row.period + ', rank ' + number(row.rank) + ', ' + points(row.score) + (row === yearsOldestFirst()[0] ? ', the first year' : '')"
+                [attr.aria-label]="yearLabel(row)"
                 [attr.aria-current]="row.period === period() ? 'true' : null"
                 class="group flex flex-col items-center rounded-md transition-colors hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
               >
                 <span class="flex h-60 w-full flex-col items-center justify-end border-b border-border">
-                  @if (row === yearsOldestFirst()[0] && row !== best()) {
+                  @if (row === firstYear() && row !== best()) {
                     <!-- Phones: the icon alone, the legend below the chart names it -->
                     <span class="mb-1.5 flex flex-col items-center whitespace-nowrap text-muted-foreground" aria-hidden="true">
                       <ng-icon name="vikingLongship" class="text-xl sm:text-[1.75rem]" />
@@ -226,8 +226,8 @@
         </ol>
         <!-- Phones have no room for the names over the bars -->
         <p class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground sm:hidden" aria-hidden="true">
-          @if (yearsOldestFirst()[0] !== best()) {
-            <span class="inline-flex items-center gap-1.5"><ng-icon name="vikingLongship" size="1.25rem" /><span class="brand relative top-[0.09em] leading-none">The saga begins</span> {{ yearsOldestFirst()[0]?.period }}</span>
+          @if (firstYear() !== best()) {
+            <span class="inline-flex items-center gap-1.5"><ng-icon name="vikingLongship" size="1.25rem" /><span class="brand relative top-[0.09em] leading-none">The saga begins</span> {{ firstYear()?.period }}</span>
           }
           @if (best(); as year) {
             <span class="github-gold inline-flex items-center gap-1.5"><ng-icon name="vikingHelmet" size="1.25rem" /><span class="brand relative top-[0.09em] leading-none">Greatest saga</span> {{ year.period }}</span>

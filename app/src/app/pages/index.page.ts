@@ -5,7 +5,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { type RouteMeta } from '@analogjs/router';
 import { injectResponse } from '@analogjs/router/tokens';
-import { countryCode, countryName, DEFAULT_PERIOD, periodOrNull, periodPhrase, type Period } from '@angularians/shared';
+import { countryCode, countryName, DEFAULT_PERIOD, periodOrNull, periodPhrase, type LeaderboardPage, type Period } from '@angularians/shared';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { remixArrowRightUpLine, remixCalendarLine, remixChatHeartLine, remixGroupLine } from '@ng-icons/remixicon';
 import { octComment, octGitMerge, octIssueOpened } from '@ng-icons/octicons';
@@ -28,7 +28,7 @@ import { NextUpdate } from '../leaderboard/next-update';
 import { MeCard } from '../leaderboard/me-card';
 import { ScoreRules } from '../leaderboard/score-rules';
 import { breadcrumbs, setJsonLd, setShareMeta, SITE_SCHEMA, SITE_URL } from '../site';
-import { boardDescription } from '../leaderboard/board-description';
+import { boardHead, SITE_DESCRIPTION, SITE_TITLE } from '../leaderboard/board-head';
 import { formatDate } from '../leaderboard/date-format';
 import { formatNumber, pluralWord } from '../leaderboard/number-format';
 import { ClaimBadge } from '../leaderboard/claim-badge';
@@ -37,11 +37,6 @@ import { JoinLinks } from '../leaderboard/join-links';
 import { LeaderboardGrid } from '../leaderboard/leaderboard-grid';
 import { PeriodTabs } from '../leaderboard/period-tabs';
 import { World } from '../world/world';
-
-const SITE_DESCRIPTION = 'Everyone who has contributed to Angular since 2014, ranked: merged pull requests, issues, comments and code reviews in angular/angular, Components, the CLI, dev-infra, Domino, zone.js and Universal.';
-
-/** The home page's title: the name, then what the site is, for search results. */
-const SITE_TITLE = 'Angularians · Every Angular contributor, ranked';
 
 export const routeMeta = {
   title: SITE_TITLE,
@@ -99,6 +94,15 @@ export default class Home {
       { icon: 'octComment', color: 'blue', value: comments, words: pluralWord(comments, 'comment', 'comments') },
     ];
   });
+  /** The best ranked people of the country on the globe's card: the board's, once it is that country's. */
+  protected readonly countryPeople = computed(() => {
+    const page = this.board();
+    return page && page.country === this.country() ? page.items : [];
+  });
+  protected readonly errorMessage = computed(() => {
+    if (!this.leaderboard.error()) return 'The countries could not be loaded.';
+    return this.board() ? 'This board could not be loaded.' : 'The leaderboard could not be loaded.';
+  });
   protected readonly placeholders = Array.from({ length: 30 }, (_, index) => index);
   /** The three ways onto the board (Nuxters' "How to become a Nuxter"). */
   protected readonly becomeWays = [
@@ -119,40 +123,8 @@ export default class Home {
   private keepWorldAt: number | null = null;
 
   constructor() {
-    afterRenderEffect(() => {
-      const page = this.board();
-      untracked(() => {
-        if (this.keepWorldAt === null || page?.country !== this.country()) return;
-        const top = document.getElementById('world')?.getBoundingClientRect().top;
-        if (top !== undefined && top !== this.keepWorldAt) scrollBy({ top: top - this.keepWorldAt, behavior: 'instant' });
-        this.keepWorldAt = null;
-      });
-    });
-
-    // A shared `?period=` link gets its own title and description, and so does a country's board (its own page for
-    // search engines too); the plain page keeps the generic ones.
-    effect(() => {
-      const page = this.boardValue();
-      if ((this.leaderboard.error() || this.map.error()) && this.response) markFailed(this.response);
-      const shared = this.requestedPeriod() && page?.total ? page : null;
-      const country = this.country() && page?.total ? this.country() : null;
-      const where = country ? ` in ${countryName(country)}` : '';
-      const title = shared
-        ? `Top Angularians${where} ${periodPhrase(shared.period)}`
-        : country ? `Top Angularians in ${countryName(country)} · Angular contributors` : SITE_TITLE;
-      const description = shared
-        ? boardDescription(shared, shared.period)
-        : country ? `The ${formatNumber(page!.total)} people from ${countryName(country)} who have contributed to Angular since 2014, ranked: merged pull requests, issues, comments and code reviews.` : SITE_DESCRIPTION;
-      this.title.setTitle(title);
-      // The site's card, or the card of the shared period. The canonical URL has no `?period=`; a country keeps its own.
-      const query = shared ? `?period=${shared.period}` : '';
-      const canonical = country ? `/?country=${country}` : '/';
-      setShareMeta(this.meta, this.document, { title, description, url: `${SITE_URL}/${query}`, image: `${SITE_URL}/og.png${query}`, canonical });
-      // The site itself, and a country's board as a step below it.
-      setJsonLd(this.document, country
-        ? breadcrumbs([{ name: 'Angularians', path: '/' }, { name: `Angular contributors in ${countryName(country)}`, path: canonical }])
-        : { ...SITE_SCHEMA, description: SITE_DESCRIPTION });
-    });
+    afterRenderEffect(() => this.keepWorldInPlace(this.board()));
+    effect(() => this.updateHead(this.boardValue()));
   }
 
   /** Same page, no new history entry, scroll position kept. The default period leaves the URL clean. */
@@ -184,5 +156,32 @@ export default class Home {
 
   protected setCountry(country: string | null): void {
     void this.router.navigate([], { queryParams: { country }, queryParamsHandling: 'merge', replaceUrl: true });
+  }
+
+  /** Once the board of a country picked on the globe renders, the globe is back where it was on screen. */
+  private keepWorldInPlace(page: LeaderboardPage | undefined): void {
+    untracked(() => {
+      if (this.keepWorldAt === null || page?.country !== this.country()) return;
+      const top = document.getElementById('world')?.getBoundingClientRect().top;
+      if (top !== undefined && top !== this.keepWorldAt) scrollBy({ top: top - this.keepWorldAt, behavior: 'instant' });
+      this.keepWorldAt = null;
+    });
+  }
+
+  /** The title, the link preview and the structured data of the board on screen. */
+  private updateHead(page: LeaderboardPage | undefined): void {
+    if ((this.leaderboard.error() || this.map.error()) && this.response) markFailed(this.response);
+    const shared = this.requestedPeriod() && page?.total ? page.period : null;
+    const country = this.country() && page?.total ? this.country() : null;
+    const { title, description } = boardHead(page, shared, country);
+    this.title.setTitle(title);
+    // The site's card, or the card of the shared period. The canonical URL has no `?period=`; a country keeps its own.
+    const query = shared ? `?period=${shared}` : '';
+    const canonical = country ? `/?country=${country}` : '/';
+    setShareMeta(this.meta, this.document, { title, description, url: `${SITE_URL}/${query}`, image: `${SITE_URL}/og.png${query}`, canonical });
+    // The site itself, and a country's board as a step below it.
+    setJsonLd(this.document, country
+      ? breadcrumbs([{ name: 'Angularians', path: '/' }, { name: `Angular contributors in ${countryName(country)}`, path: canonical }])
+      : { ...SITE_SCHEMA, description: SITE_DESCRIPTION });
   }
 }
