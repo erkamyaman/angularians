@@ -4,7 +4,6 @@ import { inject, InjectionToken, makeStateKey, PLATFORM_ID, signal, Service, Tra
 import type { SignedIn } from '../../server/auth/session'
 import { hasSignedInHint } from './hint'
 
-/** On the server: whether this site has sign-in set up (`authConfig`). Not per visitor, so a cached page may carry it. */
 export const SIGN_IN_SET_UP = new InjectionToken<boolean>('SIGN_IN_SET_UP')
 const SIGN_IN_OFF = makeStateKey<boolean>('sign-in-off')
 
@@ -43,7 +42,6 @@ export class AuthService {
     this.wasSignedIn.set(hasSignedInHint(this.browser ? this.document.cookie : this.request?.headers.cookie))
   }
 
-  /** Told by the server, and passed to the browser with the page. */
   private signInOff(): boolean {
     if (this.browser) return this.transferState.get(SIGN_IN_OFF, false)
     const off = this.setUp === false

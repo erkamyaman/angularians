@@ -1,19 +1,22 @@
 :host {
+  display: inline-grid;
+}
+
+:host > * {
+  grid-area: 1 / 1;
+}
+
+.content {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing);
 }
 
-/* Phones: centred under the totals, as the board's line centres it */
-@media (width < 40rem) {
-  .label {
-    justify-items: center;
-  }
+.waiting {
+  visibility: hidden;
 }
 
-/* Wide screens: at the end of the row, so the text keeps to the right */
-@media (width >= 40rem) {
-  .label {
-    justify-items: end;
-  }
+.time {
+  display: inline-grid;
+  vertical-align: bottom;
 }

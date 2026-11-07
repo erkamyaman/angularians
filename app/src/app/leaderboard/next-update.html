@@ -1,6 +1,7 @@
-<!-- One cell with the longest label, unseen: the clock's label (after the first paint) takes the place it had -->
-<span class="stack label tabular-nums">
-  <span class="invisible" aria-hidden="true">{{ longestLabel }}</span>
-  <span>{{ label() }}</span>
+<span class="content" [class.waiting]="!time()">
+  <span class="label">Next update starts in <span class="stack time tabular-nums"><span class="invisible" aria-hidden="true">{{ longestTime }}</span><span>{{ time() }}</span></span></span>
+  <button type="button" class="grid shrink-0 place-items-center rounded-full focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none" [hlmTooltip]="hint()" [attr.aria-label]="hint()"><ng-icon name="remixInformationLine" aria-hidden="true" /></button>
 </span>
-<button type="button" class="grid shrink-0 place-items-center rounded-full focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none" [hlmTooltip]="hint()" [attr.aria-label]="hint()"><ng-icon name="remixInformationLine" aria-hidden="true" /></button>
+@if (!time()) {
+  <span hlmSkeleton aria-hidden="true"></span>
+}
