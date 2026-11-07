@@ -1,0 +1,52 @@
+:host {
+  display: block;
+  max-width: 42rem;
+  margin-top: 1.5rem;
+}
+
+.callout {
+  position: relative;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.875rem 2.5rem 0.875rem 1rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  background: color-mix(in oklab, var(--muted) 50%, transparent);
+  color: var(--muted-foreground);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  transition: border-color 150ms;
+}
+
+.callout:hover {
+  border-color: var(--primary);
+}
+
+.callout:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+strong {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.icon {
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+  color: var(--primary);
+}
+
+.arrow {
+  position: absolute;
+  top: 0.625rem;
+  right: 0.625rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .callout {
+    transition: none;
+  }
+}

@@ -2,8 +2,9 @@
 // and nuxt/nuxters `saveContributors` (MIT, Copyright (c) 2022-2023 NuxtLabs, Copyright (c) 2023 Nuxt).
 import type { EncodedCalendar } from './calendar.ts'
 import { countryCode } from './countries.ts'
-import { compareRecords, emptyCounts, score } from './scoring.ts'
-import type { ActivityCounts, Contributor, PackagesRecord, ProfileRecord, PullRequestCounts, SocialAccount, TeamRecord } from './types.ts'
+import { ACTIVITY_KINDS, PULL_REQUEST_KINDS } from './kinds.ts'
+import { compareRecords, emptyActivity, emptyCounts, score } from './scoring.ts'
+import type { Contributor, DataMeta, PackagesRecord, ProfileRecord, SocialAccount, TeamRecord } from './types.ts'
 
 /** GitHub's rule for a username: letters, digits and single hyphens between them, 39 characters at most. */
 export const GITHUB_USERNAME_RE = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i
@@ -54,20 +55,17 @@ export function parseContributorsFile(data: unknown): Contributor[] {
     seen.add(id)
 
     const prs = (record['pullRequests'] && typeof record['pullRequests'] === 'object' ? record['pullRequests'] : {}) as Record<string, unknown>
-    const pullRequests: PullRequestCounts = { ...emptyCounts(), feat: count(prs['feat']), fix: count(prs['fix']), docs: count(prs['docs']), chore: count(prs['chore']) }
-    pullRequests.all = pullRequests.feat + pullRequests.fix + pullRequests.docs + pullRequests.chore
+    const pullRequests = emptyCounts()
+    for (const kind of PULL_REQUEST_KINDS) {
+      pullRequests[kind.key] = count(prs[kind.key])
+      pullRequests.all += pullRequests[kind.key]
+    }
 
-    // v1 files (landed PRs only) have none of these: they read as 0. A helpful count is never above its total.
-    const issues = count(record['issues'])
-    const comments = count(record['comments'])
-    const activity: ActivityCounts = {
-      issues,
-      helpfulIssues: Math.min(issues, count(record['helpfulIssues'])),
-      comments,
-      helpfulComments: Math.min(comments, count(record['helpfulComments'])),
-      reviewComments: count(record['reviewComments']),
-      reactions: count(record['reactions']),
-      advisories: count(record['advisories']),
+    // v1 files (landed PRs only) have no activity: it reads as 0. A helpful count is never above its total.
+    const activity = emptyActivity()
+    for (const kind of ACTIVITY_KINDS) {
+      const amount = count(record[kind.key])
+      activity[kind.key] = 'of' in kind ? Math.min(activity[kind.of], amount) : amount
     }
 
     const first = typeof record['firstContributionAt'] === 'string' ? new Date(record['firstContributionAt']) : null
@@ -176,8 +174,12 @@ export function parseCalendarFile(data: unknown): EncodedCalendar {
 
 /** The public members of the organization, from `team.json`. */
 export const TEAM_FILE = 'team.json'
-export function parseTeamFile(data: unknown): TeamRecord[] {
-  if (!Array.isArray(data)) throw new TypeError(`${TEAM_FILE} must be an array`)
+/** Old usernames of renamed contributors, by GitHub id: links to `/:oldname` and its card follow the person. */
+export const RENAMES_FILE = 'renames.json'
+
+/** Validate `team.json` or `renames.json`: GitHub ids and usernames. Invalid entries are skipped. */
+export function parseUserIdsFile(data: unknown): TeamRecord[] {
+  if (!Array.isArray(data)) throw new TypeError(`${TEAM_FILE} and ${RENAMES_FILE} must be arrays`)
   return data.flatMap((entry: unknown) => {
     const record = (entry && typeof entry === 'object' ? entry : {}) as Record<string, unknown>
     const id = githubId(record['githubId'])
@@ -186,11 +188,15 @@ export function parseTeamFile(data: unknown): TeamRecord[] {
   })
 }
 
-/** Old usernames of renamed contributors, by GitHub id: links to `/:oldname` and its card follow the person. */
-export const RENAMES_FILE = 'renames.json'
-export function parseRenamesFile(data: unknown): TeamRecord[] {
-  if (!Array.isArray(data)) throw new TypeError(`${RENAMES_FILE} must be an array`)
-  return parseTeamFile(data)
+/** When and what the collector collected. Its counts are for checking a run by hand: the site reads none of them. */
+export const META_FILE = 'meta.json'
+export function parseMetaFile(data: unknown): DataMeta {
+  const meta = (data && typeof data === 'object' ? data : {}) as Record<string, unknown>
+  return {
+    collectedAt: typeof meta['collectedAt'] === 'string' ? meta['collectedAt'] : null,
+    partial: meta['partial'] === true,
+    repos: Array.isArray(meta['repos']) ? meta['repos'].filter((repo): repo is string => typeof repo === 'string') : [],
+  }
 }
 
 /**

@@ -51,11 +51,11 @@ export class ContributorsData {
     this.periods = sortPeriods([...this.byPeriod].filter(([, rows]) => rows.length).map(([period]) => period))
     this.collectedAt = bundle.meta?.collectedAt ?? null
     this.profiles = new Map(bundle.profiles.map(profile => [profile.githubId, profile]))
-    this.packages = new Map((bundle.packages ?? []).map(record => [record.githubId, record.packages]))
-    this.calendar = bundle.calendar ?? {}
-    this.team = new Set((bundle.team ?? []).map(member => member.githubId))
+    this.packages = new Map(bundle.packages.map(record => [record.githubId, record.packages]))
+    this.calendar = bundle.calendar
+    this.team = new Set(bundle.team.map(member => member.githubId))
     this.usernames = new Map((this.byPeriod.get('all') ?? []).map(row => [row.githubId, row.username]))
-    this.renames = new Map((bundle.renames ?? []).map(record => [record.username.toLowerCase(), record.githubId]))
+    this.renames = new Map(bundle.renames.map(record => [record.username.toLowerCase(), record.githubId]))
     for (const [period, rows] of this.byPeriod) {
       this.byUsername.set(period, new Map(rows.map(row => [row.username.toLowerCase(), row])))
     }

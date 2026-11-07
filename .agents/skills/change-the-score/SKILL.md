@@ -10,7 +10,7 @@ A score change moves every rank, so it starts as an issue the maintainer agrees 
 
 ## Steps
 
-1. Change the weights in `shared/src/scoring.ts` (types and title parsing are in `shared/src/pull-requests.ts`), and the tests next to them. Done when the tests pass with the new weights.
+1. Change the weights in `KINDS` (`shared/src/kinds.ts`; the helpful thresholds are in `shared/src/scoring.ts`, types and title parsing in `shared/src/pull-requests.ts`), and the tests. A new kind is a new line there: the score, the profile's breakdown (its tie order follows its points, see `ROW_ORDER` in `scoring.ts`; add its icon to `score-breakdown.ts`), the contributor files and their parsing follow. Done when the tests pass with the new weights.
 2. Bring every explanation in step:
    - `docs/SCORING.md`;
    - the "How the score works" dialog that opens from the home page's hero (`app/src/app/leaderboard/score-rules.*`). It reads the points and the helpful thresholds from `shared`, but a new or reworded rule needs its text changed;

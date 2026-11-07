@@ -1,6 +1,6 @@
 # Repository guide
 
-Short orientation for anyone, human or automated tool, who changes this repository. Details are in [CONTRIBUTING.md](CONTRIBUTING.md) and `docs/`.
+Short orientation for anyone, human or automated tool, who changes this repository. Details are in [CONTRIBUTING.md](CONTRIBUTING.md) and `docs/`; the domain's words are in [GLOSSARY.md](GLOSSARY.md).
 
 Angularians ranks everyone who has contributed to the Angular repositories: a collector writes `data/` every night, and an Analog site serves it.
 
@@ -8,8 +8,8 @@ Angularians ranks everyone who has contributed to the Angular repositories: a co
 
 | path | what is there |
 | --- | --- |
-| `shared/src` | scoring, PR types and scopes, periods, countries, bots, the repositories on the board |
-| `collector/src` | the GitHub client, the collection (`main.ts`), parts and their merge (`finalize.ts`, `merge.ts`), the GitHub App token (`auth.ts`) |
+| `shared/src` | the kinds of contribution and their points (`kinds.ts`), scoring, PR types and scopes, periods, countries, bots, the repositories on the board, the data files; reading a data folder (`node.ts`, `@angularians/shared/node`: Node only, kept out of the site) |
+| `collector/src` | the GitHub client, the collection (`main.ts`), parts and their merge (`merge.ts`), the site's data of a run (`finalize.ts`: `buildData` builds it, `writeData` writes it), the GitHub App token (`auth.ts`) |
 | `app/src/app` | the pages, the leaderboard, profiles, the signed-in card and sharing |
 | `app/src/server` | the API, sign-in (`auth/`), the Angularian card (`card/`), the data store |
 | `app/src/app/layout` | the header, the footer, the mark (`logo-mark.ts`, its paths in `logo-mark.html`), the hero |
@@ -21,7 +21,8 @@ Angularians ranks everyone who has contributed to the Angular repositories: a co
 | `data/` | written by the collector; never edit by hand, except to remove a bot from a run |
 | `.github/workflows/collect.yml` | the nightly collection, one job per repository |
 | `.github/labels.json` | the issue labels; `.github/workflows/labels.yml` applies them on main |
-| `docs/` | architecture, scoring |
+| `docs/` | architecture, scoring, research (`docs/research/`) |
+| `GLOSSARY.md` | the domain's words (Angularian, landed pull request, period, recognition…): name types, pages and docs with them |
 | `.agents/skills/` | skills for common changes: badges, recognitions, bots, repositories, the score, checking a site change |
 
 ## Commands
@@ -79,4 +80,6 @@ Skills from outside the repository, once installed (`npx skills add https://gith
 - Angular code: `angular-developer` (angular/skills). Where it and the rules above differ, the rules above win.
 - A bug: `diagnosing-bugs`, a loop that goes red on the bug before any fix.
 - New logic: `tdd`, the test first.
+- A new domain word, or one used two ways: `domain-modeling`, which keeps `GLOSSARY.md`.
+- A PR body: `pr`, fitted to `.github/PULL_REQUEST_TEMPLATE.md`: its Summary under "What and why", its Evidence under "How I checked it", its Merge Danger before the checklist.
 - After opening a PR: `code-review` against `main`, with this file, CONTRIBUTING.md and `docs/` as the standards and the PR description as the spec. Fix what it finds before asking for a review.

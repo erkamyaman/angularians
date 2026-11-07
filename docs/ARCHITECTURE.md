@@ -37,8 +37,8 @@ The CDN keeps one copy per value of the parameters the routes read (`netlify-var
 Each page lists its own lazy chunks as `modulepreload` links, so the browser fetches them with the entry instead of after it: the client build's Vite manifest goes to the server as an asset (`app/dist/client-manifest`, never published), and `app/src/server/plugins/preload-page.ts` adds the chunks of the page the path maps to.
 Browsers keep `/assets/*` and `/fonts/*` for a year and `/flags/*` for 30 days (`netlify.toml`).
 
-The data is read once per server instance from a JSON file next to the server (`app/scripts/bundle-data.ts` writes it,
-`app/scripts/copy-data.ts` copies it there): at ~25 MB it is too big to compile into the server.
+The data is read once per server instance from a JSON file next to the server (`app/scripts/bundle-data.ts` writes it from
+`readDataDir` of `@angularians/shared/node`, which validates every file of `data/`; `app/scripts/copy-data.ts` copies it there): at ~25 MB it is too big to compile into the server.
 
 Pages load their data with `injectSeededServerFn` (`app/src/app/data/seeded-server-fn.ts`), not Analog's
 `injectServerFn`: it hands the browser the server's value on the first render, so hydration keeps the server-rendered page
@@ -58,6 +58,8 @@ Manrope's Latin file are preloaded (`app/index.html`), so the text does not move
 On a reload or back/forward, an inline script in `app/index.html` makes the page render-blocking until the footer
 (`#site-footer`) is parsed: the browser restores the scroll position in the first paint instead of drawing the top of
 the page first. A first visit is not held back.
+
+A launch post, once out, goes in `LAUNCH_POST` (`app/src/app/site.ts`): the home page then shows a dashed callout linking to it under its introduction (`leaderboard/launch-post-callout.ts`).
 
 ## Design tokens
 

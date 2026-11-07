@@ -25,6 +25,8 @@ Ask for anything missing; never guess it. The "Badge request" issue form asks fo
 
 Check the project is for Angular developers, public and maintained. If it isn't, stop and say why.
 
+Done when every row not marked optional has an answer (the repository only for a library or a tool) and the proof link shows each person's role. Missing one: ask, and wait.
+
 ## 2. Make the change
 
 1. **Logo.** Save it unchanged as `app/public/credits/<project>.svg` (or `.png`), the file name in kebab case. Don't redraw or recolour it.
@@ -41,7 +43,9 @@ Check the project is for Angular developers, public and maintained. If it isn't,
    - **`tone`.** The project's name in kebab case. Add its colours to `app/src/app/profile/badge-pill.css`, after the other projects, built from the brand colour `C` like theirs: `--pill-bg: color-mix(in oklab, C 10%, transparent)`, `--pill-text: L`, `--pill-ring: color-mix(in oklab, C 30%, transparent)` in `.tone-<project>`, then `--pill-text: D` and `--pill-ring: color-mix(in oklab, C 40%, transparent)` in `:host-context(.dark) .tone-<project>`. `L` is `C` darkened until it has 4.5:1 contrast on white. `D` is `C` lightened until it has 4.5:1 on `#0a0a0a`.
    - **`builtOn`.** Leave it out. It is only for the tools Angularians itself runs on.
 4. **Notices.** Add the logo's credit to `THIRD_PARTY_NOTICES.md`, under "Credited logos".
-5. **Data.** Never edit anything in `data/`.
+5. **Data.** Leave `data/` as the collector wrote it.
+
+Done when the logo, the entry, the tone's light and dark colours and the notice are all in.
 
 ## 3. Check it
 
@@ -56,6 +60,8 @@ With `pnpm dev` running, open:
 - `/<username>`: the badge shows with the logo and title, its tooltip reads "<Role> of <Project>", and clicking it opens the website.
 - Both themes, and phone width.
 - `/<username>/card.png`: the logo shows in the card's footer.
+
+Done when the test, typecheck and build pass and each page above shows the badge as described.
 
 ## 4. Open the pull request
 
