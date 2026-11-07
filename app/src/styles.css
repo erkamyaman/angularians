@@ -11,6 +11,7 @@
 @import "./styles/podium.css";
 @import "./styles/guide.css";
 @import "./styles/stack.css";
+@import "./styles/logo-link.css";
 
 @font-face {
   font-family: "Manrope Fallback";

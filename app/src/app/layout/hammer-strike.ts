@@ -1,12 +1,15 @@
-import { afterNextRender, Component, DestroyRef, inject, signal } from '@angular/core'
+import { isPlatformBrowser } from '@angular/common'
+import { afterNextRender, Component, DestroyRef, inject, PLATFORM_ID, signal } from '@angular/core'
 import { lightning, type Strike } from './lightning'
 
 /** The thunder follows the flash (`--strike` in the CSS), a quarter of a second later: the light arrives first. */
 const THUNDER = 1400
+const STORM = 4500
 const HOVERED = 'angularians-storm-hovered'
+const ANGIE = '/angie/angie-hammer.png'
 
 /**
- * The word "Angularian(s)" calls Angie: she comes in with her hammer and calls down lightning somewhere on the page, with
+ * The word "Angularian(s)" or "ng-halla", or a click on the logo, calls Angie: she comes in with her hammer and calls down lightning somewhere on the page, with
  * thunder. A click on the word calls her any time; the mouse coming onto it does once a visit (the tab's session), and only
  * after a first click or key on the page, so the browser lets the thunder play. Never on touch screens, a link or button
  * that holds the word, or with reduced motion.
@@ -27,16 +30,28 @@ export class HammerStrike {
 
   constructor() {
     const destroyRef = inject(DestroyRef)
+    if (!isPlatformBrowser(inject(PLATFORM_ID))) return
     afterNextRender(() => {
       if (matchMedia('(prefers-reduced-motion: reduce), (hover: none)').matches) return
       let current: Element | null = null
       let thunderTimer: ReturnType<typeof setTimeout> | undefined
+      let endTimer: ReturnType<typeof setTimeout> | undefined
       let thunder: HTMLAudioElement | undefined
       let strikes = 0
+      let angie: HTMLImageElement | undefined
+      let calling = false
+      const call = () => {
+        if (calling || this.strike()) return
+        calling = true
+        angie ??= Object.assign(new Image(), { src: ANGIE })
+        angie.decode().then(storm, () => (angie = undefined)).finally(() => (calling = false))
+      }
       const storm = () => {
         const x = innerWidth * (0.2 + Math.random() * 0.5)
         const y = innerHeight * (0.35 + Math.random() * 0.35)
         this.strike.set({ id: ++strikes, x, y, ...lightning(x, y, innerWidth, innerHeight) })
+        clearTimeout(endTimer)
+        endTimer = setTimeout(() => this.end(), STORM)
         rememberHover()
         thunderTimer = setTimeout(() => {
           if (!thunder) return
@@ -59,11 +74,11 @@ export class HammerStrike {
         // Once per entry into a word: moving inside it, or over its letters, does not call her again.
         if (word === current) return
         current = word
-        if (word && thunder && !this.strike() && !hoveredThisVisit()) storm()
+        if (word && thunder && !hoveredThisVisit()) call()
       }
       const onClick = (event: MouseEvent) => {
         if ((event as PointerEvent).pointerType === 'touch' || this.strike()) return
-        if (angularian(event.target)) storm()
+        if (angularian(event.target) || headerLogo(event.target)) call()
       }
       document.addEventListener('pointerover', onOver)
       document.addEventListener('click', onClick)
@@ -75,16 +90,22 @@ export class HammerStrike {
         document.removeEventListener('pointerdown', wake)
         document.removeEventListener('keydown', wake)
         clearTimeout(thunderTimer)
+        clearTimeout(endTimer)
       })
     })
   }
 }
 
-/** The word "Angularian(s)" under the pointer, not in a link or a button, or `null`. Ranks and headings share its font. */
+/** The word "Angularian(s)" or "ng-halla" under the pointer, not in a link or a button, or `null`. Ranks and headings share its font. */
 function angularian(target: EventTarget | null): Element | null {
-  const word = (target as Element | null)?.closest?.('.brand')
+  const element = target as Element | null
+  const word = element?.closest?.('.brand')
   if (!word || word.closest('a, button')) return null
-  return /^angularians?$/i.test(word.textContent?.trim() ?? '') ? word : null
+  return [element!, word].find(candidate => /^(angularians?|ng-halla)$/i.test(candidate.textContent?.trim() ?? '')) ?? null
+}
+
+function headerLogo(target: EventTarget | null): boolean {
+  return !!(target as Element | null)?.closest?.('a.logo-link')
 }
 
 function hoveredThisVisit(): boolean {

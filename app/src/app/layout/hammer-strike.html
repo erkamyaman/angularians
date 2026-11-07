@@ -1,12 +1,20 @@
 @if (strike(); as strike) {
   <div class="sky"></div>
+  <span class="cloud" [style.left.px]="strike.top"></span>
   <svg class="bolt">
-    @for (branch of strike.branches; track $index) {
-      <path class="branch glow" [attr.d]="branch" pathLength="1" />
-      <path class="branch core" [attr.d]="branch" pathLength="1" />
-    }
-    <path class="main glow" [attr.d]="strike.main" pathLength="1" />
-    <path class="main core" [attr.d]="strike.main" pathLength="1" />
+    <g class="halo main"><path [attr.d]="strike.main" pathLength="1" /></g>
+    <g class="glow branches">
+      @for (branch of strike.branches; track $index) {
+        <path [attr.d]="branch.d" pathLength="1" [class.fork]="branch.level === 2" [style.--at]="branch.at" [style.--span]="branch.span" />
+      }
+    </g>
+    <g class="core branches">
+      @for (branch of strike.branches; track $index) {
+        <path [attr.d]="branch.d" pathLength="1" [class.fork]="branch.level === 2" [style.--at]="branch.at" [style.--span]="branch.span" />
+      }
+    </g>
+    <g class="glow main"><path [attr.d]="strike.main" pathLength="1" /></g>
+    <g class="core main"><path [attr.d]="strike.main" pathLength="1" /></g>
   </svg>
   <span class="impact" [style.left.px]="strike.x" [style.top.px]="strike.y"></span>
   <img class="angie" src="/angie/angie-hammer.png" alt="" width="360" height="360" (animationend)="end()" />

@@ -87,7 +87,7 @@ To add a colour: give it a name for what it is, not how it looks (`--medal-gold`
 `styles.css` with its dark value next to it if it changes, add a `--color-*` line to `@theme inline` only when a template
 needs it as a utility, and remove any token nothing uses any more.
 
-An easter egg: the word "Angularian(s)" calls Angie (`app/public/angie/`) to bring down a storm with thunder (`app/public/sounds/`), on a click, or once a visit on hover after a first click; `app/src/app/layout/hammer-strike.ts`, the bolt's shape in `lightning.ts`.
+An easter egg: the word "Angularian(s)" or "ng-halla", or a click on the header's or footer's logo, calls Angie (`app/public/angie/`) to bring down a storm with thunder (`app/public/sounds/`), on a click, or once a visit on hover after a first click; `app/src/app/layout/hammer-strike.ts`, the bolt's shape in `lightning.ts`.
 
 ## Search engines
 

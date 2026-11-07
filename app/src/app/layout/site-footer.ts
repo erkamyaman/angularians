@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { simpleGithub } from '@ng-icons/simple-icons';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { AngularLogo } from './angular-logo';
 import { Container } from './container';
+import { scrollHomeToTop } from './home-top';
 import { LogoMark } from './logo-mark';
 import { REPO_URL } from '../site';
 
@@ -18,6 +19,7 @@ import { REPO_URL } from '../site';
   styleUrl: './site-footer.css',
 })
 export class SiteFooter {
+  private readonly router = inject(Router);
   protected readonly repo = REPO_URL;
   /** The footer's links: the board, how to take part, and the people behind it. */
   protected readonly groups: ReadonlyArray<{ title: string, links: ReadonlyArray<{ label: string, route?: string, fragment?: string, href?: string }> }> = [
@@ -37,4 +39,8 @@ export class SiteFooter {
       { label: 'Send a raven (ping me)', href: 'https://erkamyaman.dev/links/' },
     ] },
   ];
+
+  protected toTop(): void {
+    scrollHomeToTop(this.router.url);
+  }
 }

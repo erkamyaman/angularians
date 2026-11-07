@@ -7,6 +7,7 @@ import { remixHeartLine, remixLoginBoxLine } from '@ng-icons/remixicon';
 import { simpleGithub } from '@ng-icons/simple-icons';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { Container } from './container';
+import { scrollHomeToTop } from './home-top';
 import { LogoMark } from './logo-mark';
 import { ThemeToggle } from './theme-toggle';
 import { UserMenu } from './user-menu';
@@ -33,4 +34,8 @@ export class SiteHeader {
   protected readonly signInEnabled = computed(() => !!this.auth.state()?.enabled);
   /** Sign in, then back to this page. */
   protected readonly loginUrl = computed(() => this.auth.loginUrl(this.url()));
+
+  protected toTop(): void {
+    scrollHomeToTop(this.router.url);
+  }
 }
