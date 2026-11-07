@@ -42,10 +42,10 @@
       [attr.aria-label]="marker.name + ', ' + count(marker.count)"
       [attr.aria-pressed]="selected() === marker.code"
       (click)="toggleCountry(marker.code)"
-      (pointerenter)="hovered.set(marker.code)"
-      (pointerleave)="hovered.set(null)"
-      (focus)="hovered.set(marker.code)"
-      (blur)="hovered.set(null)"
+      (pointerenter)="showLabel(marker.code)"
+      (pointerleave)="hideLabel()"
+      (focus)="showLabel(marker.code)"
+      (blur)="hideLabel()"
     >
       @if (hovered() === marker.code) {
         <span class="globe__label" aria-hidden="true">
@@ -59,7 +59,11 @@
           }
         </span>
       } @else {
-        <span [class]="tier(marker.count) === 'top' ? 'brand relative top-[0.06em] text-lg leading-none' : ''">{{ number(marker.count) }}</span>
+        @if (isTopTier(marker.count)) {
+          <span class="brand relative top-[0.06em] text-lg leading-none">{{ number(marker.count) }}</span>
+        } @else {
+          <span>{{ number(marker.count) }}</span>
+        }
       }
     </button>
   }
@@ -74,10 +78,10 @@
     <button hlmBtn variant="ghost" size="icon-sm" type="button" [attr.aria-label]="paused() ? 'Resume rotation' : 'Pause rotation'" [attr.aria-pressed]="paused()" (click)="togglePause()">
       <ng-icon [name]="paused() ? 'remixPlayLine' : 'remixPauseLine'" aria-hidden="true" />
     </button>
-    <button hlmBtn variant="ghost" size="icon-sm" type="button" aria-label="Zoom in" [disabled]="zoom() >= MAX_ZOOM" (click)="setZoom(zoom() + 0.25)">
+    <button hlmBtn variant="ghost" size="icon-sm" type="button" aria-label="Zoom in" [disabled]="!canZoomIn()" (click)="zoomIn()">
       <ng-icon name="remixAddLine" aria-hidden="true" />
     </button>
-    <button hlmBtn variant="ghost" size="icon-sm" type="button" aria-label="Zoom out" [disabled]="zoom() <= 1" (click)="setZoom(zoom() - 0.25)">
+    <button hlmBtn variant="ghost" size="icon-sm" type="button" aria-label="Zoom out" [disabled]="!canZoomOut()" (click)="zoomOut()">
       <ng-icon name="remixSubtractLine" aria-hidden="true" />
     </button>
     <button hlmBtn variant="ghost" size="icon-sm" type="button" aria-label="Reset the globe" (click)="reset()">

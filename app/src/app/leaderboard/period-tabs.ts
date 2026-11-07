@@ -27,7 +27,7 @@ export class PeriodTabs {
   readonly periodChange = output<Period>()
 
   /** Follows a click right away: `period` only changes once the new board has loaded. */
-  protected readonly selected = linkedSignal(() => this.period())
+  private readonly selected = linkedSignal(() => this.period())
   protected readonly phraseOf = (period: string) => periodPhrase(period).replace(/^(in|of) /, '')
   protected readonly tabs = computed(() => ['30d', '12m', 'all']
     .filter(value => this.periods().includes(value))

@@ -20,6 +20,8 @@ import { palette, themeColor } from './globe-palette';
 /** Opens on the Atlantic: Europe and the Americas, where most contributors are. */
 const DEFAULT_CAMERA = { ...faceOnGlobe([20, -30]), zoom: 1 };
 const MAX_ZOOM = 3;
+/** One press of a zoom button or of + and −. */
+const ZOOM_STEP = 0.25;
 /** Zoomed in, countries show their best ranked contributors instead of a count. */
 const AVATAR_ZOOM = 1.6;
 /** Zoomed in, the globe outgrows the canvas and fades out from 82% of the radius: markers stay inside. */
@@ -43,7 +45,7 @@ interface GlobeMarker extends CountryStats {
   selector: 'app-globe',
   imports: [HlmButton, NgIcon],
   providers: [provideIcons({ vikingLongship, remixSubtractLine, remixPauseLine, remixPlayLine, remixAddLine, remixRestartLine })],
-  host: { '[attr.data-ready]': 'ready() || null' },
+  host: { '[attr.data-ready]': 'ready() || null', '(document:visibilitychange)': 'followTabVisibility()' },
   templateUrl: './globe.html',
   styleUrl: './globe.css',
 })
@@ -60,13 +62,14 @@ export class Globe {
 
   protected readonly land = signal<[number, number, number]>([0.44, 0.69, 0.48]);
 
-  protected readonly MAX_ZOOM = MAX_ZOOM;
   protected readonly SHIPS = SHIPS;
   protected readonly failed = signal(false);
   protected readonly ready = signal(false);
   protected readonly paused = signal(false);
   protected readonly zoom = signal(1);
   protected readonly avatars = computed(() => this.zoom() >= AVATAR_ZOOM);
+  protected readonly canZoomIn = computed(() => this.zoom() < MAX_ZOOM);
+  protected readonly canZoomOut = computed(() => this.zoom() > 1);
   protected readonly markers = computed<GlobeMarker[]>(() => this.countries()
     .flatMap((country) => {
       const known = COUNTRIES[country.code];
@@ -78,6 +81,7 @@ export class Globe {
   protected readonly hovered = signal<string | null>(null);
   private readonly topCount = computed(() => Math.max(1, ...this.countries().map(country => country.count)));
   protected readonly tier = (count: number) => count >= this.topCount() * 0.25 ? 'top' : count >= this.topCount() * 0.05 ? 'mid' : 'base';
+  protected readonly isTopTier = (count: number) => this.tier(count) === 'top';
   protected readonly flag = flagUrl;
   protected readonly number = formatNumber;
   protected readonly count = (value: number) => plural(value, 'Angularian', 'Angularians');
@@ -148,13 +152,6 @@ export class Globe {
       else this.pause();
     });
     visibility.observe(element);
-    const onVisibility = () => {
-      this.tabVisible = document.visibilityState === 'visible';
-      if (!this.tabVisible) this.pointers.clear();
-      if (this.tabVisible) this.schedule();
-      else this.pause();
-    };
-    document.addEventListener('visibilitychange', onVisibility);
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
     const onMotion = () => {
       this.still = motion.matches;
@@ -162,7 +159,8 @@ export class Globe {
     };
     onMotion();
     motion.addEventListener('change', onMotion);
-    // Trackpad pinch is a Ctrl+wheel: a plain wheel keeps scrolling the page.
+    // Trackpad pinch is a Ctrl+wheel: a plain wheel keeps scrolling the page. Not in `host`: preventDefault needs a
+    // listener added with { passive: false }, which `host` cannot ask for.
     const onWheel = (event: WheelEvent) => {
       if (!event.ctrlKey) return;
       event.preventDefault();
@@ -175,7 +173,6 @@ export class Globe {
       this.pause();
       resize.disconnect();
       visibility.disconnect();
-      document.removeEventListener('visibilitychange', onVisibility);
       motion.removeEventListener('change', onMotion);
       element.removeEventListener('wheel', onWheel);
       this.globe?.destroy();
@@ -311,11 +308,36 @@ export class Globe {
     return marker.code === this.selected() ? marker.top : marker.top.slice(0, 1);
   }
 
+  /** A marker's name shows while it is hovered or focused, and the globe stops turning under it. */
+  protected showLabel(code: string): void {
+    this.hovered.set(code);
+  }
+
+  protected hideLabel(): void {
+    this.hovered.set(null);
+  }
+
+  /** The tab hidden: no frames, and drags in progress end. */
+  protected followTabVisibility(): void {
+    this.tabVisible = document.visibilityState === 'visible';
+    if (!this.tabVisible) this.pointers.clear();
+    if (this.tabVisible) this.schedule();
+    else this.pause();
+  }
+
+  protected zoomIn(): void {
+    this.setZoom(this.zoom() + ZOOM_STEP);
+  }
+
+  protected zoomOut(): void {
+    this.setZoom(this.zoom() - ZOOM_STEP);
+  }
+
   protected togglePause(): void {
     this.paused.update(value => !value);
   }
 
-  protected setZoom(value: number): void {
+  private setZoom(value: number): void {
     this.paused.set(true);
     this.zoom.set(clamp(value, 1, MAX_ZOOM));
     this.camera.zoom = this.zoom();
@@ -387,7 +409,7 @@ export class Globe {
     else if (['+', '=', '-', '0'].includes(event.key)) {
       event.preventDefault();
       if (event.key === '0') this.reset();
-      else this.setZoom(this.zoom() + (event.key === '-' ? -0.25 : 0.25));
+      else this.setZoom(this.zoom() + (event.key === '-' ? -ZOOM_STEP : ZOOM_STEP));
     }
   }
 

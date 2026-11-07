@@ -16,9 +16,14 @@ export const routeMeta = {
   templateUrl: './[...not-found].page.html',
 })
 export default class NotFound {
+  private readonly response = injectResponse();
+
   constructor() {
-    // A real 404 for crawlers and link checkers, not a 200 with an error message.
-    const response = injectResponse();
-    if (response) response.statusCode = 404;
+    this.markNotFound();
+  }
+
+  /** A real 404 for crawlers and link checkers, not a 200 with an error message. */
+  private markNotFound(): void {
+    if (this.response) this.response.statusCode = 404;
   }
 }

@@ -54,6 +54,10 @@ export class ContributorSearch {
     this.searchAsYouType()
   }
 
+  protected searchFor(term: string | null): void {
+    this.term.set(term ?? '')
+  }
+
   protected clear(): void {
     this.term.set('')
     this.focusInput()

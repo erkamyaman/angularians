@@ -1,4 +1,4 @@
-@if (state() === null && auth.wasSignedIn()) {
+@if (restoringSession()) {
   <!-- The session loads in the browser: the skeleton, at the signed-in card's height -->
   <div class="card signed-in" aria-hidden="true">
     <div class="flex flex-col gap-6">

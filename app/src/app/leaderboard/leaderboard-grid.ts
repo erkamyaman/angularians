@@ -22,7 +22,7 @@ const AVATAR_SIZE = 56
 @Component({
   selector: 'app-leaderboard-grid',
   imports: [HlmButton, NgIcon, RankShield, RouterLink],
-  host: { '(window:scroll)': 'followFocus()', '(window:resize)': 'tip.set(null)', '(document:keydown.escape)': 'tip.set(null)' },
+  host: { '(window:scroll)': 'followFocus()', '(window:resize)': 'hideTip()', '(document:keydown.escape)': 'hideTip()' },
   providers: [provideIcons({ remixAddLine, remixLayoutGridLine, remixListUnordered, vikingAxes, vikingHelmet, vikingShield })],
   templateUrl: './leaderboard-grid.html',
   styleUrl: './leaderboard-grid.css',
@@ -72,6 +72,14 @@ export class LeaderboardGrid {
     afterRenderEffect(() => this.keepTipOnScreen())
   }
 
+  protected showAs(view: 'grid' | 'list'): void {
+    this.view.set(view)
+  }
+
+  protected hideTip(): void {
+    this.tip.set(null)
+  }
+
   protected showTip(event: Event): void {
     const link = (event.target as Element | null)?.closest<HTMLElement>('a[data-index]')
     if (!link) return
@@ -81,15 +89,16 @@ export class LeaderboardGrid {
     if (item) this.placeTip(item, link)
   }
 
-  protected hideTip(event: PointerEvent): void {
+  /** The pointer left an avatar, not just for a child of it. */
+  protected leaveTip(event: PointerEvent): void {
     const link = (event.target as Element | null)?.closest('a[data-index]')
-    if (!link || !link.contains(event.relatedTarget as Node | null)) this.tip.set(null)
+    if (!link || !link.contains(event.relatedTarget as Node | null)) this.hideTip()
   }
 
   protected followFocus(): void {
     const shown = this.tip()
     if (shown && shown.link === document.activeElement) this.placeTip(shown.item, shown.link)
-    else this.tip.set(null)
+    else this.hideTip()
   }
 
   protected async showMore(): Promise<void> {

@@ -115,6 +115,7 @@ export default class Profile {
   protected readonly allPackages = signal(false);
   /** Misspelled scopes (`platform-brower`) folded into the package they mean. */
   protected readonly packages = computed(() => foldPackages(this.loaded()?.packages ?? []));
+  protected readonly packagesToggleLabel = computed(() => (this.allPackages() ? 'Show less' : `Show all ${this.packages().length}`));
   protected readonly shownPackages = computed(() => {
     const packages = this.packages();
     return this.allPackages() ? packages : packages.slice(0, this.PACKAGES_SHOWN);
@@ -129,7 +130,7 @@ export default class Profile {
   protected readonly years = computed(() => (this.loaded()?.periods ?? []).filter(row => /^\d{4}$/.test(row.period)));
   protected readonly yearsOldestFirst = computed(() => [...this.years()].sort((a, b) => Number(a.period) - Number(b.period)));
   protected readonly firstYear = computed<ContributorPeriodStats | undefined>(() => this.yearsOldestFirst()[0]);
-  protected readonly peakYear = computed(() => this.years().reduce<ReturnType<typeof this.years>[number] | undefined>((top, row) => (!top || row.score > top.score ? row : top), undefined));
+  private readonly peakYear = computed(() => this.years().reduce<ReturnType<typeof this.years>[number] | undefined>((top, row) => (!top || row.score > top.score ? row : top), undefined));
   /** Best rank; on a tie (#1 several years), the year with the most points. */
   protected readonly best = computed(() => this.years().reduce<ReturnType<typeof this.years>[number] | undefined>(
     (top, row) => (!top || row.rank < top.rank || (row.rank === top.rank && row.score > top.score) ? row : top), undefined));
@@ -172,6 +173,25 @@ export default class Profile {
 
   protected toggleAllPackages(): void {
     this.allPackages.update(all => !all);
+  }
+
+  /** A year's bar on hover: "2025 · Rank #12 · 300 pts". */
+  protected yearTip(row: ContributorPeriodStats): string {
+    return `${row.period} · Rank ${formatRank(row.rank)} · ${formatPoints(row.score)}`;
+  }
+
+  /** The first year shows the longship, unless it is also the best year, which shows the helmet. */
+  protected marksSagaStart(row: ContributorPeriodStats): boolean {
+    return row === this.firstYear() && row !== this.best();
+  }
+
+  /** Numbers over a bar: the year on screen and the best year. */
+  protected showsYearScore(row: ContributorPeriodStats): boolean {
+    return row.period === this.period() || row === this.best();
+  }
+
+  protected retry(): void {
+    this.profile.reload();
   }
 
   /** A year's bar as a screen reader names it. */

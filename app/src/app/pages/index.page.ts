@@ -32,7 +32,6 @@ import { SITE_DESCRIPTION, SITE_SCHEMA, SITE_TITLE, SITE_URL } from '../site';
 import { breadcrumbs, setJsonLd, setShareMeta } from '../seo-head';
 import { boardHead } from '../leaderboard/board-head';
 import { boardTotals } from '../leaderboard/board-totals';
-import { formatDate } from '../text/date-format';
 import { formatNumber } from '../text/number-format';
 import { ClaimBadge } from '../leaderboard/claim-badge';
 import { EarnBadges } from '../leaderboard/earn-badges';
@@ -108,8 +107,6 @@ export default class Home {
   ] satisfies readonly { color: GithubColor, [key: string]: unknown }[];
   protected readonly number = formatNumber;
   protected readonly phrase = periodPhrase;
-  protected readonly date = formatDate;
-  protected readonly countryLabel = countryName;
 
   /**
    * The board sits above the globe and changes height with the country (a small one has a few avatars):
@@ -126,6 +123,11 @@ export default class Home {
   /** Same page, no new history entry, scroll position kept. The default period leaves the URL clean. */
   protected setPeriod(period: Period): void {
     void this.router.navigate([], { queryParams: { period: period === DEFAULT_PERIOD ? null : period }, queryParamsHandling: 'merge', replaceUrl: true });
+  }
+
+  /** An empty board: "No contributions in 2015 from France yet." */
+  protected emptyBoardText(page: LeaderboardPage): string {
+    return `No contributions ${periodPhrase(page.period)}${page.country ? ` from ${countryName(page.country)}` : ''} yet.`;
   }
 
   protected worldDescription(countries: number): string {

@@ -1,7 +1,7 @@
 <div class="mb-3 flex justify-end sm:hidden" role="group" aria-label="Leaderboard view">
   <div class="inline-flex gap-1 rounded-lg bg-muted p-1">
-    <button type="button" aria-label="Show as a grid" [attr.aria-pressed]="view() === 'grid'" class="view-button" [class.active]="view() === 'grid'" (click)="view.set('grid')"><ng-icon name="remixLayoutGridLine" aria-hidden="true" /></button>
-    <button type="button" aria-label="Show as a list" [attr.aria-pressed]="view() === 'list'" class="view-button" [class.active]="view() === 'list'" (click)="view.set('list')"><ng-icon name="remixListUnordered" aria-hidden="true" /></button>
+    <button type="button" aria-label="Show as a grid" [attr.aria-pressed]="view() === 'grid'" class="view-button" [class.active]="view() === 'grid'" (click)="showAs('grid')"><ng-icon name="remixLayoutGridLine" aria-hidden="true" /></button>
+    <button type="button" aria-label="Show as a list" [attr.aria-pressed]="view() === 'list'" class="view-button" [class.active]="view() === 'list'" (click)="showAs('list')"><ng-icon name="remixListUnordered" aria-hidden="true" /></button>
   </div>
 </div>
 
@@ -31,10 +31,10 @@
   [class]="'grid-cols-5 gap-3 sm:grid sm:grid-cols-8 sm:gap-4 md:grid-cols-10 ' + (view() === 'list' ? 'hidden' : 'grid')"
   [attr.aria-label]="listLabel()"
   (pointerover)="showTip($event)"
-  (pointerout)="hideTip($event)"
+  (pointerout)="leaveTip($event)"
   (focusin)="showTip($event)"
-  (focusout)="tip.set(null)"
-  (pointerdown)="tip.set(null)"
+  (focusout)="hideTip()"
+  (pointerdown)="hideTip()"
 >
   @for (item of items(); track item.githubId; let index = $index) {
     <li class="relative" [class.max-sm:hidden]="index >= phoneShown()">

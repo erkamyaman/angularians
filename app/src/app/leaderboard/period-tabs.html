@@ -22,8 +22,10 @@
   <!-- Phones: takes the rest of the row, or a row of its own on the narrowest -->
   <hlm-select class="max-sm:grow" [value]="year()" (valueChange)="pickYear($event)" [itemToString]="yearLabel">
     <hlm-select-trigger
-      [class]="'h-[calc(100%-1px)] border-transparent max-sm:w-full max-sm:px-2 bg-transparent shadow-none hover:text-foreground dark:bg-transparent '
-        + (year() ? 'border-primary/40! bg-primary/15! text-primary! dark:bg-primary/15! *:text-primary!' : 'text-foreground/60 dark:text-muted-foreground')"
+      [class]="['h-[calc(100%-1px)] border-transparent max-sm:w-full max-sm:px-2 bg-transparent shadow-none hover:text-foreground dark:bg-transparent', {
+        'border-primary/40! bg-primary/15! text-primary! dark:bg-primary/15! *:text-primary!': year(),
+        'text-foreground/60 dark:text-muted-foreground': !year(),
+      }]"
       size="sm"
       buttonAriaLabel="Year"
     >

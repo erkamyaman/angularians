@@ -56,6 +56,8 @@ export class World {
   protected readonly rank = formatRank;
   /** `Angularian` or `Angularians`, for a country's count. */
   protected readonly angularians = (count: number) => pluralWord(count, 'Angularian', 'Angularians');
+  /** "See the 12 Angularians", but "See the Angularian": the count, and its space, only for more than one. */
+  protected readonly countBefore = (count: number) => (count === 1 ? '' : `${formatNumber(count)} `);
   protected readonly flag = flagUrl;
   protected readonly avatar = (person: ContributorSummary) => avatarUrl(person.githubId, 56);
   protected readonly rankOf = (code: string) => this.ranks().get(code) ?? 0;
@@ -68,6 +70,15 @@ export class World {
 
   protected filterCountries(event: Event): void {
     this.query.set((event.target as HTMLInputElement).value);
+  }
+
+  protected showAllCountries(): void {
+    this.select.emit(null);
+  }
+
+  /** Up to the board, already filtered to the country. */
+  protected showBoard(): void {
+    this.leaderboard.emit();
   }
 
   /** A country of the list becomes the selection, or stops being it. */

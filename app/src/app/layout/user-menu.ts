@@ -20,4 +20,9 @@ export class UserMenu {
   private readonly auth = inject(AuthService)
   protected readonly user = computed(() => this.auth.state()?.user ?? null)
   protected readonly avatar = (githubId: number) => avatarUrl(githubId, 28)
+
+  /** Following the profile link closes the menu, which would stay open over the new page. */
+  protected closeMenu(menu: { close(): void }): void {
+    menu.close()
+  }
 }

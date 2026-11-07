@@ -38,6 +38,11 @@ export class Share {
   readonly country = input<string | null | undefined>(null)
 
   protected readonly copied = signal<'link' | 'markdown' | null>(null)
+  /** Each copy button says so for a moment after it copied. */
+  protected readonly linkIcon = computed(() => (this.copied() === 'link' ? 'remixCheckLine' : 'remixLinkM'))
+  protected readonly linkLabel = computed(() => (this.copied() === 'link' ? 'Link copied' : 'Copy profile link'))
+  protected readonly markdownIcon = computed(() => (this.copied() === 'markdown' ? 'remixCheckLine' : 'remixFileCopyLine'))
+  protected readonly markdownLabel = computed(() => (this.copied() === 'markdown' ? 'Markdown copied' : 'Copy Markdown'))
   /** The card renders on demand: its background and a loader meanwhile. */
   /** The card's four stat tiles, for the skeleton (`share.css` places each). */
   protected readonly tiles = [1, 2, 3, 4] as const
@@ -58,7 +63,7 @@ export class Share {
   private readonly profileUrl = computed(() => `${SITE_URL}/${this.username()}${shareQuery(this.period())}`)
   /** The profile with the card's period and flag: what a post links to, and the README card's link. */
   private readonly cardProfileUrl = computed(() => `${SITE_URL}/${this.username()}${shareQuery(this.cardPeriod(), this.flag())}`)
-  protected readonly cardUrl = computed(() => `${SITE_URL}/${this.username()}/card.png${shareQuery(this.cardPeriod(), this.flag())}`)
+  private readonly cardUrl = computed(() => `${SITE_URL}/${this.username()}/card.png${shareQuery(this.cardPeriod(), this.flag())}`)
   /** The same card from this site: right on a preview deploy or locally too. The Markdown keeps the public address. */
   protected readonly previewUrl = computed(() => `/${this.username()}/card.png${shareQuery(this.cardPeriod(), this.flag(), { v: String(CARD_DESIGN) })}`)
   protected readonly fileName = computed(() => `${this.username()}-angularian${this.cardPeriod() === 'all' ? '' : `-${this.cardPeriod()}`}.png`)
@@ -110,6 +115,10 @@ export class Share {
       this.cardState.set('loaded')
       this.shownUrl.set(url)
     }, Math.max(0, MIN_LOADING_MS - (Date.now() - this.loadingSince)))
+  }
+
+  protected showCardError(): void {
+    this.cardState.set('error')
   }
 
   protected selectAll(event: Event): void {

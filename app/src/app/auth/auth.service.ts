@@ -10,6 +10,10 @@ import { hasSignedInHint } from './hint'
  */
 @Service()
 export class AuthService {
+  private readonly browser = isPlatformBrowser(inject(PLATFORM_ID))
+  private readonly document = inject(DOCUMENT)
+  private readonly request = injectRequest()
+
   readonly state = signal<SignedIn | null>(null)
   /**
    * Signed in last time (the hint cookie, `hint.ts`): the server and the browser both read it, so the first paint is
@@ -18,15 +22,18 @@ export class AuthService {
   readonly wasSignedIn = signal(false)
 
   constructor() {
-    const browser = isPlatformBrowser(inject(PLATFORM_ID))
-    const request = injectRequest()
-    this.wasSignedIn.set(hasSignedInHint(browser ? inject(DOCUMENT).cookie : request?.headers.cookie))
-    if (browser) this.loadState()
+    this.readSignedInHint()
+    if (this.browser) this.loadState()
   }
 
   /** Sign in, then come back to this path. */
   loginUrl(returnTo: string): string {
     return `/api/auth/login?${new URLSearchParams({ returnTo })}`
+  }
+
+  /** The hint cookie, from the page in the browser and from the request on the server. */
+  private readSignedInHint(): void {
+    this.wasSignedIn.set(hasSignedInHint(this.browser ? this.document.cookie : this.request?.headers.cookie))
   }
 
   private loadState(): void {

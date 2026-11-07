@@ -33,9 +33,11 @@ import { HELPFUL_COMMENT_REACTIONS, HELPFUL_ISSUE_COMMENTS, HELPFUL_ISSUE_REACTI
   styleUrl: './me-card.css',
 })
 export class MeCard {
-  protected readonly auth = inject(AuthService)
+  private readonly auth = inject(AuthService)
   protected readonly state = this.auth.state
   protected readonly me = computed(() => this.state()?.user ?? null)
+  /** Signed in last time, and the session not known yet: the signed-in card's skeleton. */
+  protected readonly restoringSession = computed(() => this.state() === null && this.auth.wasSignedIn())
   protected readonly loginUrl = this.auth.loginUrl('/')
   protected readonly lastYear = computed(() => this.me()?.angularian?.periods.find(row => row.period === '12m') ?? null)
   protected readonly periods = computed(() => this.me()?.angularian?.periods.map(row => row.period) ?? [])

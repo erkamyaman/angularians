@@ -6,7 +6,7 @@
         <p class="truncate font-semibold">{{ name(shown.code) }}</p>
         <p class="text-sm text-muted-foreground">{{ number(shown.count) }} <span class="brand text-primary">{{ angularians(shown.count) }}</span> · {{ rank(rankOf(shown.code)) }} country</p>
       </div>
-      <button hlmBtn variant="ghost" size="icon-sm" type="button" aria-label="Show all countries" (click)="select.emit(null)">
+      <button hlmBtn variant="ghost" size="icon-sm" type="button" aria-label="Show all countries" (click)="showAllCountries()">
         <ng-icon name="remixCloseLine" aria-hidden="true" />
       </button>
     </div>
@@ -23,8 +23,8 @@
         </li>
       }
     </ul>
-    <button hlmBtn variant="link" class="mt-3 px-0 text-muted-foreground hover:text-foreground" type="button" (click)="leaderboard.emit()">
-      <span>See the {{ shown.count === 1 ? '' : number(shown.count) + ' ' }}<span class="brand text-primary">{{ angularians(shown.count) }}</span> from {{ name(shown.code) }}</span>
+    <button hlmBtn variant="link" class="mt-3 px-0 text-muted-foreground hover:text-foreground" type="button" (click)="showBoard()">
+      <span>See the {{ countBefore(shown.count) }}<span class="brand text-primary">{{ angularians(shown.count) }}</span> from {{ name(shown.code) }}</span>
       <ng-icon name="remixArrowUpLine" aria-hidden="true" />
     </button>
   </div>

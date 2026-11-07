@@ -1,4 +1,4 @@
-<hlm-autocomplete [search]="term()" (searchChange)="term.set($event ?? '')" (valueChange)="openProfile($event)" [itemToString]="username" class="w-full sm:w-64">
+<hlm-autocomplete [search]="term()" (searchChange)="searchFor($event)" (valueChange)="openProfile($event)" [itemToString]="username" class="w-full sm:w-64">
   <label [for]="inputId" class="sr-only">Search a contributor</label>
   <hlm-autocomplete-input #input [inputId]="inputId" placeholder="Search a contributor">
     @if (!term()) {

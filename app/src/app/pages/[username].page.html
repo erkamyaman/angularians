@@ -164,7 +164,7 @@
         </ul>
         @if (packages().length > PACKAGES_SHOWN_PHONE) {
           <button hlmBtn variant="outline" type="button" class="mt-4" [class.sm:hidden]="packages().length <= PACKAGES_SHOWN" (click)="toggleAllPackages()">
-            {{ allPackages() ? 'Show less' : 'Show all ' + packages().length }}
+            {{ packagesToggleLabel() }}
             <ng-icon [name]="allPackages() ? 'remixArrowUpSLine' : 'remixArrowDownSLine'" aria-hidden="true" />
           </button>
         }
@@ -185,20 +185,20 @@
                 [queryParams]="{ period: row.period }"
                 replaceUrl
                 (click)="scrollToStats()"
-                [hlmTooltip]="row.period + ' · Rank ' + rank(row.rank) + ' · ' + points(row.score)"
+                [hlmTooltip]="yearTip(row)"
                 [attr.aria-label]="yearLabel(row)"
                 [attr.aria-current]="row.period === period() ? 'true' : null"
                 class="group flex flex-col items-center rounded-md transition-colors hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
               >
                 <span class="flex h-60 w-full flex-col items-center justify-end border-b border-border">
-                  @if (row === firstYear() && row !== best()) {
+                  @if (marksSagaStart(row)) {
                     <!-- Phones: the icon alone, the legend below the chart names it -->
                     <span class="mb-1.5 flex flex-col items-center whitespace-nowrap text-muted-foreground" aria-hidden="true">
                       <ng-icon name="vikingLongship" class="text-xl sm:text-[1.75rem]" />
                       <span class="brand hidden text-sm sm:inline">The saga begins</span>
                     </span>
                   }
-                  @if (row.period === period() || row === best()) {
+                  @if (showsYearScore(row)) {
                     <span class="mb-1.5 block text-center text-xs whitespace-nowrap tabular-nums" aria-hidden="true">
                       @if (row === best()) {
                         <span class="github-gold flex flex-col items-center font-semibold">
@@ -286,7 +286,7 @@
     @if (failedToLoad()) {
       <h1 class="text-3xl font-bold tracking-tight">{{ username() }}</h1>
       <p role="alert" class="mt-2 max-w-xl text-destructive">The profile could not be loaded.</p>
-      <button hlmBtn class="mt-6" type="button" (click)="profile.reload()">Try again</button>
+      <button hlmBtn class="mt-6" type="button" (click)="retry()">Try again</button>
     } @else {
       <h1 class="text-3xl font-bold tracking-tight">No contributions from {{ username() }}</h1>
       <p class="mt-2 max-w-xl text-muted-foreground">
