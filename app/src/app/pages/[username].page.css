@@ -6,23 +6,23 @@
 
 /*
  * The four stats in GitHub's colours (`styles/github-colors.css`): `tint-*` on a card sets `--tint`, GitHub's light
- * colour in both themes, for its background, and `--tint-strong`, the theme's, for its ring and, through `tint-text`,
- * its icon and name.
+ * colour in both themes (`--github-*-light`), for its background, and `--tint-strong`, the theme's, for its ring
+ * and, through `tint-text`, its icon and name.
  */
 .tint-merges {
-  --tint: #8250DF;
+  --tint: var(--github-purple-light);
   --tint-strong: var(--github-purple);
 }
 .tint-issues {
-  --tint: #1A7F37;
+  --tint: var(--github-green-light);
   --tint-strong: var(--github-green);
 }
 .tint-comments {
-  --tint: #0969DA;
+  --tint: var(--github-blue-light);
   --tint-strong: var(--github-blue);
 }
 .tint-reactions {
-  --tint: #9A6700;
+  --tint: var(--github-gold-light);
   --tint-strong: var(--github-gold);
 }
 

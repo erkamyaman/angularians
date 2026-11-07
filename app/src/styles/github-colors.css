@@ -1,15 +1,23 @@
 /*
  * GitHub's colours, one for each kind of contribution: `--github-*` in the page's theme (GitHub's dark ones are
- * brighter), and `github-*` for one as the text colour.
+ * brighter), `--github-*-light` the light one in both themes, and `github-*` for one as the text colour.
  */
 :root {
-  --github-purple: #8250DF;
-  --github-red: #CF222E;
-  --github-blue: #0969DA;
-  --github-gold: #9A6700;
-  --github-green: #1A7F37;
-  --github-pink: #BF3989;
-  --github-orange: #BC4C00;
+  --github-purple-light: #8250DF;
+  --github-red-light: #CF222E;
+  --github-blue-light: #0969DA;
+  --github-gold-light: #9A6700;
+  --github-green-light: #1A7F37;
+  --github-pink-light: #BF3989;
+  --github-orange-light: #BC4C00;
+
+  --github-purple: var(--github-purple-light);
+  --github-red: var(--github-red-light);
+  --github-blue: var(--github-blue-light);
+  --github-gold: var(--github-gold-light);
+  --github-green: var(--github-green-light);
+  --github-pink: var(--github-pink-light);
+  --github-orange: var(--github-orange-light);
 }
 
 :root.dark {
