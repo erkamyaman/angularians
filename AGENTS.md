@@ -21,7 +21,7 @@ Angularians ranks everyone who has contributed to the Angular repositories: a co
 | `data/` | written by the collector; never edit by hand, except to remove a bot from a run |
 | `.github/workflows/collect.yml` | the nightly collection, one job per repository |
 | `.github/labels.json` | the issue labels; `.github/workflows/labels.yml` applies them on main |
-| `docs/` | architecture, scoring |
+| `docs/` | architecture, scoring, research (`docs/research/`) |
 | `GLOSSARY.md` | the domain's words (Angularian, landed pull request, period, recognition…): name types, pages and docs with them |
 | `.agents/skills/` | skills for common changes: badges, recognitions, bots, repositories, the score, checking a site change |
 

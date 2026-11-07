@@ -5,34 +5,30 @@ Everyone who has contributed to the Angular repositories, ranked by a score of w
 ## People
 
 **Angularian**:
-A person with at least one counted contribution in a repository on the board. The site's word for a contributor, written in the brand font.
-_Avoid_: user, member, developer
-
-**Contributor**:
-The same person as an Angularian, the word the code and the data use.
-_Avoid_: author, committer
+A person on the board: anyone whose work in a repository on the board earned points.
+_Avoid_: contributor (outside the code), user, member, developer
 
 **Angular team**:
 The public members of the Angular organization on GitHub.
 _Avoid_: core team, maintainers, Googlers
 
 **Bot**:
-An account that contributes automatically, left out of the board entirely: a GitHub app, a `[bot]` or `-bot` account, one on the hand-kept list, or a deleted account.
+An account that acts automatically, or one that no longer exists; left off the board entirely.
 _Avoid_: service account
 
 **Renamed account**:
-An Angularian whose GitHub username changed; they keep their GitHub id, and the old name points to the new one.
+An Angularian whose GitHub username changed; they stay the same Angularian, and their old name still leads to them.
 _Avoid_: alias, old user
 
 ## Contributions
 
 **Contribution**:
-One thing an Angularian did in a repository on the board that the score counts: a landed pull request, an issue, a comment, a review comment, a reaction received or a security report. It belongs to the day it was made.
+One thing an Angularian did in a repository on the board that the score counts: a landed pull request, an issue, a comment, a review comment or a security report. It belongs to the day it was made. A reaction received earns points but is not a contribution.
 _Avoid_: activity, event, commit
 
 **Landed pull request**:
-A pull request whose change reached the default branch, whether GitHub marks it merged or Angular's tooling closed it after pushing its commits.
-_Avoid_: merged PR (GitHub's own word misses most of them), commit
+A pull request whose change reached the default branch, whether or not GitHub shows it as merged. "Merged" is fine on the page, where readers expect it.
+_Avoid_: commit
 
 **PR type**:
 The kind of a landed pull request (feat, fix, docs or chore), from its title or, failing that, its labels.
@@ -43,7 +39,7 @@ The part of a PR title in parentheses (`fix(router): …`), naming the package i
 _Avoid_: area, component
 
 **Package**:
-An npm package a landed pull request counts toward, from its scope or its repository; what a profile's "Contributed to" lists.
+A published part of Angular a landed pull request counts toward: an npm package, or an area of angular/angular such as `router`. What a profile's "Contributed to" lists.
 _Avoid_: library, module, project
 
 **Issue**:
@@ -67,7 +63,7 @@ An inline comment on the code of a pull request; a review's summary is not one.
 _Avoid_: review, code comment
 
 **Reaction received**:
-An emoji reaction someone left on an Angularian's issue, pull request, discussion or comment, counted for the Angularian who wrote it.
+An emoji reaction someone left on an Angularian's issue, pull request, discussion or comment. It earns the writer points on the day of what got it, but is not a contribution of its own.
 _Avoid_: like, upvote
 
 **Security report**:
@@ -77,8 +73,12 @@ _Avoid_: advisory credit, CVE, vulnerability report
 ## Ranking
 
 **Score**:
-The weighted sum of an Angularian's contributions in one period, rounded once.
-_Avoid_: points, XP, karma
+The sum of the points an Angularian earned in one period.
+_Avoid_: XP, karma
+
+**Points**:
+What one contribution, or one reaction received, is worth toward the score.
+_Avoid_: weight (outside the code), credits
 
 **Rank**:
 An Angularian's place by score in one period, on the whole board or within a country (the country rank).
@@ -103,7 +103,7 @@ _Avoid_: location, region
 ## Badges
 
 **Badge**:
-A mark of recognition on a profile and its card. Some are earned on the board, some are recognitions, some are project badges.
+A mark on a profile and its card: for a rank or a kind of work on the board, for a role (the Angular team, Shieldwall), for a recognition, or for a project (a custom badge).
 _Avoid_: achievement, award, trophy
 
 **Recognition**:
@@ -114,9 +114,9 @@ _Avoid_: certification
 The badge of an Angularian credited on an Angular security advisory, in any role.
 _Avoid_: security badge
 
-**Project badge**:
-A badge for the creators, maintainers or organizers of an Angular project: its logo, a short playful title and its colour. Also called a custom badge.
-_Avoid_: sponsor badge, partner badge
+**Custom badge**:
+A badge for the creators, maintainers or organizers of an Angular project: its logo, a short playful title and its colour.
+_Avoid_: project badge, sponsor badge, partner badge
 
 **Smith of ng-halla**:
 The badge of an Angularian who created a project the site itself is built on.
@@ -125,12 +125,12 @@ _Avoid_: builder badge, credit
 ## The site
 
 **ng-halla**:
-The site's name for the place every Angularian is remembered: the board as a hall of fame.
-_Avoid_: Valhalla, hall of fame
+The site's name for the hall where every Angularian is remembered.
+_Avoid_: Valhalla
 
 **Angie**:
-The site's Viking mascot, who brings down a storm when called.
-_Avoid_: mascot, logo
+The site's Viking guardian, who brings down a storm when called.
+_Avoid_: logo, the mark
 
 **Angularian card**:
 The image of an Angularian's rank, score, stats and badges for one period, for a README or a link preview.

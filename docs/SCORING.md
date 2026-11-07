@@ -1,7 +1,7 @@
 # How the score works
 
 Every contribution counts for its author, on the day it was made (a pull request on the day it landed). The base weights are those of [Nuxters](https://nuxt.com/nuxters),
-plus review comments, security reports and GitHub Discussions. Unlike Nuxters, no repository counts double, translations
+plus review comments and security reports; GitHub Discussions count too, as issues and comments. Unlike Nuxters, no repository counts double, translations
 give no points, and a pull request without a type is a chore, not a feat ([how they compare](research/score-vs-other-leaderboards.md)). The rules live in `shared/src/scoring.ts` and `shared/src/pull-requests.ts`.
 
 ## Merged pull requests, by type

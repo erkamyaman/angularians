@@ -130,7 +130,7 @@ A small difference: Angularians' rolling windows also exclude dates after the co
 
 ## The claim "Nuxters' weights, plus review comments and security reports"
 
-[SCORING.md L3-L4](../SCORING.md#L3-L4) makes this claim. Against Nuxters' current source:
+SCORING.md made this claim until November 2026; it now states the differences below. Against Nuxters' current source:
 
 - **Verified**: the base weights are identical. Landed PRs 7/5/4/3, issue 1, helpful issue +3, comment 0.5, helpful comment +2,
   reaction 0.1, the helpful thresholds (completed, 3 reactions, 5 comments; 3 reactions for a comment) and rounding once.

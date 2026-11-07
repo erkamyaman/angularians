@@ -25,7 +25,7 @@ Ask for anything missing; never guess it. The "Badge request" issue form asks fo
 
 Check the project is for Angular developers, public and maintained. If it isn't, stop and say why.
 
-Done when every row of the table has an answer and the proof link shows each person's role. Missing one: ask, and wait.
+Done when every row not marked optional has an answer (the repository only for a library or a tool) and the proof link shows each person's role. Missing one: ask, and wait.
 
 ## 2. Make the change
 
@@ -61,7 +61,7 @@ With `pnpm dev` running, open:
 - Both themes, and phone width.
 - `/<username>/card.png`: the logo shows in the card's footer.
 
-Done when all four commands pass and each page above shows the badge as described.
+Done when the test, typecheck and build pass and each page above shows the badge as described.
 
 ## 4. Open the pull request
 
