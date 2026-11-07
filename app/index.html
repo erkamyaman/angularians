@@ -11,6 +11,8 @@
     <link rel="author" href="https://erkamyaman.dev" />
     <!-- The brand font, early: the word "Angularians" is in the header of every page, and would jump on a late swap -->
     <link rel="preload" href="/fonts/Norse-Bold.otf" as="font" type="font/otf" crossorigin />
+    <!-- The text font (Manrope, Latin), early too: found only in the stylesheet, it would swap in after the first paint and move the lines -->
+    <link rel="preload" href="./node_modules/@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <!-- Every page shows GitHub avatars, the profile's first: the connection opens while the page loads. -->
     <link rel="preconnect" href="https://avatars.githubusercontent.com" />
     <!-- ?v=: a new address when the mark changes, or browsers keep showing their cached icon -->
