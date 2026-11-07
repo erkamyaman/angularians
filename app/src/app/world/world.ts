@@ -11,10 +11,10 @@ import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 import { HlmTooltip } from '@spartan-ng/helm/tooltip';
-import { avatarUrl } from '../leaderboard/avatar-url';
-import { flagUrl } from '../leaderboard/flag-url';
-import { formatNumber, formatRank, pluralWord } from '../leaderboard/number-format';
-import { matchesCountry } from '../leaderboard/country-match';
+import { avatarUrl } from '../contributors/avatar-url';
+import { flagUrl } from '../contributors/flag-url';
+import { formatNumber, formatRank, pluralWord } from '../text/number-format';
+import { matchesCountry } from '../contributors/country-match';
 import { countryRanks } from './country-ranks';
 import { Globe } from './globe';
 

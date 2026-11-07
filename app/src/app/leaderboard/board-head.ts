@@ -1,6 +1,6 @@
 import { countryName, periodPhrase, type LeaderboardPage, type Period } from '@angularians/shared'
 import { boardDescription } from './board-description'
-import { formatNumber } from './number-format'
+import { formatNumber } from '../text/number-format'
 
 export const SITE_DESCRIPTION = 'Everyone who has contributed to Angular since 2014, ranked: merged pull requests, issues, comments and code reviews in angular/angular, Components, the CLI, dev-infra, Domino, zone.js and Universal.'
 

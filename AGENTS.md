@@ -13,6 +13,8 @@ Angularians ranks everyone who has contributed to the Angular repositories: a co
 | `app/src/app` | the pages, the leaderboard, profiles, the signed-in card and sharing |
 | `app/src/server` | the API, sign-in (`auth/`), the Angularian card (`card/`), the data store |
 | `app/src/app/layout` | the header, the footer, the mark (`logo-mark.ts`, its paths in `logo-mark.html`), the hero |
+| `app/src/app/contributors` | what every feature shows of a contributor: avatar and flag URLs, the country search |
+| `app/src/app/text` | how numbers, dates, plurals and stat names are written, the same on the page, the server and the card |
 | `app/src/ui` | spartan/ui helm components, copied in and ours to change (`@spartan-ng/helm/*` in tsconfig) |
 | `app/scripts/logo` | the mark (`build.py`) and the README wordmark (`wordmark.py`), built from their construction |
 | `app/public` | the favicon, the Norse font (`fonts/`) |

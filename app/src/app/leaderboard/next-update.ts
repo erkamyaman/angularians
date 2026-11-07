@@ -3,7 +3,7 @@ import { afterNextRender, Component, computed, DestroyRef, inject, input, PLATFO
 import { NgIcon, provideIcons } from '@ng-icons/core'
 import { remixInformationLine } from '@ng-icons/remixicon'
 import { HlmTooltip } from '@spartan-ng/helm/tooltip'
-import { formatDate } from './date-format'
+import { formatDate } from '../text/date-format'
 import { untilNextCollection } from './next-collection'
 
 /** The time to the next collection is said again every minute. */

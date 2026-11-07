@@ -8,8 +8,8 @@ import { remixCloseLine } from '@ng-icons/remixicon'
 import { HlmAutocompleteImports } from '@spartan-ng/helm/autocomplete'
 import { HlmKbd } from '@spartan-ng/helm/kbd'
 import { searchContributors } from '../data/contributors.server'
-import { avatarUrl } from './avatar-url'
-import { formatPoints, formatRank } from './number-format'
+import { avatarUrl } from '../contributors/avatar-url'
+import { formatPoints, formatRank } from '../text/number-format'
 import { profileQuery } from './profile-query'
 
 const DEBOUNCE_MS = 200

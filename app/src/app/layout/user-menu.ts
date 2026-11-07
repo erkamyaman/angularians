@@ -7,7 +7,7 @@ import { remixLogoutBoxRLine } from '@ng-icons/remixicon'
 import { HlmPopoverImports } from '@spartan-ng/helm/popover'
 import { AuthService } from '../auth/auth.service'
 import { LogoMark } from './logo-mark'
-import { avatarUrl } from '../leaderboard/avatar-url'
+import { avatarUrl } from '../contributors/avatar-url'
 
 @Component({
   selector: 'app-user-menu',

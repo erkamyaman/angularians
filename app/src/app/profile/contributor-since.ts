@@ -1,6 +1,6 @@
 import { Component, computed, input } from '@angular/core'
 import { AngularLogo } from '../layout/angular-logo'
-import { formatMonth } from '../leaderboard/date-format'
+import { formatMonth } from '../text/date-format'
 
 /** "Angular contributor since Apr 2025", on the profile and the signed-in card: the parent lays it out. */
 @Component({

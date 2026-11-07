@@ -11,8 +11,8 @@ import { getLeaderboard } from '../data/contributors.server'
 import { RankShield } from './rank-shield'
 import { LeaderboardMemory, STEP, type Shown } from './leaderboard-memory'
 import { PODIUM } from './podium'
-import { avatarSrcset, avatarUrl } from './avatar-url'
-import { formatNumber, formatPoints, formatRank } from './number-format'
+import { avatarSrcset, avatarUrl } from '../contributors/avatar-url'
+import { formatNumber, formatPoints, formatRank } from '../text/number-format'
 import { profileQuery } from './profile-query'
 
 /** The fallback for browsers without srcset: the cells are drawn at 124px at most. */

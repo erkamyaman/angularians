@@ -1,5 +1,5 @@
 import { periodPhrase, type Period } from '@angularians/shared'
-import { plural } from './number-format'
+import { plural } from '../text/number-format'
 
 export type BoardCounts = { total: number, landedPullRequests: number, issues: number, comments: number, reviewComments: number }
 

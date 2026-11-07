@@ -5,7 +5,7 @@ import { avatarData, cardFonts } from '../card/assets'
 import { homeTree, renderCard } from '../card/card'
 import { contributorsData } from '../data/store'
 import { boardDescription } from '../../app/leaderboard/board-description'
-import { formatNumber } from '../../app/leaderboard/number-format'
+import { formatNumber } from '../../app/text/number-format'
 
 /**
  * `GET /og.png?period=2025`: the home page's link preview. Without a period: the people of all time; with one, as a

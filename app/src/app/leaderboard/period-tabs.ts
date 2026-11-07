@@ -3,7 +3,7 @@ import { Component, computed, input, linkedSignal, output } from '@angular/core'
 import { periodPhrase, type Period } from '@angularians/shared'
 import { HlmSelectImports } from '@spartan-ng/helm/select'
 import { HlmTabsImports } from '@spartan-ng/helm/tabs'
-import { formatRank } from './number-format'
+import { formatRank } from '../text/number-format'
 
 const TAB_LABELS: Record<string, string> = { '30d': '30 days', '12m': '12 months', 'all': 'All time' }
 const YEAR = 'year'
