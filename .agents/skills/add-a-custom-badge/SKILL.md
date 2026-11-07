@@ -5,7 +5,7 @@ description: Add a custom project badge to Angularians (a project's logo, a shor
 
 # Add a custom badge
 
-A custom badge shows a project's logo, a short title and its colour on its people's profiles and Angularian cards, and links to the project. All of them are in `app/src/app/profile/special-badges.ts`.
+A custom badge shows a project's logo, a short title and its colour on its people's profiles and Angularian cards, and links to the project. All of them are in `app/src/app/profile/project-badges.ts`.
 
 ## 1. Gather what you need
 
@@ -29,7 +29,7 @@ Check the project is for Angular developers, public and maintained. If it isn't,
 
 1. **Logo.** Save it unchanged as `app/public/credits/<project>.svg` (or `.png`), the file name in kebab case. Don't redraw or recolour it.
 2. **GitHub ids.** For each person run `gh api users/<username> -q .id`. Use their name as GitHub shows it.
-3. **Entry.** Add one to `PROJECT_BADGES` in `app/src/app/profile/special-badges.ts`, after the last one, in the same shape:
+3. **Entry.** Add one to `PROJECT_BADGES` in `app/src/app/profile/project-badges.ts`, after the last one, in the same shape:
 
    ```ts
    { name: 'Project', badge: 'Short fun title', tone: '<project>', href: 'https://project.dev', logo: '/credits/project.svg', does: 'What it does', people: [

@@ -5,7 +5,7 @@
 /*
  * One badge, in its tone's colours: `tone-*` sets `--pill`, its colour, for the background, the ring and the text; a
  * tone whose text differs sets `--pill-text`, and one that mixes them otherwise `--pill-bg` or `--pill-ring`. The
- * earned badges pick theirs in `earned-badges.ts`, the projects in `special-badges.ts`. A project's colour is its own
+ * earned badges pick theirs in `earned-badges.ts`, the projects in `project-badges.ts`. A project's colour is its own
  * brand's, so a hex. A parent can set `--pill-font-size` and `--pill-line-height` for a smaller badge. Each tone's
  * dark rule follows its light one; `BadgeTone` (`badge-pill.ts`) lists them.
  */

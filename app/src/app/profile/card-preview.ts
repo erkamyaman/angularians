@@ -4,7 +4,7 @@ import { remixEyeLine } from '@ng-icons/remixicon'
 import { simpleGithub } from '@ng-icons/simple-icons'
 import { HlmButton } from '@spartan-ng/helm/button'
 import { HlmDialogImports } from '@spartan-ng/helm/dialog'
-import { CARD_DESIGN } from './share'
+import { CARD_DESIGN } from './card-design'
 
 /** The real card of a profile, for someone signed out: signing in is what unlocks sharing it. */
 @Component({

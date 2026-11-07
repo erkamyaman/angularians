@@ -2,7 +2,7 @@
 import { isPlatformBrowser, NgTemplateOutlet } from '@angular/common';
 import { afterNextRender, Component, computed, DestroyRef, ElementRef, inject, input, output, PLATFORM_ID, signal, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { PODIUM } from '../leaderboard/leaderboard-grid';
+import { PODIUM } from '../leaderboard/podium';
 import { RankShield } from '../leaderboard/rank-shield';
 import { countryName, type ContributorsMap, type ContributorSummary, type CountryStats } from '@angularians/shared';
 import { NgIcon, provideIcons } from '@ng-icons/core';

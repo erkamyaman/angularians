@@ -1,4 +1,4 @@
-import { missingPeriod, shownPeriod } from './period-choice';
+import { missingPeriod, shownPeriod } from './shown-period';
 
 describe('period choice', () => {
   const available = ['all', '2025', '2024'] as const;

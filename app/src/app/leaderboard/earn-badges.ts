@@ -5,7 +5,7 @@ import { HlmCardImports } from '@spartan-ng/helm/card'
 import { RouterLink } from '@angular/router'
 import { LogoMark } from '../layout/logo-mark'
 import { avatarUrl } from './avatar-url'
-import { BUILT_ON, type ProjectBadge } from '../profile/special-badges'
+import { BUILT_ON, type ProjectBadge } from '../profile/project-badges'
 import { BadgePill } from '../profile/badge-pill'
 import { projectBadge } from '../profile/earned-badges'
 

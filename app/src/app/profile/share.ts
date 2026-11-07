@@ -12,15 +12,13 @@ import { PeriodTabs } from '../leaderboard/period-tabs'
 import { HlmSkeleton } from '@spartan-ng/helm/skeleton'
 import { SITE_URL } from '../site'
 import { shareQuery } from '../leaderboard/profile-query'
+import { CARD_DESIGN } from './card-design'
 
 /** The skeleton shows at least this long, so a fast card does not flicker it. */
 const MIN_LOADING_MS = 500
 
 /** " in 2025" after a sentence about a period; nothing for all time. */
 const periodSuffix = (period: Period) => (period === 'all' ? '' : ` ${periodPhrase(period)}`)
-
-/** Raise it when the card's design changes, so the preview does not show a copy the browser kept. */
-export const CARD_DESIGN = 15
 
 /** Copy the profile link, or the Markdown of the Angularian card for a GitHub profile README. */
 @Component({

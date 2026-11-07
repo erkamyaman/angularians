@@ -13,7 +13,7 @@ import { statWord } from './stat-names';
 import { CountrySelect } from './country-select';
 import { LeaderboardGrid } from './leaderboard-grid';
 import { MeCard } from './me-card';
-import { untilNextCollection } from './next-update';
+import { untilNextCollection } from './next-collection';
 import { PeriodTabs } from './period-tabs';
 
 describe('format', () => {
