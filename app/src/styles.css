@@ -148,7 +148,7 @@
 
 @theme inline {
   /* The brand colour (flat: no gradients), per theme: the mark, the word Angularians. */
-  --color-brand-from: var(--primary);
+  --color-brand: var(--primary);
   /* Angular's colours as utilities: `bg-angular-pink/10`, `ring-angular-pink/40`. */
   --color-angular-pink: var(--angular-pink);
   --color-angular-purple: var(--angular-purple);
