@@ -1,17 +1,17 @@
-import { isYear, type ContributorProfile } from '@angularians/shared'
+import { isYear, translationsOf, type ContributorProfile } from '@angularians/shared'
 import { remixStarFill } from '@ng-icons/remixicon'
 import { simpleNx } from '@ng-icons/simple-icons'
 import { octShield } from '@ng-icons/octicons'
 import { formatNumber, formatRank } from '../text/number-format'
 import { plural } from '../text/plural'
-import { vikingAnvil, vikingAxes, vikingHelmet, vikingShield } from '../layout/viking-icons'
+import { vikingAnvil, vikingAxes, vikingHelmet, vikingScroll, vikingShield } from '../layout/viking-icons'
 import { yearRanges } from './year-ranges'
 import { ANGULAR_GDES, ANGULAR_SECURITY, GITHUB_STARS, NX_CHAMPIONS } from './recognitions'
 import type { BadgeTone } from './badge-pill'
 import { projectBadgesOf, type ProjectBadge, type ProjectRole } from './project-badges'
 
 /** The icons a badge can show, as SVG: the page names them, the card draws them. */
-export const BADGE_ICONS = { octShield, remixStarFill, simpleNx, vikingAnvil, vikingAxes, vikingHelmet, vikingShield }
+export const BADGE_ICONS = { octShield, remixStarFill, simpleNx, vikingAnvil, vikingAxes, vikingHelmet, vikingScroll, vikingShield }
 
 /**
  * A badge on a profile and on its card. `icon`: `angular`, `gde` or `logo` (`logo` is its image), or a key of
@@ -41,6 +41,7 @@ export function earnedBadges(person: ContributorProfile): EarnedBadge[] {
   if (NX_CHAMPIONS.has(person.githubId)) badges.push({ label: 'Nx Champion', title: '', href: 'https://nx.dev/community', icon: 'simpleNx', tone: 'nx' })
   const advisories = ANGULAR_SECURITY.get(person.githubId)
   if (advisories) badges.push({ label: 'Shieldwall', title: `Credited on ${plural(advisories, 'Angular security advisory', 'Angular security advisories')}`, href: `https://github.com/advisories?query=credit%3A${person.username}`, icon: 'octShield', tone: 'shieldwall' })
+  for (const { language, site } of translationsOf(person.githubId)) badges.push({ label: `${language} translator`, title: `Translated angular.dev into ${language}`, href: site, icon: 'vikingScroll', tone: 'translator' })
   const projects = projectBadgesOf(person.githubId)
   for (const { project, role } of projects) badges.push(projectBadge(project, role))
   const forged = projects.filter(({ project, role }) => project.builtOn && (role === 'creator' || role === 'co-creator')).map(({ project }) => project.name)

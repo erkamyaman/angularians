@@ -1,4 +1,4 @@
-import { ContributorsAccumulator, landedPullRequests, prCloseNumbers } from '@angularians/shared'
+import { ContributorsAccumulator, landedPullRequests, prCloseNumbers, TRANSLATIONS } from '@angularians/shared'
 import { collectActivity } from './activity.ts'
 import { collectAdvisories } from './advisories.ts'
 import { collectDiscussions } from './discussions.ts'
@@ -54,6 +54,10 @@ if (config.advisories) {
   const advisories = await collectAdvisories(config.since, accumulator)
   stats.advisories = advisories.advisories
   console.log(`Security advisories: ${advisories.advisories}, ${advisories.reported} of them with a reporter`)
+  // angular.dev's community translations, from the hand-kept list: with the advisories, so one part counts them.
+  const translations = TRANSLATIONS.filter(translation => !config.since || Date.parse(translation.joinedAt) >= config.since.getTime())
+  for (const translation of translations) accumulator.addTranslation(translation)
+  console.log(`Translations: ${translations.length}`)
 }
 
 const collected: Collected = {

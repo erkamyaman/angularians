@@ -37,7 +37,7 @@ describe('scoreBreakdown', () => {
       ['reviewComments', 4, 1, 4],
       ['comments', 7, 0.5, 3.5],
     ])
-    expect(rows).toHaveLength(11)
+    expect(rows).toHaveLength(12)
     expect(rows.find(row => row.key === 'reactions')?.total).toBe(1.2)
     expect(Math.round(rows.reduce((sum, row) => sum + row.total, 0))).toBe(score(counts))
   })
@@ -133,6 +133,17 @@ describe('ContributorsAccumulator', () => {
     expect(files.get('2025')?.map(r => [r.username, r.advisories])).toEqual([['eve', 1], ['fay', 1]])
     expect(files.get('30d')?.map(r => [r.username, r.advisories])).toEqual([['eve', 1]])
     expect(files.get('all')?.[0]?.firstContributionAt).toBe('2025-06-01T00:00:00.000Z')
+  })
+
+  it('counts a translation once for each of its translators, on the day it joined the footer', () => {
+    const acc = new ContributorsAccumulator(now)
+    const translation = { language: 'Türkçe', site: 'https://angular-docs.tr', repository: 'https://github.com/erkamyaman/angular-tr', joinedAt: '2026-03-07', translators: [{ githubId: 7, username: 'eve' }, { githubId: 8, username: 'fay' }] }
+    acc.addTranslation(translation)
+    acc.addTranslation({ ...translation, language: 'Español', joinedAt: '2025-05-26', translators: [{ githubId: 7, username: 'eve' }] })
+    const files = acc.records()
+    expect(files.get('all')?.map(r => [r.username, r.translations, r.score])).toEqual([['eve', 2, 40], ['fay', 1, 20]])
+    expect(files.get('2026')?.map(r => [r.username, r.translations])).toEqual([['eve', 1], ['fay', 1]])
+    expect(files.get('all')?.[0]?.firstContributionAt).toBe('2025-05-26T00:00:00.000Z')
   })
 
   it('leaves out bots and deleted accounts', () => {

@@ -5,6 +5,7 @@ import type { Calendar } from './calendar.ts'
 import { isBotAccount } from './bots.ts'
 import { ACTIVITY_KINDS, KINDS, PULL_REQUEST_KINDS, type Kind, type PullRequestType } from './kinds.ts'
 import { allPeriods, periodsFor, utcDay } from './periods.ts'
+import type { Translation } from './translations.ts'
 import type { ActivityCounts, ContributorRecord, GitHubUser, LandedPullRequest, PackagesRecord, Period, PullRequestCounts } from './types.ts'
 
 /** Points of a landed PR, by type. */
@@ -191,6 +192,13 @@ export class ContributorsAccumulator {
       if (!user || this.advisories.has(key)) continue
       this.advisories.add(key)
       this.add(user, advisory.published_at, true, counts => (counts.advisories += 1))
+    }
+  }
+
+  /** A community translation of angular.dev counts for each of its translators, on the day it joined the footer. */
+  addTranslation(translation: Translation): void {
+    for (const { githubId, username } of translation.translators) {
+      this.add({ login: username, id: githubId }, translation.joinedAt, true, counts => (counts.translations += 1))
     }
   }
 

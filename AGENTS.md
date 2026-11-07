@@ -23,7 +23,7 @@ Angularians ranks everyone who has contributed to the Angular repositories: a co
 | `.github/labels.json` | the issue labels; `.github/workflows/labels.yml` applies them on main |
 | `docs/` | architecture, scoring, research (`docs/research/`) |
 | `GLOSSARY.md` | the domain's words (Angularian, landed pull request, period, recognition…): name types, pages and docs with them |
-| `.agents/skills/` | skills for common changes: badges, recognitions, bots, repositories, the score, checking a site change |
+| `.agents/skills/` | skills for common changes: badges, recognitions, translators, bots, repositories, the score, checking a site change |
 
 ## Commands
 
@@ -73,7 +73,7 @@ pnpm build        # the site, as Netlify builds it
 - Accessibility: every control has a name, icons are `aria-hidden`, and nothing relies on colour alone.
 - Branches are `feat/…`, `fix/…`, `docs/…` or `chore/…`, cut from `development`, with their pull request against it; one change per branch. `main` is the live site: it gets `development` in releases, and the nightly data commits.
 
-Adding a custom badge, a recognition or a bot: follow its skill in `.agents/skills/` (the table in [CONTRIBUTING.md](CONTRIBUTING.md#adding-things)). Before committing a site change: `check-a-site-change`. A repository or a score change is the maintainer's: their recipes are `add-a-repository` and `change-the-score`.
+Adding a custom badge, a recognition, a translator or a bot: follow its skill in `.agents/skills/` (the table in [CONTRIBUTING.md](CONTRIBUTING.md#adding-things)). Before committing a site change: `check-a-site-change`. A repository or a score change is the maintainer's: their recipes are `add-a-repository` and `change-the-score`.
 
 Skills from outside the repository, once installed (`npx skills add https://github.com/angular/skills` and `npx skills add https://github.com/mattpocock/skills`):
 

@@ -75,6 +75,10 @@
   --pill: var(--shieldwall);
 }
 
+.tone-translator {
+  --pill: var(--translator);
+}
+
 .tone-primary {
   --pill: var(--primary);
 }

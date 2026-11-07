@@ -23,7 +23,7 @@ _Avoid_: alias, old user
 ## Contributions
 
 **Contribution**:
-One thing an Angularian did in a repository on the board that the score counts: a landed pull request, an issue, a comment, a review comment or a security report. It belongs to the day it was made. A reaction received earns points but is not a contribution.
+One thing an Angularian did in a repository on the board that the score counts: a landed pull request, an issue, a comment, a review comment, a security report or a translation. It belongs to the day it was made. A reaction received earns points but is not a contribution.
 _Avoid_: activity, event, commit
 
 **Landed pull request**:
@@ -61,6 +61,10 @@ _Avoid_: upvoted comment
 **Review comment**:
 An inline comment on the code of a pull request; a review's summary is not one.
 _Avoid_: review, code comment
+
+**Translation**:
+A community translation of angular.dev into a language, credited to each of the people who translated it, on the day angular.dev first linked it.
+_Avoid_: localization, i18n
 
 **Reaction received**:
 An emoji reaction someone left on an Angularian's issue, pull request, discussion or comment. It earns the writer points on the day of what got it, but is not a contribution of its own.
@@ -109,6 +113,10 @@ _Avoid_: achievement, award, trophy
 **Recognition**:
 A badge for a title someone else gives: Angular GDE, GitHub Star or Nx Champion.
 _Avoid_: certification
+
+**Translator**:
+A badge for the people who translated angular.dev into a language, one of its community translations.
+_Avoid_: localizer, i18n badge
 
 **Shieldwall**:
 The badge of an Angularian credited on an Angular security advisory, in any role.

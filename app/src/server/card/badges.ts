@@ -10,6 +10,7 @@ const COLORS: Record<keyof typeof BADGE_ICONS, string> = {
   simpleNx: '#96D7E8',
   vikingAnvil: '#D29922',
   vikingHelmet: '#D29922',
+  vikingScroll: '#58A6FF',
   vikingShield: '#3FB950',
   vikingAxes: '#A371F7',
 }

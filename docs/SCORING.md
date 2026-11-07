@@ -1,8 +1,8 @@
 # How the score works
 
 Every contribution counts for its author, on the day it was made (a pull request on the day it landed). The base weights are those of [Nuxters](https://nuxt.com/nuxters),
-plus review comments and security reports; GitHub Discussions count too, as issues and comments. Unlike Nuxters, no repository counts double, translations
-give no points, and a pull request without a type is a chore, not a feat ([how they compare](research/score-vs-other-leaderboards.md)). The points of each kind of contribution are in `KINDS` (`shared/src/kinds.ts`), the rules in `shared/src/scoring.ts` and `shared/src/pull-requests.ts`.
+plus review comments, security reports and translations; GitHub Discussions count too, as issues and comments. Unlike Nuxters, no repository counts double,
+a translation counts once for each of its translators rather than by segment, and a pull request without a type is a chore, not a feat ([how they compare](research/score-vs-other-leaderboards.md)). The points of each kind of contribution are in `KINDS` (`shared/src/kinds.ts`), the rules in `shared/src/scoring.ts` and `shared/src/pull-requests.ts`.
 
 ## Merged pull requests, by type
 
@@ -28,6 +28,7 @@ a feat, `documentation` docs), else counts as a chore: these are mostly version 
 | Helpful comment (3+ reactions, or marked as a discussion's answer) | +2 |
 | Reaction received (on an issue, a PR, a discussion or a comment, not on a review comment; on the day of what got it) | 0.1 |
 | Security report (credited as `reporter` or `finder` on an Angular security advisory, on the day it is published) | 20 |
+| Translation (translating angular.dev into a language, one of its community translations, on the day its footer first linked it) | 20 |
 
 Discussions (in every repository that has them, such as angular/angular's RFCs) come from GitHub's GraphQL API: they are
 counted as issues and comments are, in the issue and comment totals.
@@ -36,6 +37,10 @@ Security advisories are those of the `@angular/*`, `@angular-devkit/*`, `@nguniv
 packages: the repositories' own advisories and GitHub's reviewed npm advisories, joined by GHSA id. Each counts once per
 person, however many reporter and finder credits they have on it. Credits for fixing, reviewing or analysing an advisory
 give no points: the fix's PR and its reviews already count. The run of angular/angular collects them (`collector/src/advisories.ts`).
+
+Translations are the community translations of angular.dev, in its footer, from the hand-kept list in
+`shared/src/translations.ts`: the lead of each, and everyone with five or more translation commits in its repository,
+counts it once. The run of angular/angular counts them, with the advisories. Each translator also wears its badge.
 
 The sum is rounded once.
 
