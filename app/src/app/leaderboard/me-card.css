@@ -19,27 +19,6 @@
   }
 }
 
-/*
- * The signed-in card's size, from the width of its container (it wraps below 520px), for it and for its skeleton:
- * the hero does not move when the stats arrive. Needs an `@container` parent. Signed out, the card is only as tall
- * as its content: most visitors are, and a visitor signed in last time gets the skeleton at this size instead.
- */
-.signed-in {
-  min-height: 25rem;
-}
-
-@container (width >= 400px) {
-  .signed-in {
-    min-height: 23rem;
-  }
-}
-
-@container (width >= 520px) {
-  .signed-in {
-    min-height: 22rem;
-  }
-}
-
 /* Signed out: as tall as the hero's text on wide screens, so the card does not look lost beside it. */
 @media (width < 40rem) {
   .signed-out {
@@ -53,6 +32,11 @@
     padding: 0;
     box-shadow: none;
   }
+
+  /* The GitHub mark is for wide screens (ng-icon's own display beats a utility class) */
+  .wide-icon {
+    display: none;
+  }
 }
 
 @media (width >= 40rem) {
@@ -64,5 +48,30 @@
 @media (width >= 64rem) {
   .signed-out {
     min-height: calc(var(--spacing) * 80);
+  }
+}
+
+/*
+ * Signed in last time, not any more: the sign-in in the skeleton's place (a grid cell sized by the hidden skeleton),
+ * laid out as on wide screens, with its icon and text, rather than a row lost in the space.
+ */
+@media (width < 40rem) {
+  .returning {
+    padding: calc(var(--spacing) * 6);
+  }
+
+  .returning .sign-in {
+    flex-direction: column;
+    justify-content: center;
+    gap: calc(var(--spacing) * 4);
+    text-align: center;
+  }
+
+  .returning .wide-icon {
+    display: inline-block;
+  }
+
+  .returning .wide-text {
+    display: block;
   }
 }

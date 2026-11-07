@@ -1,6 +1,7 @@
 // Ported from nuxt.com `app/components/nuxters/NuxtersMeCard.vue` and `NuxtersMeCardSkeleton.vue`
 // (MIT, Copyright (c) 2022-2023 NuxtLabs). No Discord: the actions are the share buttons.
 import { Component, computed, inject } from '@angular/core'
+import { NgTemplateOutlet } from '@angular/common'
 import { RouterLink } from '@angular/router'
 import { NgIcon, provideIcons } from '@ng-icons/core'
 import { remixChatHeartLine, remixInformationLine, remixMedalLine } from '@ng-icons/remixicon'
@@ -27,7 +28,7 @@ import { HELPFUL_COMMENT_REACTIONS, HELPFUL_ISSUE_COMMENTS, HELPFUL_ISSUE_REACTI
 /** The signed-in Angularian, or a sign-in. */
 @Component({
   selector: 'app-me-card',
-  imports: [AngularLogo, ContributorSince, HlmButton, HlmSkeleton, HlmTooltip, JoinLinks, AngularianPill, NgIcon, RouterLink, ScoreDialog, Share],
+  imports: [AngularLogo, ContributorSince, HlmButton, HlmSkeleton, HlmTooltip, JoinLinks, AngularianPill, NgIcon, NgTemplateOutlet, RouterLink, ScoreDialog, Share],
   providers: [provideIcons({ vikingHead, remixMedalLine, octIssueOpened, octGitMerge, remixInformationLine, remixChatHeartLine, simpleGithub })],
   templateUrl: './me-card.html',
   styleUrl: './me-card.css',
@@ -36,6 +37,8 @@ export class MeCard {
   private readonly auth = inject(AuthService)
   protected readonly state = this.auth.state
   protected readonly me = computed(() => this.state()?.user ?? null)
+  /** Signed in last time (the hint): with no session, the sign-in takes the skeleton's place. */
+  protected readonly wasSignedIn = this.auth.wasSignedIn
   /** Signed in last time, and the session not known yet: the signed-in card's skeleton. */
   protected readonly restoringSession = computed(() => this.state() === null && this.auth.wasSignedIn())
   protected readonly loginUrl = this.auth.loginUrl('/')
@@ -50,6 +53,8 @@ export class MeCard {
     ] satisfies readonly { color: GithubColor, [key: string]: unknown }[]
   })
 
+  /** The labels of app-share's buttons, for the skeleton's. */
+  protected readonly shareLabels = ['Copy profile link', 'Share card', 'Add to README']
   protected readonly avatar = (githubId: number) => avatarUrl(githubId, 64)
   protected readonly number = formatNumber
   protected readonly points = formatPoints
