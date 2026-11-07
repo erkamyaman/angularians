@@ -14,6 +14,7 @@ import { formatNumber, plural } from '../leaderboard/number-format';
 import { ThemeService } from '../theme.service';
 import { vikingLongship } from '../layout/viking-icons';
 import { faceOnGlobe, projectOnGlobe } from './globe-math';
+import { palette, primaryColor } from './globe-palette';
 
 /** Opens on the Atlantic: Europe and the Americas, where most contributors are. */
 const DEFAULT_CAMERA = { ...faceOnGlobe([20, -30]), zoom: 1 };
@@ -31,20 +32,6 @@ const KEY_MOVES: Record<string, [number, number]> = { ArrowLeft: [-0.15, 0], Arr
 
 const clamp = (value: number, low: number, high: number) => Math.min(high, Math.max(low, value));
 const angleDelta = (from: number, to: number) => ((to - from + Math.PI) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2) - Math.PI;
-/** The theme's primary colour as WebGL wants it: both themes recolour the land through it. */
-const primaryColor = (fallback: [number, number, number]): [number, number, number] => {
-  const context = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
-  const value = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
-  if (!context || !value) return fallback;
-  context.fillStyle = value;
-  context.fillRect(0, 0, 1, 1);
-  const [red, green, blue] = context.getImageData(0, 0, 1, 1).data;
-  return [red / 255, green / 255, blue / 255];
-};
-const palette = (dark: boolean) => dark
-  ? { dark: 1, diffuse: 1.2, mapBrightness: 4, mapBaseBrightness: 0.03, baseColor: primaryColor([0.44, 0.69, 0.48]).map(channel => channel * 0.6) as [number, number, number], glowColor: [0.06, 0.08, 0.1] as [number, number, number] }
-  : { dark: 0, diffuse: 1.4, mapBrightness: 8, mapBaseBrightness: 0, baseColor: [0.94, 0.95, 0.96] as [number, number, number], glowColor: [0.92, 0.93, 0.95] as [number, number, number] };
-
 interface GlobeMarker extends CountryStats {
   name: string
   location: readonly [number, number]

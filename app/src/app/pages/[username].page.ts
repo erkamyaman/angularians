@@ -24,7 +24,7 @@ import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 import { HlmTooltip } from '@spartan-ng/helm/tooltip';
 import { injectSeededServerFn } from '../data/seeded-server-fn';
 import { loadedValue, markFailed } from '../data/loaded';
-import { missingPeriod, shownPeriod } from '../profile/period-choice';
+import { missingPeriod, shownPeriod } from '../profile/shown-period';
 import { getContributor } from '../data/contributors.server';
 import { Container } from '../layout/container';
 import { avatarUrl } from '../leaderboard/avatar-url';

@@ -1,5 +1,5 @@
 // Ported from nuxt.com `app/components/nuxters/NuxtersLeaderboard.vue` (MIT, Copyright (c) 2022-2023 NuxtLabs).
-import { afterRenderEffect, Component, computed, ElementRef, inject, input, linkedSignal, signal, Service, viewChild } from '@angular/core'
+import { afterRenderEffect, Component, computed, ElementRef, inject, input, linkedSignal, signal, viewChild } from '@angular/core'
 import { RouterLink } from '@angular/router'
 import { injectServerFnMutation } from '@analogjs/router'
 import type { ContributorSummary, LeaderboardPage } from '@angularians/shared'
@@ -9,42 +9,15 @@ import { HlmButton } from '@spartan-ng/helm/button'
 import { vikingAxes, vikingHelmet, vikingShield } from '../layout/viking-icons'
 import { getLeaderboard } from '../data/contributors.server'
 import { RankShield } from './rank-shield'
+import { LeaderboardMemory, STEP, type Shown } from './leaderboard-memory'
+import { PODIUM } from './podium'
 import { avatarSrcset, avatarUrl } from './avatar-url'
 import { formatNumber, formatPoints } from './number-format'
 import { profileQuery } from './profile-query'
 
 /** The fallback for browsers without srcset: the cells are drawn at 124px at most. */
 const AVATAR_SIZE = 56
-/** Gold, silver and bronze for the top three of a period: `--medal-*` in styles.css, classes in `styles/podium.css`. */
-export const PODIUM: Record<number, { icon: string, medal: 'gold' | 'silver' | 'bronze' } | undefined> = {
-  1: { icon: 'vikingHelmet', medal: 'gold' },
-  2: { icon: 'vikingShield', medal: 'silver' },
-  3: { icon: 'vikingAxes', medal: 'bronze' },
-}
-
-/** How many contributors the board shows at first, and how many more each "Show more" adds: a page on wider screens, fewer on phones. */
-const STEP = { wide: 100, phone: 50 }
-
-/** The pages loaded after the first, and how many of the loaded ones are on screen, wide and on a phone. */
-type Shown = { more: ContributorSummary[], wide: number, phone: number }
-
 /** The first page comes server-rendered (50 of it on phones); "Show more" shows the rest, then loads the next pages. */
-/** The extra pages of each board, for as long as the tab is open: a board is its period, country and data night. */
-@Service()
-export class LeaderboardMemory {
-  private readonly pages = new Map<string, Shown>()
-  readonly view = signal<'grid' | 'list'>('grid')
-  private key(page: LeaderboardPage): string {
-    return `${page.period}|${page.country ?? ''}|${page.collectedAt ?? ''}`
-  }
-  get(page: LeaderboardPage): Shown {
-    return this.pages.get(this.key(page)) ?? { more: [], wide: STEP.wide, phone: STEP.phone }
-  }
-  set(page: LeaderboardPage, shown: Shown): void {
-    this.pages.set(this.key(page), shown)
-  }
-}
-
 @Component({
   selector: 'app-leaderboard-grid',
   imports: [HlmButton, NgIcon, RankShield, RouterLink],

@@ -4,8 +4,9 @@ import { simpleNx } from '@ng-icons/simple-icons'
 import { octShield } from '@ng-icons/octicons'
 import { formatNumber, formatRank, plural } from '../leaderboard/number-format'
 import { vikingAnvil, vikingAxes, vikingHelmet, vikingShield } from '../layout/viking-icons'
+import { yearRanges } from './year-ranges'
 import { ANGULAR_GDES, ANGULAR_SECURITY, GITHUB_STARS, NX_CHAMPIONS } from './recognitions'
-import { projectBadgesOf, type ProjectBadge, type ProjectRole } from './special-badges'
+import { projectBadgesOf, type ProjectBadge, type ProjectRole } from './project-badges'
 
 /** The icons a badge can show, as SVG: the page names them, the card draws them. */
 export const BADGE_ICONS = { octShield, remixStarFill, simpleNx, vikingAnvil, vikingAxes, vikingHelmet, vikingShield }
@@ -21,18 +22,6 @@ export interface EarnedBadge {
   tone: string
   logo?: string
   href?: string
-}
-
-/** Years as ranges: [2019, 2024, 2025, 2026] → "2019, 2024–2026". */
-export function yearRanges(years: readonly number[]): string {
-  const parts: string[] = []
-  for (let i = 0; i < years.length; i++) {
-    let j = i
-    while (j + 1 < years.length && years[j + 1] === years[j]! + 1) j++
-    parts.push(j > i ? `${years[i]}–${years[j]}` : `${years[i]}`)
-    i = j
-  }
-  return parts.join(', ')
 }
 
 /** A project's badge for one of its people: its title, logo and colour, linked to the project. */

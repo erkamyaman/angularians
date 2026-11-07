@@ -4,21 +4,10 @@ import { NgIcon, provideIcons } from '@ng-icons/core'
 import { remixInformationLine } from '@ng-icons/remixicon'
 import { HlmTooltip } from '@spartan-ng/helm/tooltip'
 import { formatDate } from './date-format'
+import { untilNextCollection } from './next-collection'
 
-/** The nightly collection's schedule, in UTC: `cron` in `.github/workflows/collect.yml`. */
-const COLLECT_HOUR = 3
-const COLLECT_MINUTE = 17
-const MINUTE = 60_000
-
-/** Time until the next collection starts: "5h 20m", "20m", or "under a minute". */
-export function untilNextCollection(now: Date): string {
-  const next = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), COLLECT_HOUR, COLLECT_MINUTE)
-  const target = next > now.getTime() ? next : next + 24 * 60 * MINUTE
-  const minutes = Math.ceil((target - now.getTime()) / MINUTE)
-  if (minutes <= 1) return 'under a minute'
-  const hours = Math.floor(minutes / 60)
-  return hours ? `${hours}h ${minutes % 60}m` : `${minutes}m`
-}
+/** The time to the next collection is said again every minute. */
+const REFRESH_MS = 60_000
 
 /** The time depends on the visitor's clock and pages are cached: the server and the first paint say it in words. */
 @Component({
@@ -47,7 +36,7 @@ export class NextUpdate {
     const destroyRef = inject(DestroyRef)
     afterNextRender(() => {
       this.now.set(new Date())
-      const timer = setInterval(() => this.now.set(new Date()), MINUTE)
+      const timer = setInterval(() => this.now.set(new Date()), REFRESH_MS)
       destroyRef.onDestroy(() => clearInterval(timer))
     })
   }
