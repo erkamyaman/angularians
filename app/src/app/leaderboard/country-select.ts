@@ -7,7 +7,9 @@ import { BrnCombobox, BrnComboboxItem } from '@spartan-ng/brain/combobox'
 import { provideBrnPopoverConfig } from '@spartan-ng/brain/popover'
 import { HlmComboboxImports } from '@spartan-ng/helm/combobox'
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group'
-import { flagUrl, formatNumber, matchesCountry, matchesName } from './format'
+import { flagUrl } from './flag-url'
+import { formatNumber } from './number-format'
+import { matchesCountry, matchesName } from './country-match'
 
 const ALL = 'all'
 

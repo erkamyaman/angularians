@@ -9,7 +9,9 @@ import { HlmButton } from '@spartan-ng/helm/button'
 import { vikingAxes, vikingHelmet, vikingShield } from '../layout/viking-icons'
 import { getLeaderboard } from '../data/contributors.server'
 import { RankShield } from './rank-shield'
-import { avatarSrcset, avatarUrl, formatNumber, formatPoints, formatRank, profileQuery } from './format'
+import { avatarSrcset, avatarUrl } from './avatar-url'
+import { formatNumber, formatPoints, formatRank } from './number-format'
+import { profileQuery } from './profile-query'
 
 /** The fallback for browsers without srcset: the cells are drawn at 124px at most. */
 const AVATAR_SIZE = 56
