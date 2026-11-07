@@ -48,6 +48,8 @@ On a reload or back/forward, an inline script in `app/index.html` makes the page
 (`#site-footer`) is parsed: the browser restores the scroll position in the first paint instead of drawing the top of
 the page first. A first visit is not held back.
 
+A launch post, once out, goes in `LAUNCH_POST` (`app/src/app/site.ts`): the home page then shows a dashed callout linking to it under its introduction (`leaderboard/launch-post-callout.ts`).
+
 ## Design tokens
 
 The site's colours are variables in [`app/src/styles.css`](../app/src/styles.css), each set there once per theme: its light
