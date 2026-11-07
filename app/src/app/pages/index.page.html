@@ -6,7 +6,6 @@
       <span class="brand text-xl text-muted-foreground min-[375px]:text-[1.35rem] min-[400px]:text-2xl sm:text-3xl lg:text-2xl xl:text-3xl">Carve your name in <span class="whitespace-nowrap text-primary">ng-halla</span></span>
     </span>
   </span>
-  <!-- @container: the card's height follows its own width -->
   <span heroDescription>
     Every
     <!-- Angular as it calls itself: its logo (the press kit's), the name highlighted -->
@@ -17,7 +16,7 @@
     <app-score-rules />
     <a hlmBtn variant="outline" href="https://github.com/angular/angular/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener"><ng-icon name="vikingLongship" size="1.5rem" aria-hidden="true" /> How to contribute</a>
   </ng-container>
-  <div heroAside class="@container"><app-me-card /></div>
+  <div heroAside><app-me-card /></div>
 </app-page-hero>
 
 <app-page-section sectionId="leaderboard" [ownHeading]="true" [flush]="true">

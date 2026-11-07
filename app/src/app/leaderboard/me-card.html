@@ -1,24 +1,6 @@
 @if (state() === null && auth.wasSignedIn()) {
   <!-- The session loads in the browser: the skeleton, at the signed-in card's height -->
-  <div class="card signed-in" aria-hidden="true">
-    <div class="flex flex-col gap-6">
-      <div class="flex items-center gap-4">
-        <div hlmSkeleton class="size-18 shrink-0 rounded-full"></div>
-        <div class="flex flex-1 flex-col gap-2">
-          <div hlmSkeleton class="h-5 w-40"></div>
-          <div hlmSkeleton class="h-7 w-32"></div>
-          <div hlmSkeleton class="h-4 w-36"></div>
-        </div>
-      </div>
-      <div class="grid grid-cols-3 gap-2">
-        @for (row of [1, 2, 3]; track row) { <div hlmSkeleton class="h-28 rounded-lg"></div> }
-      </div>
-      <div class="flex gap-2 border-t border-border pt-4">
-        <div hlmSkeleton class="h-8 w-44"></div>
-        <div hlmSkeleton class="h-8 w-36"></div>
-      </div>
-    </div>
-  </div>
+  <ng-container [ngTemplateOutlet]="skeleton" />
 } @else if (me(); as me) {
   <section class="card signed-in" aria-label="Your Angularian profile">
     <div class="flex flex-col gap-6">
@@ -58,8 +40,11 @@
               <span class="text-muted-foreground tabular-nums">{{ points(person.score) }}</span>
               <app-score-dialog [stats]="person" />
             </p>
+            <!-- Always one line, as in the skeleton -->
             @if (lastYear(); as year) {
-              <p class="text-sm text-muted-foreground"><span class="brand text-base leading-none">#{{ number(year.rank) }}</span> in the last 12 months</p>
+              <p class="truncate text-sm text-muted-foreground"><span class="brand text-base leading-none">#{{ number(year.rank) }}</span> in the last 12 months</p>
+            } @else {
+              <p class="truncate text-sm text-muted-foreground">No contributions in the last 12 months</p>
             }
             @if (person.firstContributionAt; as first) {
               <p class="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground"><app-contributor-since [date]="first" /></p>
@@ -112,13 +97,78 @@
       }
     </div>
   </section>
+} @else if (auth.wasSignedIn()) {
+  <!-- Signed in last time, not any more (the session ended): the sign-in in the skeleton's place and at its height,
+       so the board below does not move -->
+  <div class="grid">
+    <div class="invisible col-start-1 row-start-1"><ng-container [ngTemplateOutlet]="skeleton" /></div>
+    <ng-container [ngTemplateOutlet]="signIn" [ngTemplateOutletContext]="{ returning: true }" />
+  </div>
 } @else {
   <!-- Signed out, or not known yet (and not signed in last time): the sign-in, at once -->
-  <section class="card signed-out" [class.sign-in-only]="state()?.enabled !== false" aria-labelledby="me-card-title">
-    <div class="my-auto flex items-center justify-between gap-3 sm:flex-col sm:justify-center sm:gap-4 sm:text-center">
-      <ng-icon name="simpleGithub" size="2rem" class="max-sm:!hidden" aria-hidden="true" />
-      <p id="me-card-title" class="font-medium sm:text-lg" [class.max-sm:sr-only]="state()?.enabled !== false">Discover your contributions</p>
-      <p class="-mt-2 max-w-sm text-muted-foreground max-sm:hidden">
+  <ng-container [ngTemplateOutlet]="signIn" [ngTemplateOutletContext]="{ returning: false }" />
+}
+
+<!-- Laid out as the signed-in Angularian's card (the same lines, labels and buttons, with the values hidden), so the
+     card keeps its height when it arrives. -->
+<ng-template #skeleton>
+  <div class="card signed-in" aria-hidden="true">
+    <div class="flex flex-col gap-6">
+      <div class="flex items-center gap-4">
+        <div hlmSkeleton class="size-18 shrink-0 rounded-full"></div>
+        <div class="min-w-0 flex-1">
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span hlmSkeleton class="inline-block text-lg font-semibold text-transparent">angularian</span>
+            <span hlmSkeleton class="inline-block h-8 w-32"></span>
+          </div>
+          <p class="mt-1 flex flex-wrap items-center gap-x-2">
+            <span hlmSkeleton class="inline-block brand text-3xl leading-none text-transparent">#000</span>
+            <span hlmSkeleton class="inline-block text-transparent">0,000 pts</span>
+          </p>
+          <p class="truncate text-sm text-muted-foreground"><span hlmSkeleton class="inline brand text-base leading-none text-transparent">#000</span> in the last 12 months</p>
+          <p class="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
+            <span hlmSkeleton class="size-4 shrink-0 rounded-full"></span><span><span class="font-medium">Angular contributor</span>&ngsp;<span class="whitespace-nowrap">since <span hlmSkeleton class="inline text-transparent">Jan 2020</span></span></span>
+          </p>
+        </div>
+      </div>
+      <ul class="grid grid-cols-3 gap-2">
+        @for (item of unlocks(); track item.label) {
+          <li class="flex flex-col gap-1.5 rounded-lg bg-background/60 p-3 ring-1 ring-border">
+            <span hlmSkeleton class="size-5 rounded-full"></span>
+            <span hlmSkeleton class="w-fit text-2xl font-semibold text-transparent">000</span>
+            <span class="text-xs text-muted-foreground">
+              {{ item.label }}
+              @if (item.hint) {
+                <span class="ml-0.5 inline-grid place-items-center align-[-0.2em]"><ng-icon name="remixInformationLine" /></span>
+              }
+            </span>
+          </li>
+        }
+      </ul>
+      <div class="grid gap-2 border-t border-border pt-4 sm:flex sm:flex-wrap sm:items-center">
+        <ng-container [ngTemplateOutlet]="buttonSkeleton" [ngTemplateOutletContext]="{ $implicit: 'My profile', largeIcon: true }" />
+        <!-- app-share's buttons wrap in their own row on wide screens, and join the column on phones -->
+        <span class="flex flex-wrap items-center gap-2 max-sm:contents">
+          @for (label of shareLabels; track label) {
+            <ng-container [ngTemplateOutlet]="buttonSkeleton" [ngTemplateOutletContext]="{ $implicit: label, largeIcon: false }" />
+          }
+        </span>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- A button's place: its label and icon, unseen, give it the button's width -->
+<ng-template #buttonSkeleton let-label let-largeIcon="largeIcon">
+  <span hlmSkeleton class="inline-flex h-9 items-center justify-center gap-1.5 border border-transparent px-2.5 text-sm font-medium text-transparent"><span [class]="largeIcon ? 'size-6' : 'size-5'"></span>{{ label }}</span>
+</ng-template>
+
+<ng-template #signIn let-returning="returning">
+  <section class="card signed-out col-start-1 row-start-1" [class.sign-in-only]="state()?.enabled !== false && !returning" [class.returning]="returning" aria-labelledby="me-card-title">
+    <div class="sign-in my-auto flex items-center justify-between gap-3 sm:flex-col sm:justify-center sm:gap-4 sm:text-center">
+      <ng-icon name="simpleGithub" size="2rem" class="wide-icon" aria-hidden="true" />
+      <p id="me-card-title" class="font-medium sm:text-lg" [class.max-sm:sr-only]="state()?.enabled !== false && !returning">Discover your contributions</p>
+      <p class="wide-text -mt-2 max-w-sm text-muted-foreground max-sm:hidden">
         @if (state()?.enabled !== false) {
           Sign in with GitHub to see your score and badges, and share your <span class="brand text-primary">Angularian</span> profile.
         } @else {
@@ -132,4 +182,4 @@
       }
     </div>
   </section>
-}
+</ng-template>
