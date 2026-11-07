@@ -104,7 +104,7 @@ export default class Home {
   protected readonly becomeWays = [
     { title: 'Merge a pull request', action: 'Read the guide', description: 'Fix a bug, ship a feature or improve the docs in any Angular repository.', icon: 'octGitMerge', color: 'purple', url: 'https://github.com/angular/angular/blob/main/CONTRIBUTING.md' },
     { title: 'Open a helpful issue', action: 'See the issues', description: `An issue that gets completed, or collects ${HELPFUL_ISSUE_REACTIONS}+ reactions or ${HELPFUL_ISSUE_COMMENTS}+ comments.`, icon: 'octIssueOpened', color: 'green', url: 'https://github.com/angular/angular/issues' },
-    { title: 'Write a helpful comment', action: 'Review a pull request', description: `Answer a question on an issue, a PR or a discussion: a comment with ${HELPFUL_COMMENT_REACTIONS}+ reactions, or an accepted answer, counts.`, icon: 'remixChatHeartLine', color: 'blue', url: 'https://github.com/angular/angular/pulls' },
+    { title: 'Write a helpful comment', action: 'Answer a discussion', description: `Answer a question on an issue, a PR or a discussion: a comment with ${HELPFUL_COMMENT_REACTIONS}+ reactions, or an accepted answer, counts.`, icon: 'remixChatHeartLine', color: 'blue', url: 'https://github.com/angular/angular/discussions' },
   ] satisfies readonly { color: GithubColor, [key: string]: unknown }[];
   protected readonly number = formatNumber;
   protected readonly phrase = periodPhrase;

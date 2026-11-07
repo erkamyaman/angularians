@@ -61,9 +61,9 @@ export interface ActivityCounts {
   issues: number
   /** Of those: closed as completed, or 3+ reactions, or 5+ comments. */
   helpfulIssues: number
-  /** Conversation comments on issues and PRs. */
+  /** Conversation comments on issues, PRs and discussions. */
   comments: number
-  /** Of those: 3+ reactions. */
+  /** Of those: 3+ reactions, or a discussion's accepted answer. */
   helpfulComments: number
   /** Inline comments on the code of PRs. */
   reviewComments: number

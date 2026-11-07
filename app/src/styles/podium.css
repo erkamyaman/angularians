@@ -1,7 +1,8 @@
 /*
  * Gold, silver and bronze for the top three of a board: `medal-gold` sets `--podium-ring` and `--podium-text`
  * from the theme's `--medal-*` (styles.css), then `medal-text` colours the text, `medal-ring` (2px) or `medal-ring-thin`
- * (1px) draws a ring, `medal-badge` both. A focus or pressed ring from a utility (`focus-visible:ring-2`) is more specific, and still wins: only because
+ * (1px) draws a ring, `medal-badge` both. A focus or pressed ring from a utility (`focus-visible:ring-2`) is more
+ * specific, and still wins: only because
  * `styles.css` imports the utilities unlayered, like this file. Were they put in a layer, this unlayered file would
  * beat them whatever the specificity.
  */

@@ -112,7 +112,8 @@ place, and leaves out the profile's "Is this your profile?" prompt for it, and d
 everyone else: nothing jumps when the session answers. A hint whose session has ended gets the sign-in in the skeleton's
 place and size, and in the avatar's, once: `/api/auth/me` clears it. A session check that fails counts as signed out,
 so the page stays as the server drew it.
-Sign-in stays hidden until the site has these environment variables:
+Sign-in stays hidden until the site has these environment variables; without them the server draws the page without
+the sign-in and the prompt (`SIGN_IN_SET_UP`, a fact about the site, not the visitor):
 
 | Variable | |
 | --- | --- |
