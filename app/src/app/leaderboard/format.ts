@@ -10,6 +10,19 @@ export const pluralWord = (count: number, one: string, many: string): string => 
 export const plural = (count: number, one: string, many: string): string => `${number.format(count)} ${pluralWord(count, one, many)}`
 export const formatPoints = (score: number): string => plural(score, 'pt', 'pts')
 export const formatRank = (rank: number): string => `#${number.format(rank)}`
+/** What the profile's stat cards and the Angularian card call each count: `[one, many]`. */
+export const STAT_NAMES = {
+  pullRequests: ['Merged PR', 'Merged PRs'],
+  issues: ['Issue', 'Issues'],
+  comments: ['Comment', 'Comments'],
+  reactions: ['Reaction', 'Reactions'],
+} as const satisfies Record<string, readonly [string, string]>
+export type StatName = keyof typeof STAT_NAMES
+/** `Merged PRs` for a stat's count, without the count. */
+export const statWord = (stat: StatName, count: number): string => {
+  const [one, many] = STAT_NAMES[stat]
+  return pluralWord(count, one, many)
+}
 /** UTC, so the server and the browser print the same day (no hydration mismatch). */
 export const formatDate = (iso: string): string => date.format(new Date(iso))
 /** `Apr 2025`: "Angular contributor since …" on the profile, the signed-in card and the Angularian card. */

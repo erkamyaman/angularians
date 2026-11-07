@@ -65,7 +65,7 @@
 
 @if (tip(); as shown) {
   <div #tipBox class="group pointer-events-none fixed z-50 w-max max-w-[calc(100vw-1rem)] -translate-x-1/2 -translate-y-full rounded-md bg-foreground px-3 py-1.5 text-xs text-background" [style.left.px]="shown.x" [style.top.px]="shown.y - 8" aria-hidden="true">
-    <span class="brand mr-1.5 text-sm leading-none">#{{ rank(shown.item) }}</span>{{ who(shown.item) }} · {{ points(shown.item) }}@if (shown.item.countryRank) { · #{{ overall(shown.item) }} overall }
+    <span class="brand mr-1.5 text-sm leading-none">{{ rank(shown.item) }}</span>{{ who(shown.item) }} · {{ points(shown.item) }}@if (shown.item.countryRank) { · {{ overall(shown.item) }} overall }
     <span data-arrow class="absolute top-full left-1/2 -mt-1.5 size-2.5 -translate-x-1/2 rotate-45 rounded-[2px] bg-foreground group-data-[side=bottom]:top-auto group-data-[side=bottom]:bottom-full group-data-[side=bottom]:mt-0 group-data-[side=bottom]:-mb-1.5"></span>
   </div>
 }

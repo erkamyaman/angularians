@@ -4,7 +4,7 @@
 import { Resvg } from '@resvg/resvg-js'
 import { periodOrNull, periodPhrase, type ContributorProfile, type Period } from '@angularians/shared'
 import satori from 'satori'
-import { formatMonth, formatNumber, formatPoints, formatRank, pluralWord } from '../../app/leaderboard/format'
+import { formatMonth, formatNumber, formatPoints, formatRank, statWord } from '../../app/leaderboard/format'
 
 export const CARD_WIDTH = 1200
 export const CARD_HEIGHT = 630
@@ -86,12 +86,12 @@ export function cardTree(profile: ContributorProfile, period: Period, avatar: st
   const since = profile.firstContributionAt ? formatMonth(profile.firstContributionAt) : null
   const rows = [
     [
-      { label: pluralWord(stats.pullRequests.all, 'Merged PR', 'Merged PRs'), value: stats.pullRequests.all, color: COLORS.pullRequests, icon: ICONS.pullRequests },
-      { label: pluralWord(stats.issues, 'Issue', 'Issues'), value: stats.issues, color: COLORS.issues, icon: ICONS.issues },
+      { label: statWord('pullRequests', stats.pullRequests.all), value: stats.pullRequests.all, color: COLORS.pullRequests, icon: ICONS.pullRequests },
+      { label: statWord('issues', stats.issues), value: stats.issues, color: COLORS.issues, icon: ICONS.issues },
     ],
     [
-      { label: pluralWord(stats.comments + stats.reviewComments, 'Comment', 'Comments'), value: stats.comments + stats.reviewComments, color: COLORS.comments, icon: ICONS.comments },
-      { label: pluralWord(stats.reactions, 'Reaction', 'Reactions'), value: stats.reactions, color: COLORS.reactions, icon: ICONS.reactions },
+      { label: statWord('comments', stats.comments + stats.reviewComments), value: stats.comments + stats.reviewComments, color: COLORS.comments, icon: ICONS.comments },
+      { label: statWord('reactions', stats.reactions), value: stats.reactions, color: COLORS.reactions, icon: ICONS.reactions },
     ],
   ]
   return h('div', { width: '100%', height: '100%', flexDirection: 'column', justifyContent: 'space-between', backgroundColor: '#0a0a0a', color: '#ffffff', paddingTop: 44, paddingRight: 64, paddingBottom: 36, paddingLeft: 64, fontFamily: 'Manrope' }, [

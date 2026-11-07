@@ -9,7 +9,7 @@ import { remixCloseLine } from '@ng-icons/remixicon'
 import { HlmAutocompleteImports } from '@spartan-ng/helm/autocomplete'
 import { HlmKbd } from '@spartan-ng/helm/kbd'
 import { searchContributors } from '../data/contributors.server'
-import { avatarUrl, formatNumber, formatPoints, profileQuery } from './format'
+import { avatarUrl, formatPoints, formatRank, profileQuery } from './format'
 
 const DEBOUNCE_MS = 200
 
@@ -40,7 +40,7 @@ export class ContributorSearch {
   })
   protected readonly username = (item: ContributorSummary | null) => item?.username ?? ''
   protected readonly avatar = (item: ContributorSummary) => avatarUrl(item.githubId, 24)
-  protected readonly rank = (item: ContributorSummary) => formatNumber(item.rank)
+  protected readonly rank = (item: ContributorSummary) => formatRank(item.rank)
   protected readonly points = (item: ContributorSummary) => formatPoints(item.score)
 
   private request = 0

@@ -27,7 +27,7 @@ import { loadedValue, markFailed } from '../data/loaded';
 import { missingPeriod, shownPeriod } from '../profile/period-choice';
 import { getContributor } from '../data/contributors.server';
 import { Container } from '../layout/container';
-import { avatarUrl, flagUrl, formatNumber, formatPoints, formatRank, plural, pluralWord, profileQuery, shareQuery } from '../leaderboard/format';
+import { avatarUrl, flagUrl, formatNumber, formatPoints, formatRank, plural, pluralWord, profileQuery, shareQuery, STAT_NAMES, statWord } from '../leaderboard/format';
 import { PeriodTabs } from '../leaderboard/period-tabs';
 import { foldPackages, PACKAGE_ICONS, packageIcon, packageLabel } from '../profile/packages';
 import { CardPreview } from '../profile/card-preview';
@@ -123,26 +123,26 @@ export default class Profile {
     const prs = n.pullRequests;
     return [
       {
-        key: 'pullRequests', icon: 'octGitMerge', value: prs.all, name: pluralWord(prs.all, 'Merged PR', 'Merged PRs'),
+        key: 'pullRequests', icon: 'octGitMerge', value: prs.all, name: statWord('pullRequests', prs.all),
         detail: `${formatNumber(prs.feat)} feat · ${formatNumber(prs.fix)} fix · ${formatNumber(prs.docs)} docs · ${formatNumber(prs.chore)} chore`,
         // GitHub shows most landed PRs as closed (PR Close): this lists all of them, landed or not.
         url: githubSearch(`is:pr author:${person.username}`, 'pullrequests'), label: `${this.githubLabel(person)}`,
         tint: 'merges',
       },
       {
-        key: 'issues', icon: 'octIssueOpened', value: n.issues, name: pluralWord(n.issues, 'Issue', 'Issues'), detail: `${formatNumber(n.helpfulIssues)} helpful`,
-        url: githubSearch(`is:issue author:${person.username}`, 'issues'), label: `${plural(n.issues, 'Issue', 'Issues')} ${periodPhrase(this.period())}. Opens ${person.username}'s issues on GitHub`,
+        key: 'issues', icon: 'octIssueOpened', value: n.issues, name: statWord('issues', n.issues), detail: `${formatNumber(n.helpfulIssues)} helpful`,
+        url: githubSearch(`is:issue author:${person.username}`, 'issues'), label: `${plural(n.issues, ...STAT_NAMES.issues)} ${periodPhrase(this.period())}. Opens ${person.username}'s issues on GitHub`,
         tint: 'issues',
       },
       {
-        key: 'comments', icon: 'octComment', value: n.comments, name: pluralWord(n.comments, 'Comment', 'Comments'),
+        key: 'comments', icon: 'octComment', value: n.comments, name: statWord('comments', n.comments),
         // Inline review comments score on their own (1 pt each): their count goes with the comments.
         detail: `${formatNumber(n.helpfulComments)} helpful · ${plural(n.reviewComments, 'review comment', 'review comments')} on code`,
-        url: githubSearch(`commenter:${person.username}`, 'issues'), label: `${plural(n.comments, 'Comment', 'Comments')} ${periodPhrase(this.period())}. Opens the issues and pull requests ${person.username} commented on, on GitHub`,
+        url: githubSearch(`commenter:${person.username}`, 'issues'), label: `${plural(n.comments, ...STAT_NAMES.comments)} ${periodPhrase(this.period())}. Opens the issues and pull requests ${person.username} commented on, on GitHub`,
         tint: 'comments',
       },
       {
-        key: 'reactions', icon: 'octSmiley', value: n.reactions, name: pluralWord(n.reactions, 'Reaction', 'Reactions'), detail: 'received',
+        key: 'reactions', icon: 'octSmiley', value: n.reactions, name: statWord('reactions', n.reactions), detail: 'received',
         url: null, label: '',
         tint: 'reactions',
       },
@@ -206,6 +206,8 @@ export default class Profile {
 
   protected readonly avatar = (person: ContributorProfile) => avatarUrl(person.githubId, 160);
   protected readonly number = formatNumber;
+  protected readonly rank = formatRank;
+  protected readonly word = pluralWord;
   protected readonly phrase = periodPhrase;
   protected readonly country = countryName;
   protected readonly flag = flagUrl;
@@ -237,7 +239,7 @@ export default class Profile {
 
   protected githubLabel(person: ContributorProfile): string {
     // Starts with the card's visible text ("253 Merged PRs"), so speech input can name it.
-    return `${plural(this.current().pullRequests.all, 'Merged PR', 'Merged PRs')} ${periodPhrase(this.period())}. Opens ${person.username}'s pull requests on GitHub`;
+    return `${plural(this.current().pullRequests.all, ...STAT_NAMES.pullRequests)} ${periodPhrase(this.period())}. Opens ${person.username}'s pull requests on GitHub`;
   }
 
   /** Shared links show the period on screen; the canonical URL has none, so search engines see one page per profile. */

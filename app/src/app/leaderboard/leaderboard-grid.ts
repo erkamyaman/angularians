@@ -9,7 +9,7 @@ import { HlmButton } from '@spartan-ng/helm/button'
 import { vikingAxes, vikingHelmet, vikingShield } from '../layout/viking-icons'
 import { getLeaderboard } from '../data/contributors.server'
 import { RankShield } from './rank-shield'
-import { avatarSrcset, avatarUrl, formatNumber, formatPoints, profileQuery } from './format'
+import { avatarSrcset, avatarUrl, formatNumber, formatPoints, formatRank, profileQuery } from './format'
 
 /** The fallback for browsers without srcset: the cells are drawn at 124px at most. */
 const AVATAR_SIZE = 56
@@ -81,7 +81,7 @@ export class LeaderboardGrid {
   protected readonly podium = (item: ContributorSummary) => PODIUM[this.place(item)] ?? null
   protected readonly who = (item: ContributorSummary) =>
     item.name && item.name.toLowerCase() !== item.username.toLowerCase() ? `${item.name} (${item.username})` : item.username
-  protected readonly overall = (item: ContributorSummary) => formatNumber(item.rank)
+  protected readonly overall = (item: ContributorSummary) => formatRank(item.rank)
   protected readonly tip = signal<{ item: ContributorSummary, link: HTMLElement, x: number, y: number, bottom: number } | null>(null)
   private readonly tipBox = viewChild<ElementRef<HTMLElement>>('tipBox')
 
@@ -110,9 +110,9 @@ export class LeaderboardGrid {
     if (!link || !link.contains(event.relatedTarget as Node | null)) this.tip.set(null)
   }
   protected readonly place = (item: ContributorSummary) => item.countryRank ?? item.rank
-  protected readonly rank = (item: ContributorSummary) => formatNumber(this.place(item))
+  protected readonly rank = (item: ContributorSummary) => formatRank(this.place(item))
   protected readonly label = (item: ContributorSummary) =>
-    `${this.who(item)}, #${this.rank(item)}${item.countryRank ? ` in the country, #${formatNumber(item.rank)} overall` : ''}, ${this.points(item)}`
+    `${this.who(item)}, ${this.rank(item)}${item.countryRank ? ` in the country, ${this.overall(item)} overall` : ''}, ${this.points(item)}`
   protected readonly points = (item: ContributorSummary) => formatPoints(item.score)
 
   constructor() {

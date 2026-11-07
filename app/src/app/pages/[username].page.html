@@ -41,7 +41,7 @@
 
         <div class="flex w-full flex-col gap-4">
           <div class="flex items-center gap-4">
-            <p class="brand text-7xl leading-none text-primary">#{{ number(current().rank) }}</p>
+            <p class="brand text-7xl leading-none text-primary">{{ rank(current().rank) }}</p>
             <div class="flex min-w-0 flex-col">
               <p class="inline-flex items-center gap-1 text-lg tabular-nums">
                 <strong class="font-semibold text-primary">{{ points(current().score) }}</strong>
@@ -62,7 +62,7 @@
             }
             @if (best(); as year) {
               <a [routerLink]="[]" [queryParams]="{ period: year.period }" replaceUrl class="github-gold inline-flex flex-wrap items-center gap-x-1.5 gap-y-1 font-medium tabular-nums transition-opacity hover:opacity-80">
-                <ng-icon name="vikingHelmet" size="1.25rem" aria-hidden="true" /><span class="brand relative top-[0.09em] text-base leading-none">Greatest saga</span> {{ year.period }}, <span class="brand relative top-[0.09em] text-base leading-none">#{{ number(year.rank) }}</span> with {{ points(year.score) }}
+                <ng-icon name="vikingHelmet" size="1.25rem" aria-hidden="true" /><span class="brand relative top-[0.09em] text-base leading-none">Greatest saga</span> {{ year.period }}, <span class="brand relative top-[0.09em] text-base leading-none">{{ rank(year.rank) }}</span> with {{ points(year.score) }}
               </a>
             }
           </div>
@@ -156,7 +156,7 @@
                 </span>
                 <span class="shrink-0 text-right tabular-nums">
                   <span class="text-lg font-semibold">{{ number(item.pullRequests) }}</span>
-                  <span class="text-xs text-muted-foreground"> {{ item.pullRequests === 1 ? 'PR' : 'PRs' }}</span>
+                  <span class="text-xs text-muted-foreground"> {{ word(item.pullRequests, 'PR', 'PRs') }}</span>
                 </span>
               </div>
             </li>
@@ -185,7 +185,7 @@
                 [queryParams]="{ period: row.period }"
                 replaceUrl
                 (click)="scrollToStats()"
-                [hlmTooltip]="row.period + ' · Rank #' + number(row.rank) + ' · ' + points(row.score)"
+                [hlmTooltip]="row.period + ' · Rank ' + rank(row.rank) + ' · ' + points(row.score)"
                 [attr.aria-label]="row.period + ', rank ' + number(row.rank) + ', ' + points(row.score) + (row === yearsOldestFirst()[0] ? ', the first year' : '')"
                 [attr.aria-current]="row.period === period() ? 'true' : null"
                 class="group flex flex-col items-center rounded-md transition-colors hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
@@ -206,7 +206,7 @@
                           <span class="brand hidden text-sm sm:inline">Greatest saga</span>
                         </span>
                       }
-                      <span class="brand block text-sm leading-none sm:text-base">#{{ number(row.rank) }}</span>
+                      <span class="brand block text-sm leading-none sm:text-base">{{ rank(row.rank) }}</span>
                       <span class="hidden text-muted-foreground sm:block">{{ number(row.score) }}</span>
                     </span>
                   }

@@ -11,7 +11,7 @@ import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 import { HlmTooltip } from '@spartan-ng/helm/tooltip';
-import { avatarUrl, flagUrl, formatNumber, matchesCountry } from '../leaderboard/format';
+import { avatarUrl, flagUrl, formatNumber, formatRank, matchesCountry, pluralWord } from '../leaderboard/format';
 import { Globe } from './globe';
 
 /** People shown on the card of a country. */
@@ -74,6 +74,9 @@ export class World {
 
   protected readonly name = countryName;
   protected readonly number = formatNumber;
+  protected readonly rank = formatRank;
+  /** `Angularian` or `Angularians`, for a country's count. */
+  protected readonly angularians = (count: number) => pluralWord(count, 'Angularian', 'Angularians');
   protected readonly flag = flagUrl;
   protected readonly avatar = (person: ContributorSummary) => avatarUrl(person.githubId, 56);
   protected readonly rankOf = (code: string) => this.ranks().get(code) ?? 0;

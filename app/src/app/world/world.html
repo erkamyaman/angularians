@@ -4,7 +4,7 @@
       <img [src]="flag(shown.code)" alt="" width="40" height="40" class="size-10 shrink-0" />
       <div class="min-w-0 flex-1">
         <p class="truncate font-semibold">{{ name(shown.code) }}</p>
-        <p class="text-sm text-muted-foreground">{{ number(shown.count) }} <span class="brand text-primary">{{ shown.count === 1 ? 'Angularian' : 'Angularians' }}</span> · #{{ rankOf(shown.code) }} country</p>
+        <p class="text-sm text-muted-foreground">{{ number(shown.count) }} <span class="brand text-primary">{{ angularians(shown.count) }}</span> · {{ rank(rankOf(shown.code)) }} country</p>
       </div>
       <button hlmBtn variant="ghost" size="icon-sm" type="button" aria-label="Show all countries" (click)="select.emit(null)">
         <ng-icon name="remixCloseLine" aria-hidden="true" />
@@ -14,7 +14,7 @@
       @for (tile of tiles(); track $index) {
         <li class="aspect-square">
           @if (tile) {
-            <a [routerLink]="['/', tile.username]" [hlmTooltip]="tile.username + ' · #' + number(tile.rank)" [attr.aria-label]="tile.username + ', #' + number(tile.rank)" class="block size-full overflow-hidden rounded-md bg-muted ring-1 ring-border transition hover:ring-primary">
+            <a [routerLink]="['/', tile.username]" [hlmTooltip]="tile.username + ' · ' + rank(tile.rank)" [attr.aria-label]="tile.username + ', ' + rank(tile.rank)" class="block size-full overflow-hidden rounded-md bg-muted ring-1 ring-border transition hover:ring-primary">
               <img [src]="avatar(tile)" alt="" width="56" height="56" loading="lazy" class="size-full object-cover" />
             </a>
           } @else {
@@ -24,7 +24,7 @@
       }
     </ul>
     <button hlmBtn variant="link" class="mt-3 px-0 text-muted-foreground hover:text-foreground" type="button" (click)="leaderboard.emit()">
-      <span>See the {{ shown.count === 1 ? '' : number(shown.count) + ' ' }}<span class="brand text-primary">{{ shown.count === 1 ? 'Angularian' : 'Angularians' }}</span> from {{ name(shown.code) }}</span>
+      <span>See the {{ shown.count === 1 ? '' : number(shown.count) + ' ' }}<span class="brand text-primary">{{ angularians(shown.count) }}</span> from {{ name(shown.code) }}</span>
       <ng-icon name="remixArrowUpLine" aria-hidden="true" />
     </button>
   </div>
