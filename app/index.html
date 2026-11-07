@@ -20,6 +20,17 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2" />
     <meta name="theme-color" content="#09090b" />
     <link rel="stylesheet" href="/src/styles.css" />
+    <script>
+      (function () {
+        var navigation = performance.getEntriesByType && performance.getEntriesByType('navigation')[0]
+        if (!navigation || (navigation.type !== 'reload' && navigation.type !== 'back_forward')) return
+        var expect = document.createElement('link')
+        expect.rel = 'expect'
+        expect.href = '#site-footer'
+        expect.setAttribute('blocking', 'render')
+        document.head.appendChild(expect)
+      })()
+    </script>
     <!-- Before the first paint: dark (the class above), or a saved light theme. Same key as ThemeService. -->
     <script>
       (function () {
