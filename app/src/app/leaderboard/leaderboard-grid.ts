@@ -9,7 +9,7 @@ import { HlmButton } from '@spartan-ng/helm/button'
 import { vikingAxes, vikingHelmet, vikingShield } from '../layout/viking-icons'
 import { getLeaderboard } from '../data/contributors.server'
 import { RankShield } from './rank-shield'
-import { LeaderboardMemory, STEP, type Shown } from './leaderboard-memory'
+import { LeaderboardMemory, STEP, type ShowMoreState } from './leaderboard-memory'
 import { PODIUM } from './podium'
 import { avatarSrcset, avatarUrl } from '../contributors/avatar-url'
 import { formatNumber, formatPoints, formatRank } from '../text/number-format'
@@ -40,7 +40,7 @@ export class LeaderboardGrid {
    * The pages after the first, as "Show more" loaded them: remembered per board, so coming back from a profile shows
    * the same list (and the browser's scroll position lands where it was). Another period or country: its own.
    */
-  private readonly shown = linkedSignal<LeaderboardPage, Shown>({ source: () => this.page(), computation: page => this.memory.get(page) })
+  private readonly shown = linkedSignal<LeaderboardPage, ShowMoreState>({ source: () => this.page(), computation: page => this.memory.get(page) })
   /** Both belong to one board: a failure or a request of the last one must not show on the next. */
   protected readonly loading = linkedSignal({ source: () => this.page(), computation: () => false })
   protected readonly failed = linkedSignal({ source: () => this.page(), computation: () => false })
