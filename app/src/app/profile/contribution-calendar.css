@@ -1,4 +1,6 @@
 :host {
+  --cell: 0.75rem;
+  --gap: 3px;
   display: block;
 }
 
@@ -8,8 +10,6 @@
 }
 
 .calendar {
-  --cell: 0.75rem;
-  --gap: 3px;
   display: grid;
   grid-template-columns: 2rem max-content;
   grid-template-rows: 1rem max-content;
@@ -74,7 +74,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: var(--gap, 3px);
+  gap: var(--gap);
   margin-top: calc(var(--spacing) * 2);
   font-size: var(--text-xs);
   color: var(--muted-foreground);
