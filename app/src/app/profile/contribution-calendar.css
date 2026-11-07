@@ -61,12 +61,14 @@
 }
 
 .scroller {
+  direction: rtl;
   min-width: 0;
   overflow-x: auto;
   padding-bottom: calc(var(--spacing) * 2);
 }
 
 .calendar {
+  direction: ltr;
   display: grid;
   grid-template-rows: var(--months) auto;
   row-gap: var(--gap);

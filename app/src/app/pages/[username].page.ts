@@ -6,7 +6,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
 import { type RouteMeta } from '@analogjs/router';
 import { injectResponse } from '@analogjs/router/tokens';
-import { countryCode, countryName, DEFAULT_PERIOD, GITHUB_USERNAME_RE, periodOrNull, periodPhrase, type ContributorPeriodStats, type ContributorProfile, type Period } from '@angularians/shared';
+import { countryCode, countryName, DEFAULT_PERIOD, GITHUB_USERNAME_RE, isYear, periodOrNull, periodPhrase, type ContributorPeriodStats, type ContributorProfile, type Period } from '@angularians/shared';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { remixArrowDownSLine, remixArrowLeftLine, remixArrowRightSLine, remixArrowRightUpLine, remixArrowUpSLine, remixCloseLine, remixInformationLine, remixLinkM, remixLinkedinBoxLine, remixMedalLine, remixStarFill, remixVerifiedBadgeLine } from '@ng-icons/remixicon';
 import { vikingAxes, vikingHelmet, vikingLongship, vikingShield } from '../layout/viking-icons';
@@ -130,7 +130,7 @@ export default class Profile {
   });
   /** The contributor's rank in each period they contributed in, for the period tabs. */
   protected readonly ranks = computed(() => Object.fromEntries((this.loaded()?.periods ?? []).map(row => [row.period, row.rank])));
-  protected readonly years = computed(() => (this.loaded()?.periods ?? []).filter(row => /^\d{4}$/.test(row.period)));
+  protected readonly years = computed(() => (this.loaded()?.periods ?? []).filter(row => isYear(row.period)));
   protected readonly yearsOldestFirst = computed(() => [...this.years()].sort((a, b) => Number(a.period) - Number(b.period)));
   protected readonly firstYear = computed<ContributorPeriodStats | undefined>(() => this.yearsOldestFirst()[0]);
   private readonly peakYear = computed(() => this.years().reduce<ReturnType<typeof this.years>[number] | undefined>((top, row) => (!top || row.score > top.score ? row : top), undefined));

@@ -1,4 +1,4 @@
-import type { Contributor, PackagesRecord, Period, ProfileRecord, TeamRecord } from '@angularians/shared'
+import type { Contributor, EncodedCalendar, PackagesRecord, Period, ProfileRecord, TeamRecord } from '@angularians/shared'
 
 /** What `scripts/bundle-data.ts` writes to `bundle.generated.json`: the validated `data/` files, in one module. */
 export interface DataBundle {
@@ -11,5 +11,5 @@ export interface DataBundle {
   team: TeamRecord[]
   /** Old usernames of renamed contributors (`renames.json`): empty before the collector wrote one. */
   renames?: TeamRecord[]
-  calendar?: Record<number, number[]>
+  calendar?: EncodedCalendar
 }

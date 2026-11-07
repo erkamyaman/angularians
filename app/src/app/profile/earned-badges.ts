@@ -1,4 +1,4 @@
-import type { ContributorProfile } from '@angularians/shared'
+import { isYear, type ContributorProfile } from '@angularians/shared'
 import { remixStarFill } from '@ng-icons/remixicon'
 import { simpleNx } from '@ng-icons/simple-icons'
 import { octShield } from '@ng-icons/octicons'
@@ -45,7 +45,7 @@ export function earnedBadges(person: ContributorProfile): EarnedBadge[] {
   for (const { project, role } of projects) badges.push(projectBadge(project, role))
   const forged = projects.filter(({ project, role }) => project.builtOn && (role === 'creator' || role === 'co-creator')).map(({ project }) => project.name)
   if (forged.length) badges.push({ label: 'Smith of ng-halla', title: `Forged ${forged.join(' and ')}`, icon: 'vikingAnvil', tone: 'primary' })
-  const firsts = person.periods.filter(row => /^\d{4}$/.test(row.period) && row.rank === 1).map(row => Number(row.period)).sort((x, y) => x - y)
+  const firsts = person.periods.filter(row => isYear(row.period) && row.rank === 1).map(row => Number(row.period)).sort((x, y) => x - y)
   if (firsts.length) badges.push({ label: `#1 in ${yearRanges(firsts)}`, title: `The top Angularian of ${plural(firsts.length, 'year', 'years')}`, icon: 'vikingHelmet', tone: 'gold' })
   if (person.rank <= 10) badges.push({ label: 'Top 10 all time', title: `${formatRank(person.rank)} of all time`, icon: 'vikingShield', tone: 'green' })
   if (person.reviewComments >= 100) badges.push({ label: 'Reviewer', title: `${formatNumber(person.reviewComments)} review comments on code`, icon: 'vikingAxes', tone: 'purple' })

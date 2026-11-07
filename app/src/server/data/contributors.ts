@@ -6,6 +6,7 @@ import {
   type Contributor,
   type ContributorProfile,
   type ContributorsMap,
+  type EncodedCalendar,
   type ContributorSummary,
   type CountryStats,
   type LeaderboardPage,
@@ -37,7 +38,7 @@ export class ContributorsData {
   private readonly byUsername = new Map<Period, Map<string, Contributor>>()
   private readonly profiles: Map<number, ProfileRecord>
   private readonly packages: Map<number, Array<{ name: string, pullRequests: number }>>
-  private readonly calendar: Record<number, number[]>
+  private readonly calendar: EncodedCalendar
   private readonly team: Set<number>
   /** GitHub id → username, all time. */
   private readonly usernames: Map<number, string>

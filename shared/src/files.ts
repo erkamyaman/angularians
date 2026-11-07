@@ -1,5 +1,6 @@
 // Ported from nuxt.com `shared/utils/nuxters.ts` (`parseNuxtersFile`, `parseNuxterProfilesFile`, `safeNuxterUrl`)
 // and nuxt/nuxters `saveContributors` (MIT, Copyright (c) 2022-2023 NuxtLabs, Copyright (c) 2023 Nuxt).
+import type { EncodedCalendar } from './calendar.ts'
 import { countryCode } from './countries.ts'
 import { compareRecords, emptyCounts, score } from './scoring.ts'
 import type { ActivityCounts, Contributor, PackagesRecord, ProfileRecord, PullRequestCounts, SocialAccount, TeamRecord } from './types.ts'
@@ -156,9 +157,9 @@ export function parsePackagesFile(data: unknown): PackagesRecord[] {
   return records
 }
 
-export function parseCalendarFile(data: unknown): Record<number, number[]> {
+export function parseCalendarFile(data: unknown): EncodedCalendar {
   if (!data || typeof data !== 'object' || Array.isArray(data)) throw new TypeError(`${CALENDAR_FILE} must be an object`)
-  const people: Record<number, number[]> = {}
+  const people: EncodedCalendar = {}
   for (const [key, days] of Object.entries(data)) {
     const id = githubId(Number(key))
     if (id === null || !Array.isArray(days) || days.length % 2) continue

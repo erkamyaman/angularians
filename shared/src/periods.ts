@@ -24,7 +24,7 @@ export function periodOrNull(value: unknown): Period | null {
 
 export function isPeriod(value: unknown, now: Date = new Date()): value is Period {
   if (typeof value !== 'string' || !PERIOD_RE.test(value)) return false
-  if (!/^\d{4}$/.test(value)) return true
+  if (!isYear(value as Period)) return true
   const year = Number(value)
   return year >= FIRST_YEAR && year <= now.getUTCFullYear()
 }
@@ -51,7 +51,9 @@ export function periodsFor(date: string | null | undefined, now: Date): Period[]
 
 export const utcDay = (time: number): string => new Date(time).toISOString().slice(0, 10)
 
-export const isYear = (period: Period): boolean => /^\d{4}$/.test(period)
+export function isYear(period: Period): boolean {
+  return /^\d{4}$/.test(period)
+}
 
 export function periodDays(period: Period, now: Date): [string, string] {
   const today = utcDay(now.getTime())

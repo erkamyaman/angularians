@@ -30,7 +30,6 @@ export class ContributionCalendar {
   readonly years = input.required<readonly Period[]>()
   readonly periodChange = output<Period>()
 
-  private readonly scroller = viewChild.required<ElementRef<HTMLElement>>('scroller')
   private readonly yearList = viewChild.required<ElementRef<HTMLElement>>('yearList')
   private readonly document = inject(DOCUMENT)
 
@@ -64,7 +63,7 @@ export class ContributionCalendar {
   ]
   protected readonly green = signal(false)
 
-  protected hover(event: PointerEvent): void {
+  protected showDay(event: PointerEvent): void {
     const cell = event.target as HTMLElement
     const label = cell.dataset['label']
     if (!label) return
@@ -73,8 +72,11 @@ export class ContributionCalendar {
     this.hovered.set({ label, x: box.left - graph.left + box.width / 2, y: box.top - graph.top })
   }
 
+  protected hideDay(): void {
+    this.hovered.set(null)
+  }
+
   constructor() {
-    this.followTheLatestWeeks()
     this.followThePickedYear()
     this.restoreColors()
   }
@@ -89,29 +91,24 @@ export class ContributionCalendar {
     try {
       localStorage.setItem(COLORS_KEY, green ? 'green' : 'gold')
     }
-    catch {
-      // Storage blocked: the choice lasts until the page is left.
-    }
-  }
-
-  private followTheLatestWeeks(): void {
-    afterRenderEffect(() => {
-      this.grid()
-      const element = this.scroller().nativeElement
-      element.scrollLeft = element.scrollWidth
-    })
+    catch {}
   }
 
   private followThePickedYear(): void {
-    let first = true
-    afterRenderEffect(() => {
-      this.shown()
-      const list = this.yearList().nativeElement
-      const picked = list.querySelector<HTMLElement>('[aria-pressed="true"]')
-      if (!picked) return
-      const smooth = !first && !matchMedia('(prefers-reduced-motion: reduce)').matches
-      first = false
-      list.scrollTo({ top: picked.offsetTop - (list.clientHeight - picked.offsetHeight) / 2, behavior: smooth ? 'smooth' : 'instant' })
+    let smooth = false
+    afterRenderEffect({
+      earlyRead: () => {
+        this.shown()
+        const list = this.yearList().nativeElement
+        const picked = list.querySelector<HTMLElement>('[aria-pressed="true"]')
+        return picked ? picked.offsetTop - (list.clientHeight - picked.offsetHeight) / 2 : null
+      },
+      write: (top) => {
+        const to = top()
+        if (to === null) return
+        this.yearList().nativeElement.scrollTo({ top: to, behavior: smooth && !matchMedia('(prefers-reduced-motion: reduce)').matches ? 'smooth' : 'instant' })
+        smooth = true
+      },
     })
   }
 

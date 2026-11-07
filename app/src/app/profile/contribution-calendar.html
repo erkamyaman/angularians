@@ -57,14 +57,14 @@
             <span>{{ weekday }}</span>
           }
         </div>
-        <div #scroller class="scroller">
+        <div class="scroller">
           <div class="calendar">
             <div class="months">
               @for (month of grid().months; track month.week) {
                 <span [style.grid-column]="month.week + 1">{{ month.label }}</span>
               }
             </div>
-            <div class="days" (pointerover)="hover($event)" (pointerleave)="hovered.set(null)">
+            <div class="days" (pointerover)="showDay($event)" (pointerleave)="hideDay()">
               @for (week of grid().weeks; track $index) {
                 @for (cell of week; track $index) {
                   @if (cell) {
@@ -97,7 +97,7 @@
     </div>
     <nav #yearList class="years" aria-label="Contributions in">
       @for (choice of choices(); track choice.period) {
-        <button type="button" [attr.aria-pressed]="choice.period === shown()" (click)="periodChange.emit(choice.period)">{{ choice.label }}</button>
+        <button type="button" [attr.aria-pressed]="choice.period === shown()" (click)="pickPeriod(choice.period)">{{ choice.label }}</button>
       }
     </nav>
   </div>

@@ -1,6 +1,6 @@
 // Ported from nuxt.com `app/components/nuxters/NuxtersPeriodTabs.vue` (MIT, Copyright (c) 2022-2023 NuxtLabs).
 import { Component, computed, input, linkedSignal, output } from '@angular/core'
-import { periodPhrase, type Period } from '@angularians/shared'
+import { isYear, periodPhrase, type Period } from '@angularians/shared'
 import { HlmSelectImports } from '@spartan-ng/helm/select'
 import { HlmTabsImports } from '@spartan-ng/helm/tabs'
 import { formatRank } from '../text/number-format'
@@ -32,7 +32,7 @@ export class PeriodTabs {
   protected readonly tabs = computed(() => ['30d', '12m', 'all']
     .filter(value => this.periods().includes(value))
     .map(value => ({ value, label: TAB_LABELS[value]! })))
-  protected readonly years = computed(() => this.periods().filter(value => /^\d{4}$/.test(value)))
+  protected readonly years = computed(() => this.periods().filter(isYear))
   protected readonly year = computed(() => (this.years().includes(this.selected()) ? this.selected() : null))
   /** A year matches no tab: none is active. */
   protected readonly activeTab = computed(() => (this.year() ? YEAR : this.selected()))

@@ -1,6 +1,7 @@
 import { DAY_MS, FIRST_YEAR, utcDay } from './periods.ts'
 
 export type Calendar = Map<number, Map<string, number>>
+export type EncodedCalendar = Record<number, number[]>
 
 export function mergeCalendars(calendars: readonly Calendar[]): Calendar {
   const merged: Calendar = new Map()
@@ -16,8 +17,8 @@ export function mergeCalendars(calendars: readonly Calendar[]): Calendar {
 
 const EPOCH = Date.UTC(FIRST_YEAR, 0, 1)
 
-export function encodeCalendar(calendar: Calendar): Record<number, number[]> {
-  const file: Record<number, number[]> = {}
+export function encodeCalendar(calendar: Calendar): EncodedCalendar {
+  const file: EncodedCalendar = {}
   for (const [githubId, days] of calendar) {
     file[githubId] = [...days]
       .map(([day, count]) => [Math.round((Date.parse(day) - EPOCH) / DAY_MS), count] as const)
