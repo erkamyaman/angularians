@@ -13,10 +13,11 @@
   }
 }
 
-/* Each guide's colour, on hover (`styles/guide.css`) */
+/* Each guide's colour, on hover (`styles/guide.css`); Discord's is its own brand's. */
 .angular {
   --guide-accent: var(--angular-purple);
 }
 .discord {
-  --guide-accent: #5865F2;
+  --discord: #5865F2;
+  --guide-accent: var(--discord);
 }
