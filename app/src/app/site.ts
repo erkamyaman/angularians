@@ -20,3 +20,6 @@ export const SITE_DESCRIPTION = 'Everyone who has contributed to Angular since 2
 
 /** The home page's title: the name, then what the site is, for search results. */
 export const SITE_TITLE = 'Angularians · Every Angular contributor, ranked'
+
+/** The launch post the home page's callout links to; `null` hides the callout until the post is out. */
+export const LAUNCH_POST: { title: string, href: string } | null = null

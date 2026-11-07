@@ -28,7 +28,8 @@ import { CountrySelect } from '../leaderboard/country-select';
 import { NextUpdate } from '../leaderboard/next-update';
 import { MeCard } from '../leaderboard/me-card';
 import { ScoreRules } from '../leaderboard/score-rules';
-import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '../site';
+import { LAUNCH_POST, SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '../site';
+import { AnnouncementCallout } from '../layout/announcement-callout';
 import { setJsonLd, setShareMeta } from '../seo-head';
 import { boardHead } from '../leaderboard/board-head';
 import { boardJsonLd } from '../leaderboard/board-json-ld';
@@ -50,6 +51,7 @@ export const routeMeta = {
 @Component({
   selector: 'app-home',
   imports: [
+    AnnouncementCallout,
     ClaimBadge, EarnBadges, JoinLinks,
     AngularLogo, ContributorSearch, CountrySelect, HlmButton, HlmCardImports, HlmSkeleton, LeaderboardGrid, LogoMark, MeCard, NextUpdate, NgIcon, ScoreRules,
     PageGrid, PageHero, PageSection, PeriodTabs, World,
@@ -66,6 +68,7 @@ export default class Home {
 
   /** `?period=` and `?country=` are the state: shareable, and kept on reload. Unknown values fall back. */
   private readonly requestedPeriod = injectQueryParams(params => periodOrNull(params['period']));
+  protected readonly launchPost = LAUNCH_POST;
   protected readonly country = injectQueryParams(params => countryCode(params['country']));
   protected readonly period = computed(() => this.requestedPeriod() ?? DEFAULT_PERIOD);
 

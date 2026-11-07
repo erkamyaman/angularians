@@ -16,6 +16,9 @@
     <app-score-rules />
     <a hlmBtn variant="outline" href="https://github.com/angular/angular/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener"><ng-icon name="vikingLongship" size="1.5rem" aria-hidden="true" /> How to contribute</a>
   </ng-container>
+  @if (launchPost; as post) {
+    <app-announcement-callout [title]="post.title" [href]="post.href" />
+  }
   <div heroAside><app-me-card /></div>
 </app-page-hero>
 
