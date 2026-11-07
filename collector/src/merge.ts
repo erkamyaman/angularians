@@ -6,7 +6,7 @@
  */
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { mergePackages, mergeRecords, type ContributorRecord, type Period } from '@angularians/shared'
+import { mergeCalendars, mergePackages, mergeRecords, type ContributorRecord, type Period } from '@angularians/shared'
 import { emptyStats, readPart, writeData, type Collected, type Stats } from './finalize.ts'
 
 export function mergeParts(parts: readonly Collected[]): Collected {
@@ -35,6 +35,7 @@ export function mergeParts(parts: readonly Collected[]): Collected {
     activity,
     files: new Map([...periods].map(([period, lists]) => [period, mergeRecords(lists)])),
     packages: mergePackages(parts.map(part => part.packages)),
+    calendar: mergeCalendars(parts.map(part => part.calendar)),
     stats,
   }
 }

@@ -41,6 +41,7 @@ import { profileHead } from '../profile/profile-head';
 import { profileJsonLd } from '../profile/profile-json-ld';
 import { profileLinks } from '../profile/profile-links';
 import { profileStats } from '../profile/profile-stats';
+import { ContributionCalendar } from '../profile/contribution-calendar';
 import { ContributorSince } from '../profile/contributor-since';
 import { ScoreDialog } from '../profile/score-dialog';
 import { showsSignInPrompt } from '../profile/sign-in-prompt';
@@ -56,7 +57,7 @@ export const routeMeta = {
 
 @Component({
   selector: 'app-profile',
-  imports: [BadgePill, CardPreview, Container, ContributorSince, HlmButton, HlmSkeleton, HlmTooltip, AngularianPill, NgIcon, NgTemplateOutlet, PeriodTabs, RouterLink, ScoreDialog, Share],
+  imports: [BadgePill, CardPreview, ContributionCalendar, Container, ContributorSince, HlmButton, HlmSkeleton, HlmTooltip, AngularianPill, NgIcon, NgTemplateOutlet, PeriodTabs, RouterLink, ScoreDialog, Share],
   providers: [provideIcons({
     ...BADGE_ICONS,
     vikingAxes, vikingLongship, remixCloseLine, remixArrowLeftLine, remixArrowRightSLine, remixArrowRightUpLine, remixMedalLine, octIssueOpened, octGitMerge, remixInformationLine,

@@ -63,6 +63,7 @@ const collected: Collected = {
   activity: config.activity,
   files: accumulator.records(),
   packages: accumulator.packages(),
+  calendar: accumulator.calendar(),
   stats,
 }
 

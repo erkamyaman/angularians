@@ -11,4 +11,5 @@ export interface DataBundle {
   team: TeamRecord[]
   /** Old usernames of renamed contributors (`renames.json`): empty before the collector wrote one. */
   renames?: TeamRecord[]
+  calendar?: Record<number, number[]>
 }

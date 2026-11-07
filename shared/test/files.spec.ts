@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { updatedRenames, parseContributorsFile, parsePackagesFile, parseProfilesFile, safeUrl, toJsonLines } from '../src/files.ts'
+import { updatedRenames, parseCalendarFile, parseContributorsFile, parsePackagesFile, parseProfilesFile, safeUrl, toJsonLines } from '../src/files.ts'
 
 const record = (githubId: unknown, username: unknown, pullRequests: Record<string, unknown> = { feat: 1 }, extra: Record<string, unknown> = {}) =>
   ({ githubId, username, score: 999, pullRequests, firstContributionAt: '2020-01-01T00:00:00Z', ...extra })
@@ -108,5 +108,15 @@ describe('updatedRenames', () => {
   })
   it('drops an old name someone else contributes under now', () => {
     expect(updatedRenames([row(2, 'bob')], [], [row(2, 'robert'), row(5, 'bob')])).toEqual([])
+  })
+})
+
+describe('parseCalendarFile', () => {
+  it('keeps each person whose days are increasing day numbers with positive counts, and drops the rest', () => {
+    expect(parseCalendarFile({ 1: [0, 1, 790, 2], 2: [5, 1, 3, 1], 3: [0, 0], abc: [0, 1], 4: [0, 1, 2], 5: 'x' })).toEqual({ 1: [0, 1, 790, 2] })
+  })
+
+  it('refuses a file that is not an object', () => {
+    expect(() => parseCalendarFile([])).toThrow(TypeError)
   })
 })

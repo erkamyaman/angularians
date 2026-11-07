@@ -114,6 +114,8 @@ export interface ContributorProfile extends Contributor {
   packages: Array<{ name: string, pullRequests: number }>
   /** A public member of the organization of the repository (the Angular team badge). */
   team: boolean
+  calendar: number[]
+  collectedAt: string | null
 }
 
 /** A leaderboard row. */

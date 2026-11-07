@@ -37,6 +37,7 @@ export class ContributorsData {
   private readonly byUsername = new Map<Period, Map<string, Contributor>>()
   private readonly profiles: Map<number, ProfileRecord>
   private readonly packages: Map<number, Array<{ name: string, pullRequests: number }>>
+  private readonly calendar: Record<number, number[]>
   private readonly team: Set<number>
   /** GitHub id → username, all time. */
   private readonly usernames: Map<number, string>
@@ -50,6 +51,7 @@ export class ContributorsData {
     this.collectedAt = bundle.meta?.collectedAt ?? null
     this.profiles = new Map(bundle.profiles.map(profile => [profile.githubId, profile]))
     this.packages = new Map((bundle.packages ?? []).map(record => [record.githubId, record.packages]))
+    this.calendar = bundle.calendar ?? {}
     this.team = new Set((bundle.team ?? []).map(member => member.githubId))
     this.usernames = new Map((this.byPeriod.get('all') ?? []).map(row => [row.githubId, row.username]))
     this.renames = new Map((bundle.renames ?? []).map(record => [record.username.toLowerCase(), record.githubId]))
@@ -141,6 +143,8 @@ export class ContributorsData {
       country: links?.country ?? null,
       packages: this.packages.get(allTime.githubId) ?? [],
       team: this.team.has(allTime.githubId),
+      calendar: this.calendar[allTime.githubId] ?? [],
+      collectedAt: this.collectedAt,
     }
   }
 

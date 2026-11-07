@@ -1,0 +1,63 @@
+:host {
+  display: block;
+}
+
+.scroller {
+  overflow-x: auto;
+  padding-bottom: calc(var(--spacing) * 2);
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: 2rem repeat(var(--weeks), 0.75rem);
+  grid-template-rows: 1rem repeat(7, 0.75rem);
+  gap: 3px;
+  width: max-content;
+  font-size: var(--text-xs);
+  line-height: 1;
+  color: var(--muted-foreground);
+}
+
+.month {
+  grid-row: 1;
+  white-space: nowrap;
+}
+
+.weekday {
+  grid-column: 1;
+  align-self: center;
+}
+
+.day {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 3px;
+  background: var(--calendar-0);
+}
+
+.day[data-level="1"] {
+  background: var(--calendar-1);
+}
+
+.day[data-level="2"] {
+  background: var(--calendar-2);
+}
+
+.day[data-level="3"] {
+  background: var(--calendar-3);
+}
+
+.day[data-level="4"] {
+  background: var(--calendar-4);
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  margin-top: calc(var(--spacing) * 2);
+  font-size: var(--text-xs);
+  color: var(--muted-foreground);
+}

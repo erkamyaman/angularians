@@ -17,6 +17,7 @@ const part = (repo: string, collectedAt: string, records: ContributorRecord[], l
   activity: true,
   files: new Map([['all', records], ['2026', records]]),
   packages: [{ githubId: records[0]!.githubId, packages: [{ name: repo === 'angular/angular' ? 'core' : '@angular/cdk', pullRequests: 1 }] }],
+  calendar: new Map([[records[0]!.githubId, new Map([['2026-03-03', 2], ['2026-03-04', 1]])]]),
   stats: { ...emptyStats(), landedPullRequests: landed, comments: 2 },
 })
 
@@ -48,6 +49,10 @@ describe('parts', () => {
       { githubId: 1, packages: [{ name: 'core', pullRequests: 1 }] },
       { githubId: 2, packages: [{ name: '@angular/cdk', pullRequests: 1 }] },
     ])
+    expect(merged.calendar).toEqual(new Map([
+      [1, new Map([['2026-03-03', 2], ['2026-03-04', 1]])],
+      [2, new Map([['2026-03-03', 2], ['2026-03-04', 1]])],
+    ]))
     expect(merged.stats).toMatchObject({ landedPullRequests: 7, comments: 4 })
   })
 

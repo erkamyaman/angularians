@@ -76,6 +76,7 @@ nothing.
 - `profiles.json`: name, website, social accounts and country of every all-time contributor who set any.
   If GraphQL fails, the previous file is kept.
 - `packages.json`: the packages each contributor's landed PRs named, all time.
+- `calendar.json`: each contributor's contributions of their own per UTC day, by GitHub id, as `[day, count, …]` with days counted from 1 January 2014 (the profile's graph).
 - `team.json`: the public members of the `angular` organization (the "Angular team" badge). If the API fails, the
   previous file is kept.
 - `renames.json`: old usernames of renamed accounts, found by comparing usernames with the previous run by GitHub id.

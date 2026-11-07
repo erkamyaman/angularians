@@ -9,7 +9,7 @@ import { existsSync } from 'node:fs'
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { PACKAGES_FILE, parseContributorsFile, parsePackagesFile, parseProfilesFile, parseRenamesFile, parseTeamFile, periodFromFile, PROFILES_FILE, RENAMES_FILE, TEAM_FILE } from '@angularians/shared'
+import { CALENDAR_FILE, PACKAGES_FILE, parseCalendarFile, parseContributorsFile, parsePackagesFile, parseProfilesFile, parseRenamesFile, parseTeamFile, periodFromFile, PROFILES_FILE, RENAMES_FILE, TEAM_FILE } from '@angularians/shared'
 import type { DataBundle } from '../src/server/data/bundle.ts'
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -33,6 +33,9 @@ if (files.includes(PROFILES_FILE)) {
 if (files.includes(PACKAGES_FILE)) {
   bundle.packages = parsePackagesFile(JSON.parse(await readFile(join(dataDir, PACKAGES_FILE), 'utf8')))
 }
+if (files.includes(CALENDAR_FILE)) {
+  bundle.calendar = parseCalendarFile(JSON.parse(await readFile(join(dataDir, CALENDAR_FILE), 'utf8')))
+}
 if (files.includes(TEAM_FILE)) {
   bundle.team = parseTeamFile(JSON.parse(await readFile(join(dataDir, TEAM_FILE), 'utf8')))
 }
@@ -52,4 +55,4 @@ await mkdir(dirname(output), { recursive: true })
 await writeFile(output, JSON.stringify(bundle), 'utf8')
 const counts = Object.entries(bundle.periods).map(([period, rows]) => `${period}: ${rows.length}`).join(', ')
 console.log(`Bundled ${dataDir} → ${output}`)
-console.log(`  ${counts || 'no period files (the site shows an empty leaderboard)'}; ${bundle.profiles.length} profiles, ${bundle.packages.length} with packages, ${bundle.team.length} team members`)
+console.log(`  ${counts || 'no period files (the site shows an empty leaderboard)'}; ${bundle.profiles.length} profiles, ${bundle.packages.length} with packages, ${bundle.team.length} team members, ${Object.keys(bundle.calendar ?? {}).length} with days`)

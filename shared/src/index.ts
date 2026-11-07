@@ -1,4 +1,5 @@
 export * from './bots.ts'
+export * from './calendar.ts'
 export * from './countries.ts'
 export * from './files.ts'
 export * from './location.ts'

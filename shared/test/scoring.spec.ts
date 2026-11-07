@@ -204,3 +204,28 @@ describe('mergePackages', () => {
     ])
   })
 })
+
+describe('ContributorsAccumulator.calendar', () => {
+  const comment = (author: ReturnType<typeof user> | null, created_at: string, reactions = 0): CommentInput =>
+    ({ user: author, created_at, reactions: { total_count: reactions } })
+
+  it('counts each contribution on its UTC day, per person', () => {
+    const acc = new ContributorsAccumulator(now)
+    acc.addLandedPullRequest(pr('ann', 1, 'fix', '2026-03-03T23:59:59Z'))
+    acc.addComment(comment(user('ann', 1), '2026-03-03T08:00:00Z'))
+    acc.addReviewComment(comment(user('ann', 1), '2026-03-04T00:00:00Z'))
+    acc.addIssue({ user: user('bo', 2), created_at: '2019-07-01T12:00:00Z', comments: 0, reactions: { total_count: 0 }, state_reason: null })
+    expect(acc.calendar()).toEqual(new Map([
+      [1, new Map([['2026-03-03', 2], ['2026-03-04', 1]])],
+      [2, new Map([['2019-07-01', 1]])],
+    ]))
+  })
+
+  it('leaves out what is not a contribution of their own: reactions on a PR, an accepted answer, bots', () => {
+    const acc = new ContributorsAccumulator(now)
+    acc.addIssue({ user: user('cy', 3), created_at: '2026-01-01T00:00:00Z', pull_request: {}, reactions: { total_count: 9 } })
+    acc.addAcceptedAnswer(comment(user('cy', 3), '2026-01-02T00:00:00Z'))
+    acc.addComment(comment(user('google-cla[bot]', 4), '2026-01-03T00:00:00Z'))
+    expect(acc.calendar()).toEqual(new Map())
+  })
+})
