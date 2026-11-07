@@ -40,7 +40,8 @@ and tabs would lose their size for a frame and move what is around them.
 
 To try the site with another data folder: `CONTRIBUTORS_DATA_DIR=/path/to/data pnpm build`.
 
-The brand font, Norse Bold (the word "Angularian" on the site and the cards), is in `app/public/fonts/`. The mark is built by `app/scripts/logo/build.py`.
+The brand font, Norse Bold (the word "Angularian" on the site and the cards), is in `app/public/fonts/`; it and
+Manrope's Latin file are preloaded (`app/index.html`), so the text does not move when they arrive. The mark is built by `app/scripts/logo/build.py`.
 
 ## Design tokens
 
