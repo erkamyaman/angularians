@@ -38,6 +38,7 @@ import { PeriodTabs } from '../leaderboard/period-tabs';
 import { foldPackages, PACKAGE_ICONS, packageIcon, packageLabel } from '../profile/packages';
 import { CardPreview } from '../profile/card-preview';
 import { profileHead } from '../profile/profile-head';
+import { profileJsonLd } from '../profile/profile-json-ld';
 import { profileLinks } from '../profile/profile-links';
 import { profileStats } from '../profile/profile-stats';
 import { ContributorSince } from '../profile/contributor-since';
@@ -45,8 +46,8 @@ import { ScoreDialog } from '../profile/score-dialog';
 import { Share } from '../profile/share';
 import { AuthService } from '../auth/auth.service';
 import { AngularianPill } from '../layout/angularian-pill';
-import { SITE_SCHEMA, SITE_URL } from '../site';
-import { breadcrumbs, setJsonLd, setShareMeta } from '../seo-head';
+import { SITE_URL } from '../site';
+import { setJsonLd, setShareMeta } from '../seo-head';
 
 export const routeMeta = {
   title: 'Contributor · Angularians',
@@ -239,29 +240,6 @@ export default class Profile {
       image: `${SITE_URL}/${person.username}/card.png${shareQuery(this.period(), this.cardFlag())}`,
       canonical: `/${person.username}`,
     });
-    // A profile page about a person (the GitHub account; its other links are user input, so not vouched for here),
-    // and its place in the site, for search results.
-    const url = `${SITE_URL}/${person.username}`;
-    setJsonLd(this.document, {
-      '@graph': [
-        {
-          '@type': 'ProfilePage',
-          url,
-          name: `${title} · Angularians`,
-          description,
-          isPartOf: SITE_SCHEMA,
-          mainEntity: {
-            '@type': 'Person',
-            name: person.name || person.username,
-            alternateName: person.username,
-            identifier: String(person.githubId),
-            url,
-            image: avatarUrl(person.githubId, 320),
-            sameAs: [`https://github.com/${person.username}`],
-          },
-        },
-        breadcrumbs([{ name: 'Angularians', path: '/' }, { name: person.name || person.username, path: `/${person.username}` }]),
-      ],
-    });
+    setJsonLd(this.document, profileJsonLd(person, { title, description }));
   }
 }

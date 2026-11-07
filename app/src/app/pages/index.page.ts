@@ -28,9 +28,10 @@ import { CountrySelect } from '../leaderboard/country-select';
 import { NextUpdate } from '../leaderboard/next-update';
 import { MeCard } from '../leaderboard/me-card';
 import { ScoreRules } from '../leaderboard/score-rules';
-import { SITE_DESCRIPTION, SITE_SCHEMA, SITE_TITLE, SITE_URL } from '../site';
-import { breadcrumbs, setJsonLd, setShareMeta } from '../seo-head';
+import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from '../site';
+import { setJsonLd, setShareMeta } from '../seo-head';
 import { boardHead } from '../leaderboard/board-head';
+import { boardJsonLd } from '../leaderboard/board-json-ld';
 import { boardTotals } from '../leaderboard/board-totals';
 import { formatNumber } from '../text/number-format';
 import { ClaimBadge } from '../leaderboard/claim-badge';
@@ -177,9 +178,6 @@ export default class Home {
     const query = shared ? `?period=${shared}` : '';
     const canonical = country ? `/?country=${country}` : '/';
     setShareMeta(this.meta, this.document, { title, description, url: `${SITE_URL}/${query}`, image: `${SITE_URL}/og.png${query}`, canonical });
-    // The site itself, and a country's board as a step below it.
-    setJsonLd(this.document, country
-      ? breadcrumbs([{ name: 'Angularians', path: '/' }, { name: `Angular contributors in ${countryName(country)}`, path: canonical }])
-      : { ...SITE_SCHEMA, description: SITE_DESCRIPTION });
+    setJsonLd(this.document, boardJsonLd(country));
   }
 }

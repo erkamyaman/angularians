@@ -9,7 +9,7 @@ import { HlmButton } from '@spartan-ng/helm/button'
 import { vikingAxes, vikingHelmet, vikingShield } from '../layout/viking-icons'
 import { getLeaderboard } from '../data/contributors.server'
 import { RankShield } from './rank-shield'
-import { LeaderboardMemory, STEP, type ShowMoreState } from './leaderboard-memory'
+import { LeaderboardMemory, showOneMore, type ShowMoreState } from './leaderboard-memory'
 import { PODIUM } from './podium'
 import { avatarSrcset, avatarUrl } from '../contributors/avatar-url'
 import { formatNumber, formatPoints, formatRank } from '../text/number-format'
@@ -105,7 +105,7 @@ export class LeaderboardGrid {
     // The period or the country can change while this loads: its items must not join the new board.
     const first = this.page()
     const phone = window.matchMedia('(max-width: 639.98px)').matches
-    const shown = { ...this.shown(), [phone ? 'phone' : 'wide']: this.shown()[phone ? 'phone' : 'wide'] + STEP[phone ? 'phone' : 'wide'] }
+    const shown = showOneMore(this.shown(), phone)
     const needed = Math.min(Math.max(shown.wide, shown.phone), first.total)
     const reveal = (more: ContributorSummary[]) => {
       this.shown.set({ ...shown, more })
