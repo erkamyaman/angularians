@@ -36,9 +36,15 @@ export class AuthService {
     this.wasSignedIn.set(hasSignedInHint(this.browser ? this.document.cookie : this.request?.headers.cookie))
   }
 
+  /**
+   * A check that fails (offline, a server error) counts as signed out with sign-in on, the page as the server drew it:
+   * nothing is taken away from under the visitor, and the sign-in is there to try again. Only the site itself says
+   * sign-in is off (`enabled: false`).
+   */
   private loadState(): void {
+    const signedOut: SignedIn = { enabled: true, user: null }
     fetch('/api/auth/me', { credentials: 'same-origin', headers: { accept: 'application/json' } })
-      .then(response => (response.ok ? response.json() as Promise<SignedIn> : { enabled: false, user: null }))
-      .then(state => this.state.set(state), () => this.state.set({ enabled: false, user: null }))
+      .then(response => (response.ok ? response.json() as Promise<SignedIn> : signedOut))
+      .then(state => this.state.set(state), () => this.state.set(signedOut))
   }
 }

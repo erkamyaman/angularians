@@ -36,7 +36,8 @@ instead of rebuilding it. Later inputs load as usual.
 A page is hydrated when its route resolves, a moment after the rest of the app, and Angular then writes each element's
 static `class` over the server's classes before the spartan/ui directives' first effect sets theirs, with a paint in
 between: `classes()` in `app/src/ui/utils/src/lib/hlm.ts` puts the server's classes back until then, or the page's buttons
-and tabs would lose their size for a frame and move what is around them.
+and tabs would lose their size for a frame and move what is around them. Meanwhile it notes Angular's own classes (the
+static ones, and what `[class.x]` bindings add or remove through `classList`), which the first effect keeps.
 
 To try the site with another data folder: `CONTRIBUTORS_DATA_DIR=/path/to/data pnpm build`.
 
@@ -106,9 +107,11 @@ Through the user authorization of the `angularians-collector` GitHub App. Only t
 http-only cookie; GitHub's access token is used once, to ask who signed in. The session is read in the browser
 (`/api/auth/me`), never in a cached page. A readable hint cookie, `angularians-signed-in` (`app/src/app/auth/hint.ts`),
 says the browser was signed in last time; the CDN keeps a copy of each page per value, so the server draws the signed-in
-card's skeleton (laid out as an Angularian's card, at its height) and leaves out the profile's "Is this your profile?"
-prompt for it, and draws the sign-in and the prompt for everyone else: nothing jumps when the session answers. A hint
-whose session has ended gets the sign-in in the skeleton's place and size, once: `/api/auth/me` clears it.
+card's skeleton (laid out as an Angularian's card, at its height, and the card is never shorter) and the header's avatar
+place, and leaves out the profile's "Is this your profile?" prompt for it, and draws the sign-in and the prompt for
+everyone else: nothing jumps when the session answers. A hint whose session has ended gets the sign-in in the skeleton's
+place and size, and in the avatar's, once: `/api/auth/me` clears it. A session check that fails counts as signed out,
+so the page stays as the server drew it.
 Sign-in stays hidden until the site has these environment variables:
 
 | Variable | |
