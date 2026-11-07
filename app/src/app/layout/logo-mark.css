@@ -15,7 +15,7 @@
 }
 
 :host(.compact) {
-  --color-brand-from: currentColor;
+  --color-brand: currentColor;
   --mark-empty: color-mix(in oklch, currentColor 22%, transparent);
   --mark-1: color-mix(in oklch, currentColor 45%, transparent);
   --mark-2: color-mix(in oklch, currentColor 70%, transparent);
