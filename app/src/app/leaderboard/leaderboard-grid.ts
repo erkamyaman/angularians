@@ -49,6 +49,7 @@ export class LeaderboardMemory {
   host: { '(window:scroll)': 'followFocus()', '(window:resize)': 'tip.set(null)', '(document:keydown.escape)': 'tip.set(null)' },
   providers: [provideIcons({ remixAddLine, remixLayoutGridLine, remixListUnordered, vikingAxes, vikingHelmet, vikingShield })],
   templateUrl: './leaderboard-grid.html',
+  styleUrl: './leaderboard-grid.css',
 })
 export class LeaderboardGrid {
   /** The first page of a period and country. */

@@ -1,3 +1,25 @@
 :host {
   display: flex;
 }
+
+/* An item of the account menu: the profile link and the sign-out button */
+.menu-item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  border-radius: calc(var(--radius) * 0.8);
+  padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
+  text-align: left;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  outline-style: none;
+}
+.menu-item:focus-visible {
+  background-color: var(--muted);
+}
+@media (hover: hover) {
+  .menu-item:hover {
+    background-color: var(--muted);
+  }
+}

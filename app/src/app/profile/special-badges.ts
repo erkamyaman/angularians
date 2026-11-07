@@ -1,3 +1,5 @@
+import type { BadgeTone } from './badge-pill'
+
 export type ProjectRole = 'creator' | 'co-creator' | 'maintainer' | 'organizer'
 
 export interface ProjectPerson {
@@ -15,7 +17,7 @@ export interface ProjectBadge {
   does: string
   builtOn?: true
   /** Its colours: a `tone-*` class of `badge-pill.css`. */
-  tone: string
+  tone: BadgeTone
   people: readonly ProjectPerson[]
 }
 

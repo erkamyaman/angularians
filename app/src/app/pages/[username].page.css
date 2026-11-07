@@ -54,7 +54,11 @@
   color: var(--tint-strong);
 }
 
-/* A year's column: gold for the best year, solid when it is the one on screen; the others in the brand colour. */
+/*
+ * A year's column: gold for the best year, solid when it is the one on screen; the others in the brand colour.
+ * The gold is GitHub's (`github-gold`, as on the reactions card), not `--primary`: today they are the same two
+ * values, but the best year keeps its gold if the brand changes.
+ */
 .year-bar {
   background-color: color-mix(in oklab, var(--primary) 40%, transparent);
 }

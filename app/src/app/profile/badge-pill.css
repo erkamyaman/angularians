@@ -5,7 +5,8 @@
 /*
  * One badge, in its tone's colours: `tone-*` sets the background, the text and the ring. The earned badges pick
  * theirs in `earned-badges.ts`, the projects in `special-badges.ts`. A parent can set `--pill-font-size` and
- * `--pill-line-height` for a smaller badge.
+ * `--pill-line-height` for a smaller badge. Each tone's dark rule follows its light one; `BadgeTone` (`badge-pill.ts`)
+ * lists them.
  */
 .pill {
   display: inline-flex;
@@ -46,11 +47,21 @@
   --pill-text: #185ABC;
   --pill-ring: color-mix(in oklab, #1A73E8 30%, transparent);
 }
+:host-context(.dark) .tone-gde {
+  --pill-bg: color-mix(in oklab, #8AB4F8 10%, transparent);
+  --pill-text: #8AB4F8;
+  --pill-ring: color-mix(in oklab, #8AB4F8 30%, transparent);
+}
 
 .tone-star {
   --pill-bg: color-mix(in oklab, #BF8700 10%, transparent);
   --pill-text: #845A00;
   --pill-ring: color-mix(in oklab, #BF8700 30%, transparent);
+}
+:host-context(.dark) .tone-star {
+  --pill-bg: color-mix(in oklab, #E3B341 10%, transparent);
+  --pill-text: #E3B341;
+  --pill-ring: color-mix(in oklab, #E3B341 30%, transparent);
 }
 
 .tone-nx {
@@ -58,11 +69,21 @@
   --pill-text: #143055;
   --pill-ring: color-mix(in oklab, #143055 30%, transparent);
 }
+:host-context(.dark) .tone-nx {
+  --pill-bg: color-mix(in oklab, #96D7E8 10%, transparent);
+  --pill-text: #96D7E8;
+  --pill-ring: color-mix(in oklab, #96D7E8 30%, transparent);
+}
 
 .tone-shieldwall {
   --pill-bg: color-mix(in oklab, #CF222E 10%, transparent);
   --pill-text: #CF222E;
   --pill-ring: color-mix(in oklab, #CF222E 30%, transparent);
+}
+:host-context(.dark) .tone-shieldwall {
+  --pill-bg: color-mix(in oklab, #FF7B72 10%, transparent);
+  --pill-text: #FF7B72;
+  --pill-ring: color-mix(in oklab, #FF7B72 30%, transparent);
 }
 
 .tone-primary {
@@ -76,17 +97,32 @@
   --pill-text: #7D4E00;
   --pill-ring: color-mix(in oklab, #9A6700 30%, transparent);
 }
+:host-context(.dark) .tone-gold {
+  --pill-bg: color-mix(in oklab, #D29922 10%, transparent);
+  --pill-text: #D29922;
+  --pill-ring: color-mix(in oklab, #D29922 30%, transparent);
+}
 
 .tone-green {
   --pill-bg: color-mix(in oklab, #1A7F37 10%, transparent);
   --pill-text: #116329;
   --pill-ring: color-mix(in oklab, #1A7F37 30%, transparent);
 }
+:host-context(.dark) .tone-green {
+  --pill-bg: color-mix(in oklab, #3FB950 10%, transparent);
+  --pill-text: #3FB950;
+  --pill-ring: color-mix(in oklab, #3FB950 30%, transparent);
+}
 
 .tone-purple {
   --pill-bg: color-mix(in oklab, #8250DF 10%, transparent);
   --pill-text: #8250DF;
   --pill-ring: color-mix(in oklab, #8250DF 30%, transparent);
+}
+:host-context(.dark) .tone-purple {
+  --pill-bg: color-mix(in oklab, #A371F7 10%, transparent);
+  --pill-text: #A371F7;
+  --pill-ring: color-mix(in oklab, #A371F7 30%, transparent);
 }
 
 .tone-foreground {
@@ -100,11 +136,19 @@
   --pill-text: #B80A2C;
   --pill-ring: color-mix(in oklab, #DD0330 30%, transparent);
 }
+:host-context(.dark) .tone-analog {
+  --pill-text: #F47088;
+  --pill-ring: color-mix(in oklab, #DD0330 40%, transparent);
+}
 
 .tone-ng-icons {
   --pill-bg: color-mix(in oklab, #E53935 10%, transparent);
   --pill-text: #C62828;
   --pill-ring: color-mix(in oklab, #E53935 30%, transparent);
+}
+:host-context(.dark) .tone-ng-icons {
+  --pill-text: #FF8A80;
+  --pill-ring: color-mix(in oklab, #E53935 40%, transparent);
 }
 
 .tone-ngxtension {
@@ -112,11 +156,19 @@
   --pill-text: #C2185B;
   --pill-ring: color-mix(in oklab, #F20755 30%, transparent);
 }
+:host-context(.dark) .tone-ngxtension {
+  --pill-text: #FF5BE1;
+  --pill-ring: color-mix(in oklab, #F20755 40%, transparent);
+}
 
 .tone-pangular {
   --pill-bg: color-mix(in oklab, #D97706 10%, transparent);
   --pill-text: #B45309;
   --pill-ring: color-mix(in oklab, #D97706 30%, transparent);
+}
+:host-context(.dark) .tone-pangular {
+  --pill-text: #FBBF24;
+  --pill-ring: color-mix(in oklab, #D97706 40%, transparent);
 }
 
 .tone-docs-tr {
@@ -124,11 +176,19 @@
   --pill-text: #C4161C;
   --pill-ring: color-mix(in oklab, #E30A17 30%, transparent);
 }
+:host-context(.dark) .tone-docs-tr {
+  --pill-text: #FF7B72;
+  --pill-ring: color-mix(in oklab, #E30A17 40%, transparent);
+}
 
 .tone-slide-ng {
   --pill-bg: color-mix(in oklab, #CC4209 10%, transparent);
   --pill-text: #A33A08;
   --pill-ring: color-mix(in oklab, #CC4209 30%, transparent);
+}
+:host-context(.dark) .tone-slide-ng {
+  --pill-text: #F0883E;
+  --pill-ring: color-mix(in oklab, #CC4209 40%, transparent);
 }
 
 .tone-ng-native {
@@ -136,11 +196,19 @@
   --pill-text: #C4002D;
   --pill-ring: color-mix(in oklab, #F0224F 30%, transparent);
 }
+:host-context(.dark) .tone-ng-native {
+  --pill-text: #FF6B88;
+  --pill-ring: color-mix(in oklab, #F0224F 40%, transparent);
+}
 
 .tone-ng-primitives {
   --pill-bg: color-mix(in oklab, #E90364 10%, transparent);
   --pill-text: #B8024F;
   --pill-ring: color-mix(in oklab, #E90364 30%, transparent);
+}
+:host-context(.dark) .tone-ng-primitives {
+  --pill-text: #FF5C9A;
+  --pill-ring: color-mix(in oklab, #E90364 40%, transparent);
 }
 
 .tone-ngx-builders {
@@ -148,89 +216,6 @@
   --pill-text: #37474F;
   --pill-ring: color-mix(in oklab, #455A64 30%, transparent);
 }
-
-:host-context(.dark) .tone-gde {
-  --pill-bg: color-mix(in oklab, #8AB4F8 10%, transparent);
-  --pill-text: #8AB4F8;
-  --pill-ring: color-mix(in oklab, #8AB4F8 30%, transparent);
-}
-
-:host-context(.dark) .tone-star {
-  --pill-bg: color-mix(in oklab, #E3B341 10%, transparent);
-  --pill-text: #E3B341;
-  --pill-ring: color-mix(in oklab, #E3B341 30%, transparent);
-}
-
-:host-context(.dark) .tone-nx {
-  --pill-bg: color-mix(in oklab, #96D7E8 10%, transparent);
-  --pill-text: #96D7E8;
-  --pill-ring: color-mix(in oklab, #96D7E8 30%, transparent);
-}
-
-:host-context(.dark) .tone-shieldwall {
-  --pill-bg: color-mix(in oklab, #FF7B72 10%, transparent);
-  --pill-text: #FF7B72;
-  --pill-ring: color-mix(in oklab, #FF7B72 30%, transparent);
-}
-
-:host-context(.dark) .tone-gold {
-  --pill-bg: color-mix(in oklab, #D29922 10%, transparent);
-  --pill-text: #D29922;
-  --pill-ring: color-mix(in oklab, #D29922 30%, transparent);
-}
-
-:host-context(.dark) .tone-green {
-  --pill-bg: color-mix(in oklab, #3FB950 10%, transparent);
-  --pill-text: #3FB950;
-  --pill-ring: color-mix(in oklab, #3FB950 30%, transparent);
-}
-
-:host-context(.dark) .tone-purple {
-  --pill-bg: color-mix(in oklab, #A371F7 10%, transparent);
-  --pill-text: #A371F7;
-  --pill-ring: color-mix(in oklab, #A371F7 30%, transparent);
-}
-
-:host-context(.dark) .tone-analog {
-  --pill-text: #F47088;
-  --pill-ring: color-mix(in oklab, #DD0330 40%, transparent);
-}
-
-:host-context(.dark) .tone-ng-icons {
-  --pill-text: #FF8A80;
-  --pill-ring: color-mix(in oklab, #E53935 40%, transparent);
-}
-
-:host-context(.dark) .tone-ngxtension {
-  --pill-text: #FF5BE1;
-  --pill-ring: color-mix(in oklab, #F20755 40%, transparent);
-}
-
-:host-context(.dark) .tone-pangular {
-  --pill-text: #FBBF24;
-  --pill-ring: color-mix(in oklab, #D97706 40%, transparent);
-}
-
-:host-context(.dark) .tone-docs-tr {
-  --pill-text: #FF7B72;
-  --pill-ring: color-mix(in oklab, #E30A17 40%, transparent);
-}
-
-:host-context(.dark) .tone-slide-ng {
-  --pill-text: #F0883E;
-  --pill-ring: color-mix(in oklab, #CC4209 40%, transparent);
-}
-
-:host-context(.dark) .tone-ng-native {
-  --pill-text: #FF6B88;
-  --pill-ring: color-mix(in oklab, #F0224F 40%, transparent);
-}
-
-:host-context(.dark) .tone-ng-primitives {
-  --pill-text: #FF5C9A;
-  --pill-ring: color-mix(in oklab, #E90364 40%, transparent);
-}
-
 :host-context(.dark) .tone-ngx-builders {
   --pill-text: #B0BEC5;
   --pill-ring: color-mix(in oklab, #90A4AE 40%, transparent);

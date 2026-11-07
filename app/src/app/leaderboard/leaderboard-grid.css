@@ -1,0 +1,29 @@
+/* The grid / list switch on phones: the view on screen raised on the muted track */
+.view-button {
+  display: grid;
+  width: calc(var(--spacing) * 8);
+  height: calc(var(--spacing) * 8);
+  place-items: center;
+  border-radius: calc(var(--radius) * 0.8);
+  color: var(--muted-foreground);
+  transition-property: color, background-color;
+  transition-timing-function: var(--default-transition-timing-function);
+  transition-duration: var(--default-transition-duration);
+}
+.view-button.active {
+  background-color: var(--background);
+  color: var(--foreground);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+@media (hover: hover) {
+  .view-button:hover {
+    color: var(--foreground);
+  }
+}
+.view-button:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+  outline-style: none;
+}
+.view-button.active:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring), 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}

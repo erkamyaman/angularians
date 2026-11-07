@@ -17,6 +17,7 @@ import { ScoreDialog } from '../profile/score-dialog'
 import { JoinLinks } from './join-links'
 import { Share } from '../profile/share'
 import { avatarUrl, formatNumber, formatPoints } from './format'
+import type { GithubColor } from './github-color'
 import { HELPFUL_COMMENT_REACTIONS, HELPFUL_ISSUE_COMMENTS, HELPFUL_ISSUE_REACTIONS } from '@angularians/shared'
 
 /** `Apr 2025`, as on the profile and the card. */
@@ -47,7 +48,7 @@ export class MeCard {
       { label: 'Merged PRs', one: 'Merged PR', value: person?.pullRequests.all ?? 0, hint: null, icon: 'octGitMerge', color: 'purple' },
       { label: 'Helpful issues', one: 'Helpful issue', value: person?.helpfulIssues ?? 0, hint: `Completed, or ${HELPFUL_ISSUE_REACTIONS}+ reactions, or ${HELPFUL_ISSUE_COMMENTS}+ comments`, icon: 'octIssueOpened', color: 'green' },
       { label: 'Helpful comments', one: 'Helpful comment', value: person?.helpfulComments ?? 0, hint: `${HELPFUL_COMMENT_REACTIONS}+ reactions, or a discussion's accepted answer`, icon: 'remixChatHeartLine', color: 'blue' },
-    ]
+    ] satisfies readonly { color: GithubColor, [key: string]: unknown }[]
   })
 
   protected readonly avatar = (githubId: number) => avatarUrl(githubId, 64)

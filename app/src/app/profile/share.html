@@ -34,11 +34,19 @@
           <div class="absolute inset-0" role="status">
             <span class="sr-only">Loading the card</span>
             @if (!shownUrl()) {
-              @for (tile of tileBoxes; track $index) {
-                <div class="absolute rounded-[4%/8%] ring-1 ring-white/10" [style.left.%]="tile.left" [style.top.%]="tile.top" [style.width.%]="tile.width" [style.height.%]="tile.height" aria-hidden="true"></div>
+              @for (tile of tiles; track tile) {
+                <div class="card-box card-tile absolute rounded-[4%/8%] ring-1 ring-white/10" [attr.data-tile]="tile" aria-hidden="true"></div>
               }
-              @for (shape of skeletonBoxes; track $index) {
-                <div hlmSkeleton class="absolute bg-white/10" [class.rounded-full]="shape.round" [style.left.%]="shape.left" [style.top.%]="shape.top" [style.width.%]="shape.width" [style.height.%]="shape.height" aria-hidden="true"></div>
+              <div hlmSkeleton class="card-box card-round card-avatar absolute bg-white/10" aria-hidden="true"></div>
+              <div hlmSkeleton class="card-box card-name absolute bg-white/10" aria-hidden="true"></div>
+              <div hlmSkeleton class="card-box card-rank absolute bg-white/10" aria-hidden="true"></div>
+              <div hlmSkeleton class="card-box card-points absolute bg-white/10" aria-hidden="true"></div>
+              <div hlmSkeleton class="card-box card-contributor absolute bg-white/10" aria-hidden="true"></div>
+              <div hlmSkeleton class="card-box card-brand absolute bg-white/10" aria-hidden="true"></div>
+              @for (tile of tiles; track tile) {
+                <div hlmSkeleton class="card-box card-round card-tile-icon absolute bg-white/10" [attr.data-tile]="tile" aria-hidden="true"></div>
+                <div hlmSkeleton class="card-box card-tile-value absolute bg-white/10" [attr.data-tile]="tile" aria-hidden="true"></div>
+                <div hlmSkeleton class="card-box card-tile-label absolute bg-white/10" [attr.data-tile]="tile" aria-hidden="true"></div>
               }
             }
           </div>

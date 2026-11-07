@@ -7,3 +7,61 @@
     gap: calc(var(--spacing) * 2);
   }
 }
+
+/*
+ * The first load's skeleton, drawn over the 1200 × 630 card in percent of it: each box in the card's pixels
+ * (`--x`, `--y`, `--w`, `--h`), measured on the card (`server/card/card.ts`).
+ */
+.card-box {
+  left: calc(var(--x) / 12 * 1%);
+  top: calc(var(--y) / 6.3 * 1%);
+  width: calc(var(--w) / 12 * 1%);
+  height: calc(var(--h) / 6.3 * 1%);
+}
+.card-round {
+  border-radius: calc(infinity * 1px);
+}
+.card-avatar {
+  --x: 64; --y: 56; --w: 124; --h: 124;
+}
+.card-name {
+  --x: 64; --y: 196; --w: 270; --h: 46;
+}
+.card-rank {
+  --x: 64; --y: 258; --w: 180; --h: 76;
+}
+.card-points {
+  --x: 64; --y: 348; --w: 200; --h: 34;
+}
+.card-contributor {
+  --x: 64; --y: 520; --w: 320; --h: 66;
+}
+.card-brand {
+  --x: 884; --y: 520; --w: 252; --h: 66;
+}
+
+/* The four stat tiles, and in each its icon, number and name */
+[data-tile="1"] {
+  --tile-x: 508; --tile-y: 56;
+}
+[data-tile="2"] {
+  --tile-x: 834; --tile-y: 56;
+}
+[data-tile="3"] {
+  --tile-x: 508; --tile-y: 276;
+}
+[data-tile="4"] {
+  --tile-x: 834; --tile-y: 276;
+}
+.card-tile {
+  --x: var(--tile-x); --y: var(--tile-y); --w: 302; --h: 196;
+}
+.card-tile-icon {
+  --x: calc(var(--tile-x) + 26); --y: calc(var(--tile-y) + 26); --w: 40; --h: 40;
+}
+.card-tile-value {
+  --x: calc(var(--tile-x) + 26); --y: calc(var(--tile-y) + 78); --w: 150; --h: 52;
+}
+.card-tile-label {
+  --x: calc(var(--tile-x) + 26); --y: calc(var(--tile-y) + 138); --w: 150; --h: 28;
+}

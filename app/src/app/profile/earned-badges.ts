@@ -5,6 +5,7 @@ import { octShield } from '@ng-icons/octicons'
 import { formatNumber, plural } from '../leaderboard/format'
 import { vikingAnvil, vikingAxes, vikingHelmet, vikingShield } from '../layout/viking-icons'
 import { ANGULAR_GDES, ANGULAR_SECURITY, GITHUB_STARS, NX_CHAMPIONS } from './recognitions'
+import type { BadgeTone } from './badge-pill'
 import { projectBadgesOf, type ProjectBadge, type ProjectRole } from './special-badges'
 
 /** The icons a badge can show, as SVG: the page names them, the card draws them. */
@@ -18,7 +19,7 @@ export interface EarnedBadge {
   label: string
   title: string
   icon: 'angular' | 'gde' | 'logo' | keyof typeof BADGE_ICONS
-  tone: string
+  tone: BadgeTone
   logo?: string
   href?: string
 }

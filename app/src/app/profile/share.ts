@@ -15,21 +15,6 @@ import { shareQuery } from '../leaderboard/format'
 
 /** The skeleton shows at least this long, so a fast card does not flicker it. */
 const MIN_LOADING_MS = 500
-/** A box of the 1200 × 630 card, in percent of it: the skeleton is measured on the card (`server/card/card.ts`). */
-const box = (x: number, y: number, width: number, height: number, round = false) => ({ left: x / 12, top: y / 6.3, width: width / 12, height: height / 6.3, round })
-const TILES = [[508, 56], [834, 56], [508, 276], [834, 276]] as const
-const TILE_BOXES = TILES.map(([x, y]) => box(x, y, 302, 196))
-/** The first load, before there is a card to show: changing the period keeps the card and dims it instead. */
-const SKELETON_BOXES = [
-  box(64, 56, 124, 124, true),
-  box(64, 196, 270, 46),
-  box(64, 258, 180, 76),
-  box(64, 348, 200, 34),
-  box(64, 520, 320, 66),
-  box(884, 520, 252, 66),
-  ...TILES.flatMap(([x, y]) => [box(x + 26, y + 26, 40, 40, true), box(x + 26, y + 78, 150, 52), box(x + 26, y + 138, 150, 28)]),
-]
-
 /** Raise it when the card's design changes, so the preview does not show a copy the browser kept. */
 export const CARD_DESIGN = 15
 
@@ -52,8 +37,8 @@ export class Share {
 
   protected readonly copied = signal<'link' | 'markdown' | null>(null)
   /** The card renders on demand: its background and a loader meanwhile. */
-  protected readonly tileBoxes = TILE_BOXES
-  protected readonly skeletonBoxes = SKELETON_BOXES
+  /** The card's four stat tiles, for the skeleton (`share.css` places each). */
+  protected readonly tiles = [1, 2, 3, 4] as const
   protected readonly cardState = signal<'loading' | 'loaded' | 'error'>('loading')
   /** The last card that loaded: it stays under the next one while that renders. */
   protected readonly shownUrl = signal<string | null>(null)
