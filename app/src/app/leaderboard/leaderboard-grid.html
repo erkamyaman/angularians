@@ -1,7 +1,7 @@
 <div class="mb-3 flex justify-end sm:hidden" role="group" aria-label="Leaderboard view">
   <div class="inline-flex gap-1 rounded-lg bg-muted p-1">
-    <button type="button" aria-label="Show as a grid" [attr.aria-pressed]="view() === 'grid'" class="grid size-8 place-items-center rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none" [class]="view() === 'grid' ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground hover:text-foreground'" (click)="memory.view.set('grid')"><ng-icon name="remixLayoutGridLine" aria-hidden="true" /></button>
-    <button type="button" aria-label="Show as a list" [attr.aria-pressed]="view() === 'list'" class="grid size-8 place-items-center rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none" [class]="view() === 'list' ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground hover:text-foreground'" (click)="memory.view.set('list')"><ng-icon name="remixListUnordered" aria-hidden="true" /></button>
+    <button type="button" aria-label="Show as a grid" [attr.aria-pressed]="view() === 'grid'" class="grid size-8 place-items-center rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none" [class]="view() === 'grid' ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground hover:text-foreground'" (click)="view.set('grid')"><ng-icon name="remixLayoutGridLine" aria-hidden="true" /></button>
+    <button type="button" aria-label="Show as a list" [attr.aria-pressed]="view() === 'list'" class="grid size-8 place-items-center rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none" [class]="view() === 'list' ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground hover:text-foreground'" (click)="view.set('list')"><ng-icon name="remixListUnordered" aria-hidden="true" /></button>
   </div>
 </div>
 

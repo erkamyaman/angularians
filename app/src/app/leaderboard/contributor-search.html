@@ -1,4 +1,4 @@
-<hlm-autocomplete [search]="term()" (searchChange)="term.set($event ?? '')" (valueChange)="open($event)" [itemToString]="username" class="w-full sm:w-64">
+<hlm-autocomplete [search]="term()" (searchChange)="term.set($event ?? '')" (valueChange)="openProfile($event)" [itemToString]="username" class="w-full sm:w-64">
   <label [for]="inputId" class="sr-only">Search a contributor</label>
   <hlm-autocomplete-input #input [inputId]="inputId" placeholder="Search a contributor">
     @if (!term()) {
@@ -10,7 +10,7 @@
     }
   </hlm-autocomplete-input>
   <hlm-autocomplete-content *hlmAutocompletePortal>
-    <hlm-autocomplete-empty>{{ !term().trim() ? 'Type a GitHub username' : loading() ? 'Searching…' : nobodyFound() }}</hlm-autocomplete-empty>
+    <hlm-autocomplete-empty>{{ emptyText() }}</hlm-autocomplete-empty>
     <div hlmAutocompleteList aria-label="Contributors">
       @for (item of results(); track item.githubId) {
         <hlm-autocomplete-item [value]="item">

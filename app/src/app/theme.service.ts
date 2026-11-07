@@ -20,17 +20,8 @@ export class ThemeService {
 
   constructor() {
     if (!this.browser) return
-    try {
-      if (localStorage.getItem(THEME_STORAGE_KEY) === 'light') this.theme.set('light')
-    }
-    catch {
-      // Storage can be blocked: dark, the default.
-    }
-    effect(() => {
-      const root = this.document.documentElement
-      root.classList.toggle('dark', this.dark())
-      root.style.colorScheme = this.theme()
-    })
+    this.restoreSavedTheme()
+    this.applyToPage()
   }
 
   toggle(): void {
@@ -43,5 +34,23 @@ export class ThemeService {
     catch {
       // Not remembered, still applied.
     }
+  }
+
+  private restoreSavedTheme(): void {
+    try {
+      if (localStorage.getItem(THEME_STORAGE_KEY) === 'light') this.theme.set('light')
+    }
+    catch {
+      // Storage can be blocked: dark, the default.
+    }
+  }
+
+  /** The `dark` class and the color scheme of <html> follow the theme. */
+  private applyToPage(): void {
+    effect(() => {
+      const root = this.document.documentElement
+      root.classList.toggle('dark', this.dark())
+      root.style.colorScheme = this.theme()
+    })
   }
 }

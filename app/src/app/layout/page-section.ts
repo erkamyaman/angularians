@@ -16,15 +16,13 @@ export class PageSection {
   readonly ownHeading = input(false)
   /** The whole title in the brand font. */
   readonly viking = input(false)
-  /** Every other part is the word "Angularian(s)", in the brand font. */
-  protected readonly titleParts = computed(() => brandParts(this.title()))
   readonly description = input<string | null>(null)
-  protected readonly descriptionParts = computed(() => brandParts(this.description() ?? ''))
   readonly sectionId = input<string | null>(null)
   /** No top padding: the section continues the one above (the leaderboard under the hero, as on Nuxters). */
   readonly flush = input(false)
 
-  protected headingId() {
-    return `${this.sectionId() ?? 'section'}-title`
-  }
+  /** Every other part is the word "Angularian(s)", in the brand font. */
+  protected readonly titleParts = computed(() => brandParts(this.title()))
+  protected readonly descriptionParts = computed(() => brandParts(this.description() ?? ''))
+  protected readonly headingId = computed(() => `${this.sectionId() ?? 'section'}-title`)
 }

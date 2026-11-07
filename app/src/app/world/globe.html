@@ -16,13 +16,13 @@
   role="img"
   aria-label="Contributors around the world. Arrow keys rotate the globe, plus and minus zoom, zero resets. Every country is also in the list."
   class="globe__canvas block size-full cursor-grab touch-none outline-none active:cursor-grabbing"
-  (pointerdown)="pointerDown($event)"
-  (pointermove)="pointerMove($event)"
-  (pointerup)="pointerEnd($event)"
-  (pointercancel)="pointerEnd($event)"
-  (lostpointercapture)="pointerEnd($event)"
-  (keydown)="keydown($event)"
-  (webglcontextlost)="contextLost($event)"
+  (pointerdown)="startDrag($event)"
+  (pointermove)="drag($event)"
+  (pointerup)="endDrag($event)"
+  (pointercancel)="endDrag($event)"
+  (lostpointercapture)="endDrag($event)"
+  (keydown)="moveWithKeys($event)"
+  (webglcontextlost)="showWebGlFailure($event)"
 ></canvas>
 
 @if (ready() && !failed()) {
@@ -41,7 +41,7 @@
       [attr.data-tier]="tier(marker.count)"
       [attr.aria-label]="marker.name + ', ' + count(marker.count)"
       [attr.aria-pressed]="selected() === marker.code"
-      (click)="select.emit(selected() === marker.code ? null : marker.code)"
+      (click)="toggleCountry(marker.code)"
       (pointerenter)="hovered.set(marker.code)"
       (pointerleave)="hovered.set(null)"
       (focus)="hovered.set(marker.code)"
@@ -54,7 +54,7 @@
       }
       @if (avatars()) {
         <span class="flex pl-2" aria-hidden="true">
-          @for (username of (marker.code === selected() ? marker.top : marker.top.slice(0, 1)); track username) {
+          @for (username of markerPeople(marker); track username) {
             <img [src]="avatar(username)" alt="" width="32" height="32" loading="lazy" class="-ml-2 size-8 max-w-none rounded-full bg-muted object-cover ring-2 ring-background" />
           }
         </span>

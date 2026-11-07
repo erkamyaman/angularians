@@ -32,6 +32,7 @@ const KEY_MOVES: Record<string, [number, number]> = { ArrowLeft: [-0.15, 0], Arr
 
 const clamp = (value: number, low: number, high: number) => Math.min(high, Math.max(low, value));
 const angleDelta = (from: number, to: number) => ((to - from + Math.PI) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2) - Math.PI;
+
 interface GlobeMarker extends CountryStats {
   name: string
   location: readonly [number, number]
@@ -51,9 +52,11 @@ export class Globe {
   readonly selected = input<string | null>(null);
   readonly select = output<string | null>();
 
-  private readonly host = inject(ElementRef<HTMLElement>);
-  private readonly canvas = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
   protected readonly theme = inject(ThemeService);
+  private readonly host = inject(ElementRef<HTMLElement>);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly canvas = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
+
   protected readonly land = signal<[number, number, number]>([0.44, 0.69, 0.48]);
 
   protected readonly MAX_ZOOM = MAX_ZOOM;
@@ -101,84 +104,89 @@ export class Globe {
   private readonly projection = { depth: 0, x: 0, y: 0 };
 
   constructor() {
-    const destroyRef = inject(DestroyRef);
+    afterNextRender(() => this.start());
+    this.redrawOnChanges();
+  }
 
-    afterNextRender(() => {
-      const element = this.host.nativeElement as HTMLElement;
-      const canvas = this.canvas().nativeElement;
-      try {
-        if (!canvas.getContext('webgl2') && !canvas.getContext('webgl')) throw new Error('WebGL unavailable');
-        this.globe = createGlobe(canvas, {
-          width: 1,
-          height: 1,
-          devicePixelRatio: Math.min(devicePixelRatio || 1, innerWidth < 768 ? 1.5 : 2),
-          phi: this.phi,
-          theta: this.theta,
-          scale: 0.98,
-          mapSamples: 32000,
-          markerColor: [0.9, 0.1, 0.35],
-          markers: [],
-          ...palette(this.theme.dark()),
-        });
-      }
-      catch {
-        this.failed.set(true);
-        return;
-      }
-
-      // Frames run only while the globe is on screen, in a visible tab, and moving.
-      const resize = new ResizeObserver(([entry]) => {
-        this.width = Math.max(1, Math.round(entry!.contentRect.width));
-        this.height = Math.max(1, Math.round(entry!.contentRect.height));
-        this.resized = true;
-        this.schedule();
+  /** Draws the globe with WebGL, and runs its frames while it is on screen. */
+  private start(): void {
+    const element = this.host.nativeElement as HTMLElement;
+    const canvas = this.canvas().nativeElement;
+    try {
+      if (!canvas.getContext('webgl2') && !canvas.getContext('webgl')) throw new Error('WebGL unavailable');
+      this.globe = createGlobe(canvas, {
+        width: 1,
+        height: 1,
+        devicePixelRatio: Math.min(devicePixelRatio || 1, innerWidth < 768 ? 1.5 : 2),
+        phi: this.phi,
+        theta: this.theta,
+        scale: 0.98,
+        mapSamples: 32000,
+        markerColor: [0.9, 0.1, 0.35],
+        markers: [],
+        ...palette(this.theme.dark()),
       });
-      resize.observe(element);
-      const visibility = new IntersectionObserver(([entry]) => {
-        this.onScreen = !!entry?.isIntersecting;
-        if (this.onScreen) this.schedule();
-        else this.pause();
-      });
-      visibility.observe(element);
-      const onVisibility = () => {
-        this.tabVisible = document.visibilityState === 'visible';
-        if (!this.tabVisible) this.pointers.clear();
-        if (this.tabVisible) this.schedule();
-        else this.pause();
-      };
-      document.addEventListener('visibilitychange', onVisibility);
-      const motion = matchMedia('(prefers-reduced-motion: reduce)');
-      const onMotion = () => {
-        this.still = motion.matches;
-        this.schedule();
-      };
-      onMotion();
-      motion.addEventListener('change', onMotion);
-      // Trackpad pinch is a Ctrl+wheel: a plain wheel keeps scrolling the page.
-      const onWheel = (event: WheelEvent) => {
-        if (!event.ctrlKey) return;
-        event.preventDefault();
-        const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? this.height : 1);
-        this.setZoom(this.camera.zoom * Math.exp(-delta * 0.01));
-      };
-      element.addEventListener('wheel', onWheel, { passive: false });
+    }
+    catch {
+      this.failed.set(true);
+      return;
+    }
 
-      destroyRef.onDestroy(() => {
-        this.pause();
-        resize.disconnect();
-        visibility.disconnect();
-        document.removeEventListener('visibilitychange', onVisibility);
-        motion.removeEventListener('change', onMotion);
-        element.removeEventListener('wheel', onWheel);
-        this.globe?.destroy();
-        this.globe = undefined;
-      });
-
-      this.ready.set(true);
-      this.focusSelected();
+    // Frames run only while the globe is on screen, in a visible tab, and moving.
+    const resize = new ResizeObserver(([entry]) => {
+      this.width = Math.max(1, Math.round(entry!.contentRect.width));
+      this.height = Math.max(1, Math.round(entry!.contentRect.height));
+      this.resized = true;
       this.schedule();
     });
+    resize.observe(element);
+    const visibility = new IntersectionObserver(([entry]) => {
+      this.onScreen = !!entry?.isIntersecting;
+      if (this.onScreen) this.schedule();
+      else this.pause();
+    });
+    visibility.observe(element);
+    const onVisibility = () => {
+      this.tabVisible = document.visibilityState === 'visible';
+      if (!this.tabVisible) this.pointers.clear();
+      if (this.tabVisible) this.schedule();
+      else this.pause();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    const motion = matchMedia('(prefers-reduced-motion: reduce)');
+    const onMotion = () => {
+      this.still = motion.matches;
+      this.schedule();
+    };
+    onMotion();
+    motion.addEventListener('change', onMotion);
+    // Trackpad pinch is a Ctrl+wheel: a plain wheel keeps scrolling the page.
+    const onWheel = (event: WheelEvent) => {
+      if (!event.ctrlKey) return;
+      event.preventDefault();
+      const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? this.height : 1);
+      this.setZoom(this.camera.zoom * Math.exp(-delta * 0.01));
+    };
+    element.addEventListener('wheel', onWheel, { passive: false });
 
+    this.destroyRef.onDestroy(() => {
+      this.pause();
+      resize.disconnect();
+      visibility.disconnect();
+      document.removeEventListener('visibilitychange', onVisibility);
+      motion.removeEventListener('change', onMotion);
+      element.removeEventListener('wheel', onWheel);
+      this.globe?.destroy();
+      this.globe = undefined;
+    });
+
+    this.ready.set(true);
+    this.focusSelected();
+    this.schedule();
+  }
+
+  /** A new selection, new markers, zoom, pause or theme: the globe turns or redraws. */
+  private redrawOnChanges(): void {
     // A new selection turns the globe to it; new markers, zoom or pause need a frame.
     effect(() => {
       this.selected();
@@ -207,7 +215,7 @@ export class Globe {
       this.schedule();
     });
     recolour.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    inject(DestroyRef).onDestroy(() => recolour.disconnect());
+    this.destroyRef.onDestroy(() => recolour.disconnect());
   }
 
   private schedule(): void {
@@ -291,6 +299,16 @@ export class Globe {
     if (!rotating && !moving) this.pause();
   }
 
+  /** A marker's country becomes the selection, or stops being it. */
+  protected toggleCountry(code: string): void {
+    this.select.emit(this.selected() === code ? null : code);
+  }
+
+  /** Zoomed in, the selected country shows all its best ranked contributors; the others their first. */
+  protected markerPeople(marker: GlobeMarker): readonly string[] {
+    return marker.code === this.selected() ? marker.top : marker.top.slice(0, 1);
+  }
+
   protected togglePause(): void {
     this.paused.update(value => !value);
   }
@@ -325,14 +343,14 @@ export class Globe {
     return first && second ? Math.hypot(first.x - second.x, first.y - second.y) : 0;
   }
 
-  protected pointerDown(event: PointerEvent): void {
+  protected startDrag(event: PointerEvent): void {
     this.paused.set(true);
     this.canvas().nativeElement.setPointerCapture(event.pointerId);
     this.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
     this.pinchDistance = this.pinch();
   }
 
-  protected pointerMove(event: PointerEvent): void {
+  protected drag(event: PointerEvent): void {
     const previous = this.pointers.get(event.pointerId);
     if (!previous) return;
     this.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
@@ -348,14 +366,14 @@ export class Globe {
     this.schedule();
   }
 
-  protected pointerEnd(event: PointerEvent): void {
+  protected endDrag(event: PointerEvent): void {
     this.pointers.delete(event.pointerId);
     const canvas = this.canvas().nativeElement;
     if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
     this.pinchDistance = this.pinch();
   }
 
-  protected keydown(event: KeyboardEvent): void {
+  protected moveWithKeys(event: KeyboardEvent): void {
     const move = KEY_MOVES[event.key];
     if (move) {
       event.preventDefault();
@@ -371,7 +389,7 @@ export class Globe {
     }
   }
 
-  protected contextLost(event: Event): void {
+  protected showWebGlFailure(event: Event): void {
     event.preventDefault();
     this.failed.set(true);
     this.pause();

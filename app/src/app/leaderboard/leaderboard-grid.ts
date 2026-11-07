@@ -17,6 +17,7 @@ import { profileQuery } from './profile-query'
 
 /** The fallback for browsers without srcset: the cells are drawn at 124px at most. */
 const AVATAR_SIZE = 56
+
 /** The first page comes server-rendered (50 of it on phones); "Show more" shows the rest, then loads the next pages. */
 @Component({
   selector: 'app-leaderboard-grid',
@@ -29,8 +30,10 @@ export class LeaderboardGrid {
   /** The first page of a period and country. */
   readonly page = input.required<LeaderboardPage>()
 
+  private readonly memory = inject(LeaderboardMemory)
   private readonly fetchPage = injectServerFnMutation(getLeaderboard)
-  protected readonly memory = inject(LeaderboardMemory)
+  private readonly tipBox = viewChild<ElementRef<HTMLElement>>('tipBox')
+
   protected readonly view = this.memory.view
   /**
    * The pages after the first, as "Show more" loaded them: remembered per board, so coming back from a profile shows
@@ -48,6 +51,8 @@ export class LeaderboardGrid {
   protected readonly morePhone = computed(() => this.shown().phone < this.page().total)
   protected readonly query = computed(() => profileQuery(this.page().period, this.page().country))
   protected readonly listLabel = computed(() => `Contributors, ranked: ${formatNumber(this.items().length)} of ${formatNumber(this.page().total)} shown`)
+  protected readonly tip = signal<{ item: ContributorSummary, link: HTMLElement, x: number, y: number, bottom: number } | null>(null)
+
   protected readonly AVATAR_SIZE = AVATAR_SIZE
   protected readonly avatar = (item: ContributorSummary) => avatarUrl(item.githubId, AVATAR_SIZE)
   protected readonly avatars = (item: ContributorSummary) => avatarSrcset(item.githubId)
@@ -56,8 +61,15 @@ export class LeaderboardGrid {
   protected readonly who = (item: ContributorSummary) =>
     item.name && item.name.toLowerCase() !== item.username.toLowerCase() ? `${item.name} (${item.username})` : item.username
   protected readonly overall = (item: ContributorSummary) => formatNumber(item.rank)
-  protected readonly tip = signal<{ item: ContributorSummary, link: HTMLElement, x: number, y: number, bottom: number } | null>(null)
-  private readonly tipBox = viewChild<ElementRef<HTMLElement>>('tipBox')
+  protected readonly place = (item: ContributorSummary) => item.countryRank ?? item.rank
+  protected readonly rank = (item: ContributorSummary) => formatNumber(this.place(item))
+  protected readonly label = (item: ContributorSummary) =>
+    `${this.who(item)}, #${this.rank(item)}${item.countryRank ? ` in the country, #${formatNumber(item.rank)} overall` : ''}, ${this.points(item)}`
+  protected readonly points = (item: ContributorSummary) => formatPoints(item.score)
+
+  constructor() {
+    afterRenderEffect(() => this.keepTipOnScreen())
+  }
 
   protected showTip(event: Event): void {
     const link = (event.target as Element | null)?.closest<HTMLElement>('a[data-index]')
@@ -68,49 +80,15 @@ export class LeaderboardGrid {
     if (item) this.placeTip(item, link)
   }
 
-  protected followFocus(): void {
-    const shown = this.tip()
-    if (shown && shown.link === document.activeElement) this.placeTip(shown.item, shown.link)
-    else this.tip.set(null)
-  }
-
-  private placeTip(item: ContributorSummary, link: HTMLElement): void {
-    const box = link.getBoundingClientRect()
-    this.tip.set({ item, link, x: box.left + box.width / 2, y: box.top, bottom: box.bottom })
-  }
-
   protected hideTip(event: PointerEvent): void {
     const link = (event.target as Element | null)?.closest('a[data-index]')
     if (!link || !link.contains(event.relatedTarget as Node | null)) this.tip.set(null)
   }
-  protected readonly place = (item: ContributorSummary) => item.countryRank ?? item.rank
-  protected readonly rank = (item: ContributorSummary) => formatNumber(this.place(item))
-  protected readonly label = (item: ContributorSummary) =>
-    `${this.who(item)}, #${this.rank(item)}${item.countryRank ? ` in the country, #${formatNumber(item.rank)} overall` : ''}, ${this.points(item)}`
-  protected readonly points = (item: ContributorSummary) => formatPoints(item.score)
 
-  constructor() {
-    afterRenderEffect(() => {
-      const box = this.tipBox()?.nativeElement
-      const shown = this.tip()
-      if (!box || !shown) return
-      const arrow = box.querySelector<HTMLElement>('[data-arrow]')
-      box.style.marginLeft = ''
-      box.style.marginTop = ''
-      delete box.dataset['side']
-      if (arrow) arrow.style.marginLeft = ''
-      const { left, right, top, height } = box.getBoundingClientRect()
-      const shift = left < 8 ? 8 - left : right > innerWidth - 8 ? innerWidth - 8 - right : 0
-      if (shift) {
-        box.style.marginLeft = `${shift}px`
-        if (arrow) arrow.style.marginLeft = `${-shift}px`
-      }
-      const header = document.querySelector('app-site-header')?.getBoundingClientRect().bottom ?? 0
-      if (top < header + 8) {
-        box.style.marginTop = `${shown.bottom - shown.y + 16 + height}px`
-        box.dataset['side'] = 'bottom'
-      }
-    })
+  protected followFocus(): void {
+    const shown = this.tip()
+    if (shown && shown.link === document.activeElement) this.placeTip(shown.item, shown.link)
+    else this.tip.set(null)
   }
 
   protected async showMore(): Promise<void> {
@@ -139,4 +117,31 @@ export class LeaderboardGrid {
     }
   }
 
+  private placeTip(item: ContributorSummary, link: HTMLElement): void {
+    const box = link.getBoundingClientRect()
+    this.tip.set({ item, link, x: box.left + box.width / 2, y: box.top, bottom: box.bottom })
+  }
+
+  /** The tip stays inside the window and below the sticky header: shifted sideways, or turned below its link. */
+  private keepTipOnScreen(): void {
+    const box = this.tipBox()?.nativeElement
+    const shown = this.tip()
+    if (!box || !shown) return
+    const arrow = box.querySelector<HTMLElement>('[data-arrow]')
+    box.style.marginLeft = ''
+    box.style.marginTop = ''
+    delete box.dataset['side']
+    if (arrow) arrow.style.marginLeft = ''
+    const { left, right, top, height } = box.getBoundingClientRect()
+    const shift = left < 8 ? 8 - left : right > innerWidth - 8 ? innerWidth - 8 - right : 0
+    if (shift) {
+      box.style.marginLeft = `${shift}px`
+      if (arrow) arrow.style.marginLeft = `${-shift}px`
+    }
+    const header = document.querySelector('app-site-header')?.getBoundingClientRect().bottom ?? 0
+    if (top < header + 8) {
+      box.style.marginTop = `${shown.bottom - shown.y + 16 + height}px`
+      box.dataset['side'] = 'bottom'
+    }
+  }
 }

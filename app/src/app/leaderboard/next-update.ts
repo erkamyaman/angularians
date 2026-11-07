@@ -32,8 +32,11 @@ export class NextUpdate {
   })
 
   constructor() {
-    if (!isPlatformBrowser(inject(PLATFORM_ID))) return
-    const destroyRef = inject(DestroyRef)
+    if (isPlatformBrowser(inject(PLATFORM_ID))) this.startClock(inject(DestroyRef))
+  }
+
+  /** After the first paint, in the browser: the visitor's clock, read again every minute. */
+  private startClock(destroyRef: DestroyRef): void {
     afterNextRender(() => {
       this.now.set(new Date())
       const timer = setInterval(() => this.now.set(new Date()), REFRESH_MS)

@@ -23,7 +23,7 @@ describe('ContributorSearch', () => {
     const component = fixture.componentInstance as unknown as {
       term: { set(value: string): void };
       results(): unknown[];
-      open(item: unknown): void;
+      openProfile(item: unknown): void;
     };
     return { fixture, component };
   }
@@ -54,7 +54,7 @@ describe('ContributorSearch', () => {
     const { fixture, component } = render();
     fixture.detectChanges();
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
-    component.open({ username: 'cris' });
+    component.openProfile({ username: 'cris' });
     expect(navigate).toHaveBeenCalledWith(['/', 'cris'], { queryParams: { period: '12m', country: 'TR' } });
   });
 });
