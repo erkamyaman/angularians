@@ -10,11 +10,10 @@ const LOGO = 'angularians-storm-logo'
 const ANGIE = '/angie/angie-hammer.png'
 
 /**
- * The word "Angularian(s)" or "ng-halla", or a click on the logo, calls Angie: she comes in with her hammer and calls down lightning somewhere on the page, with
- * thunder. A click on the word calls her any time, a click on a logo once a visit (the tab's session); the mouse coming
- * onto the word does once a visit too, and only
- * after a first click or key on the page, so the browser lets the thunder play. Never on touch screens, a link or button
- * that holds the word, or with reduced motion.
+ * The word "Angularian(s)" or "ng-halla", or a logo, calls Angie: she comes in with her hammer and calls down lightning
+ * somewhere on the page, with thunder. A click on the word calls her any time, a click on a logo once a visit (the tab's
+ * session); the mouse coming onto the word does once a visit too, and only after a first click or key on the page, so
+ * the browser lets the thunder play. Never on touch screens, a link or button that holds the word, or with reduced motion.
  */
 @Component({
   selector: 'app-hammer-strike',
@@ -42,11 +41,14 @@ export class HammerStrike {
       let strikes = 0
       let angie: HTMLImageElement | undefined
       let calling = false
-      const call = () => {
+      const call = (started?: () => void) => {
         if (calling || this.strike()) return
         calling = true
         angie ??= Object.assign(new Image(), { src: ANGIE })
-        angie.decode().then(storm, () => (angie = undefined)).finally(() => (calling = false))
+        angie.decode().then(() => {
+          storm()
+          started?.()
+        }, () => (angie = undefined)).finally(() => (calling = false))
       }
       const storm = () => {
         const x = innerWidth * (0.2 + Math.random() * 0.5)
@@ -81,10 +83,7 @@ export class HammerStrike {
       const onClick = (event: MouseEvent) => {
         if ((event as PointerEvent).pointerType === 'touch' || this.strike()) return
         if (angularian(event.target)) call()
-        else if (headerLogo(event.target) && !usedThisVisit(LOGO)) {
-          remember(LOGO)
-          call()
-        }
+        else if (headerLogo(event.target) && !usedThisVisit(LOGO)) call(() => remember(LOGO))
       }
       document.addEventListener('pointerover', onOver)
       document.addEventListener('click', onClick)

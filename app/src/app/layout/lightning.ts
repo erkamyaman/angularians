@@ -12,14 +12,9 @@ export interface Spark {
   dy: number
 }
 
-export interface Branch {
-  d: string
-  level: 1 | 2
-  at: number
-  span: number
-}
+export type Branch = Piece & { level: 1 | 2 }
 
-/** One strike: where it lands, and its paths (the main channel, then the branches and any second bolt). */
+/** One strike: where it lands, and its paths (the main channel, whole and in pieces, then the branches and the other bolts). */
 export interface Strike {
   id: number
   x: number
@@ -36,13 +31,16 @@ export interface Strike {
  * split pushed sideways a bit less than the last), long branches forking downward across the page, some forking again,
  * and one or two more bolts elsewhere.
  */
+const MAX_BRANCHES = 24
+const PIECES = 6
+
 export function lightning(x: number, y: number, width: number, height: number): Pick<Strike, 'top' | 'main' | 'pieces' | 'branches' | 'sparks'> {
   const top = x + (Math.random() - 0.5) * width * 0.3
   const channel = jag([top, -20], [x, y], 7, 0.22)
   const mainLength = length(channel)
   const branches: Branch[] = []
   const fork = (points: Point[], from: number, span: number, count: number, reach: number, level: 1 | 2) => {
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < count && branches.length < MAX_BRANCHES; i++) {
       const index = Math.floor(points.length * (0.1 + Math.random() * 0.6))
       const start = points[index]!
       const side = Math.random() < 0.5 ? -1 : 1
@@ -56,19 +54,20 @@ export function lightning(x: number, y: number, width: number, height: number): 
     }
   }
   fork(channel, 0, 1, 6 + Math.floor(Math.random() * 4), 0.9, 1)
-  for (let bolt = 0; bolt < 1 + Math.floor(Math.random() * 2); bolt++) {
-    const secondBolt = jag([width * (bolt ? 0.85 : 0.1) + (Math.random() - 0.5) * width * 0.1, -20], [width * (0.05 + Math.random() * 0.9), height * (0.35 + Math.random() * 0.35)], 6, 0.25)
-    const span = length(secondBolt) / mainLength
-    branches.push({ d: path(secondBolt), level: 1, at: 0, span })
-    fork(secondBolt, 0, span, 3, 0.5, 2)
+  const otherBolts = 1 + Math.floor(Math.random() * 2)
+  for (let bolt = 0; bolt < otherBolts; bolt++) {
+    const points = jag([width * (bolt ? 0.85 : 0.1) + (Math.random() - 0.5) * width * 0.1, -20], [width * (0.05 + Math.random() * 0.9), height * (0.35 + Math.random() * 0.35)], 6, 0.25)
+    const span = length(points) / mainLength
+    branches.push({ d: path(points), level: 1, at: 0, span })
+    fork(points, 0, span, 3, 0.5, 2)
   }
-  return { top, main: path(channel), pieces: thirds(channel, mainLength), branches, sparks: sparks() }
+  return { top, main: path(channel), pieces: pieces(channel, mainLength), branches, sparks: sparks() }
 }
 
-function thirds(points: Point[], total: number): Piece[] {
-  const size = Math.ceil(points.length / 3)
+function pieces(points: Point[], total: number): Piece[] {
+  const size = Math.ceil(points.length / PIECES)
   let done = 0
-  return [0, 1, 2].map(k => {
+  return Array.from({ length: PIECES }, (_, k) => {
     const piece = points.slice(k * size, Math.min(points.length, (k + 1) * size + 1))
     const span = length(piece) / total
     const at = done
