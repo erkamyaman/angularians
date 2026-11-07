@@ -37,6 +37,14 @@ pnpm build        # the site, as Netlify builds it
 ## Rules
 
 - Small files, short plain comments, few dependencies.
+- The app follows the Angular style guide (https://angular.dev/style-guide): hyphenated file names named after what
+  they hold (no `utils.ts`/`format.ts` grab bags), one component, service or concept per file, folders by feature,
+  tests as `<source>.spec.ts` next to their source (except tests of `app/src/server/routes`, whose folder is the routes
+  themselves). `inject()`, not constructor parameters; inputs, outputs, injected services and queries first, `readonly`;
+  members only the template uses are `protected`; handlers named for what they do; logic in `computed` or functions,
+  not in templates; constructors delegate to named methods; host listeners in `host`, not `@HostListener` or
+  `addEventListener`. Standalone, signals and `@if`/`@for`; no `ChangeDetectionStrategy` (the app is zoneless and
+  OnPush is Angular 22's default).
 - A component in `app/src/app` keeps its template in its own `.html` and its styles, if any, in its own `.css`, next to its `.ts`: never inline. No styling in TypeScript: no classes in `host` or in constants; TypeScript picks a name (a tone, a medal) and the `.css` styles it, in plain CSS with the theme's variables. Classes several components share are in `app/src/styles/`. `app/src/ui` is copied from spartan/ui and keeps its form.
 - Commit messages are `type(scope): summary`, with no trailer lines.
 - Run `pnpm test`, `pnpm typecheck` and `pnpm build` before you commit; look at a change to the site in both themes and at phone width.
