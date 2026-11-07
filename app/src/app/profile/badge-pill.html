@@ -1,7 +1,7 @@
 <ng-template #body>
   @switch (badge().icon) {
     @case ('angular') { <app-angular-logo class="size-4" /> }
-    @case ('gde') { <img [src]="badge().logo" alt="" class="h-[0.8em] w-auto" /> }
+    @case ('gde') { <img [src]="badge().logo" alt="" width="136" height="77" class="h-[0.8em] w-auto" /> }
     @case ('logo') { <img [src]="badge().logo" alt="" width="16" height="16" class="size-4 shrink-0 object-contain" /> }
     @default { <ng-icon [name]="badge().icon" [size]="badge().icon.startsWith('viking') ? '1.25rem' : '1em'" aria-hidden="true" /> }
   }

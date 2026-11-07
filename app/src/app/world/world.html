@@ -37,7 +37,8 @@
   @defer (when inView()) {
     <app-globe [countries]="map().countries" [selected]="selected()" (select)="select.emit($event)" />
   } @placeholder {
-    <div class="size-full rounded-full bg-muted/50 ring-1 ring-border"></div>
+    <!-- The globe's own disc: 78% of the box (its scale, under the canvas's fade), so it does not shrink when it draws -->
+    <div class="grid size-full place-items-center"><div class="size-[78%] rounded-full bg-muted/50 ring-1 ring-border"></div></div>
   }
   @if (current(); as shown) {
     <div class="absolute right-0 bottom-0 w-80 max-sm:hidden">
