@@ -42,7 +42,7 @@ for (const repo of config.repos) {
     stats.reviewComments += activity.reviewComments
     stats.activityPages += activity.pages
     console.log(`${fullName}: ${activity.issues} issues, ${activity.comments} comments, ${activity.reviewComments} review comments (${activity.pages} pages)`)
-    // GitHub Discussions (RFCs): scored as issues and comments.
+    // GitHub Discussions (such as angular/angular's RFCs): scored as issues and comments.
     const discussions = await collectDiscussions(repo, config.since, accumulator)
     stats.discussions += discussions.discussions
     stats.discussionComments += discussions.discussionComments

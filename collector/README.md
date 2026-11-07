@@ -12,8 +12,9 @@ Every night it re-collects everything, like nuxt/nuxters: no cache, every score 
 A PR has landed if GitHub marks it merged, **or** a commit on the default branch has a `PR Close #N` line for it.
 Angular's merge tool pushes the commits itself and closes the PR, so GitHub shows most PRs from
 2017 to 2025 as closed, not merged. Before a repository's first `PR Close` commit (angular/angular: January 2017), a
-commit with `Closes #N`, `Fixes #N` or `Resolves #N` at the start of a line lands PR N too. The landed PR is credited to its author. GitHub Discussions (the RFCs) come from
-GraphQL (`src/discussions.ts`) and count as issues and comments do; the token needs no extra permission for public
+commit that closes #N with one of GitHub's keywords lands PR N too: a line that starts with close, closes, closed, fix, fixes,
+fixed, resolve, resolves or resolved (any case, an optional colon), then `#N`. The landed PR is credited to its author.
+GitHub Discussions (of every repository that has them, such as angular/angular's RFCs) come from GraphQL (`src/discussions.ts`) and count as issues and comments do; the token needs no extra permission for public
 repositories. Scoring rules are in
 `shared/src/scoring.ts` and `shared/src/pull-requests.ts`.
 
@@ -30,7 +31,7 @@ GITHUB_TOKEN=… pnpm collect -- --since=90d --out=/tmp/test  # a quick test run
 | `--part` | | off | Write the repositories as a part for `merge.ts`, not the site's data |
 | `--since=90d` or `--since=2026-08-01` | `COLLECT_SINCE` | full history | Test runs only |
 | `--pulls=rest\|search` | `COLLECT_PULLS` | `rest` | `search` when `/pulls` is not reachable: same data, more requests |
-| `--no-activity` | `COLLECT_ACTIVITY=false` | activity on | Landed PRs only: no issues, comments or review comments |
+| `--no-activity` | `COLLECT_ACTIVITY=false` | activity on | Landed PRs only: no issues, comments, review comments or discussions; no security advisories either, unless `--advisories` |
 | `--no-advisories` | `COLLECT_ADVISORIES=false` | on in the run of angular/angular | No Angular security advisories (their reporters score 20 points each; `--advisories` turns them on in another run) |
 | `--no-profiles` | `COLLECT_PROFILES=false` | profiles on | Profiles need GraphQL, so a token |
 | `--out=dir` | `CONTRIBUTORS_OUTPUT_DIR` | `data/` | |
@@ -39,7 +40,9 @@ GITHUB_TOKEN=… pnpm collect -- --since=90d --out=/tmp/test  # a quick test run
 Commits come from a local treeless git clone (commit messages only, about 16 MB), not the API.
 A full run of angular/angular alone needs about 6,500 REST requests (most of them its ~420,000 comments and review
 comments, 100 a page) and takes about 3 hours; angular/components and angular/angular-cli are about half its size each.
-The built-in Actions token (1,000 requests an hour) is not enough: use a personal token (5,000 an hour).
+For angular/angular, angular/components and angular/angular-cli the built-in Actions token (1,000 requests an hour,
+shared by the jobs that use it) is not enough: they use a GitHub App or a personal token (5,000 an hour each). The four
+small repositories use the built-in token.
 
 ### In CI: one job per repository
 
