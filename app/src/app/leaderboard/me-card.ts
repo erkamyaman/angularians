@@ -18,6 +18,7 @@ import { JoinLinks } from './join-links'
 import { Share } from '../profile/share'
 import { avatarUrl, formatNumber, formatPoints } from './format'
 import { GITHUB_TEXT } from './github-colors'
+import { HELPFUL_COMMENT_REACTIONS, HELPFUL_ISSUE_COMMENTS, HELPFUL_ISSUE_REACTIONS } from '@angularians/shared'
 
 const CARD = 'flex w-full flex-col rounded-xl bg-muted/40 p-6 ring-1 ring-border sm:p-8'
 /**
@@ -61,8 +62,8 @@ export class MeCard {
     const person = this.me()?.angularian
     return [
       { label: 'Merged PRs', one: 'Merged PR', value: person?.pullRequests.all ?? 0, hint: null, icon: 'octGitMerge', color: GITHUB_TEXT.purple },
-      { label: 'Helpful issues', one: 'Helpful issue', value: person?.helpfulIssues ?? 0, hint: 'Completed, or 3+ reactions, or 5+ comments', icon: 'octIssueOpened', color: GITHUB_TEXT.green },
-      { label: 'Helpful comments', one: 'Helpful comment', value: person?.helpfulComments ?? 0, hint: '3+ reactions, or a discussion\'s accepted answer', icon: 'remixChatHeartLine', color: GITHUB_TEXT.blue },
+      { label: 'Helpful issues', one: 'Helpful issue', value: person?.helpfulIssues ?? 0, hint: `Completed, or ${HELPFUL_ISSUE_REACTIONS}+ reactions, or ${HELPFUL_ISSUE_COMMENTS}+ comments`, icon: 'octIssueOpened', color: GITHUB_TEXT.green },
+      { label: 'Helpful comments', one: 'Helpful comment', value: person?.helpfulComments ?? 0, hint: `${HELPFUL_COMMENT_REACTIONS}+ reactions, or a discussion's accepted answer`, icon: 'remixChatHeartLine', color: GITHUB_TEXT.blue },
     ]
   })
 

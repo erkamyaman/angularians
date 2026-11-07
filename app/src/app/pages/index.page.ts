@@ -5,7 +5,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { type RouteMeta } from '@analogjs/router';
 import { injectResponse } from '@analogjs/router/tokens';
-import { countryCode, countryName, DEFAULT_PERIOD, periodOrNull, periodPhrase, type Period } from '@angularians/shared';
+import { countryCode, countryName, DEFAULT_PERIOD, HELPFUL_COMMENT_REACTIONS, HELPFUL_ISSUE_COMMENTS, HELPFUL_ISSUE_REACTIONS, periodOrNull, periodPhrase, type Period } from '@angularians/shared';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { remixArrowRightUpLine, remixCalendarLine, remixChatHeartLine, remixGroupLine } from '@ng-icons/remixicon';
 import { octComment, octGitMerge, octIssueOpened } from '@ng-icons/octicons';
@@ -89,8 +89,8 @@ export default class Home {
   /** The three ways onto the board (Nuxters' "How to become a Nuxter"). */
   protected readonly becomeWays = [
     { title: 'Merge a pull request', action: 'Read the guide', description: 'Fix a bug, ship a feature or improve the docs in any Angular repository.', icon: 'octGitMerge', color: GITHUB_TEXT.purple, url: 'https://github.com/angular/angular/blob/main/CONTRIBUTING.md' },
-    { title: 'Open a helpful issue', action: 'See the issues', description: 'An issue that gets completed, or collects 3+ reactions or 5+ comments.', icon: 'octIssueOpened', color: GITHUB_TEXT.green, url: 'https://github.com/angular/angular/issues' },
-    { title: 'Write a helpful comment', action: 'Review a pull request', description: 'Answer a question on an issue, a PR or a discussion: a comment with 3+ reactions, or an accepted answer, counts.', icon: 'remixChatHeartLine', color: GITHUB_TEXT.blue, url: 'https://github.com/angular/angular/pulls' },
+    { title: 'Open a helpful issue', action: 'See the issues', description: `An issue that gets completed, or collects ${HELPFUL_ISSUE_REACTIONS}+ reactions or ${HELPFUL_ISSUE_COMMENTS}+ comments.`, icon: 'octIssueOpened', color: GITHUB_TEXT.green, url: 'https://github.com/angular/angular/issues' },
+    { title: 'Write a helpful comment', action: 'Review a pull request', description: `Answer a question on an issue, a PR or a discussion: a comment with ${HELPFUL_COMMENT_REACTIONS}+ reactions, or an accepted answer, counts.`, icon: 'remixChatHeartLine', color: GITHUB_TEXT.blue, url: 'https://github.com/angular/angular/pulls' },
   ];
   protected readonly colors = GITHUB_TEXT;
   protected readonly number = formatNumber;

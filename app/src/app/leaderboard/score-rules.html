@@ -3,7 +3,7 @@
   <hlm-dialog-content *hlmDialogPortal class="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
     <hlm-dialog-header>
       <h2 hlmDialogTitle class="text-xl">How the score works</h2>
-      <p hlmDialogDescription>Every contribution counts for its author, on the day it was made, in these repositories:</p>
+      <p hlmDialogDescription>Every contribution counts for its author on the day it was made, a pull request on the day it landed, in these repositories:</p>
       <ul class="flex flex-wrap gap-1.5" aria-label="Repositories">
         @for (repo of repos; track repo) {
           <li><a [href]="'https://github.com/' + repo" target="_blank" rel="noopener" class="block rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">{{ repo }}</a></li>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core'
-import { ACTIVITY_POINTS, PULL_REQUEST_POINTS, REPOS } from '@angularians/shared'
+import { ACTIVITY_POINTS, HELPFUL_COMMENT_REACTIONS, HELPFUL_ISSUE_COMMENTS, HELPFUL_ISSUE_REACTIONS, PULL_REQUEST_POINTS, REPOS } from '@angularians/shared'
 import { NgIcon, provideIcons } from '@ng-icons/core'
 import { octComment, octIssueOpened, octShield, octSmiley } from '@ng-icons/octicons'
 import { remixChatHeartLine, remixFileCodeLine, remixLightbulbLine } from '@ng-icons/remixicon'
@@ -28,11 +28,11 @@ export class ScoreRules {
   ]
   protected readonly rules = [
     { what: 'Issue', when: 'Every issue or discussion you open.', value: `${ACTIVITY_POINTS.issues}`, unit: 'pt', icon: 'octIssueOpened', color: GREEN },
-    { what: 'Helpful issue', when: 'On top, when completed or with 3+ reactions or 5+ comments.', value: `+${ACTIVITY_POINTS.helpfulIssues}`, unit: 'pts', icon: 'remixLightbulbLine', color: GOLD },
+    { what: 'Helpful issue', when: `On top, when completed or with ${HELPFUL_ISSUE_REACTIONS}+ reactions or ${HELPFUL_ISSUE_COMMENTS}+ comments.`, value: `+${ACTIVITY_POINTS.helpfulIssues}`, unit: 'pts', icon: 'remixLightbulbLine', color: GOLD },
     { what: 'Comment', when: 'Every comment on an issue, a pull request or a discussion.', value: `${ACTIVITY_POINTS.comments}`, unit: 'pt', icon: 'octComment', color: BLUE },
-    { what: 'Helpful comment', when: 'On top, with 3+ reactions, or as a discussion\'s accepted answer.', value: `+${ACTIVITY_POINTS.helpfulComments}`, unit: 'pts', icon: 'remixChatHeartLine', color: PINK },
+    { what: 'Helpful comment', when: `On top, with ${HELPFUL_COMMENT_REACTIONS}+ reactions, or as a discussion's accepted answer.`, value: `+${ACTIVITY_POINTS.helpfulComments}`, unit: 'pts', icon: 'remixChatHeartLine', color: PINK },
     { what: 'Review comment', when: 'Every comment on the code of a pull request.', value: `${ACTIVITY_POINTS.reviewComments}`, unit: 'pt', icon: 'remixFileCodeLine', color: PURPLE },
-    { what: 'Reaction', when: 'Received on your issues, pull requests and comments.', value: `${ACTIVITY_POINTS.reactions}`, unit: 'pt', icon: 'octSmiley', color: ORANGE },
+    { what: 'Reaction', when: 'Received on your issues, pull requests, discussions and comments.', value: `${ACTIVITY_POINTS.reactions}`, unit: 'pt', icon: 'octSmiley', color: ORANGE },
     { what: 'Security report', when: 'Credited as reporter or finder on an Angular security advisory, on the day it is published.', value: `${ACTIVITY_POINTS.advisories}`, unit: 'pts', icon: 'octShield', color: RED },
   ]
 }
