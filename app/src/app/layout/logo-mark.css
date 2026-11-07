@@ -3,15 +3,15 @@
 }
 
 :host([intro]:hover) path:nth-of-type(3) {
-  fill: var(--mark-green-1);
+  fill: var(--mark-intro-1);
 }
 
 :host([intro]:hover) path:nth-of-type(4) {
-  fill: var(--mark-green-2);
+  fill: var(--mark-intro-2);
 }
 
 :host([intro]:hover) path:nth-of-type(5) {
-  fill: var(--mark-green-3);
+  fill: var(--mark-intro-3);
 }
 
 :host(.compact) {
@@ -41,17 +41,17 @@
   }
 
   :host(.intro) path:nth-of-type(3) {
-    --green: var(--mark-green-1);
+    --green: var(--mark-intro-1);
     animation: mark-square 0.4s ease-out 0.5s both, mark-gold 0.8s ease-in-out 2.3s both;
   }
 
   :host(.intro) path:nth-of-type(4) {
-    --green: var(--mark-green-2);
+    --green: var(--mark-intro-2);
     animation: mark-square 0.4s ease-out 0.7s both, mark-gold 0.8s ease-in-out 2.4s both;
   }
 
   :host(.intro) path:nth-of-type(5) {
-    --green: var(--mark-green-3);
+    --green: var(--mark-intro-3);
     animation: mark-square 0.4s ease-out 0.9s both, mark-gold 0.8s ease-in-out 2.5s both;
   }
 

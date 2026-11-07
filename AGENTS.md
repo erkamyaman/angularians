@@ -44,10 +44,11 @@ pnpm build        # the site, as Netlify builds it
 - Never write secrets, tokens, absolute local paths or personal data into the repository.
 - Pages are cached by the CDN for everyone: never render the signed-in user into a page; read it in the browser from `/api/auth/me`.
 - No gradients: the brand is Viking gold, in flat colours (the mark's graph uses its shades and a grey).
-- Our colours come from the theme (`--primary`, `--color-brand`, `--mark-*`, `--github-*`, `--medal-*` in
-  `app/src/styles.css`, listed in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#design-tokens)), not a hex in
-  a component: both themes recolour everything through them. Fixed hex is only for other
-  projects' brand colours and the server-drawn cards (`app/src/server/card`), which have no theme.
+- Our colours come from the theme (`--primary`, `--color-brand`, `--mark-*`, `--github-*`, `--medal-*` and the other
+  groups in `app/src/styles.css`, listed in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#design-tokens)), not a hex in
+  a component: both themes recolour everything through them. Fixed hex is only for the four cases listed there
+  ([Design tokens](docs/ARCHITECTURE.md#design-tokens)): another project's own colour, the artwork of a logo, black or
+  white as a shade, a mask or over a photo, and the server-drawn cards (`app/src/server/card`), which have no theme.
 - The word "Angularian(s)" is written with the `brand` utility (the Norse font); on the cards, `branded()` does the same.
 - The mark is generated: change `app/scripts/logo/build.py` and regenerate the component (`logo-mark.html`), the favicon, the cards and the
   wordmark, never edit its path data by hand.

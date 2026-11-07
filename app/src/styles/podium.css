@@ -1,33 +1,33 @@
 /*
- * Gold, silver and bronze for the top three of a board (`--medal-*` in styles.css): `medal-gold` sets the colours, then
- * `medal-text` colours the text, `medal-ring` (2px) or `medal-ring-thin` (1px) draws a ring, `medal-badge` both. A
- * focus or pressed ring from a utility (`focus-visible:ring-2`) is more specific, and still wins: only because
+ * Gold, silver and bronze for the top three of a board: `medal-gold` sets `--podium-ring` and `--podium-text`
+ * from the theme's `--medal-*` (styles.css), then `medal-text` colours the text, `medal-ring` (2px) or `medal-ring-thin`
+ * (1px) draws a ring, `medal-badge` both. A focus or pressed ring from a utility (`focus-visible:ring-2`) is more specific, and still wins: only because
  * `styles.css` imports the utilities unlayered, like this file. Were they put in a layer, this unlayered file would
  * beat them whatever the specificity.
  */
 .medal-gold {
-  --medal: var(--medal-gold);
-  --medal-text: var(--medal-gold-text);
+  --podium-ring: var(--medal-gold);
+  --podium-text: var(--medal-gold-text);
 }
 .medal-silver {
-  --medal: var(--medal-silver);
-  --medal-text: var(--medal-silver-text);
+  --podium-ring: var(--medal-silver);
+  --podium-text: var(--medal-silver-text);
 }
 .medal-bronze {
-  --medal: var(--medal-bronze);
-  --medal-text: var(--medal-bronze-text);
+  --podium-ring: var(--medal-bronze);
+  --podium-text: var(--medal-bronze-text);
 }
 
 .medal-text {
-  color: var(--medal-text);
+  color: var(--podium-text);
 }
 .medal-ring {
-  box-shadow: 0 0 0 2px var(--medal);
+  box-shadow: 0 0 0 2px var(--podium-ring);
 }
 .medal-ring-thin {
-  box-shadow: 0 0 0 1px var(--medal);
+  box-shadow: 0 0 0 1px var(--podium-ring);
 }
 .medal-badge {
-  box-shadow: 0 0 0 1px var(--medal);
-  color: var(--medal-text);
+  box-shadow: 0 0 0 1px var(--podium-ring);
+  color: var(--podium-text);
 }

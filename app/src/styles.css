@@ -36,10 +36,13 @@
   --mark-1: #5c4000;
   --mark-2: #9A6700;
   --mark-3: #E3B341;
-  /* The greens its three squares start as in the intro, and turn back to on hover. The same in both themes. */
-  --mark-green-1: #194825;
-  --mark-green-2: #337343;
-  --mark-green-3: #5eb572;
+  /*
+   * The intro: the greens of a GitHub contribution graph its three squares start as, before they turn gold, and
+   * turn back to on hover. The same in both themes.
+   */
+  --mark-intro-1: #194825;
+  --mark-intro-2: #337343;
+  --mark-intro-3: #5eb572;
 
   /* Angular's own colours, from its logo: the team's pink and the purple. The same in both themes. */
   --angular-pink: #dc087d;
@@ -47,23 +50,25 @@
 
   /*
    * GitHub's colours, one for each kind of contribution (`github-*` in styles/github-colors.css); its dark theme's
-   * are brighter. `--github-*-light` keep the light ones in both themes (the profile's stat tints), and `--github-*`
-   * starts from them.
+   * are brighter. `--github-*-on-light` is GitHub's light-theme value, kept in both themes (the profile's stat tints),
+   * and `--github-*` starts from it. `--github-*-text` is a shade darker on light, for text on a tint of the colour.
    */
-  --github-purple-light: #8250DF;
-  --github-red-light: #CF222E;
-  --github-blue-light: #0969DA;
-  --github-gold-light: #9A6700;
-  --github-green-light: #1A7F37;
-  --github-pink-light: #BF3989;
-  --github-orange-light: #BC4C00;
-  --github-purple: var(--github-purple-light);
-  --github-red: var(--github-red-light);
-  --github-blue: var(--github-blue-light);
-  --github-gold: var(--github-gold-light);
-  --github-green: var(--github-green-light);
-  --github-pink: var(--github-pink-light);
-  --github-orange: var(--github-orange-light);
+  --github-purple-on-light: #8250DF;
+  --github-red-on-light: #CF222E;
+  --github-blue-on-light: #0969DA;
+  --github-gold-on-light: #9A6700;
+  --github-green-on-light: #1A7F37;
+  --github-pink-on-light: #BF3989;
+  --github-orange-on-light: #BC4C00;
+  --github-purple: var(--github-purple-on-light);
+  --github-red: var(--github-red-on-light);
+  --github-blue: var(--github-blue-on-light);
+  --github-gold: var(--github-gold-on-light);
+  --github-green: var(--github-green-on-light);
+  --github-pink: var(--github-pink-on-light);
+  --github-orange: var(--github-orange-on-light);
+  --github-gold-text: #7D4E00;
+  --github-green-text: #116329;
 
   /* Gold, silver and bronze for the top three (styles/podium.css): the medal, and its text, darker on light. */
   --medal-gold: #D29922;
@@ -75,6 +80,13 @@
 
   /* The Shieldwall badge, for Angular's security advisories (badge-pill.css): GitHub's red, softer on dark. */
   --shieldwall: var(--github-red);
+
+  /*
+   * The world globe (world/globe.ts), drawn in WebGL: the sphere's colour and its glow. Percentages, which it reads
+   * exactly; on dark, the sphere is the brand, dimmed.
+   */
+  --globe-base: rgb(94% 95% 96%);
+  --globe-glow: rgb(92% 93% 95%);
 
   /* The kinds of project in "Forged something for Angular?" (claim-badge.css) */
   --idea-library: var(--github-pink);
@@ -91,8 +103,8 @@
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
-  /* #9A6700 on white: 4.6:1 as text, and under white text. */
-  --primary: #9A6700;
+  /* The brand is the mark's gold, #9A6700: on white 4.6:1 as text, and under white text. */
+  --primary: var(--mark-2);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
@@ -119,12 +131,17 @@
   --github-green: #3FB950;
   --github-pink: #DB61A2;
   --github-orange: #F0883E;
+  --github-gold-text: var(--github-gold);
+  --github-green-text: var(--github-green);
 
   --medal-gold-text: var(--medal-gold);
   --medal-silver-text: var(--medal-silver);
   --medal-bronze-text: #D2691E;
 
   --shieldwall: #FF7B72;
+
+  --globe-base: var(--primary);
+  --globe-glow: rgb(6% 8% 10%);
 
   --idea-tool: #A8B3BD;
   --idea-teaching: #39C5CF;
@@ -158,6 +175,13 @@
   --color-angular-purple: var(--angular-purple);
   /* In @theme, so Tailwind makes the font-display utility: the hero's "Angularians". */
   --font-display: "Norse", Georgia, serif;
+  /*
+   * Spartan's preset maps a sidebar and chart colours to variables this theme does not set: unmapped, `bg-sidebar` or
+   * `text-chart-1` make no CSS instead of a transparent colour.
+   */
+  --color-sidebar: initial;
+  --color-sidebar-*: initial;
+  --color-chart-*: initial;
 }
 
 /*

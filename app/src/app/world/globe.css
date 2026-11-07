@@ -34,7 +34,7 @@
 .globe__marker:hover, .globe__marker:focus-visible, .globe__marker.is-selected {
   z-index: 2; border-color: var(--primary); outline: 2px solid color-mix(in oklab, var(--primary) 35%, transparent); outline-offset: 2px;
 }
-.globe__marker[data-tier="mid"] { height: 30px; padding: 0 10px; border-color: color-mix(in oklab, var(--primary) 60%, transparent); font-size: 12px; }
+.globe__marker[data-tier="mid"] { height: 30px; padding: 0 10px; border-color: color-mix(in oklab, var(--primary) 60%, transparent); font-size: var(--text-xs); }
 .globe__marker[data-tier="top"] { height: 34px; padding: 0 12px; border-color: var(--primary); background: var(--primary); color: var(--primary-foreground); font-size: 13px; }
 .globe__marker[data-tier="top"]:not(.is-avatars)::after {
   content: ""; position: absolute; inset: -1px; border: 2px solid var(--primary); border-radius: 999px; pointer-events: none;
@@ -43,8 +43,8 @@
 @keyframes globe-pulse { from { transform: scale(1); opacity: 0.7; } to { transform: scale(1.35); opacity: 0; } }
 .globe__label {
   position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); pointer-events: none;
-  display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 1px solid var(--border); border-radius: 8px;
-  background: var(--popover); color: var(--popover-foreground); font-size: 12px; font-weight: 500;
+  display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 1px solid var(--border); border-radius: var(--radius-md);
+  background: var(--popover); color: var(--popover-foreground); font-size: var(--text-xs); font-weight: 500;
 }
 .globe__marker.is-avatars { height: 32px; padding: 0; border: 0; background: transparent; }
 @media (prefers-reduced-motion: reduce) {

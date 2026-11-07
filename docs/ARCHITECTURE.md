@@ -39,29 +39,41 @@ The brand font, Norse Bold (the word "Angularian" on the site and the cards), is
 
 ## Design tokens
 
-Every colour of the site is a variable in [`app/src/styles.css`](../app/src/styles.css): its light value in `:root`, its
-dark value, when it differs, in `:root.dark` just below. Components use them as `var(--name)` in their `.css`, or as a
-utility where `@theme inline` exposes one (`text-brand`, `bg-angular-pink/10`).
+The site's colours are variables in [`app/src/styles.css`](../app/src/styles.css), each set there once per theme: its light
+value in `:root`, its dark value, when it differs, in `:root.dark` just below. Components use them as `var(--name)` in
+their `.css`, or as a utility where `@theme inline` exposes one (`text-brand`, `bg-angular-pink/10`). The only colours
+that are not variables are the fixed hex listed below.
 
 | Group | Tokens | Used by |
 | --- | --- | --- |
 | Spartan's theme | `--background`, `--foreground`, `--card`, `--popover`, `--primary`, `--secondary`, `--muted`, `--accent`, `--destructive`, `--border`, `--input`, `--ring` (and their `-foreground`), `--radius` | the UI components and every page, as Tailwind utilities (`bg-muted`, `rounded-lg`) |
-| The brand | `--primary` (Viking gold), `--color-brand` (utility `text-brand`), `--font-display` (Norse) | the mark, the word Angularians |
-| The mark | `--mark-empty`, `--mark-1` to `--mark-3`, `--mark-green-1` to `--mark-green-3` | `logo-mark` |
+| The brand | `--primary` (Viking gold: on light the mark's `--mark-2`), `--color-brand` (utility `text-brand`), `--font-display` (Norse) | the mark, the word Angularians |
+| The mark | `--mark-empty`, `--mark-1` to `--mark-3` (its graph, the same in both themes), `--mark-intro-1` to `--mark-intro-3` (the greens of its intro and hover) | `logo-mark` |
 | Angular | `--angular-pink`, `--angular-purple` (utilities `*-angular-pink`, `*-angular-purple`) | the team badge, the Angular guide |
-| GitHub | `--github-purple`, `-red`, `-blue`, `-gold`, `-green`, `-pink`, `-orange`; `--github-*-light`, the light ones in both themes | the kinds of contribution, with the `github-*` classes of `styles/github-colors.css` |
-| Medals | `--medal-gold`, `--medal-silver`, `--medal-bronze` and their `-text` | the top three, with the classes of `styles/podium.css` |
+| GitHub | `--github-purple`, `-red`, `-blue`, `-gold`, `-green`, `-pink`, `-orange`; `--github-*-on-light`, GitHub's light-theme value in both themes; `--github-gold-text`, `--github-green-text`, a shade darker on light for text on a tint | the kinds of contribution, with the `github-*` classes of `styles/github-colors.css`; the profile's stat tints; the gold and green badges |
+| Medals | `--medal-gold`, `--medal-silver`, `--medal-bronze` and their `-text` | the top three, through the classes of `styles/podium.css` (which set `--podium-ring` and `--podium-text`) |
 | Badges | `--shieldwall` | the Shieldwall badge, for Angular's security advisories (`badge-pill.css`) |
 | Projects | `--idea-library`, `--idea-tool`, `--idea-meetup`, `--idea-teaching` | the kinds of project in "Forged something for Angular?" |
+| The globe | `--globe-base`, `--globe-glow` (and `--primary` for its land) | the world globe's WebGL colours, read by `world/globe.ts` |
+
+A token that means another one is written as it (`--primary: var(--mark-2)`, `--idea-library: var(--github-pink)`,
+`--shieldwall: var(--github-red)`). Some share a hex but not a meaning, and stay separate so that one can change
+alone: GitHub's gold (`--github-gold`) and the brand (`--primary`), the gold medal (`--medal-gold`, `--medal-gold-text`)
+and both, the tool kind of project (`--idea-tool`) and the silver medal's text.
 
 Spacing, font sizes, shadows and z-indexes are Tailwind's own scale (`--spacing`, `--text-*`, `--shadow-*`); a one-off
 size for one element (`text-[5.5rem]` for the hero's word) stays an arbitrary value where it is used.
+Spartan's preset also maps sidebar and chart colours (`--color-sidebar*`, `--color-chart-*`) to variables this theme
+does not set; `@theme inline` in `styles.css` unmaps them, so `bg-sidebar` makes no CSS rather than a transparent colour.
 
-Fixed hex stays only where no theme applies: another project's own colour (a badge's tone in `badge-pill.css`, the
-Discord and YouTube guides), set once in a variable on the element when it is used more than once; the artwork of a
-logo (`angular-logo.html`, YouTube's); black or white as a shade or over a photo (the rank shield's darker half, the
-leaderboard's names on avatars); and the server-drawn cards (`app/src/server/card` and their preview in the share
-dialog), which have no theme.
+Fixed hex stays only where no theme applies, in four cases (AGENTS.md lists the same):
+
+1. another project's own colour (a badge's tone in `badge-pill.css`, the Discord and YouTube guides), set once in a
+   variable on the element when it is used more than once;
+2. the artwork of a logo (`angular-logo.html`, YouTube's);
+3. black or white as a shade, a mask or over a photo (the rank shield's darker half, the globe's fade, the leaderboard's
+   names on avatars);
+4. the server-drawn cards (`app/src/server/card` and their preview in the share dialog), which have no theme.
 
 To add a colour: give it a name for what it is, not how it looks (`--medal-gold`, not `--yellow`), put it in its group in
 `styles.css` with its dark value next to it if it changes, add a `--color-*` line to `@theme inline` only when a template

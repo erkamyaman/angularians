@@ -3,13 +3,14 @@
 }
 
 /*
- * One badge, in its tone's colours: `tone-*` sets `--pill`, its colour, for the background and the ring, and
- * `--pill-text`; a tone that mixes them otherwise sets `--pill-bg` or `--pill-ring` too. The earned badges pick
- * theirs in `earned-badges.ts`, the projects in `special-badges.ts`. A project's colour is its own brand's, so a hex.
- * A parent can set `--pill-font-size` and `--pill-line-height` for a smaller badge. Each tone's dark rule follows its
- * light one; `BadgeTone` (`badge-pill.ts`) lists them.
+ * One badge, in its tone's colours: `tone-*` sets `--pill`, its colour, for the background, the ring and the text; a
+ * tone whose text differs sets `--pill-text`, and one that mixes them otherwise `--pill-bg` or `--pill-ring`. The
+ * earned badges pick theirs in `earned-badges.ts`, the projects in `special-badges.ts`. A project's colour is its own
+ * brand's, so a hex. A parent can set `--pill-font-size` and `--pill-line-height` for a smaller badge. Each tone's
+ * dark rule follows its light one; `BadgeTone` (`badge-pill.ts`) lists them.
  */
 .pill {
+  --pill-text: var(--pill);
   --pill-bg: color-mix(in oklab, var(--pill) 10%, transparent);
   --pill-ring: color-mix(in oklab, var(--pill) 30%, transparent);
   display: inline-flex;
@@ -65,7 +66,6 @@
 
 .tone-nx {
   --pill: #143055;
-  --pill-text: var(--pill);
 }
 :host-context(.dark) .tone-nx {
   --pill: #96D7E8;
@@ -73,45 +73,35 @@
 
 .tone-shieldwall {
   --pill: var(--shieldwall);
-  --pill-text: var(--pill);
 }
 
 .tone-primary {
   --pill: var(--primary);
-  --pill-text: var(--pill);
 }
 
 /* GitHub's colours (`--github-*` in styles.css); the text a shade darker on light, for contrast. */
 .tone-gold {
   --pill: var(--github-gold);
-  --pill-text: #7D4E00;
-}
-:host-context(.dark) .tone-gold {
-  --pill-text: var(--pill);
+  --pill-text: var(--github-gold-text);
 }
 
 .tone-green {
   --pill: var(--github-green);
-  --pill-text: #116329;
-}
-:host-context(.dark) .tone-green {
-  --pill-text: var(--pill);
+  --pill-text: var(--github-green-text);
 }
 
 .tone-purple {
   --pill: var(--github-purple);
-  --pill-text: var(--pill);
 }
 
 .tone-foreground {
   --pill: var(--foreground);
-  --pill-text: var(--pill);
   --pill-bg: color-mix(in oklab, var(--pill) 5%, transparent);
   --pill-ring: color-mix(in oklab, var(--pill) 25%, transparent);
 }
 
-/* The projects: on dark, a lighter text and a stronger ring */
-:host-context(.dark) :is(.tone-analog, .tone-ng-icons, .tone-ngxtension, .tone-pangular, .tone-docs-tr, .tone-slide-ng, .tone-ng-native, .tone-ng-primitives, .tone-ngx-builders) {
+/* The projects: on dark, a lighter text and a stronger ring (ngx-builders sets its own) */
+:host-context(.dark) :is(.tone-analog, .tone-ng-icons, .tone-ngxtension, .tone-pangular, .tone-docs-tr, .tone-slide-ng, .tone-ng-native, .tone-ng-primitives) {
   --pill-ring: color-mix(in oklab, var(--pill) 40%, transparent);
 }
 
