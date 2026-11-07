@@ -33,6 +33,11 @@ Pages load their data with `injectSeededServerFn` (`app/src/app/data/seeded-serv
 `injectServerFn`: it hands the browser the server's value on the first render, so hydration keeps the server-rendered page
 instead of rebuilding it. Later inputs load as usual.
 
+A page is hydrated when its route resolves, a moment after the rest of the app, and Angular then writes each element's
+static `class` over the server's classes before the spartan/ui directives' first effect sets theirs, with a paint in
+between: `classes()` in `app/src/ui/utils/src/lib/hlm.ts` puts the server's classes back until then, or the page's buttons
+and tabs would lose their size for a frame and move what is around them.
+
 To try the site with another data folder: `CONTRIBUTORS_DATA_DIR=/path/to/data pnpm build`.
 
 The brand font, Norse Bold (the word "Angularian" on the site and the cards), is in `app/public/fonts/`. The mark is built by `app/scripts/logo/build.py`.
