@@ -31,8 +31,11 @@ interface ElementClassManager {
   nextOrder: number;
   hasInitialized: boolean;
   restoreRafId: number | null;
-  /** The server's classes were put back after Angular's hydration overwrote them with the static `class` attribute */
-  restoredServerClasses: boolean;
+  /**
+   * Hydrating, from the moment the server's classes are put back (Angular's hydration wrote the static `class` over
+   * them) until the first effect: Angular's own classes, the static ones and its class bindings' (`[class.x]`).
+   */
+  clientClasses: Set<string> | null;
   /** Transitions are suppressed until the first effect writes correct classes */
   transitionsSuppressed: boolean;
   /** Original inline transition value to restore after suppression (empty string = none was set) */
@@ -86,7 +89,7 @@ export function classes(
         isUpdating: false,
         nextOrder: 0,
         hasInitialized: false,
-        restoredServerClasses: false,
+        clientClasses: null,
         restoreRafId: null,
         transitionsSuppressed: false,
         previousTransition: "",
@@ -207,11 +210,12 @@ function setupGlobalObserver(platformId: Object): void {
             // element's first effect runs, and the browser can paint in between (a button without its size).
             // Put the server's classes back until then: this callback runs before the next paint.
             if (!manager.hasInitialized) {
-              if (!manager.restoredServerClasses && manager.sources.size === 0 && mutation.oldValue) {
-                manager.restoredServerClasses = true;
-                element.className = mutation.oldValue;
+              if (manager.clientClasses === null && manager.sources.size === 0 && mutation.oldValue) {
+                holdServerClasses(manager, mutation.oldValue);
               }
-              if (manager.restoredServerClasses) continue; // the first effect sets the classes
+              if (manager.clientClasses !== null) {
+                continue; // the first effect sets the classes
+              }
             }
 
             // Update base classes to include any externally added classes
@@ -250,6 +254,60 @@ function setupGlobalObserver(platformId: Object): void {
   }
 }
 
+/**
+ * Shows the server's classes until the element's first effect, and keeps Angular's aside for it: the static `class`
+ * it has just written, and the classes its bindings add or remove from now on (through `classList`, which is
+ * watched meanwhile: an added class the server's already had would otherwise leave no trace).
+ */
+function holdServerClasses(manager: ElementClassManager, serverClasses: string): void {
+  const { element } = manager;
+  const clientClasses = new Set(toClassList(element.className));
+  const tokens = element.classList;
+  const watched = new Proxy(tokens, {
+    get(target, key) {
+      if (key === "add") {
+        return (...names: string[]) => {
+          names.forEach((name) => clientClasses.add(name));
+          target.add(...names);
+        };
+      }
+      if (key === "remove") {
+        return (...names: string[]) => {
+          names.forEach((name) => clientClasses.delete(name));
+          target.remove(...names);
+        };
+      }
+      if (key === "toggle") {
+        return (name: string, force?: boolean) => {
+          const on = force ?? !clientClasses.has(name);
+          if (on) {
+            clientClasses.add(name);
+          } else {
+            clientClasses.delete(name);
+          }
+          target.toggle(name, on);
+          return on;
+        };
+      }
+      const value = Reflect.get(target, key, target);
+      return typeof value === "function" ? value.bind(target) : value;
+    },
+  });
+  Object.defineProperty(element, "classList", { configurable: true, value: watched });
+  manager.clientClasses = clientClasses;
+  element.className = serverClasses;
+}
+
+/** The end of the hold: Angular's classes, and the element's own `classList` again. */
+function releaseServerClasses(manager: ElementClassManager): Set<string> | null {
+  const held = manager.clientClasses;
+  if (held !== null) {
+    delete (manager.element as { classList?: DOMTokenList }).classList;
+    manager.clientClasses = null;
+  }
+  return held;
+}
+
 function updateElement(manager: ElementClassManager): void {
   if (manager.isUpdating) return; // Prevent recursive updates
 
@@ -257,8 +315,9 @@ function updateElement(manager: ElementClassManager): void {
 
   // Handle initialization: capture base classes after first source registration
   if (!manager.hasInitialized && manager.sources.size > 0) {
-    // Get current classes on element (may include SSR classes)
-    const currentClasses = toClassList(manager.element.className);
+    // Get current classes on element (may include SSR classes); while the server's are held, Angular's instead
+    const currentClasses =
+      releaseServerClasses(manager) ?? toClassList(manager.element.className);
 
     // Get all classes that will be applied by sources
     const allSourceClasses = new Set<string>();
@@ -268,8 +327,7 @@ function updateElement(manager: ElementClassManager): void {
 
     // Only consider classes as "base" if they're not produced by any source
     // This prevents SSR-rendered classes from being preserved as base classes
-    // (restored server classes are not: the static `class` is already in the base classes)
-    if (!manager.restoredServerClasses) currentClasses.forEach((className) => {
+    currentClasses.forEach((className) => {
       if (!allSourceClasses.has(className)) {
         manager.baseClasses.add(className);
       }
@@ -303,6 +361,11 @@ function updateElement(manager: ElementClassManager): void {
 }
 
 function cleanupManager(element: HTMLElement): void {
+  const manager = elementClassManagers.get(element);
+  if (manager) {
+    releaseServerClasses(manager);
+  }
+
   // Remove from global tracking
   observedElements.delete(element);
   elementClassManagers.delete(element);

@@ -10,5 +10,6 @@
     "src/app/pages/**/*.page.ts",
     "src/server/middleware/**/*.ts",
     "src/ui/**/src/**/*.ts"
-  ]
+  ],
+  "exclude": ["src/**/*.spec.ts"]
 }
