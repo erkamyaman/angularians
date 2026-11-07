@@ -1,6 +1,17 @@
 /** A point on the page, in CSS pixels. */
 export type Point = [number, number]
 
+export interface Piece {
+  d: string
+  at: number
+  span: number
+}
+
+export interface Spark {
+  dx: number
+  dy: number
+}
+
 export interface Branch {
   d: string
   level: 1 | 2
@@ -15,15 +26,17 @@ export interface Strike {
   y: number
   top: number
   main: string
+  pieces: Piece[]
   branches: Branch[]
+  sparks: Spark[]
 }
 
 /**
  * A storm from the sky down to (x, y), for a page `width` × `height`: a jagged main channel (midpoint displacement, each
  * split pushed sideways a bit less than the last), long branches forking downward across the page, some forking again,
- * and sometimes a second, fainter bolt elsewhere.
+ * and one or two more bolts elsewhere.
  */
-export function lightning(x: number, y: number, width: number, height: number): Pick<Strike, 'top' | 'main' | 'branches'> {
+export function lightning(x: number, y: number, width: number, height: number): Pick<Strike, 'top' | 'main' | 'pieces' | 'branches' | 'sparks'> {
   const top = x + (Math.random() - 0.5) * width * 0.3
   const channel = jag([top, -20], [x, y], 7, 0.22)
   const mainLength = length(channel)
@@ -39,17 +52,37 @@ export function lightning(x: number, y: number, width: number, height: number): 
       const at = from + (index / points.length) * span
       const branchSpan = length(branch) / mainLength
       branches.push({ d: path(branch), level, at, span: branchSpan })
-      if (level === 1 && Math.random() < 0.6) fork(branch, at, branchSpan, 1 + Math.floor(Math.random() * 2), reach * 0.45, 2)
+      if (level === 1 && Math.random() < 0.75) fork(branch, at, branchSpan, 1 + Math.floor(Math.random() * 3), reach * 0.5, 2)
     }
   }
-  fork(channel, 0, 1, 4 + Math.floor(Math.random() * 4), 0.75, 1)
-  if (Math.random() < 0.5) {
-    const secondBolt = jag([width * (Math.random() < 0.5 ? 0.1 : 0.85), -20], [width * (0.05 + Math.random() * 0.9), height * (0.3 + Math.random() * 0.3)], 6, 0.25)
+  fork(channel, 0, 1, 6 + Math.floor(Math.random() * 4), 0.9, 1)
+  for (let bolt = 0; bolt < 1 + Math.floor(Math.random() * 2); bolt++) {
+    const secondBolt = jag([width * (bolt ? 0.85 : 0.1) + (Math.random() - 0.5) * width * 0.1, -20], [width * (0.05 + Math.random() * 0.9), height * (0.35 + Math.random() * 0.35)], 6, 0.25)
     const span = length(secondBolt) / mainLength
     branches.push({ d: path(secondBolt), level: 1, at: 0, span })
-    fork(secondBolt, 0, span, 2, 0.4, 2)
+    fork(secondBolt, 0, span, 3, 0.5, 2)
   }
-  return { top, main: path(channel), branches }
+  return { top, main: path(channel), pieces: thirds(channel, mainLength), branches, sparks: sparks() }
+}
+
+function thirds(points: Point[], total: number): Piece[] {
+  const size = Math.ceil(points.length / 3)
+  let done = 0
+  return [0, 1, 2].map(k => {
+    const piece = points.slice(k * size, Math.min(points.length, (k + 1) * size + 1))
+    const span = length(piece) / total
+    const at = done
+    done += span
+    return { d: path(piece), at, span }
+  })
+}
+
+function sparks(): Spark[] {
+  return Array.from({ length: 22 }, () => {
+    const angle = -Math.PI * (0.1 + Math.random() * 0.8)
+    const speed = 120 + Math.random() * 240
+    return { dx: Math.cos(angle) * speed, dy: Math.sin(angle) * speed + 120 }
+  })
 }
 
 /** The points of a jagged line from a to b: `depth` rounds of splitting, sideways by `roughness` of each segment's length. */

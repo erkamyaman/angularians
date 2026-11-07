@@ -66,7 +66,7 @@ that are not variables are the fixed hex listed below.
 | Badges | `--shieldwall` | the Shieldwall badge, for Angular's security advisories (`badge-pill.css`) |
 | Projects | `--idea-library`, `--idea-tool`, `--idea-meetup`, `--idea-teaching` | the kinds of project in "Forged something for Angular?" |
 | The globe | `--globe-base`, `--globe-glow` (and `--primary` for its land) | the world globe's WebGL colours, read by `world/globe.ts` |
-| The storm | `--lightning`, `--angie-shadow` (the same in both themes) | Angie's storm, `layout/hammer-strike.css` |
+| The storm | `--lightning`, `--lightning-inner`, `--angie-shadow` (the same in both themes) | Angie's storm, `layout/hammer-strike.css` |
 
 A token that means another one is written as it (`--primary: var(--mark-2)`, `--idea-library: var(--github-pink)`,
 `--shieldwall: var(--github-red)`). Some share a hex but not a meaning, and stay separate so that one can change
@@ -91,7 +91,7 @@ To add a colour: give it a name for what it is, not how it looks (`--medal-gold`
 `styles.css` with its dark value next to it if it changes, add a `--color-*` line to `@theme inline` only when a template
 needs it as a utility, and remove any token nothing uses any more.
 
-An easter egg: the word "Angularian(s)" or "ng-halla", or a click on the header's or footer's logo, calls Angie (`app/public/angie/`) to bring down a storm with thunder (`app/public/sounds/`), on a click, or once a visit on hover after a first click; `app/src/app/layout/hammer-strike.ts`, the bolt's shape in `lightning.ts`.
+An easter egg: the word "Angularian(s)" or "ng-halla", or a click on the header's or footer's logo, calls Angie (`app/public/angie/`) to bring down a storm with thunder (`app/public/sounds/`), on a click on the word, once a visit on a click on a logo, or once a visit on hover after a first click; `app/src/app/layout/hammer-strike.ts`, the bolt's shape in `lightning.ts`.
 
 ## Search engines
 

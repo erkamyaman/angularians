@@ -14,8 +14,20 @@
       }
     </g>
     <g class="glow main"><path [attr.d]="strike.main" pathLength="1" /></g>
-    <g class="core main"><path [attr.d]="strike.main" pathLength="1" /></g>
+    <g class="inner main">
+      @for (piece of strike.pieces; track $index) {
+        <path [attr.d]="piece.d" pathLength="1" [class]="'taper-' + $index" [style.--at]="piece.at" [style.--span]="piece.span" />
+      }
+    </g>
+    <g class="core main">
+      @for (piece of strike.pieces; track $index) {
+        <path [attr.d]="piece.d" pathLength="1" [class]="'taper-' + $index" [style.--at]="piece.at" [style.--span]="piece.span" />
+      }
+    </g>
   </svg>
   <span class="impact" [style.left.px]="strike.x" [style.top.px]="strike.y"></span>
+  @for (spark of strike.sparks; track $index) {
+    <span class="spark" [style.left.px]="strike.x" [style.top.px]="strike.y" [style.--dx.px]="spark.dx" [style.--dy.px]="spark.dy"></span>
+  }
   <img class="angie" src="/angie/angie-hammer.png" alt="" width="360" height="360" (animationend)="end()" />
 }

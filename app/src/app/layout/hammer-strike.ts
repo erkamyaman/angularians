@@ -6,11 +6,13 @@ import { lightning, type Strike } from './lightning'
 const THUNDER = 1400
 const STORM = 4500
 const HOVERED = 'angularians-storm-hovered'
+const LOGO = 'angularians-storm-logo'
 const ANGIE = '/angie/angie-hammer.png'
 
 /**
  * The word "Angularian(s)" or "ng-halla", or a click on the logo, calls Angie: she comes in with her hammer and calls down lightning somewhere on the page, with
- * thunder. A click on the word calls her any time; the mouse coming onto it does once a visit (the tab's session), and only
+ * thunder. A click on the word calls her any time, a click on a logo once a visit (the tab's session); the mouse coming
+ * onto the word does once a visit too, and only
  * after a first click or key on the page, so the browser lets the thunder play. Never on touch screens, a link or button
  * that holds the word, or with reduced motion.
  */
@@ -52,7 +54,7 @@ export class HammerStrike {
         this.strike.set({ id: ++strikes, x, y, ...lightning(x, y, innerWidth, innerHeight) })
         clearTimeout(endTimer)
         endTimer = setTimeout(() => this.end(), STORM)
-        rememberHover()
+        remember(HOVERED)
         thunderTimer = setTimeout(() => {
           if (!thunder) return
           thunder.currentTime = 0
@@ -74,11 +76,15 @@ export class HammerStrike {
         // Once per entry into a word: moving inside it, or over its letters, does not call her again.
         if (word === current) return
         current = word
-        if (word && thunder && !hoveredThisVisit()) call()
+        if (word && thunder && !usedThisVisit(HOVERED)) call()
       }
       const onClick = (event: MouseEvent) => {
         if ((event as PointerEvent).pointerType === 'touch' || this.strike()) return
-        if (angularian(event.target) || headerLogo(event.target)) call()
+        if (angularian(event.target)) call()
+        else if (headerLogo(event.target) && !usedThisVisit(LOGO)) {
+          remember(LOGO)
+          call()
+        }
       }
       document.addEventListener('pointerover', onOver)
       document.addEventListener('click', onClick)
@@ -108,20 +114,20 @@ function headerLogo(target: EventTarget | null): boolean {
   return !!(target as Element | null)?.closest?.('a.logo-link')
 }
 
-function hoveredThisVisit(): boolean {
+function usedThisVisit(key: string): boolean {
   try {
-    return sessionStorage.getItem(HOVERED) === '1'
+    return sessionStorage.getItem(key) === '1'
   }
   catch {
     return false
   }
 }
 
-function rememberHover(): void {
+function remember(key: string): void {
   try {
-    sessionStorage.setItem(HOVERED, '1')
+    sessionStorage.setItem(key, '1')
   }
   catch {
-    // Storage blocked: hovering may call her again.
+    // Storage blocked: it may call her again.
   }
 }
