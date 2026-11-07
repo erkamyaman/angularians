@@ -9,6 +9,7 @@ export interface ContributionDay {
   count: number;
   level: 0 | 1 | 2 | 3 | 4;
   label: string;
+  outside?: true;
 }
 
 export interface ContributionGrid {
@@ -21,10 +22,12 @@ export interface ContributionGrid {
 
 export function contributionGrid(days: ReadonlyMap<string, number>, period: Period, collectedAt: Date): ContributionGrid {
   const [first, last] = periodDays(isYear(period) ? period : '12m', collectedAt);
+  const counted = Date.parse((period === '30d' ? periodDays('30d', collectedAt) : [first])[0]!);
+  const until = Date.parse(last);
   const start = Date.parse(first);
-  const end = Date.parse(last);
+  const end = isYear(period) ? Date.UTC(Number(period), 11, 31) : until;
   const inRange: Array<[number, number]> = [];
-  for (let time = start; time <= end; time += DAY_MS) inRange.push([time, days.get(utcDay(time)) ?? 0]);
+  for (let time = start; time <= end; time += DAY_MS) inRange.push([time, time >= counted && time <= until ? days.get(utcDay(time)) ?? 0 : 0]);
   const max = Math.max(0, ...inRange.map(([, count]) => count));
 
   const weeks: ContributionGrid['weeks'] = [];
@@ -40,7 +43,9 @@ export function contributionGrid(days: ReadonlyMap<string, number>, period: Peri
       const at = weeks.length;
       if (!months.length || at - months.at(-1)!.week >= 2) months.push({ label: MONTHS[date.getUTCMonth()]!, week: at });
     }
-    week.push({ day, count, level: level(count, max), label: `${count ? plural(count, 'contribution', 'contributions') : 'No contributions'} on ${formatDay(day)}` });
+    week.push(time < counted || time > until
+      ? { day, count: 0, level: 0, label: `${formatDay(day)}, ${time > until ? 'still to come' : 'before the last 30 days'}`, outside: true }
+      : { day, count, level: level(count, max), label: `${count ? plural(count, 'contribution', 'contributions') : 'No contributions'} on ${formatDay(day)}` });
     if (count) {
       total += count;
       activeDays += 1;

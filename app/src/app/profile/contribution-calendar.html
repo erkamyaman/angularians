@@ -1,5 +1,43 @@
 <section aria-labelledby="calendar-title" aria-describedby="calendar-summary">
-  <h2 id="calendar-title" class="mb-1 text-2xl font-medium tracking-tight">Contributions</h2>
+  <div class="mb-1 flex items-center gap-1">
+    <h2 id="calendar-title" class="text-2xl font-medium tracking-tight">Contributions</h2>
+    <hlm-dialog autoFocus="dialog">
+      <button hlmDialogTrigger hlmBtn variant="ghost" size="icon-sm" type="button" aria-label="What counts in the graph" class="text-muted-foreground hover:text-foreground">
+        <ng-icon name="remixInformationLine" size="20" aria-hidden="true" />
+      </button>
+      <hlm-dialog-content *hlmDialogPortal class="max-h-[90dvh] overflow-y-auto sm:max-w-md">
+        <hlm-dialog-header>
+          <h2 hlmDialogTitle>What counts in the graph?</h2>
+          <p hlmDialogDescription>Each square is a day (UTC): what the person did themselves in the Angular repositories.</p>
+        </hlm-dialog-header>
+        <ul class="kinds">
+          @for (kind of kinds; track kind.name) {
+            <li>
+              <span class="kind-icon" [attr.data-tone]="kind.tone"><ng-icon [name]="kind.icon" size="18" aria-hidden="true" /></span>
+              <span class="flex flex-col">
+                <span class="text-sm font-medium">{{ kind.name }}</span>
+                <span class="text-sm text-muted-foreground">{{ kind.detail }}</span>
+              </span>
+            </li>
+          }
+        </ul>
+        <p class="note">
+          <ng-icon name="remixInformationLine" size="16" aria-hidden="true" />
+          Reactions they received do not count: those are other people's. Updated every night.
+        </p>
+        <h3 class="text-sm font-medium">From {{ repos.length }} repositories</h3>
+        <ul class="repos">
+          @for (repo of repos; track repo.name) {
+            <li>
+              <a [href]="repo.url" target="_blank" rel="noopener">
+                <ng-icon name="simpleGithub" size="14" aria-hidden="true" />{{ repo.name }}<ng-icon name="remixArrowRightUpLine" size="14" class="text-muted-foreground" aria-hidden="true" />
+              </a>
+            </li>
+          }
+        </ul>
+      </hlm-dialog-content>
+    </hlm-dialog>
+  </div>
   <p id="calendar-summary" class="mb-4 text-muted-foreground">{{ summary() }}</p>
   <div class="body">
     <div class="graph">
@@ -19,7 +57,7 @@
             @for (week of grid().weeks; track $index) {
               @for (cell of week; track $index) {
                 @if (cell) {
-                  <span class="day" [attr.data-level]="cell.level" [attr.data-label]="cell.label"></span>
+                  <span class="day" [class.outside]="cell.outside" [attr.data-level]="cell.level" [attr.data-label]="cell.label"></span>
                 } @else {
                   <span></span>
                 }
@@ -45,7 +83,7 @@
         </p>
       </div>
     </div>
-    <nav class="years" aria-label="Contributions in">
+    <nav #yearList class="years" aria-label="Contributions in">
       @for (choice of choices(); track choice.period) {
         <button type="button" [attr.aria-pressed]="choice.period === shown()" (click)="periodChange.emit(choice.period)">{{ choice.label }}</button>
       }

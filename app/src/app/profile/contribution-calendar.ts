@@ -1,5 +1,11 @@
 import { afterNextRender, afterRenderEffect, Component, computed, ElementRef, input, output, signal, viewChild } from '@angular/core'
-import { decodeCalendar, isYear, periodPhrase, type Period } from '@angularians/shared'
+import { NgIcon, provideIcons } from '@ng-icons/core'
+import { octComment, octGitMerge, octIssueOpened, octShield } from '@ng-icons/octicons'
+import { remixArrowRightUpLine, remixInformationLine } from '@ng-icons/remixicon'
+import { simpleGithub } from '@ng-icons/simple-icons'
+import { HlmButton } from '@spartan-ng/helm/button'
+import { HlmDialogImports } from '@spartan-ng/helm/dialog'
+import { decodeCalendar, isYear, periodPhrase, REPOS, type Period } from '@angularians/shared'
 import { formatDay, formatDayInYear } from '../text/date-format'
 import { formatNumber } from '../text/number-format'
 import { plural } from '../text/plural'
@@ -9,6 +15,8 @@ const COLORS_KEY = 'angularians-graph-colors'
 
 @Component({
   selector: 'app-contribution-calendar',
+  imports: [HlmButton, HlmDialogImports, NgIcon],
+  providers: [provideIcons({ octComment, octGitMerge, octIssueOpened, octShield, remixArrowRightUpLine, remixInformationLine, simpleGithub })],
   host: { '[class.green]': 'green()' },
   templateUrl: './contribution-calendar.html',
   styleUrl: './contribution-calendar.css',
@@ -21,12 +29,13 @@ export class ContributionCalendar {
   readonly periodChange = output<Period>()
 
   private readonly scroller = viewChild.required<ElementRef<HTMLElement>>('scroller')
+  private readonly yearList = viewChild.required<ElementRef<HTMLElement>>('yearList')
 
   protected readonly grid = computed(() => contributionGrid(decodeCalendar(this.days()), this.period(), new Date(this.collectedAt())))
   protected readonly summary = computed(() => {
     const { total, activeDays, busiest } = this.grid()
     const year = isYear(this.period())
-    const span = periodPhrase(year ? this.period() : '12m')
+    const span = periodPhrase(this.shown())
     if (!busiest) return `No contributions ${span}.`
     const when = year ? formatDayInYear(busiest.day) : formatDay(busiest.day)
     if (activeDays === 1) return `${plural(total, 'contribution', 'contributions')} ${span}, on ${when}.`
@@ -34,13 +43,21 @@ export class ContributionCalendar {
     return `${plural(total, 'contribution', 'contributions')} on ${plural(activeDays, 'day', 'days')} ${span}${best}.`
   })
   protected readonly choices = computed(() => [
+    ...(this.years().includes('30d') ? [{ period: '30d' as Period, label: 'Last 30 days' }] : []),
     { period: '12m' as Period, label: 'Last 12 months' },
     ...this.years().filter(isYear).sort((a, b) => Number(b) - Number(a)).map(period => ({ period, label: period })),
   ])
-  protected readonly shown = computed<Period>(() => (isYear(this.period()) ? this.period() : '12m'))
+  protected readonly shown = computed<Period>(() => (isYear(this.period()) || this.period() === '30d' ? this.period() : '12m'))
   protected readonly hovered = signal<{ label: string, x: number, y: number } | null>(null)
   protected readonly weekdays = ['', 'Mon', '', 'Wed', '', 'Fri', '']
   protected readonly levels = [0, 1, 2, 3, 4]
+  protected readonly repos = REPOS.map(name => ({ name, url: `https://github.com/${name}` }))
+  protected readonly kinds = [
+    { icon: 'octGitMerge', tone: 'purple', name: 'Merged pull requests', detail: 'On the day they landed' },
+    { icon: 'octIssueOpened', tone: 'green', name: 'Issues and discussions', detail: 'The ones they opened' },
+    { icon: 'octComment', tone: 'blue', name: 'Comments and reviews', detail: 'On issues, pull requests, discussions and code' },
+    { icon: 'octShield', tone: 'red', name: 'Security reports', detail: 'Credited to them on an Angular advisory' },
+  ]
   protected readonly green = signal(false)
 
   protected hover(event: PointerEvent): void {
@@ -54,6 +71,7 @@ export class ContributionCalendar {
 
   constructor() {
     this.followTheLatestWeeks()
+    this.followThePickedYear()
     this.restoreColors()
   }
 
@@ -72,6 +90,23 @@ export class ContributionCalendar {
       this.grid()
       const element = this.scroller().nativeElement
       element.scrollLeft = element.scrollWidth
+    })
+  }
+
+  private followThePickedYear(): void {
+    let first = true
+    afterRenderEffect(() => {
+      this.shown()
+      const list = this.yearList().nativeElement
+      const picked = list.querySelector<HTMLElement>('[aria-pressed="true"]')
+      if (!picked) return
+      const smooth = !first && !matchMedia('(prefers-reduced-motion: reduce)').matches
+      first = false
+      list.scrollTo({
+        top: picked.offsetTop - (list.clientHeight - picked.offsetHeight) / 2,
+        left: picked.offsetLeft - (list.clientWidth - picked.offsetWidth) / 2,
+        behavior: smooth ? 'smooth' : 'instant',
+      })
     })
   }
 

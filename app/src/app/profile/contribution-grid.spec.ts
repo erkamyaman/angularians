@@ -32,18 +32,31 @@ describe('contributionGrid', () => {
   });
 
   it('leaves out a month label that would only have its last week to stand over', () => {
-    const grid = contributionGrid(days, '2026', new Date('2026-11-03T05:13:00Z'));
-    expect(grid.months.at(-1)).toEqual({ label: 'Oct', week: 39 });
+    const grid = contributionGrid(days, '12m', new Date('2026-11-03T05:13:00Z'));
+    expect(grid.months.at(-1)).toEqual({ label: 'Oct', week: 47 });
   });
 
-  it('ends the current year on the day of the collection', () => {
+  it('draws the whole current year, the days still to come set apart', () => {
     const grid = contributionGrid(days, '2026', new Date('2026-11-07T05:13:00Z'));
-    expect(grid.weeks.at(-1)![6]).toMatchObject({ day: '2026-11-07' });
-    expect(grid.weeks.flat().filter(Boolean).at(-1)!.day).toBe('2026-11-07');
+    expect(grid.weeks).toHaveLength(53);
+    expect(grid.weeks.flat().find(cell => cell?.day === '2026-11-07')).toMatchObject({ day: '2026-11-07' });
+    expect(grid.weeks.flat().find(cell => cell?.day === '2026-11-07')!.outside).toBeUndefined();
+    expect(grid.weeks.flat().find(cell => cell?.day === '2026-11-08')).toEqual({ day: '2026-11-08', count: 0, level: 0, label: '8 November 2026, still to come', outside: true });
+    expect(grid.weeks[52]![4]).toMatchObject({ day: '2026-12-31', outside: true });
   });
 
-  it('shows the days the 12-month stats count, from the day 365 days before the collection, for every rolling period', () => {
-    const grid = contributionGrid(new Map([['2025-11-06', 9], ['2025-11-07', 3], ['2026-11-07', 1]]), '30d', new Date('2026-11-07T05:13:00Z'));
+  it('draws the last 12 months for 30 days, with only those 30 days counted and the rest set apart', () => {
+    const grid = contributionGrid(new Map([['2026-10-07', 9], ['2026-10-08', 2], ['2026-11-07', 1]]), '30d', new Date('2026-11-07T05:13:00Z'));
+    expect(grid.weeks[0]![5]).toMatchObject({ day: '2025-11-07' });
+    const outside = grid.weeks.flat().find(cell => cell?.day === '2026-10-07')!;
+    expect(outside).toEqual({ day: '2026-10-07', count: 0, level: 0, label: '7 October 2026, before the last 30 days', outside: true });
+    expect(grid.weeks.flat().find(cell => cell?.day === '2026-10-08')).toMatchObject({ count: 2, level: 4 });
+    expect(grid.weeks.flat().filter(cell => cell && !cell.outside)).toHaveLength(31);
+    expect(grid.total).toBe(3);
+  });
+
+  it('shows the days the 12-month stats count, from the day 365 days before the collection, for the last 12 months and all time', () => {
+    const grid = contributionGrid(new Map([['2025-11-06', 9], ['2025-11-07', 3], ['2026-11-07', 1]]), 'all', new Date('2026-11-07T05:13:00Z'));
     expect(grid.weeks[0]![5]).toMatchObject({ day: '2025-11-07', count: 3, level: 4 });
     expect(grid.weeks.at(-1)![6]).toMatchObject({ day: '2026-11-07', count: 1, level: 2 });
     expect(grid.total).toBe(4);

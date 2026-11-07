@@ -21,7 +21,9 @@ per UTC day (merged PRs on the day they landed, issues, discussions, comments, r
 reactions received), as day numbers from 1 January 2014 and counts (`encodeCalendar` in `shared/src/calendar.ts`). The
 profile sends a person their days with their profile; `profile/contribution-grid.ts` lays out the year picked, or the
 days the 12-month stats count (`periodDays` in `shared/src/periods.ts`), in weeks, each day shaded against that person's
-busiest day. A list of years beside it switches the profile's period. Hovering a day shows its count. Visitors can switch
+busiest day; for the last 30 days, the 12 months are drawn and only those 30 days are counted, the rest dimmed, and the current year is
+drawn whole, the days still to come dimmed. A list
+beside it (Last 30 days, Last 12 months, each year) switches the profile's period. Hovering a day shows its count; the (i) by the title opens a dialog with what counts and the repositories. Visitors can switch
 the graph from gold to GitHub's green; the choice is kept in their browser (`angularians-graph-colors`).
 
 Angular 22 uses OnPush change detection and standalone components by default; omit explicit declarations of those defaults.
