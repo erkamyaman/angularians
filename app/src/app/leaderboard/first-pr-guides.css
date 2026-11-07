@@ -2,10 +2,11 @@
   display: block;
 }
 
-/* Each guide's colour, on hover (`styles/guide.css`) */
+/* Each guide's colour, on hover (`styles/guide.css`); YouTube's is its own brand's. */
 .skill {
   --guide-accent: var(--primary);
 }
 .youtube {
-  --guide-accent: #FF0000;
+  --youtube: #FF0000;
+  --guide-accent: var(--youtube);
 }
