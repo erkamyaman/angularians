@@ -6,7 +6,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
 import { type RouteMeta } from '@analogjs/router';
 import { injectResponse } from '@analogjs/router/tokens';
-import { countryCode, countryName, DEFAULT_PERIOD, GITHUB_USERNAME_RE, periodOrNull, periodPhrase, reposQuery, type ContributorProfile, type Period } from '@angularians/shared';
+import { countryCode, countryName, DEFAULT_PERIOD, GITHUB_USERNAME_RE, periodOrNull, periodPhrase, type ContributorPeriodStats, type ContributorProfile, type Period } from '@angularians/shared';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { remixArrowDownSLine, remixArrowLeftLine, remixArrowRightSLine, remixArrowRightUpLine, remixArrowUpSLine, remixCloseLine, remixInformationLine, remixLinkM, remixLinkedinBoxLine, remixMedalLine, remixStarFill, remixVerifiedBadgeLine } from '@ng-icons/remixicon';
 import { vikingAxes, vikingHelmet, vikingLongship, vikingShield } from '../layout/viking-icons';
@@ -31,10 +31,12 @@ import { avatarUrl } from '../leaderboard/avatar-url';
 import { flagUrl } from '../leaderboard/flag-url';
 import { formatNumber, formatPoints, formatRank, plural, pluralWord } from '../leaderboard/number-format';
 import { profileQuery, shareQuery } from '../leaderboard/profile-query';
-import { STAT_NAMES, statWord } from '../leaderboard/stat-names';
 import { PeriodTabs } from '../leaderboard/period-tabs';
 import { foldPackages, PACKAGE_ICONS, packageIcon, packageLabel } from '../profile/packages';
 import { CardPreview } from '../profile/card-preview';
+import { profileHead } from '../profile/profile-head';
+import { profileLinks } from '../profile/profile-links';
+import { profileStats } from '../profile/profile-stats';
 import { ContributorSince } from '../profile/contributor-since';
 import { ScoreDialog } from '../profile/score-dialog';
 import { Share } from '../profile/share';
@@ -45,25 +47,6 @@ import { breadcrumbs, setJsonLd, setShareMeta, SITE_SCHEMA, SITE_URL } from '../
 export const routeMeta = {
   title: 'Contributor · Angularians',
 } satisfies RouteMeta;
-
-/** Links set on a GitHub profile, by provider (`generic` and unknown ones: a link icon). */
-const SOCIAL_ICONS: Record<string, string> = {
-  twitter: 'simpleX',
-  bluesky: 'simpleBluesky',
-  linkedin: 'remixLinkedinBoxLine',
-  mastodon: 'simpleMastodon',
-  youtube: 'simpleYoutube',
-  twitch: 'simpleTwitch',
-  instagram: 'simpleInstagram',
-  facebook: 'simpleFacebook',
-  threads: 'simpleThreads',
-  reddit: 'simpleReddit',
-  npm: 'simpleNpm',
-};
-
-function githubSearch(q: string, type: 'pullrequests' | 'issues'): string {
-  return `https://github.com/search?${new URLSearchParams({ q: `${reposQuery()} ${q}`, type })}`;
-}
 
 @Component({
   selector: 'app-profile',
@@ -89,16 +72,18 @@ export default class Profile {
 
   protected readonly username = injectParams(params => String(params['username'] ?? ''));
   private readonly requested = injectQueryParams(params => periodOrNull(params['period']));
+  /** The board the profile was opened from: its period and, from the grid, its country (`?country=`). */
+  private readonly fromCountry = injectQueryParams(params => countryCode(params['country']));
+  /** The country the owner picked for the shared card, for this link's preview image. */
+  private readonly cardFlag = injectQueryParams(params => countryCode(params['flag']));
   /** Every period is in the profile: switching period needs no request. */
   protected readonly profile = injectSeededServerFn(getContributor, () => ({ username: this.username() }));
+
   protected readonly loaded = loadedValue(this.profile);
   /** GitHub's rule for a username; anything else is not found, not a failed load. */
   protected readonly validUsername = computed(() => GITHUB_USERNAME_RE.test(this.username()));
   protected readonly failedToLoad = computed(() => !!this.profile.error() && this.validUsername());
   private readonly promptClosed = signal(false);
-  protected closePrompt(): void {
-    this.promptClosed.set(true);
-  }
   protected readonly signedOut = computed(() => {
     const state = this.auth.state();
     return !!state?.enabled && !state.user && !this.promptClosed();
@@ -107,7 +92,6 @@ export default class Profile {
     const person = this.loaded();
     return !!person && !!(person.pullRequests.all || person.helpfulIssues || person.helpfulComments);
   });
-  protected readonly signInUrl = (username: string) => this.auth.loginUrl(`/${encodeURIComponent(username)}`);
   protected readonly isOwner = computed(() => {
     const me = this.auth.state()?.user;
     return !!me && me.githubId === this.loaded()?.githubId;
@@ -120,54 +104,17 @@ export default class Profile {
     const person = this.loaded()!;
     return person.periods.find(row => row.period === this.period()) ?? { ...person, period: 'all' };
   });
-  /** One card per kind of contribution; the ones GitHub can search link to that search. */
-  protected readonly stats = computed(() => {
-    const person = this.loaded()!;
-    const n = this.current();
-    const prs = n.pullRequests;
-    return [
-      {
-        key: 'pullRequests', icon: 'octGitMerge', value: prs.all, name: statWord('pullRequests', prs.all),
-        detail: `${formatNumber(prs.feat)} feat · ${formatNumber(prs.fix)} fix · ${formatNumber(prs.docs)} docs · ${formatNumber(prs.chore)} chore`,
-        // GitHub shows most landed PRs as closed (PR Close): this lists all of them, landed or not.
-        url: githubSearch(`is:pr author:${person.username}`, 'pullrequests'), label: `${this.githubLabel(person)}`,
-        tint: 'merges',
-      },
-      {
-        key: 'issues', icon: 'octIssueOpened', value: n.issues, name: statWord('issues', n.issues), detail: `${formatNumber(n.helpfulIssues)} helpful`,
-        url: githubSearch(`is:issue author:${person.username}`, 'issues'), label: `${plural(n.issues, ...STAT_NAMES.issues)} ${periodPhrase(this.period())}. Opens ${person.username}'s issues on GitHub`,
-        tint: 'issues',
-      },
-      {
-        key: 'comments', icon: 'octComment', value: n.comments, name: statWord('comments', n.comments),
-        // Inline review comments score on their own (1 pt each): their count goes with the comments.
-        detail: `${formatNumber(n.helpfulComments)} helpful · ${plural(n.reviewComments, 'review comment', 'review comments')} on code`,
-        url: githubSearch(`commenter:${person.username}`, 'issues'), label: `${plural(n.comments, ...STAT_NAMES.comments)} ${periodPhrase(this.period())}. Opens the issues and pull requests ${person.username} commented on, on GitHub`,
-        tint: 'comments',
-      },
-      {
-        key: 'reactions', icon: 'octSmiley', value: n.reactions, name: statWord('reactions', n.reactions), detail: 'received',
-        url: null, label: '',
-        tint: 'reactions',
-      },
-    ];
-  });
+  protected readonly stats = computed(() => profileStats(this.loaded()!.username, this.current(), this.period()));
   protected readonly PACKAGES_SHOWN = 12;
   /** Phones show fewer packages before "Show all". */
   protected readonly PACKAGES_SHOWN_PHONE = 5;
   protected readonly allPackages = signal(false);
-  /** A package's fill: its PRs against the package with the most, so the tiles compare. */
-  protected readonly packageShare = (count: number) => Math.max(2, count / Math.max(1, this.packages()[0]?.pullRequests ?? 1) * 100);
   /** Misspelled scopes (`platform-brower`) folded into the package they mean. */
   protected readonly packages = computed(() => foldPackages(this.loaded()?.packages ?? []));
   protected readonly shownPackages = computed(() => {
     const packages = this.packages();
     return this.allPackages() ? packages : packages.slice(0, this.PACKAGES_SHOWN);
   });
-  protected readonly packageLabel = packageLabel;
-  protected readonly icon = packageIcon;
-  protected readonly plural = plural;
-  protected readonly points = formatPoints;
   /** Earned from the data and from the lists in `profile/`: `earnedBadges`, shared with the card. */
   protected readonly badges = computed(() => {
     const person = this.loaded();
@@ -175,39 +122,33 @@ export default class Profile {
   });
   /** The contributor's rank in each period they contributed in, for the period tabs. */
   protected readonly ranks = computed(() => Object.fromEntries((this.loaded()?.periods ?? []).map(row => [row.period, row.rank])));
-  protected readonly yearsOldestFirst = computed(() => [...this.years()].sort((a, b) => Number(a.period) - Number(b.period)));
-  protected readonly peakYear = computed(() => this.years().reduce<ReturnType<typeof this.years>[number] | undefined>((top, row) => (!top || row.score > top.score ? row : top), undefined));
-  /** A year's column, in pixels: its points against the year with the most, under room for the labels. */
-  protected readonly yearBar = (score: number) => Math.max(4, score / Math.max(1, this.peakYear()?.score ?? 1) * 180);
   protected readonly years = computed(() => (this.loaded()?.periods ?? []).filter(row => /^\d{4}$/.test(row.period)));
+  protected readonly yearsOldestFirst = computed(() => [...this.years()].sort((a, b) => Number(a.period) - Number(b.period)));
+  protected readonly firstYear = computed<ContributorPeriodStats | undefined>(() => this.yearsOldestFirst()[0]);
+  protected readonly peakYear = computed(() => this.years().reduce<ReturnType<typeof this.years>[number] | undefined>((top, row) => (!top || row.score > top.score ? row : top), undefined));
   /** Best rank; on a tie (#1 several years), the year with the most points. */
   protected readonly best = computed(() => this.years().reduce<ReturnType<typeof this.years>[number] | undefined>(
     (top, row) => (!top || row.rank < top.rank || (row.rank === top.rank && row.score > top.score) ? row : top), undefined));
   protected readonly displayName = computed(() => this.loaded()?.name || this.loaded()?.username || this.username());
   protected readonly links = computed(() => {
     const person = this.loaded();
-    if (!person) return [];
-    // Links set on GitHub are user input: never followed by crawlers. `me` for Mastodon verification.
-    const rel = 'me nofollow noopener noreferrer';
-    const all = [
-      { url: `https://github.com/${person.username}`, label: `github.com/${person.username}`, icon: 'simpleGithub', rel: 'me noopener' },
-      ...(person.website ? [{ url: person.website, label: 'Website', icon: 'remixLinkM', rel }] : []),
-      ...person.socialAccounts.map(account => ({ url: account.url, label: account.displayName, icon: SOCIAL_ICONS[account.provider] ?? 'remixLinkM', rel })),
-    ];
-    // A website can also be a social account: one icon per URL, the first wins.
-    const same = (url: string) => url.toLowerCase().replace(/^https?:\/\/(www\.)?/, '').replace(/\/+$/, '');
-    return all.filter((link, index) => all.findIndex(other => same(other.url) === same(link.url)) === index);
+    return person ? profileLinks(person) : [];
   });
   /** Back to the board of the period on screen; the board's default period keeps its URL clean. */
-  /** The board the profile was opened from: its period and, from the grid, its country (`?country=`). */
-  private readonly fromCountry = injectQueryParams(params => countryCode(params['country']));
-  /** The country the owner picked for the shared card, for this link's preview image. */
-  private readonly cardFlag = injectQueryParams(params => countryCode(params['flag']));
   protected readonly backQuery = computed(() => ({
     ...(this.period() === DEFAULT_PERIOD ? {} : { period: this.period() }),
     ...(this.fromCountry() ? { country: this.fromCountry() } : {}),
   }));
 
+  protected readonly signInUrl = (username: string) => this.auth.loginUrl(`/${encodeURIComponent(username)}`);
+  /** A package's fill: its PRs against the package with the most, so the tiles compare. */
+  protected readonly packageShare = (count: number) => Math.max(2, count / Math.max(1, this.packages()[0]?.pullRequests ?? 1) * 100);
+  /** A year's column, in pixels: its points against the year with the most, under room for the labels. */
+  protected readonly yearBar = (score: number) => Math.max(4, score / Math.max(1, this.peakYear()?.score ?? 1) * 180);
+  protected readonly packageLabel = packageLabel;
+  protected readonly icon = packageIcon;
+  protected readonly plural = plural;
+  protected readonly points = formatPoints;
   protected readonly avatar = (person: ContributorProfile) => avatarUrl(person.githubId, 160);
   protected readonly number = formatNumber;
   protected readonly rank = formatRank;
@@ -218,17 +159,20 @@ export default class Profile {
   protected readonly countryQuery = (code: string) => ({ ...profileQuery(this.period()), country: code });
 
   constructor() {
-    effect(() => {
-      const person = this.loaded();
-      // Nobody with this username, or a path that cannot be one (`/-x-`): not found.
-      if ((person === null || !this.validUsername()) && this.response) this.response.statusCode = 404;
-      else if (this.profile.error() && this.response) markFailed(this.response);
-      // One URL per profile: /CrisBeto → /crisbeto, keeping the period.
-      if (person && person.username !== this.username()) {
-        void this.router.navigate(['/', person.username], { queryParamsHandling: 'preserve', replaceUrl: true });
-      }
-      this.updateHead(person ?? null);
-    });
+    effect(() => this.followProfile(this.loaded()));
+  }
+
+  protected closePrompt(): void {
+    this.promptClosed.set(true);
+  }
+
+  protected toggleAllPackages(): void {
+    this.allPackages.update(all => !all);
+  }
+
+  /** A year's bar as a screen reader names it. */
+  protected yearLabel(row: ContributorPeriodStats): string {
+    return `${row.period}, rank ${formatNumber(row.rank)}, ${formatPoints(row.score)}${row === this.firstYear() ? ', the first year' : ''}`;
   }
 
   /** The stats of the picked year are at the top of the page, out of view from the year list. */
@@ -241,9 +185,16 @@ export default class Profile {
     void this.router.navigate([], { queryParams: { period: period === 'all' ? null : period }, queryParamsHandling: 'merge', replaceUrl: true });
   }
 
-  protected githubLabel(person: ContributorProfile): string {
-    // Starts with the card's visible text ("253 Merged PRs"), so speech input can name it.
-    return `${plural(this.current().pullRequests.all, ...STAT_NAMES.pullRequests)} ${periodPhrase(this.period())}. Opens ${person.username}'s pull requests on GitHub`;
+  /** The response status, the one URL per profile, and the page's head, for the profile once loaded. */
+  private followProfile(person: ContributorProfile | null | undefined): void {
+    // Nobody with this username, or a path that cannot be one (`/-x-`): not found.
+    if ((person === null || !this.validUsername()) && this.response) this.response.statusCode = 404;
+    else if (this.profile.error() && this.response) markFailed(this.response);
+    // One URL per profile: /CrisBeto → /crisbeto, keeping the period.
+    if (person && person.username !== this.username()) {
+      void this.router.navigate(['/', person.username], { queryParamsHandling: 'preserve', replaceUrl: true });
+    }
+    this.updateHead(person ?? null);
   }
 
   /** Shared links show the period on screen; the canonical URL has none, so search engines see one page per profile. */
@@ -254,12 +205,7 @@ export default class Profile {
       setJsonLd(this.document, null);
       return;
     }
-    const current = this.current();
-    const who = person.name?.trim() || person.username;
-    const title = this.period() === 'all'
-      ? `${who}, Angularian ${formatRank(current.rank)}`
-      : `${who}: ${formatRank(current.rank)} ${periodPhrase(this.period())}`;
-    const description = `${who === person.username ? who : `${who} (@${person.username})`} merged ${plural(current.pullRequests.all, 'pull request', 'pull requests')}, opened ${plural(current.issues, 'issue', 'issues')} and wrote ${plural(current.comments + current.reviewComments, 'comment', 'comments')} in Angular ${periodPhrase(this.period())}: ${formatRank(current.rank)} with ${formatPoints(current.score)}.`;
+    const { title, description } = profileHead(person, this.current(), this.period());
     this.title.setTitle(`${title} · Angularians`);
     this.meta.removeTag('name="robots"');
     setShareMeta(this.meta, this.document, {
