@@ -28,7 +28,7 @@ import { NextUpdate } from '../leaderboard/next-update';
 import { MeCard } from '../leaderboard/me-card';
 import { ScoreRules } from '../leaderboard/score-rules';
 import { breadcrumbs, setJsonLd, setShareMeta, SITE_SCHEMA, SITE_URL } from '../site';
-import { boardDescription, formatDate, formatNumber, pluralWord } from '../leaderboard/format';
+import { boardDescription, boardTotals, formatDate, formatNumber } from '../leaderboard/format';
 import { ClaimBadge } from '../leaderboard/claim-badge';
 import { EarnBadges } from '../leaderboard/earn-badges';
 import { JoinLinks } from '../leaderboard/join-links';
@@ -88,15 +88,7 @@ export default class Home {
   /** The board's totals over it, each in its GitHub colour (none for the people). */
   protected readonly totals = computed(() => {
     const page = this.board();
-    if (!page) return [];
-    const comments = page.comments + page.reviewComments;
-    const from = page.country ? ` from ${countryName(page.country)}` : '';
-    return [
-      { icon: 'remixGroupLine', color: null, value: page.total, words: pluralWord(page.total, 'contributor', 'contributors') + from },
-      { icon: 'octGitMerge', color: 'purple', value: page.landedPullRequests, words: pluralWord(page.landedPullRequests, 'merged PR', 'merged PRs') },
-      { icon: 'octIssueOpened', color: 'green', value: page.issues, words: pluralWord(page.issues, 'issue', 'issues') },
-      { icon: 'octComment', color: 'blue', value: comments, words: pluralWord(comments, 'comment', 'comments') },
-    ];
+    return page ? boardTotals(page) : [];
   });
   protected readonly placeholders = Array.from({ length: 30 }, (_, index) => index);
   /** The three ways onto the board (Nuxters' "How to become a Nuxter"). */
