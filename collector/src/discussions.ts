@@ -60,6 +60,14 @@ async function eachNode<T>(first: Page<T>, more: (after: string | null) => Promi
   }
 }
 
+/** The next page of a discussion's comments, from the cursor. */
+const moreComments = (discussionId: string) => async (after: string | null) =>
+  (await query<{ node: { comments: Page<Comment> } }>(MORE_COMMENTS, { id: discussionId, after })).node.comments
+
+/** The next page of a comment's replies, from the cursor. */
+const moreReplies = (commentId: string) => async (after: string | null) =>
+  (await query<{ node: { replies: Page<Reply> } }>(MORE_REPLIES, { id: commentId, after })).node.replies
+
 /**
  * Every discussion of a repository, with its comments and their replies, scored as issues and comments are:
  * a discussion counts as an issue, a comment or a reply as a comment, the accepted answer as a helpful comment.
@@ -79,7 +87,7 @@ export async function collectDiscussions({ owner, name }: Repo, since: Date | nu
   const addComment = async (comment: Comment | null) => {
     if (!comment) return
     addReply(comment, comment.isAnswer)
-    await eachNode(comment.replies, async after => (await query<{ node: { replies: Page<Reply> } }>(MORE_REPLIES, { id: comment.id, after })).node.replies, reply => addReply(reply))
+    await eachNode(comment.replies, moreReplies(comment.id), reply => addReply(reply))
   }
 
   let after: string | null = null
@@ -106,7 +114,7 @@ export async function collectDiscussions({ owner, name }: Repo, since: Date | nu
         accumulator.addIssue(issue)
         stats.discussions++
       }
-      await eachNode(discussion.comments, async after => (await query<{ node: { comments: Page<Comment> } }>(MORE_COMMENTS, { id: discussion.id, after })).node.comments, addComment)
+      await eachNode(discussion.comments, moreComments(discussion.id), addComment)
     }
     if (!discussions.pageInfo.hasNextPage) break
     after = discussions.pageInfo.endCursor
