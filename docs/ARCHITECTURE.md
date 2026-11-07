@@ -44,6 +44,10 @@ To try the site with another data folder: `CONTRIBUTORS_DATA_DIR=/path/to/data p
 The brand font, Norse Bold (the word "Angularian" on the site and the cards), is in `app/public/fonts/`; it and
 Manrope's Latin file are preloaded (`app/index.html`), so the text does not move when they arrive. The mark is built by `app/scripts/logo/build.py`.
 
+On a reload or back/forward, an inline script in `app/index.html` makes the page render-blocking until the footer
+(`#site-footer`) is parsed: the browser restores the scroll position in the first paint instead of drawing the top of
+the page first. A first visit is not held back.
+
 ## Design tokens
 
 The site's colours are variables in [`app/src/styles.css`](../app/src/styles.css), each set there once per theme: its light
