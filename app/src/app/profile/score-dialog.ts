@@ -6,7 +6,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core'
 import { remixInformationLine } from '@ng-icons/remixicon'
 import { HlmButton } from '@spartan-ng/helm/button'
 import { HlmDialogImports } from '@spartan-ng/helm/dialog'
-import { formatNumber } from '../leaderboard/format'
+import { formatNumber } from '../leaderboard/number-format'
 import { ScoreBreakdown } from './score-breakdown'
 
 @Component({

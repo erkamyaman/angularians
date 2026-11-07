@@ -9,7 +9,8 @@ import { remixAddLine, remixPauseLine, remixPlayLine, remixRestartLine, remixSub
 import { HlmButton } from '@spartan-ng/helm/button';
 import type { Globe as CobeGlobe } from 'cobe';
 import createGlobe from 'cobe';
-import { flagUrl, formatNumber, plural } from '../leaderboard/format';
+import { flagUrl } from '../leaderboard/flag-url';
+import { formatNumber, plural } from '../leaderboard/number-format';
 import { ThemeService } from '../theme.service';
 import { vikingLongship } from '../layout/viking-icons';
 import { faceOnGlobe, projectOnGlobe } from './globe-math';

@@ -17,7 +17,8 @@ import { ContributorSince } from '../profile/contributor-since'
 import { ScoreDialog } from '../profile/score-dialog'
 import { JoinLinks } from './join-links'
 import { Share } from '../profile/share'
-import { avatarUrl, formatNumber, formatPoints } from './format'
+import { avatarUrl } from './avatar-url'
+import { formatNumber, formatPoints } from './number-format'
 
 /** The signed-in Angularian, or a sign-in. */
 @Component({

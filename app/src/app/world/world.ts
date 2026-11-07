@@ -11,7 +11,10 @@ import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmInputGroupImports } from '@spartan-ng/helm/input-group';
 import { HlmSkeleton } from '@spartan-ng/helm/skeleton';
 import { HlmTooltip } from '@spartan-ng/helm/tooltip';
-import { avatarUrl, flagUrl, formatNumber, matchesCountry } from '../leaderboard/format';
+import { avatarUrl } from '../leaderboard/avatar-url';
+import { flagUrl } from '../leaderboard/flag-url';
+import { formatNumber } from '../leaderboard/number-format';
+import { matchesCountry } from '../leaderboard/country-match';
 import { Globe } from './globe';
 
 /** People shown on the card of a country. */

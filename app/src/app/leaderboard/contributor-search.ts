@@ -9,7 +9,9 @@ import { remixCloseLine } from '@ng-icons/remixicon'
 import { HlmAutocompleteImports } from '@spartan-ng/helm/autocomplete'
 import { HlmKbd } from '@spartan-ng/helm/kbd'
 import { searchContributors } from '../data/contributors.server'
-import { avatarUrl, formatNumber, formatPoints, profileQuery } from './format'
+import { avatarUrl } from './avatar-url'
+import { formatNumber, formatPoints } from './number-format'
+import { profileQuery } from './profile-query'
 
 const DEBOUNCE_MS = 200
 

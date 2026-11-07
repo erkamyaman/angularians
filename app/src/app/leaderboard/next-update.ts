@@ -3,7 +3,7 @@ import { afterNextRender, Component, computed, DestroyRef, inject, input, PLATFO
 import { NgIcon, provideIcons } from '@ng-icons/core'
 import { remixInformationLine } from '@ng-icons/remixicon'
 import { HlmTooltip } from '@spartan-ng/helm/tooltip'
-import { formatDate } from './format'
+import { formatDate } from './date-format'
 
 /** The nightly collection's schedule, in UTC: `cron` in `.github/workflows/collect.yml`. */
 const COLLECT_HOUR = 3

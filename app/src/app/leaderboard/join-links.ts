@@ -3,7 +3,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core'
 import { simpleDiscord } from '@ng-icons/simple-icons'
 import { AngularLogo } from '../layout/angular-logo'
 import { FirstPrGuides } from './first-pr-guides'
-import { avatarUrl } from './format'
+import { avatarUrl } from './avatar-url'
 
 const AUTHOR_ID = 88717125
 

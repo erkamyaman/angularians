@@ -4,7 +4,8 @@
 import { Resvg } from '@resvg/resvg-js'
 import { periodOrNull, periodPhrase, type ContributorProfile, type Period } from '@angularians/shared'
 import satori from 'satori'
-import { formatMonth, formatNumber, formatPoints, formatRank, pluralWord } from '../../app/leaderboard/format'
+import { formatMonth } from '../../app/leaderboard/date-format'
+import { formatNumber, formatPoints, formatRank, pluralWord } from '../../app/leaderboard/number-format'
 
 export const CARD_WIDTH = 1200
 export const CARD_HEIGHT = 630

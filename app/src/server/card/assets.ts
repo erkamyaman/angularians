@@ -1,6 +1,7 @@
 import { useStorage } from 'nitropack/runtime'
 import type { CardFonts } from './card'
-import { avatarUrl, flagUrl } from '../../app/leaderboard/format'
+import { avatarUrl } from '../../app/leaderboard/avatar-url'
+import { flagUrl } from '../../app/leaderboard/flag-url'
 
 let fonts: Promise<CardFonts> | undefined
 

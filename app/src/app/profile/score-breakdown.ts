@@ -6,7 +6,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core'
 import { remixBookOpenLine, remixBrushLine, remixChatHeartLine, remixFileCodeLine, remixLightbulbLine, remixRocketLine, remixToolsLine } from '@ng-icons/remixicon'
 import { octComment, octIssueOpened, octShield, octSmiley } from '@ng-icons/octicons'
 import { HlmProgressImports } from '@spartan-ng/helm/progress'
-import { formatNumber, formatPoints } from '../leaderboard/format'
+import { formatNumber, formatPoints } from '../leaderboard/number-format'
 
 /** `scoreBreakdown`'s icon keys, and the icons they show. */
 const ICONS: Record<string, string> = {
