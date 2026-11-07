@@ -8,8 +8,8 @@ Angularians ranks everyone who has contributed to the Angular repositories: a co
 
 | path | what is there |
 | --- | --- |
-| `shared/src` | scoring, PR types and scopes, periods, countries, bots, the repositories on the board |
-| `collector/src` | the GitHub client, the collection (`main.ts`), parts and their merge (`finalize.ts`, `merge.ts`), the GitHub App token (`auth.ts`) |
+| `shared/src` | the kinds of contribution and their points (`kinds.ts`), scoring, PR types and scopes, periods, countries, bots, the repositories on the board, the data files; reading a data folder (`node.ts`, `@angularians/shared/node`: Node only, kept out of the site) |
+| `collector/src` | the GitHub client, the collection (`main.ts`), parts and their merge (`merge.ts`), the site's data of a run (`finalize.ts`: `buildData` builds it, `writeData` writes it), the GitHub App token (`auth.ts`) |
 | `app/src/app` | the pages, the leaderboard, profiles, the signed-in card and sharing |
 | `app/src/server` | the API, sign-in (`auth/`), the Angularian card (`card/`), the data store |
 | `app/src/app/layout` | the header, the footer, the mark (`logo-mark.ts`, its paths in `logo-mark.html`), the hero |

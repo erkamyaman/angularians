@@ -83,6 +83,9 @@ nothing.
 
 A full run with fewer than 1,000 contributors writes nothing: it is most likely broken.
 
+`buildData` in `src/finalize.ts` makes these files from what the run collected, the previous run's usernames and renames,
+and the team and profiles (from GitHub, or fakes in tests); `writeData` writes them.
+
 The run prints `Possible bots:`. Add real bots to `KNOWN_BOT_ACCOUNTS` in `shared/src/bots.ts`.
 
 `.github/workflows/collect.yml` runs it nightly and commits `data/`.

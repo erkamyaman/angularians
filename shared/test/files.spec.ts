@@ -19,6 +19,11 @@ describe('parseContributorsFile', () => {
     expect(row?.pullRequests).toEqual({ feat: 0, fix: 0, docs: 2, chore: 1, all: 3 })
   })
 
+  it('reads missing activity as 0 and never counts more helpful issues or comments than their totals', () => {
+    const [row] = parseContributorsFile([record(1, 'a', {}, { issues: 2, helpfulIssues: 5, comments: 4, helpfulComments: 1, reactions: 3.6, advisories: -1 })])
+    expect(row).toMatchObject({ issues: 2, helpfulIssues: 2, comments: 4, helpfulComments: 1, reviewComments: 0, reactions: 4, advisories: 0, score: 12 }) // 2 + 6 + 2 + 2 + 0.4
+  })
+
   it('skips invalid and duplicate entries instead of failing', () => {
     const rows = parseContributorsFile([null, 'x', record(0, 'a'), record(1.5, 'b'), record(4, ''), record(4, 'ok'), record(4, 'dup'), record(5, 'x'.repeat(40))])
     expect(rows.map(row => row.username)).toEqual(['ok', 'x'.repeat(39)])

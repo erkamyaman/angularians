@@ -1,7 +1,7 @@
 # How the score works
 
 Every contribution counts for its author, on the day it was made (a pull request on the day it landed). The weights are those of [Nuxters](https://nuxt.com/nuxters),
-plus review comments and security reports. The rules live in `shared/src/scoring.ts` and `shared/src/pull-requests.ts`.
+plus review comments and security reports. The points of each kind of contribution are in `KINDS` (`shared/src/kinds.ts`), the rules in `shared/src/scoring.ts` and `shared/src/pull-requests.ts`.
 
 ## Merged pull requests, by type
 

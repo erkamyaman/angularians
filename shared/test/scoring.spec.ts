@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildContributorRecords, ContributorsAccumulator, emptyActivity, emptyCounts, mergePackages, mergeRecords, score, scoreBreakdown, type CommentInput, type IssueInput } from '../src/scoring.ts'
+import { ContributorsAccumulator, emptyActivity, emptyCounts, mergePackages, mergeRecords, score, scoreBreakdown, type CommentInput, type IssueInput } from '../src/scoring.ts'
 import type { ContributorRecord, LandedPullRequest, PullRequestType } from '../src/types.ts'
 
 const stats = (prs: Partial<Record<PullRequestType, number>>, activity: Partial<ReturnType<typeof emptyActivity>> = {}) => {
@@ -49,14 +49,20 @@ const pr = (login: string, id: number, type: PullRequestType, landedAt: string, 
   ({ number: ++number, author: { login, id }, type, scopes, landedAt })
 const user = (login: string, id: number) => ({ login, id })
 
-describe('buildContributorRecords (landed PRs only)', () => {
-  const files = buildContributorRecords([
+const records = (pulls: LandedPullRequest[]) => {
+  const accumulator = new ContributorsAccumulator(now)
+  for (const pull of pulls) accumulator.addLandedPullRequest(pull)
+  return accumulator.records()
+}
+
+describe('ContributorsAccumulator, landed PRs only', () => {
+  const files = records([
     pr('alice', 1, 'feat', '2026-10-20T00:00:00Z'), // 30d, 12m, 2026
     pr('alice', 1, 'docs', '2016-05-01T00:00:00Z'), // 2016
     pr('bob', 2, 'fix', '2026-01-15T00:00:00Z'), // 12m, 2026
     pr('bob', 2, 'fix', '2025-12-01T00:00:00Z'), // 12m, 2025
     pr('carol', 3, 'chore', '2014-09-18T00:00:00Z'), // 2014
-  ], now)
+  ])
 
   it('writes every period, even the empty ones', () => {
     expect([...files.keys()].slice(0, 4)).toEqual(['all', '30d', '12m', '2014'])
@@ -73,12 +79,12 @@ describe('buildContributorRecords (landed PRs only)', () => {
 
   it('keeps the first contribution across all periods, and ranks ties by username', () => {
     expect(files.get('30d')?.[0]?.firstContributionAt).toBe('2016-05-01T00:00:00.000Z')
-    const tied = buildContributorRecords([pr('zed', 9, 'fix', '2026-01-01T00:00:00Z'), pr('amy', 8, 'fix', '2026-01-01T00:00:00Z')], now)
+    const tied = records([pr('zed', 9, 'fix', '2026-01-01T00:00:00Z'), pr('amy', 8, 'fix', '2026-01-01T00:00:00Z')])
     expect(tied.get('all')?.map(r => r.username)).toEqual(['amy', 'zed'])
   })
 
   it('keeps a renamed account as one contributor, under its latest login', () => {
-    const renamed = buildContributorRecords([pr('old-name', 7, 'feat', '2020-01-01T00:00:00Z'), pr('new-name', 7, 'fix', '2024-01-01T00:00:00Z')], now)
+    const renamed = records([pr('old-name', 7, 'feat', '2020-01-01T00:00:00Z'), pr('new-name', 7, 'fix', '2024-01-01T00:00:00Z')])
     expect(renamed.get('all')).toEqual([{
       githubId: 7, username: 'new-name', score: 12, pullRequests: { feat: 1, fix: 1, docs: 0, chore: 0, all: 2 }, ...emptyActivity(), firstContributionAt: '2020-01-01T00:00:00.000Z',
     }])

@@ -1,14 +1,9 @@
-/** The kind of a landed pull request, from its title (`feat(core): …`) or labels. */
-export type PullRequestType = 'feat' | 'fix' | 'docs' | 'chore'
+import type { ActivityKind, PullRequestType } from './kinds.ts'
+
+export type { PullRequestType } from './kinds.ts'
 
 /** Landed pull requests by type. `all` is the sum of the four. */
-export interface PullRequestCounts {
-  feat: number
-  fix: number
-  docs: number
-  chore: number
-  all: number
-}
+export type PullRequestCounts = Record<PullRequestType | 'all', number>
 
 /** `all`, `30d`, `12m`, or a year from 2014 (`'2025'`). */
 export type Period = string
@@ -55,23 +50,8 @@ export interface ContributorRecord extends ActivityCounts {
   firstContributionAt: string | null
 }
 
-/** What a contributor did besides landing PRs, in one period. */
-export interface ActivityCounts {
-  /** Issues opened (not PRs). */
-  issues: number
-  /** Of those: closed as completed, or 3+ reactions, or 5+ comments. */
-  helpfulIssues: number
-  /** Conversation comments on issues, PRs and discussions. */
-  comments: number
-  /** Of those: 3+ reactions, or a discussion's accepted answer. */
-  helpfulComments: number
-  /** Inline comments on the code of PRs. */
-  reviewComments: number
-  /** Received on the contributor's issues, PRs and comments, counted on the day of the item. */
-  reactions: number
-  /** Angular security advisories credited to them as reporter or finder. */
-  advisories: number
-}
+/** What a contributor did besides landing PRs, in one period: one count per activity kind (`KINDS`). */
+export type ActivityCounts = Record<ActivityKind, number>
 
 /** A contributor's stats over one period, ranked. */
 export interface Contributor extends ContributorRecord {
@@ -165,4 +145,25 @@ export interface ContributorsMap {
   /** The ones with a recognized country on their GitHub profile. */
   located: number
   countries: CountryStats[]
+}
+
+/** What the site reads of `meta.json`. */
+export interface DataMeta {
+  /** ISO date of the run, `null` when unknown. */
+  collectedAt: string | null
+  /** A test run (`--since`): all-time totals only cover its window. */
+  partial: boolean
+  repos: string[]
+}
+
+/** A data folder, validated: what `readDataDir` (`@angularians/shared/node`) returns. Missing files read as empty. */
+export interface DataFolder {
+  meta: DataMeta | null
+  /** Ranked contributors of each period that has a file. */
+  periods: Record<Period, Contributor[]>
+  profiles: ProfileRecord[]
+  packages: PackagesRecord[]
+  team: TeamRecord[]
+  /** Old usernames of renamed contributors. */
+  renames: TeamRecord[]
 }

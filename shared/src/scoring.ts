@@ -2,26 +2,15 @@
 // `nuxterScoreBreakdown` (MIT, Copyright (c) 2023 Nuxt, Copyright (c) 2022-2023 NuxtLabs).
 // Differences: no core bonus (one repository), and inline review comments count too (1 point each).
 import { isBotAccount } from './bots.ts'
+import { ACTIVITY_KINDS, KINDS, PULL_REQUEST_KINDS, type Kind, type PullRequestType } from './kinds.ts'
 import { allPeriods, periodsFor } from './periods.ts'
-import type { ActivityCounts, ContributorRecord, GitHubUser, LandedPullRequest, PackagesRecord, Period, PullRequestCounts, PullRequestType } from './types.ts'
+import type { ActivityCounts, ContributorRecord, GitHubUser, LandedPullRequest, PackagesRecord, Period, PullRequestCounts } from './types.ts'
 
-export const PULL_REQUEST_POINTS: Readonly<Record<PullRequestType, number>> = {
-  feat: 7,
-  fix: 5,
-  docs: 4,
-  chore: 3,
-}
+/** Points of a landed PR, by type. */
+export const PULL_REQUEST_POINTS = Object.fromEntries(PULL_REQUEST_KINDS.map(kind => [kind.key, kind.points])) as Readonly<Record<PullRequestType, number>>
 
 /** Points of everything besides landed PRs. */
-export const ACTIVITY_POINTS: Readonly<Record<keyof ActivityCounts, number>> = {
-  helpfulIssues: 3,
-  helpfulComments: 2,
-  issues: 1,
-  reviewComments: 1,
-  comments: 0.5,
-  reactions: 0.1,
-  advisories: 20,
-}
+export const ACTIVITY_POINTS = Object.fromEntries(ACTIVITY_KINDS.map(kind => [kind.key, kind.points])) as Readonly<Record<keyof ActivityCounts, number>>
 
 /** The credits on a security advisory that score: reporting it. Fixing and reviewing it score as PRs and reviews. */
 export const ADVISORY_CREDITS: readonly string[] = ['reporter', 'finder']
@@ -32,34 +21,36 @@ export const HELPFUL_ISSUE_COMMENTS = 5
 /** A comment is helpful with this many reactions. */
 export const HELPFUL_COMMENT_REACTIONS = 3
 
-export const emptyCounts = (): PullRequestCounts => ({ feat: 0, fix: 0, docs: 0, chore: 0, all: 0 })
-export const emptyActivity = (): ActivityCounts => ({ issues: 0, helpfulIssues: 0, comments: 0, helpfulComments: 0, reviewComments: 0, reactions: 0, advisories: 0 })
+export const emptyCounts = (): PullRequestCounts => ({ ...zeros(PULL_REQUEST_KINDS), all: 0 })
+export const emptyActivity = (): ActivityCounts => zeros(ACTIVITY_KINDS)
+
+const zeros = <K extends string>(kinds: ReadonlyArray<{ key: K }>) => Object.fromEntries(kinds.map(kind => [kind.key, 0])) as Record<K, number>
 
 export type ScoredStats = { pullRequests: PullRequestCounts } & ActivityCounts
 
+/** How many of a kind the stats count. */
+export const amountOf = (stats: ScoredStats, kind: Kind): number => kind.pullRequest ? stats.pullRequests[kind.key] : stats[kind.key]
+
 /** The sum of every row of `scoreBreakdown`, rounded once (as Nuxters does). */
 export function score(stats: ScoredStats): number {
-  const prs = stats.pullRequests
-  const total = prs.feat * PULL_REQUEST_POINTS.feat
-    + prs.fix * PULL_REQUEST_POINTS.fix
-    + prs.docs * PULL_REQUEST_POINTS.docs
-    + prs.chore * PULL_REQUEST_POINTS.chore
-    + stats.helpfulIssues * ACTIVITY_POINTS.helpfulIssues
-    + stats.helpfulComments * ACTIVITY_POINTS.helpfulComments
-    + stats.issues * ACTIVITY_POINTS.issues
-    + stats.reviewComments * ACTIVITY_POINTS.reviewComments
-    + stats.comments * ACTIVITY_POINTS.comments
-    + stats.reactions * ACTIVITY_POINTS.reactions
-    + stats.advisories * ACTIVITY_POINTS.advisories
-  return Math.round(total)
+  return Math.round(KINDS.reduce((total, kind) => total + amountOf(stats, kind) * kind.points, 0))
 }
 
-export type ScoreRowKey = PullRequestType | keyof ActivityCounts
+/** Adds every count of `source` to `target`, `all` included. */
+export function addCounts(target: ScoredStats, source: ScoredStats): void {
+  for (const kind of KINDS) {
+    if (kind.pullRequest) target.pullRequests[kind.key] += source.pullRequests[kind.key]
+    else target[kind.key] += source[kind.key]
+  }
+  target.pullRequests.all += source.pullRequests.all
+}
+
+export type ScoreRowKey = Kind['key']
 
 export interface ScoreRow {
   key: ScoreRowKey
   label: string
-  /** A Lucide icon name (`@ng-icons/lucide`: `lucideRocket`…). */
+  /** The kind's icon name (`rocket`…), which the profile's `score-breakdown.ts` maps to an icon. */
   icon: string
   points: number
   amount: number
@@ -67,28 +58,16 @@ export interface ScoreRow {
   total: number
 }
 
-const ROWS: ReadonlyArray<Pick<ScoreRow, 'key' | 'label' | 'icon'>> = [
-  { key: 'feat', label: 'Feature PRs', icon: 'rocket' },
-  { key: 'fix', label: 'Fix PRs', icon: 'wrench' },
-  { key: 'docs', label: 'Docs PRs', icon: 'book-open' },
-  { key: 'chore', label: 'Chore PRs', icon: 'brush-cleaning' },
-  { key: 'advisories', label: 'Security reports', icon: 'shield' },
-  { key: 'helpfulIssues', label: 'Helpful issues', icon: 'lightbulb' },
-  { key: 'helpfulComments', label: 'Helpful comments', icon: 'message-circle-heart' },
-  { key: 'issues', label: 'Issues', icon: 'circle-dot' },
-  { key: 'reviewComments', label: 'Review comments', icon: 'file-code' },
-  { key: 'comments', label: 'Comments', icon: 'message-circle' },
-  { key: 'reactions', label: 'Reactions received', icon: 'smile-plus' },
-]
+/** The rows' order when their totals tie: PRs, then security reports, the helpful ones, and the rest. */
+const ROW_ORDER: readonly ScoreRowKey[] = ['feat', 'fix', 'docs', 'chore', 'advisories', 'helpfulIssues', 'helpfulComments', 'issues', 'reviewComments', 'comments', 'reactions']
 
-/** One row per contribution type, sorted by total (ties in the fixed order above). Rounded, the totals add up to the score. */
+/** One row per contribution type, sorted by total (ties in `ROW_ORDER`). Rounded, the totals add up to the score. */
 export function scoreBreakdown(stats: ScoredStats): ScoreRow[] {
-  return ROWS
-    .map((row) => {
-      const isPr = row.key in PULL_REQUEST_POINTS
-      const points = isPr ? PULL_REQUEST_POINTS[row.key as PullRequestType] : ACTIVITY_POINTS[row.key as keyof ActivityCounts]
-      const amount = isPr ? stats.pullRequests[row.key as PullRequestType] : stats[row.key as keyof ActivityCounts]
-      return { ...row, points, amount, total: Math.round(amount * points * 10) / 10 }
+  return ROW_ORDER
+    .map((key) => {
+      const kind = KINDS.find(kind => kind.key === key)!
+      const amount = amountOf(stats, kind)
+      return { key, label: kind.label, icon: kind.icon, points: kind.points, amount, total: Math.round(amount * kind.points * 10) / 10 }
     })
     .sort((a, b) => b.total - a.total)
 }
@@ -216,13 +195,7 @@ export class ContributorsAccumulator {
 
   /** `packages.json`: every contributor with a scoped PR, by GitHub id; each one's packages, most PRs first. */
   packages(): PackagesRecord[] {
-    return [...this.packageCounts]
-      .filter(([, packages]) => packages.size)
-      .map(([githubId, packages]) => ({
-        githubId,
-        packages: [...packages].map(([name, pullRequests]) => ({ name, pullRequests })).sort((a, b) => b.pullRequests - a.pullRequests || a.name.localeCompare(b.name)),
-      }))
-      .sort((a, b) => a.githubId - b.githubId)
+    return packagesRecords([...this.packageCounts].filter(([, packages]) => packages.size))
   }
 
   /** Every period, even an empty one, so readers can rely on its file. */
@@ -267,13 +240,6 @@ export class ContributorsAccumulator {
   }
 }
 
-/** Landed PRs only: the v1 entry point, kept for its callers and tests. */
-export function buildContributorRecords(pulls: Iterable<LandedPullRequest>, now: Date): Map<Period, ContributorRecord[]> {
-  const accumulator = new ContributorsAccumulator(now)
-  for (const pull of pulls) accumulator.addLandedPullRequest(pull)
-  return accumulator.records()
-}
-
 function toUser(user: IssueInput['user']): GitHubUser | null {
   const login = user?.login
   const id = user?.id
@@ -294,8 +260,7 @@ export function mergeRecords(lists: ReadonlyArray<readonly ContributorRecord[]>)
         merged.set(record.githubId, { ...record, pullRequests: { ...record.pullRequests } })
         continue
       }
-      for (const key of Object.keys(emptyActivity()) as Array<keyof ActivityCounts>) current[key] += record[key]
-      for (const key of Object.keys(emptyCounts()) as Array<keyof PullRequestCounts>) current.pullRequests[key] += record.pullRequests[key]
+      addCounts(current, record)
       if (record.firstContributionAt && (!current.firstContributionAt || record.firstContributionAt < current.firstContributionAt)) {
         current.firstContributionAt = record.firstContributionAt
       }
@@ -314,10 +279,15 @@ export function mergePackages(lists: ReadonlyArray<readonly PackagesRecord[]>): 
       for (const { name, pullRequests } of packages) counts.set(name, (counts.get(name) ?? 0) + pullRequests)
     }
   }
-  return [...merged]
-    .map(([githubId, counts]) => ({
+  return packagesRecords([...merged])
+}
+
+/** `packages.json`'s records: by GitHub id, each one's packages most PRs first. */
+function packagesRecords(counts: ReadonlyArray<[number, ReadonlyMap<string, number>]>): PackagesRecord[] {
+  return counts
+    .map(([githubId, packages]) => ({
       githubId,
-      packages: [...counts].map(([name, pullRequests]) => ({ name, pullRequests })).sort((a, b) => b.pullRequests - a.pullRequests || a.name.localeCompare(b.name)),
+      packages: [...packages].map(([name, pullRequests]) => ({ name, pullRequests })).sort((a, b) => b.pullRequests - a.pullRequests || a.name.localeCompare(b.name)),
     }))
     .sort((a, b) => a.githubId - b.githubId)
 }

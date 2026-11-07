@@ -23,6 +23,7 @@ const bundle: DataBundle = {
   ],
   packages: [{ githubId: 1, packages: [{ name: 'core', pullRequests: 40 }, { name: 'router', pullRequests: 10 }] }],
   team: [{ githubId: 1, username: 'crisbeto' }],
+  renames: [],
 }
 const data = new ContributorsData(bundle)
 
