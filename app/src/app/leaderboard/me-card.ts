@@ -17,7 +17,7 @@ import { AngularianPill } from '../layout/angularian-pill'
 import { ContributorSince } from '../profile/contributor-since'
 import { ScoreDialog } from '../profile/score-dialog'
 import { JoinLinks } from './join-links'
-import { Share } from '../profile/share'
+import { Share, SHARE_BUTTONS } from '../profile/share'
 import { avatarUrl } from '../contributors/avatar-url'
 import { formatNumber, formatPoints, formatRank } from '../text/number-format'
 import { pluralWord } from '../text/plural'
@@ -37,10 +37,13 @@ export class MeCard {
   private readonly auth = inject(AuthService)
   protected readonly state = this.auth.state
   protected readonly me = computed(() => this.state()?.user ?? null)
-  /** Signed in last time (the hint): with no session, the sign-in takes the skeleton's place. */
-  protected readonly wasSignedIn = this.auth.wasSignedIn
   /** Signed in last time, and the session not known yet: the signed-in card's skeleton. */
   protected readonly restoringSession = computed(() => this.state() === null && this.auth.wasSignedIn())
+  /** Signed in last time, not any more (the session ended): the sign-in, in the skeleton's place. */
+  protected readonly sessionEnded = computed(() => this.state() !== null && !this.me() && this.auth.wasSignedIn())
+  protected readonly signInEnabled = computed(() => this.state()?.enabled !== false)
+  /** Phones, signed out: the sign-in button alone, under the hero's buttons (not in the skeleton's place). */
+  protected readonly signInOnly = computed(() => this.signInEnabled() && !this.sessionEnded())
   protected readonly loginUrl = this.auth.loginUrl('/')
   protected readonly lastYear = computed(() => this.me()?.angularian?.periods.find(row => row.period === '12m') ?? null)
   protected readonly periods = computed(() => this.me()?.angularian?.periods.map(row => row.period) ?? [])
@@ -54,7 +57,7 @@ export class MeCard {
   })
 
   /** The labels of app-share's buttons, for the skeleton's. */
-  protected readonly shareLabels = ['Copy profile link', 'Share card', 'Add to README']
+  protected readonly shareLabels = Object.values(SHARE_BUTTONS)
   protected readonly avatar = (githubId: number) => avatarUrl(githubId, 64)
   protected readonly number = formatNumber
   protected readonly points = formatPoints

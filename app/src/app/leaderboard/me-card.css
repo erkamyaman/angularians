@@ -37,25 +37,11 @@
   .wide-icon {
     display: none;
   }
-}
 
-@media (width >= 40rem) {
-  .signed-out {
-    min-height: calc(var(--spacing) * 64);
-  }
-}
-
-@media (width >= 64rem) {
-  .signed-out {
-    min-height: calc(var(--spacing) * 80);
-  }
-}
-
-/*
- * Signed in last time, not any more: the sign-in in the skeleton's place (a grid cell sized by the hidden skeleton),
- * laid out as on wide screens, with its icon and text, rather than a row lost in the space.
- */
-@media (width < 40rem) {
+  /*
+   * Signed in last time, not any more: the sign-in in the skeleton's place (a cell sized by the unseen skeleton),
+   * laid out as on wide screens, with its icon and text, rather than a row lost in the space.
+   */
   .returning {
     padding: calc(var(--spacing) * 6);
   }
@@ -73,5 +59,17 @@
 
   .returning .wide-text {
     display: block;
+  }
+}
+
+@media (width >= 40rem) {
+  .signed-out {
+    min-height: calc(var(--spacing) * 64);
+  }
+}
+
+@media (width >= 64rem) {
+  .signed-out {
+    min-height: calc(var(--spacing) * 80);
   }
 }

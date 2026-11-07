@@ -1,6 +1,6 @@
 <!-- One cell with the longest label, unseen: the clock's label (after the first paint) takes the place it had -->
-<span class="label tabular-nums">
-  <span class="invisible" aria-hidden="true">Next update starts in 00h 00m</span>
+<span class="stack label tabular-nums">
+  <span class="invisible" aria-hidden="true">{{ longestLabel }}</span>
   <span>{{ label() }}</span>
 </span>
 <button type="button" class="grid shrink-0 place-items-center rounded-full focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none" [hlmTooltip]="hint()" [attr.aria-label]="hint()"><ng-icon name="remixInformationLine" aria-hidden="true" /></button>

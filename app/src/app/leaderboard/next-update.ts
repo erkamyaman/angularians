@@ -9,6 +9,14 @@ import { untilNextCollection } from './next-collection'
 /** The time to the next collection is said again every minute. */
 const REFRESH_MS = 60_000
 
+/** The label: the time to the next collection, from the visitor's clock; words without it. */
+const nextUpdateLabel = (now: Date | null) => (now ? `Next update starts in ${untilNextCollection(now)}` : 'Updated every day')
+
+/** The longest label the clock can say (one for every minute of a day, and the words), to size its place. */
+const LONGEST_LABEL = [null, ...Array.from({ length: 24 * 60 }, (_, minute) => new Date(Date.UTC(2000, 0, 1, 0, minute)))]
+  .map(nextUpdateLabel)
+  .reduce((longest, label) => (label.length > longest.length ? label : longest))
+
 /** The time depends on the visitor's clock and pages are cached: the server and the first paint say it in words. */
 @Component({
   selector: 'app-next-update',
@@ -22,10 +30,8 @@ export class NextUpdate {
   readonly collectedAt = input<string | null>(null)
 
   private readonly now = signal<Date | null>(null)
-  protected readonly label = computed(() => {
-    const now = this.now()
-    return now ? `Next update starts in ${untilNextCollection(now)}` : 'Updated every day'
-  })
+  protected readonly label = computed(() => nextUpdateLabel(this.now()))
+  protected readonly longestLabel = LONGEST_LABEL
   protected readonly hint = computed(() => {
     const collected = this.collectedAt()
     return `Updated nightly from 03:17 UTC.${collected ? ` Data from ${formatDate(collected)}.` : ''}`

@@ -4,14 +4,6 @@
   gap: var(--spacing);
 }
 
-.label {
-  display: grid;
-}
-
-.label > * {
-  grid-area: 1 / 1;
-}
-
 /* Phones: centred under the totals, as the board's line centres it */
 @media (width < 40rem) {
   .label {

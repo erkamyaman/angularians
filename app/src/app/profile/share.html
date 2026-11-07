@@ -1,13 +1,13 @@
 <button hlmBtn variant="secondary" type="button" (click)="copyLink()">
   <ng-icon [name]="linkIcon()" size="1.25rem" aria-hidden="true" />
-  <ng-container [ngTemplateOutlet]="steadyLabel" [ngTemplateOutletContext]="{ $implicit: linkLabel(), widest: 'Copy profile link' }" />
+  <ng-container [ngTemplateOutlet]="steadyLabel" [ngTemplateOutletContext]="{ $implicit: linkLabel(), widest: buttons.link }" />
 </button>
 
 <!-- Both labels share one cell, so a copy button keeps its width when its label changes -->
 <ng-template #steadyLabel let-label let-widest="widest">
-  <span class="grid">
-    <span class="invisible col-start-1 row-start-1" aria-hidden="true">{{ widest }}</span>
-    <span class="col-start-1 row-start-1 text-center">{{ label }}</span>
+  <span class="stack">
+    <span class="invisible" aria-hidden="true">{{ widest }}</span>
+    <span class="text-center">{{ label }}</span>
   </span>
 </ng-template>
 
@@ -64,7 +64,7 @@
 
 <hlm-dialog (stateChanged)="resetOnOpen($event)">
   <button hlmDialogTrigger hlmBtn variant="secondary" type="button">
-    <ng-icon name="remixShareLine" size="1.25rem" aria-hidden="true" /> Share card
+    <ng-icon name="remixShareLine" size="1.25rem" aria-hidden="true" /> {{ buttons.card }}
   </button>
   <hlm-dialog-content *hlmDialogPortal class="max-h-[90dvh] overflow-y-auto max-sm:w-[calc(100vw-1rem)] max-sm:max-w-[calc(100%-1rem)] max-sm:gap-4 max-sm:p-4 sm:max-w-2xl">
     <hlm-dialog-header>
@@ -85,7 +85,7 @@
 
 <hlm-dialog (stateChanged)="resetOnOpen($event)">
   <button hlmDialogTrigger hlmBtn variant="secondary" type="button">
-    <ng-icon name="remixMarkdownLine" size="1.25rem" aria-hidden="true" /> Add to README
+    <ng-icon name="remixMarkdownLine" size="1.25rem" aria-hidden="true" /> {{ buttons.readme }}
   </button>
   <hlm-dialog-content *hlmDialogPortal class="max-h-[90dvh] overflow-y-auto max-sm:w-[calc(100vw-1rem)] max-sm:max-w-[calc(100%-1rem)] max-sm:gap-4 max-sm:p-4 sm:max-w-2xl">
     <hlm-dialog-header>

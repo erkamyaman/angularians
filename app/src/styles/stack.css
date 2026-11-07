@@ -1,0 +1,12 @@
+/*
+ * One cell for all the children, on top of each other: the largest sizes it. With an unseen child (`invisible`,
+ * `aria-hidden`) holding the widest label or a skeleton, what changes or arrives later takes a place that is already
+ * there: the next update's clock, a copy button's "copied", the signed-in card over its skeleton.
+ */
+.stack {
+  display: grid;
+}
+
+.stack > * {
+  grid-area: 1 / 1;
+}

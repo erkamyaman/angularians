@@ -20,6 +20,9 @@ const MIN_LOADING_MS = 500
 /** " in 2025" after a sentence about a period; nothing for all time. */
 const periodSuffix = (period: Period) => (period === 'all' ? '' : ` ${periodPhrase(period)}`)
 
+/** The share buttons' labels, in their order: the signed-in card's skeleton lays out the same buttons. */
+export const SHARE_BUTTONS = { link: 'Copy profile link', card: 'Share card', readme: 'Add to README' } as const
+
 /** Copy the profile link, or the Markdown of the Angularian card for a GitHub profile README. */
 @Component({
   selector: 'app-share',
@@ -37,10 +40,11 @@ export class Share {
   /** The country of the GitHub location, when it has one. */
   readonly country = input<string | null | undefined>(null)
 
+  protected readonly buttons = SHARE_BUTTONS
   protected readonly copied = signal<'link' | 'markdown' | null>(null)
   /** Each copy button says so for a moment after it copied. */
   protected readonly linkIcon = computed(() => (this.copied() === 'link' ? 'remixCheckLine' : 'remixLinkM'))
-  protected readonly linkLabel = computed(() => (this.copied() === 'link' ? 'Link copied' : 'Copy profile link'))
+  protected readonly linkLabel = computed(() => (this.copied() === 'link' ? 'Link copied' : SHARE_BUTTONS.link))
   protected readonly markdownIcon = computed(() => (this.copied() === 'markdown' ? 'remixCheckLine' : 'remixFileCopyLine'))
   protected readonly markdownLabel = computed(() => (this.copied() === 'markdown' ? 'Markdown copied' : 'Copy Markdown'))
   /** The card renders on demand: its background and a loader meanwhile. */
