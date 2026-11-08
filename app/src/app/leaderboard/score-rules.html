@@ -47,6 +47,13 @@
           </li>
         }
       </ul>
+      <p class="mt-2 text-sm text-muted-foreground">Security credits count on the advisory's publication date. Each person earns points for their highest-valued role once per advisory.</p>
+      <p class="mt-2 text-sm text-muted-foreground">Every credited role receives the same severity multiplier: base role points × severity. Without recorded severity, the multiplier is 1.</p>
+      <ul class="mt-2 flex flex-wrap gap-2 text-xs text-muted-foreground" aria-label="Security severity multipliers">
+        @for (severity of severities; track severity.label) {
+          <li class="rounded-md bg-muted px-2 py-1">{{ severity.label }} × {{ severity.multiplier }}</li>
+        }
+      </ul>
     </section>
 
     <details class="group rounded-lg bg-muted/40 p-3 text-sm ring-1 ring-border">
@@ -54,7 +61,7 @@
       <p class="mt-2 text-muted-foreground">
         Most PRs from 2017 to 2025 show as closed, not merged: Angular's merge tooling pushes the commits itself and adds
         <code class="rounded bg-muted px-1 py-0.5 text-xs">PR Close #N</code> to them. Those count as merged too. Bots are left out.
-        The base weights are the ones of Nuxters, plus review comments, security reports and translations. Unlike Nuxters, no repository counts double, a translation counts once for each of its translators rather than by segment, and a pull request without a type counts as a chore.
+        The base weights are the ones of Nuxters, plus review comments, security advisory credits and translations. Unlike Nuxters, no repository counts double, a translation counts once for each of its translators rather than by segment, and a pull request without a type counts as a chore.
       </p>
     </details>
   </hlm-dialog-content>

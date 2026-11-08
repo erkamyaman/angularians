@@ -1,16 +1,70 @@
 <ul class="flex flex-col gap-4">
   @for (row of rows(); track row.key) {
     <li class="flex flex-col gap-1.5" [class.opacity-50]="!row.amount">
-      <div class="flex items-center justify-between gap-2 text-sm">
+      <div class="score-row-heading flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-sm" [class.advisory-heading]="row.key === 'advisories'">
         <span class="flex min-w-0 items-center gap-2">
-          <ng-icon [name]="icon(row.icon)" class="text-muted-foreground" aria-hidden="true" />
-          {{ row.label }}
+          <ng-icon [name]="icon(row.icon)" class="shrink-0 text-muted-foreground" aria-hidden="true" />
+          <span class="min-w-0">{{ row.label }}</span>
         </span>
         <!-- One line: the label wraps instead -->
-        <span class="shrink-0 whitespace-nowrap text-muted-foreground tabular-nums">
-          {{ number(row.amount) }} × {{ row.points }} = <span class="font-medium text-foreground">{{ number(row.total) }}</span>
+        <span class="shrink-0 whitespace-nowrap text-muted-foreground tabular-nums" [class.advisory-total]="row.points === null">
+          @if (row.points === null) {
+            <span>{{ credits(row.amount) }}</span> <span class="advisory-separator" aria-hidden="true">·</span> <span class="font-medium text-foreground">{{ points(row.total) }}</span>
+          } @else {
+            {{ number(row.amount) }} × {{ row.points }} = <span class="font-medium text-foreground">{{ number(row.total) }}</span>
+          }
         </span>
       </div>
+      @if (row.key === 'advisories' && advisoryGroups().length) {
+        <details class="advisory-details">
+          <summary>
+            <ng-icon name="remixArrowRightSLine" class="group-chevron" aria-hidden="true" />
+            <span>View calculation</span>
+          </summary>
+          <ul class="advisory-groups">
+            @for (group of advisoryGroups(); track group.points) {
+              <li>
+                <details class="advisory-group">
+                  <summary>
+                    <ng-icon name="remixArrowRightSLine" class="group-chevron" aria-hidden="true" />
+                    <span class="group-label">{{ group.label }}</span>
+                    <span class="group-summary">
+                      <span>{{ credits(group.amount) }}</span>
+                      <span class="group-separator" aria-hidden="true">·</span>
+                      <span class="font-medium text-foreground">{{ points(group.total) }}</span>
+                    </span>
+                  </summary>
+                  <table class="advisory-calculation">
+                    <caption>
+                      <span class="sr-only">{{ group.label }}:</span>
+                      <span>{{ number(group.points) }} base pts per credit</span>
+                      @if (group.roles.length > 1 || group.label === 'Other credits') {
+                        <span class="group-members">
+                          @for (role of group.roles; track role.label; let last = $last) {
+                            {{ role.label }} {{ number(role.amount) }}@if (!last) { · }
+                          }
+                        </span>
+                      }
+                    </caption>
+                    <thead>
+                      <tr><th scope="col">Severity</th><th scope="col">Credits</th><th scope="col">Points</th></tr>
+                    </thead>
+                    <tbody>
+                      @for (severity of group.severities; track severity.severity) {
+                        <tr>
+                          <th scope="row">{{ severity.label }} ×{{ severity.multiplier }}</th>
+                          <td>{{ number(severity.amount) }}</td>
+                          <td>{{ number(severity.total) }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </details>
+              </li>
+            }
+          </ul>
+        </details>
+      }
       <hlm-progress [value]="row.total" [max]="max()" class="h-1.5" [attr.aria-label]="row.label + ': ' + points(row.total)">
         <hlm-progress-indicator />
       </hlm-progress>

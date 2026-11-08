@@ -3,8 +3,9 @@
 import type { EncodedCalendar } from './calendar.ts'
 import { countryCode } from './countries.ts'
 import { ACTIVITY_KINDS, PULL_REQUEST_KINDS } from './kinds.ts'
+import { ADVISORY_ROLE_POINTS, ADVISORY_SEVERITY_MULTIPLIERS, advisoryCount } from './advisory-scoring.ts'
 import { compareRecords, emptyActivity, emptyCounts, score } from './scoring.ts'
-import type { Contributor, DataMeta, PackagesRecord, ProfileRecord, SocialAccount, TeamRecord } from './types.ts'
+import type { AdvisoryCreditCounts, AdvisoryRole, AdvisorySeverity, Contributor, DataMeta, PackagesRecord, ProfileRecord, SocialAccount, TeamRecord } from './types.ts'
 
 /** GitHub's rule for a username: letters, digits and single hyphens between them, 39 characters at most. */
 export const GITHUB_USERNAME_RE = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i
@@ -64,18 +65,33 @@ export function parseContributorsFile(data: unknown): Contributor[] {
     // v1 files (landed PRs only) have no activity: it reads as 0. A helpful count is never above its total.
     const activity = emptyActivity()
     for (const kind of ACTIVITY_KINDS) {
+      if (kind.key === 'advisories') continue
       const amount = count(record[kind.key])
       activity[kind.key] = 'of' in kind ? Math.min(activity[kind.of], amount) : amount
     }
+    const rawCredits = record['advisoryCredits']
+    const advisoryCredits: AdvisoryCreditCounts | undefined = rawCredits && typeof rawCredits === 'object' && !Array.isArray(rawCredits) ? {} : undefined
+    if (advisoryCredits) {
+      for (const role of Object.keys(ADVISORY_ROLE_POINTS) as AdvisoryRole[]) {
+        const rawSeverities = (rawCredits as Record<string, unknown>)[role]
+        if (!rawSeverities || typeof rawSeverities !== 'object' || Array.isArray(rawSeverities)) continue
+        for (const severity of Object.keys(ADVISORY_SEVERITY_MULTIPLIERS) as AdvisorySeverity[]) {
+          const amount = count((rawSeverities as Record<string, unknown>)[severity])
+          if (amount) (advisoryCredits[role] ??= {})[severity] = amount
+        }
+      }
+    }
+    activity.advisories = advisoryCount(advisoryCredits)
 
     const first = typeof record['firstContributionAt'] === 'string' ? new Date(record['firstContributionAt']) : null
     contributors.push({
       githubId: id,
       username,
       rank: 0,
-      score: score({ pullRequests, ...activity }),
+      score: score({ pullRequests, ...activity, ...(advisoryCredits ? { advisoryCredits } : {}) }),
       pullRequests,
       ...activity,
+      ...(advisoryCredits ? { advisoryCredits } : {}),
       firstContributionAt: first && !Number.isNaN(first.getTime()) ? first.toISOString() : null,
     })
   }

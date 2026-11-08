@@ -14,7 +14,7 @@ export interface Config {
   pulls: 'rest' | 'search'
   /** Issues, conversation comments and inline review comments. Off: landed PRs only (as in v1). */
   activity: boolean
-  /** Angular's security advisories, for their reporters. One run of the parts does it: the one of `REPOS[0]`. */
+  /** Angular's security advisories, for their credited contributors. One run of the parts does it: the one of `REPOS[0]`. */
   advisories: boolean
   profiles: boolean
   outputDir: string

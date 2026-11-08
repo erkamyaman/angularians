@@ -23,8 +23,8 @@ export const KINDS = [
   { key: 'reviewComments', pullRequest: false, points: 1, label: 'Review comments', icon: 'file-code' },
   // Received on the contributor's issues, PRs and comments, counted on the day of the item.
   { key: 'reactions', pullRequest: false, points: 0.1, label: 'Reactions received', icon: 'smile-plus' },
-  // Angular security advisories credited to them as reporter or finder.
-  { key: 'advisories', pullRequest: false, points: 20, label: 'Security reports', icon: 'shield' },
+  // Variable points, calculated from the credited role and severity.
+  { key: 'advisories', pullRequest: false, points: null, label: 'Security advisories', icon: 'shield' },
   // Community translations of angular.dev they translated (`TRANSLATIONS`), on each one's `joinedAt`.
   { key: 'translations', pullRequest: false, points: 20, label: 'Translations', icon: 'languages' },
 ] as const

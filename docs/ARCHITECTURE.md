@@ -22,7 +22,7 @@ types and the build on every pull request and every push to `development`.
 ## Site
 
 Each profile has an Angular-only contribution graph: `calendar.json` holds every contributor's contributions of their own
-per UTC day (merged PRs on the day they landed, issues, discussions, comments, review comments, security reports, translations; not
+per UTC day (merged PRs on the day they landed, issues, discussions, comments, review comments, security advisory credits, translations; not
 reactions received), as day numbers from 1 January 2014 and counts (`encodeCalendar` in `shared/src/calendar.ts`). The
 profile sends a person their days with their profile; `profile/contribution-grid.ts` lays out the year picked, or the
 days the 12-month stats count (`periodDays` in `shared/src/periods.ts`), in weeks, each day shaded against that person's
@@ -44,6 +44,8 @@ Browsers keep `/assets/*` and `/fonts/*` for a year and `/flags/*` for 30 days (
 
 The data is read once per server instance from a JSON file next to the server (`app/scripts/bundle-data.ts` writes it from
 `readDataDir` of `@angularians/shared/node`, which validates every file of `data/`; `app/scripts/copy-data.ts` copies it there): at ~25 MB it is too big to compile into the server.
+In development, card and OG image requests are forwarded to Nitro handlers. Keep their paths in `app/vite.config.ts`
+relative to `app/`: Windows absolute paths become invalid ESM imports in Nitro's dev bundle.
 
 Pages load their data with `injectSeededServerFn` (`app/src/app/data/seeded-server-fn.ts`), not Analog's
 `injectServerFn`: it hands the browser the server's value on the first render, so hydration keeps the server-rendered page

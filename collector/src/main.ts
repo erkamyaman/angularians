@@ -53,7 +53,7 @@ for (const repo of config.repos) {
 if (config.advisories) {
   const advisories = await collectAdvisories(config.since, accumulator)
   stats.advisories = advisories.advisories
-  console.log(`Security advisories: ${advisories.advisories}, ${advisories.reported} of them with a reporter`)
+  console.log(`Security advisories: ${advisories.advisories}, ${advisories.credited} of them with an accepted credit`)
   // angular.dev's community translations, from the hand-kept list: with the advisories, so one part counts them.
   const translations = TRANSLATIONS.filter(translation => !config.since || Date.parse(translation.joinedAt) >= config.since.getTime())
   for (const translation of translations) accumulator.addTranslation(translation)

@@ -2,7 +2,7 @@
 
 Collects what everyone contributed to the Angular repositories (`REPOS` in `shared/src/repos.ts`: angular/angular,
 angular/components, angular/angular-cli, angular/dev-infra, angular/domino, and the archived angular/zone.js and angular/universal; landed pull requests, issues, conversation comments, inline
-review comments, GitHub Discussions, reactions received, and the reporters of Angular's security advisories) and writes the contributor files the app reads.
+review comments, GitHub Discussions, reactions received, and accepted credits on Angular security advisories) and writes the contributor files the app reads.
 Based on [nuxt/nuxters](https://github.com/nuxt/nuxters) (MIT, Copyright (c) 2023 Nuxt).
 
 ## What counts
@@ -16,9 +16,20 @@ commit that closes #N with one of GitHub's keywords lands PR N too: a line that 
 fixed, resolve, resolves or resolved (any case, an optional colon), then `#N`. The landed PR is credited to its author.
 GitHub Discussions (of every repository that has them, such as angular/angular's RFCs) come from GraphQL (`src/discussions.ts`) and count as issues and comments do; the token needs no extra permission for public
 repositories. Scoring rules are in
-`shared/src/scoring.ts` and `shared/src/pull-requests.ts`.
+`shared/src/scoring.ts`, `shared/src/advisory-scoring.ts` and `shared/src/pull-requests.ts`.
 
 ## Run it
+
+To refresh just advisory credits in an existing full snapshot, run
+`pnpm --filter @angularians/collector refresh-advisories`. It reads the same GitHub sources as the nightly collector,
+replaces old advisory counts for everyone, retaining role and severity together, and keeps other activity and the snapshot date unchanged. Repeating it
+does not duplicate credits. `meta.json` records the separate `advisoriesCollectedAt` date.
+
+Each period record keeps `advisoryCredits: { role: { severity: count } }`, the source for its points and derived
+`advisories` total. GitHub's `medium` severity is collected as `moderate`. Repository severity wins when present;
+the global advisory can fill it when missing. Missing or unrecognized
+severity becomes `unknown` with multiplier 1. The collector deduplicates by GHSA and GitHub id before recording the
+highest-valued role, so a credit keeps the severity of its own advisory.
 
 ```bash
 GITHUB_TOKEN=… pnpm collect                                 # full history → data/
@@ -32,7 +43,7 @@ GITHUB_TOKEN=… pnpm collect -- --since=90d --out=/tmp/test  # a quick test run
 | `--since=90d` or `--since=2026-08-01` | `COLLECT_SINCE` | full history | Test runs only |
 | `--pulls=rest\|search` | `COLLECT_PULLS` | `rest` | `search` when `/pulls` is not reachable: same data, more requests |
 | `--no-activity` | `COLLECT_ACTIVITY=false` | activity on | Landed PRs only: no issues, comments, review comments or discussions; no security advisories either, unless `--advisories` |
-| `--no-advisories` | `COLLECT_ADVISORIES=false` | on in the run of angular/angular | No Angular security advisories (their reporters score 20 points each; `--advisories` turns them on in another run), and no translations, counted with them |
+| `--no-advisories` | `COLLECT_ADVISORIES=false` | on in the run of angular/angular | No Angular security advisory credits (points depend on role and severity; `--advisories` turns them on in another run), and no translations, counted with them |
 | `--no-profiles` | `COLLECT_PROFILES=false` | profiles on | Profiles need GraphQL, so a token |
 | `--out=dir` | `CONTRIBUTORS_OUTPUT_DIR` | `data/` | |
 | | `COLLECT_CACHE_DIR` | `.cache/` | The treeless git clone of the repo |

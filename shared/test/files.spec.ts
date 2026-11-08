@@ -29,6 +29,34 @@ describe('parseContributorsFile', () => {
     expect(rows.map(row => row.username)).toEqual(['ok', 'x'.repeat(39)])
   })
 
+  it('derives advisory count and score from paired credits, ignoring unknown roles', () => {
+    const [row] = parseContributorsFile([record(1, 'SkyZeroZx', {}, {
+      advisories: 7,
+      advisoryCredits: { finder: { unknown: 5 }, reporter: { unknown: 2 }, remediation_developer: { unknown: 12 }, analyst: { unknown: 1 }, invented: { critical: 100 } },
+    })])
+    expect(row).toMatchObject({ advisories: 20, score: 530, advisoryCredits: { finder: { unknown: 5 }, reporter: { unknown: 2 }, remediation_developer: { unknown: 12 }, analyst: { unknown: 1 } } })
+  })
+
+  it('does not use obsolete advisory totals as a source of credits', () => {
+    const [row] = parseContributorsFile([record(1, 'unpaired', {}, { advisories: 2 })])
+    expect(row).toMatchObject({ advisories: 0, score: 0 })
+  })
+
+  it('derives advisory totals and score from validated role/severity buckets', () => {
+    const [row] = parseContributorsFile([record(1, 'credited', {}, {
+      advisories: 999,
+      advisoryCredits: {
+        finder: { moderate: 2, invented: 100 }, remediation_developer: { critical: 1 },
+        other: { high: -2 }, sponsor: [], invented: { critical: 100 },
+      },
+    })])
+    expect(row).toMatchObject({
+      advisories: 3, score: 230,
+      advisoryCredits: { finder: { moderate: 2 }, remediation_developer: { critical: 1 } },
+    })
+    expect(row?.advisoryCredits).toEqual({ finder: { moderate: 2 }, remediation_developer: { critical: 1 } })
+  })
+
   it('reads a missing or invalid first contribution date as null', () => {
     const rows = parseContributorsFile([record(1, 'a', {}, { firstContributionAt: 'nope' }), record(2, 'b', {}, { firstContributionAt: undefined })])
     expect(rows.map(row => row.firstContributionAt)).toEqual([null, null])

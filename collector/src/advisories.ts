@@ -1,6 +1,6 @@
-// Angular's security advisories and who reported them. Two lists, joined by GHSA id: the repositories' own advisories
+// Angular's security advisories and their accepted credits. Two lists, joined by GHSA id: the repositories' own advisories
 // (most of them, with their credits), and GitHub's reviewed npm advisories of the packages (a few were filed only there).
-import { ADVISORY_CREDITS, REPOS, type AdvisoryInput, type ContributorsAccumulator } from '@angularians/shared'
+import { ADVISORY_ROLE_POINTS, normalizeAdvisorySeverity, REPOS, type AdvisoryInput, type ContributorsAccumulator } from '@angularians/shared'
 import { paginate } from './github.ts'
 
 /** The packages whose advisories count. */
@@ -20,6 +20,7 @@ interface Listed {
   ghsa_id: string
   published_at: string | null
   withdrawn_at: string | null
+  severity?: string | null
   vulnerabilities: Array<{ package: { ecosystem: string, name: string } | null }> | null
   /** On the global advisories. */
   credits?: AdvisoryInput['credits']
@@ -42,16 +43,18 @@ export async function fetchAdvisories(since: Date | null): Promise<AdvisoryInput
         if (since && Date.parse(item.published_at) < since.getTime()) continue
         const credits = item.credits_detailed?.filter(credit => credit.state === undefined || credit.state === 'accepted') ?? item.credits ?? []
         const known = advisories.get(item.ghsa_id)
-        advisories.set(item.ghsa_id, { ghsa_id: item.ghsa_id, published_at: item.published_at, credits: [...known?.credits ?? [], ...credits] })
+        // Repository advisories come first; a global record can fill a missing severity.
+        const severity = known?.severity && known.severity !== 'unknown' ? known.severity : normalizeAdvisorySeverity(item.severity === 'medium' ? 'moderate' : item.severity)
+        advisories.set(item.ghsa_id, { ghsa_id: item.ghsa_id, published_at: item.published_at, severity, credits: [...known?.credits ?? [], ...credits] })
       }
     }
   }
   return [...advisories.values()]
 }
 
-/** Every advisory into the accumulator: returns how many there were, and how many credited a reporter. */
-export async function collectAdvisories(since: Date | null, accumulator: ContributorsAccumulator): Promise<{ advisories: number, reported: number }> {
+/** Every advisory into the accumulator: returns how many there were, and how many credited someone. */
+export async function collectAdvisories(since: Date | null, accumulator: ContributorsAccumulator): Promise<{ advisories: number, credited: number }> {
   const advisories = await fetchAdvisories(since)
   for (const advisory of advisories) accumulator.addAdvisory(advisory)
-  return { advisories: advisories.length, reported: advisories.filter(a => a.credits.some(c => ADVISORY_CREDITS.includes(c.type))).length }
+  return { advisories: advisories.length, credited: advisories.filter(a => a.credits.some(c => Object.hasOwn(ADVISORY_ROLE_POINTS, c.type))).length }
 }

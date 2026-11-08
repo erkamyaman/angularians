@@ -23,7 +23,7 @@ _Avoid_: alias, old user
 ## Contributions
 
 **Contribution**:
-One thing an Angularian did for Angular that the score counts: a landed pull request, an issue, a comment, a review comment, a security report or a translation. It belongs to the day it was made. A reaction received earns points but is not a contribution.
+One thing an Angularian did for Angular that the score counts: a landed pull request, an issue, a comment, a review comment, a security advisory credit or a translation. It belongs to the day it was made. A reaction received earns points but is not a contribution.
 _Avoid_: activity, event, commit
 
 **Landed pull request**:
@@ -70,9 +70,12 @@ _Avoid_: localization, i18n
 An emoji reaction someone left on an Angularian's issue, pull request, discussion or comment. It earns the writer points on the day of what got it, but is not a contribution of its own.
 _Avoid_: like, upvote
 
-**Security report**:
-An Angular security advisory that credits the Angularian as its reporter or finder; counted once per advisory.
-_Avoid_: advisory credit, CVE, vulnerability report
+**Security advisory credit**:
+An accepted credit on an Angular security advisory, counted once per person and advisory using their highest-valued role. A security report is the finder or reporter role; analysis, remediation and review are other credited roles. It belongs to the advisory's publication date.
+_Avoid_: CVE (an advisory may have none), security report when referring to every role
+
+**Advisory severity**:
+The advisory's published severity: low, moderate, high or critical. Every credited role receives the same severity multiplier; an unspecified severity has multiplier 1. Counts keep role and severity together.
 
 ## Ranking
 
@@ -119,7 +122,7 @@ A badge for the people who translated angular.dev into a language, one of its co
 _Avoid_: localizer, i18n badge
 
 **Shieldwall**:
-The badge of an Angularian credited on an Angular security advisory, in any role.
+The badge of an Angularian credited on an Angular security advisory, in any role, using their collected all-time advisory count.
 _Avoid_: security badge
 
 **Custom badge**:

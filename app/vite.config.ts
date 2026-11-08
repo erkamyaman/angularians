@@ -63,8 +63,8 @@ export default defineConfig(() => ({
       prerender: { routes: [] },
       nitro: {
         handlers: [
-          { route: `${DEV_IMAGES}/:username/card.png`, env: 'dev', handler: fileURLToPath(new URL('./src/server/routes/[username]/card.png.get.ts', import.meta.url)) },
-          { route: `${DEV_IMAGES}/og.png`, env: 'dev', handler: fileURLToPath(new URL('./src/server/routes/og.png.get.ts', import.meta.url)) },
+          { route: `${DEV_IMAGES}/:username/card.png`, env: 'dev', handler: './src/server/routes/[username]/card.png.get.ts' },
+          { route: `${DEV_IMAGES}/og.png`, env: 'dev', handler: './src/server/routes/og.png.get.ts' },
         ],
         // The two fonts of the Angularian card (src/server/card), inlined in the server: about 60 KB.
         // And the brand font, Norse Bold, for the word "Angularian" (public/fonts), about 30 KB.

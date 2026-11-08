@@ -5,7 +5,7 @@ description: Give an Angularian the Angular GDE, GitHub Star or Nx Champion badg
 
 # Add a recognition
 
-The Angular GDE, GitHub Star and Nx Champion badges come from lists of GitHub ids in `app/src/app/profile/recognitions.ts` (its fourth list, `ANGULAR_SECURITY`, gives the Shieldwall badge to those credited on Angular security advisories). Its header comment names the official source of each list; that source is the proof.
+The Angular GDE, GitHub Star and Nx Champion badges come from lists of GitHub ids in `app/src/app/profile/recognitions.ts`. Its header comment names the official source of each list; that source is the proof. Shieldwall uses the collector's all-time advisory count on the profile and requires no entry in these lists.
 
 ## 1. Confirm it
 

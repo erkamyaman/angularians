@@ -5,8 +5,6 @@
  * - Angular GDEs: Google Developer Experts for Angular, from https://g.dev/experts?specialization=angular (the
  *   GitHub link on their card, else the same name on their GitHub profile), also those not on the board yet: their badge shows the day they are.
  * - GitHub Stars: https://stars.github.com/profiles. Only those on the board.
- * - Angular security: everyone GitHub credits on an Angular security advisory (https://github.com/advisories, the
- *   ones of @angular/* packages), as reporter, finder, analyst, developer or reviewer of the fix. With how many.
  * - Nx Champions: https://nx.dev/community (names only: matched to GitHub by name on the board, else by the X handle the
  *   page gives). Also those not on the board yet: their badge shows the day they are.
  */
@@ -192,42 +190,4 @@ export const NX_CHAMPIONS: ReadonlySet<number> = new Set([
   30832608, // tomalaforge
   9469090, // yharaskrik
   2674658, // yjaaidi
-]);
-
-/** Angular security advisories, as of November 2026: GitHub id, and how many credit them. */
-export const ANGULAR_SECURITY: ReadonlyMap<number, number> = new Map([
-  [98734964, 1], // 0xEr3n
-  [49720976, 1], // Adyej999
-  [110790294, 2], // AKiileX
-  [17563226, 42], // alan-agius4
-  [43554145, 19], // AndrewKushnir
-  [479713, 4], // atscott
-  [4450522, 2], // crisbeto
-  [4987015, 1], // devversion
-  [11010321, 7], // dgp1130
-  [8604205, 1], // gkalpak
-  [162155285, 1], // hdtmccallie
-  [62616592, 2], // Hexix23
-  [567540, 4], // hybrist
-  [6357121, 1], // irsl
-  [1300985, 14], // JeanMeche
-  [838736, 2], // jelbourn
-  [123679, 1], // JoostK
-  [10864441, 23], // josephperrott
-  [164016954, 1], // kimkou2024
-  [128171, 1], // koto
-  [162270335, 1], // mabjr33
-  [1499192, 1], // masatokinugawa
-  [97605956, 1], // meDavidNS
-  [11680102, 6], // securityMB
-  [26125957, 1], // ShelbyKelley
-  [73321943, 18], // SkyZeroZx
-  [113363362, 1], // spectacularpigeoncow
-  [281478990, 1], // srkyn
-  [16122665, 1], // tdunlap607
-  [1596273, 1], // thePunderWoman
-  [113508132, 1], // TTracz2i
-  [68438061, 5], // VenkatKwest
-  [211584612, 3], // Yenya030
-  [30854794, 1], // YLChen-007
 ]);

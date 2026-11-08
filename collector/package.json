@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "collect": "node src/main.ts",
+    "refresh-advisories": "node src/refresh-advisories.ts",
     "merge": "node src/merge.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"

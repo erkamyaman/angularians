@@ -3,19 +3,19 @@
 // Differences: no core bonus (one repository), and inline review comments count too (1 point each).
 import type { Calendar } from './calendar.ts'
 import { isBotAccount } from './bots.ts'
+import { addAdvisoryCounts, advisoryBreakdown, advisoryCount, advisoryPoints, ADVISORY_ROLE_POINTS, cloneAdvisoryCredits, normalizeAdvisorySeverity, type AdvisoryRoleBreakdown } from './advisory-scoring.ts'
 import { ACTIVITY_KINDS, KINDS, PULL_REQUEST_KINDS, type Kind, type PullRequestType } from './kinds.ts'
 import { allPeriods, periodsFor, utcDay } from './periods.ts'
 import type { Translation } from './translations.ts'
-import type { ActivityCounts, ContributorRecord, GitHubUser, LandedPullRequest, PackagesRecord, Period, PullRequestCounts } from './types.ts'
+import type { ActivityCounts, AdvisoryCreditCounts, AdvisoryRole, ContributorRecord, GitHubUser, LandedPullRequest, PackagesRecord, Period, PullRequestCounts } from './types.ts'
+
+export { advisoryCount, advisoryPoints, ADVISORY_ROLE_POINTS, ADVISORY_SEVERITY_MULTIPLIERS, normalizeAdvisorySeverity } from './advisory-scoring.ts'
 
 /** Points of a landed PR, by type. */
 export const PULL_REQUEST_POINTS = Object.fromEntries(PULL_REQUEST_KINDS.map(kind => [kind.key, kind.points])) as Readonly<Record<PullRequestType, number>>
 
-/** Points of everything besides landed PRs. */
-export const ACTIVITY_POINTS = Object.fromEntries(ACTIVITY_KINDS.map(kind => [kind.key, kind.points])) as Readonly<Record<keyof ActivityCounts, number>>
-
-/** The credits on a security advisory that score: reporting it. Fixing and reviewing it score as PRs and reviews. */
-export const ADVISORY_CREDITS: readonly string[] = ['reporter', 'finder']
+/** Fixed activity weights; advisory points are calculated from the paired credits. */
+export const ACTIVITY_POINTS = Object.fromEntries(ACTIVITY_KINDS.filter(kind => kind.points !== null).map(kind => [kind.key, kind.points])) as Readonly<Record<Exclude<keyof ActivityCounts, 'advisories'>, number>>
 
 /** An issue is helpful when it was closed as completed, or got this many reactions or comments. */
 export const HELPFUL_ISSUE_REACTIONS = 3
@@ -28,23 +28,24 @@ export const emptyActivity = (): ActivityCounts => zeros(ACTIVITY_KINDS)
 
 const zeros = <K extends string>(kinds: ReadonlyArray<{ key: K }>) => Object.fromEntries(kinds.map(kind => [kind.key, 0])) as Record<K, number>
 
-export type ScoredStats = { pullRequests: PullRequestCounts } & ActivityCounts
+export type ScoredStats = { pullRequests: PullRequestCounts, advisoryCredits?: AdvisoryCreditCounts } & ActivityCounts
 
 /** How many of a kind the stats count. */
-export const amountOf = (stats: ScoredStats, kind: Kind): number => kind.pullRequest ? stats.pullRequests[kind.key] : stats[kind.key]
+export const amountOf = (stats: ScoredStats, kind: Kind): number => kind.pullRequest ? stats.pullRequests[kind.key] : kind.key === 'advisories' ? advisoryCount(stats.advisoryCredits) : stats[kind.key]
 
 /** The sum of every row of `scoreBreakdown`, rounded once (as Nuxters does). */
 export function score(stats: ScoredStats): number {
-  return Math.round(KINDS.reduce((total, kind) => total + amountOf(stats, kind) * kind.points, 0))
+  return Math.round(KINDS.reduce((total, kind) => total + (kind.key === 'advisories' ? advisoryPoints(stats) : amountOf(stats, kind) * kind.points), 0))
 }
 
 /** Adds every count of `source` to `target`, `all` included. */
 export function addCounts(target: ScoredStats, source: ScoredStats): void {
   for (const kind of KINDS) {
     if (kind.pullRequest) target.pullRequests[kind.key] += source.pullRequests[kind.key]
-    else target[kind.key] += source[kind.key]
+    else if (kind.key !== 'advisories') target[kind.key] += source[kind.key]
   }
   target.pullRequests.all += source.pullRequests.all
+  addAdvisoryCounts(target, source)
 }
 
 export type ScoreRowKey = Kind['key']
@@ -54,19 +55,25 @@ export interface ScoreRow {
   label: string
   /** The kind's icon name (`rocket`…), which the profile's `score-breakdown.ts` maps to an icon. */
   icon: string
-  points: number
+  /** Null when roles have different weights. */
+  points: number | null
   amount: number
-  /** amount × points, to one decimal. */
+  /** Points earned; weighted roles for advisories, otherwise amount × points. */
   total: number
+  roles?: AdvisoryRoleBreakdown[]
 }
 
 /** The rows' order when their totals tie: PRs, then by points, then in the order of `KINDS`. */
-const ROW_ORDER: readonly Kind[] = [...KINDS].sort((a, b) => Number(b.pullRequest) - Number(a.pullRequest) || b.points - a.points)
+const ROW_ORDER: readonly Kind[] = [...KINDS].sort((a, b) => Number(b.pullRequest) - Number(a.pullRequest) || (b.points ?? 0) - (a.points ?? 0))
 
 /** One row per contribution type, sorted by total (ties in `ROW_ORDER`). Rounded, the totals add up to the score. */
 export function scoreBreakdown(stats: ScoredStats): ScoreRow[] {
   return ROW_ORDER
     .map((kind) => {
+      if (kind.key === 'advisories') {
+        const roles = advisoryBreakdown(stats)
+        return { key: kind.key, label: kind.label, icon: kind.icon, points: null, amount: advisoryCount(stats.advisoryCredits), total: advisoryPoints(stats), roles }
+      }
       const amount = amountOf(stats, kind)
       return { key: kind.key, label: kind.label, icon: kind.icon, points: kind.points, amount, total: Math.round(amount * kind.points * 10) / 10 }
     })
@@ -100,10 +107,11 @@ export interface CommentInput {
 export interface AdvisoryInput {
   ghsa_id: string
   published_at: string
+  severity?: string | null
   credits: ReadonlyArray<{ type: string, user: IssueInput['user'] }>
 }
 
-type Counts = { pullRequests: PullRequestCounts } & ActivityCounts
+type Counts = ScoredStats
 
 /**
  * The contributor files of a collection run, built one event at a time (a full run streams ~500,000 comments).
@@ -184,14 +192,27 @@ export class ContributorsAccumulator {
     this.add(user, comment.created_at, true, counts => (counts.reviewComments += 1))
   }
 
-  /** A security advisory counts for each person credited as its reporter or finder, once per advisory. */
+  /** One accepted credit per person and advisory, using their highest-valued role. */
   addAdvisory(advisory: AdvisoryInput): void {
+    const severity = normalizeAdvisorySeverity(advisory.severity)
+    const credited = new Map<number, { user: GitHubUser, role: AdvisoryRole }>()
     for (const credit of advisory.credits) {
-      const user = ADVISORY_CREDITS.includes(credit.type) ? toUser(credit.user) : null
-      const key = `${advisory.ghsa_id}:${user?.id}`
-      if (!user || this.advisories.has(key)) continue
+      if (!Object.hasOwn(ADVISORY_ROLE_POINTS, credit.type)) continue
+      const user = toUser(credit.user)
+      if (!user) continue
+      const role = credit.type as AdvisoryRole
+      const known = credited.get(user.id)
+      if (!known || ADVISORY_ROLE_POINTS[role] > ADVISORY_ROLE_POINTS[known.role]) credited.set(user.id, { user, role })
+    }
+    for (const { user, role } of credited.values()) {
+      const key = `${advisory.ghsa_id}:${user.id}`
+      if (this.advisories.has(key)) continue
       this.advisories.add(key)
-      this.add(user, advisory.published_at, true, counts => (counts.advisories += 1))
+      this.add(user, advisory.published_at, true, (counts) => {
+        counts.advisoryCredits ??= {}
+        const severities = counts.advisoryCredits[role] ??= {}
+        severities[severity] = (severities[severity] ?? 0) + 1
+      })
     }
   }
 
@@ -222,7 +243,9 @@ export class ContributorsAccumulator {
           username: this.logins.get(id)!.login,
           score: score(counts),
           ...counts,
+          advisories: advisoryCount(counts.advisoryCredits),
           pullRequests: { ...counts.pullRequests },
+          ...(counts.advisoryCredits ? { advisoryCredits: cloneAdvisoryCredits(counts.advisoryCredits) } : {}),
           firstContributionAt: firstTime === undefined ? null : new Date(firstTime).toISOString(),
         }
       })
@@ -276,7 +299,10 @@ export function mergeRecords(lists: ReadonlyArray<readonly ContributorRecord[]>)
     for (const record of records) {
       const current = merged.get(record.githubId)
       if (!current) {
-        merged.set(record.githubId, { ...record, pullRequests: { ...record.pullRequests } })
+        merged.set(record.githubId, {
+          ...record, pullRequests: { ...record.pullRequests },
+          ...(record.advisoryCredits ? { advisoryCredits: cloneAdvisoryCredits(record.advisoryCredits) } : {}),
+        })
         continue
       }
       addCounts(current, record)
@@ -285,7 +311,7 @@ export function mergeRecords(lists: ReadonlyArray<readonly ContributorRecord[]>)
       }
     }
   }
-  return [...merged.values()].map(record => ({ ...record, score: score(record) })).sort(compareRecords)
+  return [...merged.values()].map(record => ({ ...record, advisories: advisoryCount(record.advisoryCredits), score: score(record) })).sort(compareRecords)
 }
 
 /** `packages.json` of several repositories as one: PRs added up per package (names are distinct across repositories). */
