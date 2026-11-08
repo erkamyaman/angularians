@@ -13,7 +13,7 @@ You need Node.js 24 (`.nvmrc` names the version CI and Netlify use) and pnpm 10.
 git clone https://github.com/erkamyaman/angularians.git
 cd angularians
 pnpm install
-pnpm dev             # the site at http://localhost:4202, with the data in data/
+pnpm dev             # the site at http://localhost:4242, with the data in data/
 ```
 
 The data is committed in `data/`, so the site needs no GitHub token. Sign-in with GitHub stays hidden until its environment

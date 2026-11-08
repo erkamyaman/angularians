@@ -12,7 +12,7 @@ describe('canonicalRedirect', () => {
     ['angularians.netlify.app', '/', 'https://angularians.dev/'],
     ['ANGULARIANS.NETLIFY.APP:443', '/erkamyaman/?period=2025', 'https://angularians.dev/erkamyaman?period=2025'],
     ['deploy-preview-12--angularians.netlify.app', '/erkamyaman', null],
-    ['localhost:4202', '/erkamyaman', null],
+    ['localhost:4242', '/erkamyaman', null],
     [undefined, '/', null],
     // Never to another site: a path starting with `//` or `/\` would be read as a host.
     ['angularians.dev', '//evil.com/', '/evil.com'],

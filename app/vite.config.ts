@@ -45,7 +45,7 @@ function keepManifestPrivate(): Plugin {
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
   server: {
-    port: 4202,
+    port: 4242,
   },
   build: {
     target: ['es2020'],

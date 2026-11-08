@@ -4,7 +4,7 @@
 See the [root README](../README.md) for the project.
 
 ```bash
-pnpm dev     # http://localhost:4202 (bundles ../data first)
+pnpm dev     # http://localhost:4242 (bundles ../data first)
 pnpm build   # dist/analog: public/ (static) and server/ (Nitro)
 pnpm preview # runs the built server
 pnpm test    # Vitest
