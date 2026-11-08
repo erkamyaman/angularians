@@ -38,7 +38,6 @@
       inert
       [class.is-selected]="selected() === marker.code"
       [class.is-avatars]="avatars()"
-      [attr.data-tier]="tier(marker.count)"
       [attr.aria-label]="marker.name + ', ' + count(marker.count)"
       [attr.aria-pressed]="selected() === marker.code"
       (click)="toggleCountry(marker.code)"
@@ -49,7 +48,7 @@
     >
       @if (hovered() === marker.code) {
         <span class="globe__label" aria-hidden="true">
-          <img [src]="flag(marker.code)" alt="" width="16" height="16" class="size-4 shrink-0" />{{ marker.name }}
+          <img [src]="flag(marker.code)" alt="" width="16" height="16" class="size-4 shrink-0" />{{ marker.name }}<span class="globe__label-count">{{ number(marker.count) }}</span>
         </span>
       }
       @if (avatars()) {
@@ -59,11 +58,7 @@
           }
         </span>
       } @else {
-        @if (isTopTier(marker.count)) {
-          <span class="brand relative top-[0.06em] text-lg leading-none">{{ number(marker.count) }}</span>
-        } @else {
-          <span>{{ number(marker.count) }}</span>
-        }
+        <img class="globe__flag" [src]="flag(marker.code)" alt="" width="16" height="16" loading="lazy" />
       }
     </button>
   }

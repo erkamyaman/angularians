@@ -30,7 +30,8 @@ const FRAME = 0.88;
 const SHIPS: ReadonlyArray<readonly [number, number]> = [[42, -40], [8, -32], [-32, -18], [20, -145], [-22, -120], [32, 165], [-25, 78], [8, 65]];
 const SAIL_MS = 36000;
 const SAIL_DEGREES = 11;
-const MARKER_WIDTH: Record<string, number> = { base: 20, mid: 22, top: 26 };
+/** A country on the globe is its flag, this wide. */
+const FLAG_MARKER = 18;
 const KEY_MOVES: Record<string, [number, number]> = { ArrowLeft: [-0.15, 0], ArrowRight: [0.15, 0], ArrowUp: [0, -0.15], ArrowDown: [0, 0.15] };
 
 const clamp = (value: number, low: number, high: number) => Math.min(high, Math.max(low, value));
@@ -79,9 +80,6 @@ export class Globe {
     .sort((a, b) => Number(b.code === this.selected()) - Number(a.code === this.selected()) || b.count - a.count));
 
   protected readonly hovered = signal<string | null>(null);
-  private readonly topCount = computed(() => Math.max(1, ...this.countries().map(country => country.count)));
-  protected readonly tier = (count: number) => count >= this.topCount() * 0.25 ? 'top' : count >= this.topCount() * 0.05 ? 'mid' : 'base';
-  protected readonly isTopTier = (count: number) => this.tier(count) === 'top';
   protected readonly flag = flagUrl;
   protected readonly number = formatNumber;
   protected readonly count = (value: number) => plural(value, 'Angularian', 'Angularians');
@@ -250,10 +248,9 @@ export class Globe {
 
     // Markers are HTML on top of the canvas: hide the ones behind the globe, out of the frame, or over another.
     const element = this.host.nativeElement as HTMLElement;
-    const occupied: Array<{ x: number, y: number, width: number }> = [];
+    const occupied: Array<{ x: number, y: number, width: number, height: number }> = [];
     const frame = Math.min(width, height) / 2 * FRAME;
     const avatars = this.avatars();
-    const markerHeight = avatars ? 32 : 28;
     for (const country of this.markers()) {
       const marker = element.querySelector<HTMLElement>(`.globe__marker[data-code="${country.code}"]`);
       if (!marker) continue;
@@ -262,12 +259,13 @@ export class Globe {
       const y = height / 2 + this.projection.y * height / 2;
       const markerWidth = avatars
         ? (country.code === this.selected() ? 32 + (country.top.length - 1) * 24 : 32)
-        : MARKER_WIDTH[this.tier(country.count)] + formatNumber(country.count).length * (this.tier(country.count) === 'base' ? 7 : 8);
+        : FLAG_MARKER;
+      const markerHeight = avatars ? 32 : FLAG_MARKER;
       const wasVisible = marker.dataset['visible'] === 'true';
       const front = this.projection.depth > (wasVisible ? 0.1 : 0.14);
       const fits = Math.hypot(x - width / 2, y - height / 2) < frame - Math.max(markerWidth, markerHeight) / 2;
-      const gap = wasVisible ? 4 : 8;
-      const hasRoom = occupied.every(other => Math.abs(other.x - x) > (other.width + markerWidth) / 2 + gap || Math.abs(other.y - y) > 28 + gap);
+      const gap = avatars ? (wasVisible ? 4 : 8) : (wasVisible ? 0 : 2);
+      const hasRoom = occupied.every(other => Math.abs(other.x - x) > (other.width + markerWidth) / 2 + gap || Math.abs(other.y - y) > (other.height + markerHeight) / 2 + gap);
       const show = front && fits && hasRoom;
       if (show !== wasVisible) {
         marker.dataset['visible'] = String(show);
@@ -278,7 +276,7 @@ export class Globe {
         const transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -50%)`;
         if (marker.style.transform !== transform) marker.style.transform = transform;
       }
-      if (show) occupied.push({ x, y, width: markerWidth });
+      if (show) occupied.push({ x, y, width: markerWidth, height: markerHeight });
     }
     if (rotating && !this.reducedMotion) this.sailTime += elapsed;
     SHIPS.forEach(([latitude, longitude], index) => {
