@@ -42,7 +42,7 @@
 
 .plot {
   --months: 1.25rem;
-  --cell: max(0.625rem, calc((100cqw - 2rem - 54 * var(--gap)) / 53));
+  --cell: max(0.625rem, calc((100cqw - 2rem - var(--weeks) * var(--gap)) / var(--weeks)));
   display: flex;
   gap: var(--gap);
   font-size: var(--text-xs);
