@@ -5,6 +5,8 @@
   height: 100%;
   isolation: isolate;
   overflow: hidden;
+  /* Dragging the globe must not select its flags like text */
+  user-select: none;
 }
 
 /* A fade, not a clip: zoomed in, a rounded canvas cut the globe along a false horizon */
@@ -40,7 +42,7 @@
 }
 /* A bigger target than the flag it holds */
 .globe__marker:not(.is-avatars)::before { content: ""; position: absolute; inset: -3px; border-radius: 50%; }
-.globe__flag { width: 16px; height: 16px; border-radius: 50%; box-shadow: 0 0 0 1.5px var(--background); }
+.globe__flag { pointer-events: none; width: 16px; height: 16px; border-radius: 50%; box-shadow: 0 0 0 1.5px var(--background); }
 .globe__label-count { color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
 .globe__marker.is-avatars { width: auto; height: 32px; }
 @media (prefers-reduced-motion: reduce) {
