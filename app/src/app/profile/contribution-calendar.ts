@@ -59,7 +59,7 @@ export class ContributionCalendar {
     { icon: 'octGitMerge', tone: 'purple', name: 'Merged pull requests', detail: 'On the day they landed' },
     { icon: 'octIssueOpened', tone: 'green', name: 'Issues and discussions', detail: 'The ones they opened' },
     { icon: 'octComment', tone: 'blue', name: 'Comments and reviews', detail: 'On issues, pull requests, discussions and code' },
-    { icon: 'octShield', tone: 'red', name: 'Security reports', detail: 'Credited to them on an Angular advisory' },
+    { icon: 'octShield', tone: 'red', name: 'Security advisory credits', detail: 'Credited to them on an Angular advisory' },
     { icon: 'remixTranslate2', tone: 'blue', name: 'Translations', detail: 'Of angular.dev, on the day it was linked' },
   ]
   protected readonly green = signal(false)

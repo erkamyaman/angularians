@@ -24,6 +24,10 @@ describe('Shieldwall', () => {
     expect(shieldwall(person({ advisories: 20 }))?.title).toBe('Credited on 20 Angular security advisories')
   })
 
+  it('counts an AngularJS advisory, which the collector leaves out', () => {
+    expect(shieldwall(person({ githubId: 128171, username: 'koto' }))?.title).toBe('Credited on 1 Angular security advisory')
+  })
+
   it('does not award a formerly listed user when collected data has no credits', () => {
     expect(shieldwall(person({ githubId: 73321943, username: 'SkyZeroZx', advisories: 0 }))).toBeUndefined()
   })

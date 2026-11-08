@@ -9,7 +9,7 @@ import { allPeriods, periodsFor, utcDay } from './periods.ts'
 import type { Translation } from './translations.ts'
 import type { ActivityCounts, AdvisoryCreditCounts, AdvisoryRole, ContributorRecord, GitHubUser, LandedPullRequest, PackagesRecord, Period, PullRequestCounts } from './types.ts'
 
-export { advisoryCount, advisoryPoints, ADVISORY_ROLE_POINTS, ADVISORY_SEVERITY_MULTIPLIERS, normalizeAdvisorySeverity } from './advisory-scoring.ts'
+export { advisoryCount, advisoryPoints, ADVISORY_ROLE_POINTS, ADVISORY_SEVERITY_MULTIPLIERS, normalizeAdvisorySeverity, SEVERITY_LABELS } from './advisory-scoring.ts'
 
 /** Points of a landed PR, by type. */
 export const PULL_REQUEST_POINTS = Object.fromEntries(PULL_REQUEST_KINDS.map(kind => [kind.key, kind.points])) as Readonly<Record<PullRequestType, number>>

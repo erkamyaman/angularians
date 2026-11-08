@@ -1,10 +1,12 @@
-import type { AdvisoryRole, ScoreRow } from '@angularians/shared'
+import { ADVISORY_ROLE_POINTS, type AdvisoryRole, type ScoreRow } from '@angularians/shared'
 
 type AdvisoryRoles = NonNullable<ScoreRow['roles']>
 type SeverityRow = AdvisoryRoles[number]['severities'][number]
 
 export interface AdvisoryGroup {
   label: string
+  /** More than one role, or the roles behind "Other credits": the group lists them by name. */
+  listsRoles: boolean
   points: number
   amount: number
   total: number
@@ -12,7 +14,7 @@ export interface AdvisoryGroup {
   severities: SeverityRow[]
 }
 
-const OTHER_ROLES = new Set<AdvisoryRole>(['coordinator', 'remediation_verifier', 'tool', 'sponsor', 'other'])
+const OTHER_ROLES = new Set((Object.keys(ADVISORY_ROLE_POINTS) as AdvisoryRole[]).filter(role => ADVISORY_ROLE_POINTS[role] === ADVISORY_ROLE_POINTS.other))
 const SEVERITY_ORDER = ['critical', 'high', 'moderate', 'low', 'unknown']
 
 /** Equal base weights can share a summary without losing the role/severity pairing in the source. */
@@ -35,8 +37,10 @@ export function groupAdvisoryRoles(roles: AdvisoryRoles): AdvisoryGroup[] {
         else severities.set(row.severity, { ...row })
       }
     }
+    const others = members.every(member => OTHER_ROLES.has(member.role))
     return {
-      label: members.every(member => OTHER_ROLES.has(member.role)) ? 'Other credits' : members.map(member => member.label).join(' / '),
+      label: others ? 'Other credits' : members.map(member => member.label).join(' / '),
+      listsRoles: others || members.length > 1,
       points,
       amount: members.reduce((sum, member) => sum + member.amount, 0),
       total: members.reduce((sum, member) => sum + member.total, 0),

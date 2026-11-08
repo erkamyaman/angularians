@@ -1,5 +1,5 @@
 // Weights ported from nuxt/nuxters `computeScore`, rows from nuxt.com `nuxterScoreBreakdown` (MIT, Copyright (c) 2023
-// Nuxt, Copyright (c) 2022-2023 NuxtLabs). Review comments, security reports and translations are ours.
+// Nuxt, Copyright (c) 2022-2023 NuxtLabs). Review comments, security advisory credits and translations are ours.
 
 /**
  * Every kind of contribution that scores, in the order of the fields of a contributor file.

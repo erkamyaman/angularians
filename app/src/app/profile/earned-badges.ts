@@ -7,7 +7,7 @@ import { plural } from '../text/plural'
 import { vikingAnvil, vikingAxes, vikingHelmet, vikingShield } from '../layout/viking-icons'
 import { flagUrl } from '../contributors/flag-url'
 import { yearRanges } from './year-ranges'
-import { ANGULAR_GDES, GITHUB_STARS, NX_CHAMPIONS } from './recognitions'
+import { ANGULAR_GDES, ANGULARJS_SECURITY, GITHUB_STARS, NX_CHAMPIONS } from './recognitions'
 import type { BadgeTone } from './badge-pill'
 import { projectBadgesOf, type ProjectBadge, type ProjectRole } from './project-badges'
 
@@ -40,7 +40,7 @@ export function earnedBadges(person: ContributorProfile): EarnedBadge[] {
   if (gde !== undefined) badges.push({ label: 'Angular GDE', title: 'Google Developer Expert for Angular', href: gde ? `https://me.developers.google.com/u/${gde}` : undefined, icon: 'gde', logo: '/credits/gde.svg', tone: 'gde' })
   if (GITHUB_STARS.has(person.githubId)) badges.push({ label: 'GitHub Star', title: '', href: `https://stars.github.com/profiles/${person.username}`, icon: 'remixStarFill', tone: 'star' })
   if (NX_CHAMPIONS.has(person.githubId)) badges.push({ label: 'Nx Champion', title: '', href: 'https://nx.dev/community', icon: 'simpleNx', tone: 'nx' })
-  const advisories = person.advisories
+  const advisories = person.advisories + (ANGULARJS_SECURITY.get(person.githubId) ?? 0)
   if (advisories) badges.push({ label: 'Shieldwall', title: `Credited on ${plural(advisories, 'Angular security advisory', 'Angular security advisories')}`, href: `https://github.com/advisories?query=credit%3A${person.username}`, icon: 'octShield', tone: 'shieldwall' })
   for (const { language, code, flag, site } of translationsOf(person.githubId)) badges.push({ label: `${language} translator`, title: `Translated angular.dev into ${language}`, href: site, icon: 'logo', logo: flagUrl(flag), tone: `lang-${code}` })
   const projects = projectBadgesOf(person.githubId)

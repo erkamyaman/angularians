@@ -3,12 +3,8 @@
   min-width: 0;
 }
 
-.score-row-heading > span:last-child {
+.score-row-heading > span:last-child:not(.advisory-total) {
   margin-left: auto;
-}
-
-.score-row-heading > span.advisory-total {
-  margin-left: 0;
 }
 
 .advisory-groups {

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core'
-import { ACTIVITY_POINTS, ADVISORY_ROLE_POINTS, ADVISORY_SEVERITY_MULTIPLIERS, HELPFUL_COMMENT_REACTIONS, HELPFUL_ISSUE_COMMENTS, HELPFUL_ISSUE_REACTIONS, PULL_REQUEST_POINTS, REPOS } from '@angularians/shared'
+import { ACTIVITY_POINTS, ADVISORY_ROLE_POINTS, ADVISORY_SEVERITY_MULTIPLIERS, HELPFUL_COMMENT_REACTIONS, HELPFUL_ISSUE_COMMENTS, HELPFUL_ISSUE_REACTIONS, PULL_REQUEST_POINTS, REPOS, SEVERITY_LABELS } from '@angularians/shared'
 import { NgIcon, provideIcons } from '@ng-icons/core'
 import { octComment, octIssueOpened, octShield, octSmiley } from '@ng-icons/octicons'
 import { remixChatHeartLine, remixFileCodeLine, remixLightbulbLine, remixTranslate2 } from '@ng-icons/remixicon'
@@ -18,13 +18,7 @@ import type { GithubColor } from './github-color'
 })
 export class ScoreRules {
   protected readonly repos = REPOS
-  protected readonly severities = [
-    { label: 'Low', multiplier: ADVISORY_SEVERITY_MULTIPLIERS.low },
-    { label: 'Moderate', multiplier: ADVISORY_SEVERITY_MULTIPLIERS.moderate },
-    { label: 'High', multiplier: ADVISORY_SEVERITY_MULTIPLIERS.high },
-    { label: 'Critical', multiplier: ADVISORY_SEVERITY_MULTIPLIERS.critical },
-    { label: 'Unspecified', multiplier: ADVISORY_SEVERITY_MULTIPLIERS.unknown },
-  ]
+  protected readonly severities = (['low', 'moderate', 'high', 'critical', 'unknown'] as const).map(severity => ({ label: SEVERITY_LABELS[severity], multiplier: ADVISORY_SEVERITY_MULTIPLIERS[severity] }))
   protected readonly types = [
     { title: 'Features', description: 'New APIs, capabilities and speed.', icon: 'vikingSword', color: 'purple', points: PULL_REQUEST_POINTS.feat },
     { title: 'Fixes', description: 'Bugs found and fixed.', icon: 'vikingAnvil', color: 'red', points: PULL_REQUEST_POINTS.fix },

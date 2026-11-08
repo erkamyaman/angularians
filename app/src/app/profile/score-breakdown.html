@@ -38,7 +38,7 @@
                     <caption>
                       <span class="sr-only">{{ group.label }}:</span>
                       <span>{{ number(group.points) }} base pts per credit</span>
-                      @if (group.roles.length > 1 || group.label === 'Other credits') {
+                      @if (group.listsRoles) {
                         <span class="group-members">
                           @for (role of group.roles; track role.label; let last = $last) {
                             {{ role.label }} {{ number(role.amount) }}@if (!last) { · }

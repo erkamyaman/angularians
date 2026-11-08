@@ -191,3 +191,11 @@ export const NX_CHAMPIONS: ReadonlySet<number> = new Set([
   9469090, // yharaskrik
   2674658, // yjaaidi
 ]);
+
+/** Credited on an advisory of AngularJS (the `angular` npm package), which the collector leaves out: GitHub id, and how many. */
+export const ANGULARJS_SECURITY: ReadonlyMap<number, number> = new Map([
+  [128171, 1], // koto
+  [1499192, 1], // masatokinugawa
+  [113363362, 1], // spectacularpigeoncow
+  [16122665, 1], // tdunlap607
+]);

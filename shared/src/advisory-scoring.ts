@@ -12,7 +12,7 @@ const ROLE_LABELS: Readonly<Record<AdvisoryRole, string>> = {
   remediation_developer: 'Remediation developer', remediation_reviewer: 'Remediation reviewer',
   remediation_verifier: 'Remediation verifier', tool: 'Tool', sponsor: 'Sponsor', other: 'Other',
 }
-const SEVERITY_LABELS: Readonly<Record<AdvisorySeverity, string>> = {
+export const SEVERITY_LABELS: Readonly<Record<AdvisorySeverity, string>> = {
   low: 'Low', moderate: 'Moderate', high: 'High', critical: 'Critical', unknown: 'Unspecified',
 }
 const ROLES = Object.keys(ADVISORY_ROLE_POINTS) as AdvisoryRole[]
