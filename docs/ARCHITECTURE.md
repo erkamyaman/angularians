@@ -37,7 +37,7 @@ Root services use `@Service()` (available since Angular 22.1), which preserves t
 `@Injectable({ providedIn: 'root' })`. Keep manual providers when they configure a dependency or give it a local scope.
 
 Every page is server-rendered on Netlify by one function (Nitro's `netlify` preset, configured in [`netlify.toml`](../netlify.toml));
-static assets go to the CDN. Pages and API responses are cached by the CDN for an hour, in Netlify's durable cache (`netlify-cdn-cache-control`: one copy shared by every edge), and each deploy clears that cache. Server functions (`/_analog/**`) are `no-store`: they are POSTs whose input is in the body, which the CDN's cache key ignores. Any 5xx answer, a failed render included, is `no-store` (`app/src/server/plugins/no-cache-errors.ts`).
+static assets go to the CDN. Pages and API responses are cached by the CDN for a day, in Netlify's durable cache (`netlify-cdn-cache-control`: one copy shared by every edge), and each deploy clears that cache. Server functions (`/_analog/**`) are `no-store`: they are POSTs whose input is in the body, which the CDN's cache key ignores. Any 5xx answer, a failed render included, is `no-store` (`app/src/server/plugins/no-cache-errors.ts`).
 The CDN keeps one copy per value of the parameters the routes read (`netlify-vary` in `app/vite.config.ts`); any other query parameter shares that copy, so a route reading a new one must add it there.
 Each page lists its own lazy chunks as `modulepreload` links, so the browser fetches them with the entry instead of after it: the client build's Vite manifest goes to the server as an asset (`app/dist/client-manifest`, never published), and `app/src/server/plugins/preload-page.ts` adds the chunks of the page the path maps to.
 Browsers keep `/assets/*` and `/fonts/*` for a year and `/flags/*` for 30 days (`netlify.toml`).
@@ -119,7 +119,7 @@ An easter egg: the word "Angularian(s)" or "ng-halla", or a click on the header'
 
 - `/sitemap.xml` (`app/src/server/routes/sitemap.xml.get.ts`): the home page, each country's board and the profile of
   everyone with a merged PR, dated with the last collection. `robots.txt` points to it and keeps crawlers out of `/api/`.
-- One address per page: `angularians.netlify.app` and a trailing slash (`/erkamyaman/`) answer 301 to the canonical URL
+- One address per page: `angularians.netlify.app` (at the CDN, a redirect in `netlify.toml`) and a trailing slash (`/erkamyaman/`) answer 301 to the canonical URL
   (`app/src/server/middleware/canonical-url.ts`); every page sets `<link rel="canonical">`. A period (`?period=`) is the
   same page as the home page without one (the last 12 months); a country (`?country=TR`) is a page of its own, with its own title.
 - Structured data (`setJsonLd` in `app/src/app/seo-head.ts`): `WebSite` on the home page, `ProfilePage` with its `Person`
@@ -139,7 +139,7 @@ says the browser was signed in last time; the CDN keeps a copy of each page per 
 card's skeleton (laid out as an Angularian's card, at its height, and the card is never shorter) and the header's avatar
 place, and leaves out the profile's "Is this your profile?" prompt for it, and draws the sign-in and the prompt for
 everyone else: nothing jumps when the session answers. A hint whose session has ended gets the sign-in in the skeleton's
-place and size, and in the avatar's, once: `/api/auth/me` clears it. A session check that fails counts as signed out,
+place and size, and in the avatar's, once: `/api/auth/me` clears it. Without the hint the browser does not ask at all: `/api/auth/me` cannot be cached, and every call counts against Netlify's function limit. A session check that fails counts as signed out,
 so the page stays as the server drew it.
 Sign-in stays hidden until the site has these environment variables; without them the server draws the page without
 the sign-in and the prompt (`SIGN_IN_SET_UP`, a fact about the site, not the visitor):

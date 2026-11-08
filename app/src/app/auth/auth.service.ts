@@ -1,6 +1,6 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common'
 import { injectRequest } from '@analogjs/router/tokens'
-import { inject, InjectionToken, makeStateKey, PLATFORM_ID, signal, Service, TransferState } from '@angular/core'
+import { afterNextRender, inject, InjectionToken, makeStateKey, PLATFORM_ID, signal, Service, TransferState } from '@angular/core'
 import type { SignedIn } from '../../server/auth/session'
 import { hasSignedInHint } from './hint'
 
@@ -29,7 +29,8 @@ export class AuthService {
   constructor() {
     this.readSignedInHint()
     if (this.signInOff()) this.state.set({ enabled: false, user: null })
-    else if (this.browser) this.loadState()
+    else if (this.browser && this.wasSignedIn()) this.loadState()
+    else if (this.browser) this.showSignedOut()
   }
 
   /** Sign in, then come back to this path. */
@@ -47,6 +48,14 @@ export class AuthService {
     const off = this.setUp === false
     this.transferState.set(SIGN_IN_OFF, off)
     return off
+  }
+
+  /**
+   * No hint, no session to ask about: each check is a call to the server function that no cache can answer, and most
+   * visitors are signed out. After the first render, which must match the server's.
+   */
+  private showSignedOut(): void {
+    afterNextRender(() => this.state.set({ enabled: true, user: null }))
   }
 
   /**

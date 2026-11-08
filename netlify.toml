@@ -10,6 +10,13 @@
   # Skip the build when nothing the site is built from changed: docs, Markdown, agent skills and GitHub config.
   ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':!docs' ':!*.md' ':!.agents' ':!.github'"
 
+# The Netlify address to the real one at the CDN, before any function runs: each function call counts against a monthly limit.
+[[redirects]]
+  from = "https://angularians.netlify.app/*"
+  to = "https://angularians.dev/:splat"
+  status = 301
+  force = true
+
 [build.environment]
   # 24: the collector and the build scripts run TypeScript directly (type stripping).
   NODE_VERSION = "24"

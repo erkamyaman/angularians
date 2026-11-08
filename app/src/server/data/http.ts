@@ -3,10 +3,10 @@ import * as v from 'valibot'
 
 /**
  * The data changes once a night, with a new deploy: browsers keep a response 5 minutes,
- * shared caches an hour, and may serve a stale one for a day while they refresh it.
+ * shared caches a day, and may serve a stale one for another while they refresh it.
  */
 export function cacheJson(event: H3Event): void {
-  cacheFor(event, { browser: 300, shared: 3600, stale: 86400 })
+  cacheFor(event, { browser: 300, shared: 86400, stale: 86400 })
 }
 
 export function cacheFor(event: H3Event, seconds: { browser: number, shared: number, stale: number }): void {

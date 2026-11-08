@@ -25,3 +25,32 @@ describe('AuthService on a site without sign-in', () => {
     fetch.mockRestore()
   })
 })
+
+describe('AuthService in the browser', () => {
+  afterEach(() => {
+    document.cookie = 'angularians-signed-in=; max-age=0; path=/'
+    vi.restoreAllMocks()
+  })
+
+  function start() {
+    TestBed.configureTestingModule({ providers: [{ provide: PLATFORM_ID, useValue: 'browser' }] })
+    return TestBed.inject(AuthService)
+  }
+
+  it('does not call the server for a visitor who was not signed in', () => {
+    const fetch = vi.spyOn(globalThis, 'fetch')
+    const auth = start()
+    TestBed.tick()
+    expect(fetch).not.toHaveBeenCalled()
+    expect(auth.state()).toEqual({ enabled: true, user: null })
+  })
+
+  it('asks the server when the browser was signed in', async () => {
+    document.cookie = 'angularians-signed-in=1; path=/'
+    const user = { githubId: 1, login: 'someone', angularian: null, badges: [] }
+    const fetch = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify({ enabled: true, user })))
+    const auth = start()
+    expect(fetch).toHaveBeenCalledWith('/api/auth/me', expect.anything())
+    await vi.waitFor(() => expect(auth.state()?.user).toEqual(user))
+  })
+})
