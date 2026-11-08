@@ -15,8 +15,8 @@ export default defineEventHandler(async (event) => {
     await session.update({ state: undefined, returnTo: undefined })
     return sendRedirect(event, safeReturnTo(returnTo), 302)
   }
+  // Nothing is written: a mismatch must not cancel a sign-in still going on in another tab.
   if (typeof code !== 'string' || typeof state !== 'string' || !expected || state !== expected) {
-    await session.update({ state: undefined })
     throw createError({ statusCode: 400, statusMessage: 'The sign-in expired or was not started here: try again' })
   }
 

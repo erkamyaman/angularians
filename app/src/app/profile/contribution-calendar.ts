@@ -54,7 +54,7 @@ export class ContributionCalendar {
   ])
   protected readonly choiceLabel = (period: Period) => this.choices().find(choice => choice.period === period)?.label ?? period
   protected readonly shown = computed<Period>(() => (isYear(this.period()) || this.period() === '30d' ? this.period() : '12m'))
-  protected readonly hovered = signal<{ label: string, x: number, y: number } | null>(null)
+  protected readonly hovered = signal<{ label: string, x: number, y: number, source: 'hover' | 'tap' } | null>(null)
   protected readonly weekdays = ['', 'Mon', '', 'Wed', '', 'Fri', '']
   protected readonly levels = [0, 1, 2, 3, 4]
   protected readonly repos = REPOS.map(name => ({ name, url: `https://github.com/${name}` }))
@@ -68,18 +68,19 @@ export class ContributionCalendar {
   protected readonly green = signal(false)
 
   protected showDay(event: PointerEvent): void {
-    if (event.pointerType !== 'touch') this.pointAt(event.target as HTMLElement)
+    if (event.pointerType !== 'touch') this.pointAt(event.target as HTMLElement, 'hover')
   }
 
   protected hideDay(event: PointerEvent): void {
-    if (event.pointerType !== 'touch') this.hovered.set(null)
+    if (event.pointerType !== 'touch' && this.hovered()?.source === 'hover') this.hovered.set(null)
   }
 
   protected tapDay(event: PointerEvent): void {
     if (event.pointerType === 'mouse') return
     const cell = event.target as HTMLElement
-    if (cell.dataset['label'] === this.hovered()?.label) this.hovered.set(null)
-    else this.pointAt(cell)
+    const shown = this.hovered()
+    if (shown?.source === 'tap' && shown.label === cell.dataset['label']) this.hovered.set(null)
+    else this.pointAt(cell, 'tap')
   }
 
   protected closeDayOutside(event: Event): void {
@@ -108,7 +109,7 @@ export class ContributionCalendar {
     catch {}
   }
 
-  private pointAt(cell: HTMLElement): void {
+  private pointAt(cell: HTMLElement, source: 'hover' | 'tap'): void {
     const label = cell.dataset['label']
     if (!label) {
       this.hovered.set(null)
@@ -117,7 +118,7 @@ export class ContributionCalendar {
     const box = cell.getBoundingClientRect()
     const graph = cell.closest('.graph')!.getBoundingClientRect()
     const x = Math.min(Math.max(box.left - graph.left + box.width / 2, TIP_HALF), graph.width - TIP_HALF)
-    this.hovered.set({ label, x, y: box.top - graph.top })
+    this.hovered.set({ label, x, y: box.top - graph.top, source })
   }
 
   private followThePickedYear(): void {

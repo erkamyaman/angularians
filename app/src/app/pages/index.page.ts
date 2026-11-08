@@ -49,6 +49,7 @@ export const routeMeta = {
 } satisfies RouteMeta;
 
 @Component({
+  host: { '(window:wheel)': 'forgetWorldPlace()', '(window:touchmove)': 'forgetWorldPlace()' },
   selector: 'app-home',
   imports: [
     LaunchPostCallout,
@@ -126,6 +127,7 @@ export default class Home {
 
   /** Same page, no new history entry, scroll position kept. The default period leaves the URL clean. */
   protected setPeriod(period: Period): void {
+    this.keepWorldAt = null;
     void this.router.navigate([], { queryParams: { period: period === DEFAULT_PERIOD ? null : period }, queryParamsHandling: 'merge', replaceUrl: true });
   }
 
@@ -140,8 +142,8 @@ export default class Home {
 
   /** A pick on the globe or its list: the globe stays where it is on screen. */
   protected pickInWorld(country: string | null): void {
-    this.keepWorldAt = document.getElementById('world')?.getBoundingClientRect().top ?? null;
     this.setCountry(country);
+    this.keepWorldAt = document.getElementById('world')?.getBoundingClientRect().top ?? null;
   }
 
   /** From the country card: up to the board, already filtered on that country. */
@@ -157,7 +159,13 @@ export default class Home {
   }
 
   protected setCountry(country: string | null): void {
+    this.keepWorldAt = null;
     void this.router.navigate([], { queryParams: { country }, queryParamsHandling: 'merge', replaceUrl: true });
+  }
+
+  /** The visitor scrolled while the board loads: their scroll wins. */
+  protected forgetWorldPlace(): void {
+    this.keepWorldAt = null;
   }
 
   /** Once the board of a country picked on the globe renders, the globe is back where it was on screen. */

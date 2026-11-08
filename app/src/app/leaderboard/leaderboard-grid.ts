@@ -1,5 +1,5 @@
 // Ported from nuxt.com `app/components/nuxters/NuxtersLeaderboard.vue` (MIT, Copyright (c) 2022-2023 NuxtLabs).
-import { afterRenderEffect, Component, computed, ElementRef, inject, input, linkedSignal, signal, viewChild } from '@angular/core'
+import { afterRenderEffect, Component, computed, ElementRef, inject, input, linkedSignal, viewChild } from '@angular/core'
 import { RouterLink } from '@angular/router'
 import { injectServerFnMutation } from '@analogjs/router'
 import type { ContributorSummary, LeaderboardPage } from '@angularians/shared'
@@ -52,7 +52,7 @@ export class LeaderboardGrid {
   protected readonly morePhone = computed(() => this.shown().phone < this.page().total)
   protected readonly query = computed(() => profileQuery(this.page().period, this.page().country))
   protected readonly listLabel = computed(() => `Contributors, ranked: ${formatNumber(this.items().length)} of ${formatNumber(this.page().total)} shown`)
-  protected readonly tip = signal<{ item: ContributorSummary, link: HTMLElement, x: number, y: number, bottom: number } | null>(null)
+  protected readonly tip = linkedSignal<LeaderboardPage, { item: ContributorSummary, link: HTMLElement, x: number, y: number, bottom: number } | null>({ source: () => this.page(), computation: () => null })
 
   protected readonly AVATAR_SIZE = AVATAR_SIZE
   protected readonly avatar = (item: ContributorSummary) => avatarUrl(item.githubId, AVATAR_SIZE)

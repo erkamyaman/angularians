@@ -29,6 +29,16 @@ async function signIn(returnTo: string, profile: () => { username: string } | nu
 }
 
 describe('GET /api/auth/callback', () => {
+  it('leaves the session alone on a state that does not match, so a sign-in in another tab still works', async () => {
+    const update = vi.fn();
+    vi.mocked(authSession).mockResolvedValue({ data: { state: 'state', returnTo: '/' }, update } as never);
+    const req = new IncomingMessage(new Socket());
+    req.method = 'GET';
+    req.url = '/api/auth/callback?code=code&state=other';
+    await expect(callback(createEvent(req, new ServerResponse(req)))).rejects.toMatchObject({ statusCode: 400 });
+    expect(update).not.toHaveBeenCalled();
+  });
+
   afterEach(() => vi.unstubAllGlobals());
 
   it('ends on the profile, by the name in the data', async () => {

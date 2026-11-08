@@ -46,7 +46,7 @@ interface GlobeMarker extends CountryStats {
   selector: 'app-globe',
   imports: [HlmButton, NgIcon],
   providers: [provideIcons({ vikingLongship, remixSubtractLine, remixPauseLine, remixPlayLine, remixAddLine, remixRestartLine })],
-  host: { '[attr.data-ready]': 'ready() || null', '(document:visibilitychange)': 'followTabVisibility()' },
+  host: { '[attr.data-ready]': 'live() || null', '(document:visibilitychange)': 'followTabVisibility()' },
   templateUrl: './globe.html',
   styleUrl: './globe.css',
 })
@@ -64,8 +64,9 @@ export class Globe {
   protected readonly land = signal<[number, number, number]>([0.44, 0.69, 0.48]);
 
   protected readonly SHIPS = SHIPS;
-  protected readonly failed = signal(false);
-  protected readonly ready = signal(false);
+  private readonly status = signal<'starting' | 'live' | 'lost'>('starting');
+  protected readonly live = computed(() => this.status() === 'live');
+  protected readonly lost = computed(() => this.status() === 'lost');
   protected readonly paused = signal(false);
   protected readonly zoom = signal(1);
   protected readonly avatars = computed(() => this.zoom() >= AVATAR_ZOOM);
@@ -114,27 +115,7 @@ export class Globe {
   /** Draws the globe with WebGL, and runs its frames while it is on screen. */
   private start(): void {
     const element = this.host.nativeElement as HTMLElement;
-    const canvas = this.canvas().nativeElement;
-    try {
-      if (!canvas.getContext('webgl2') && !canvas.getContext('webgl')) throw new Error('WebGL unavailable');
-      this.globe = createGlobe(canvas, {
-        width: 1,
-        height: 1,
-        devicePixelRatio: Math.min(devicePixelRatio || 1, innerWidth < 768 ? 1.5 : 2),
-        phi: this.phi,
-        theta: this.theta,
-        scale: 0.98,
-        mapSamples: 32000,
-        // Required, but unused: the markers are HTML over the canvas, none of the library's.
-        markerColor: this.land(),
-        markers: [],
-        ...palette(this.theme.dark()),
-      });
-    }
-    catch {
-      this.failed.set(true);
-      return;
-    }
+    if (!this.draw()) return;
 
     // Frames run only while the globe is on screen, in a visible tab, and moving.
     const resize = new ResizeObserver(([entry]) => {
@@ -177,9 +158,35 @@ export class Globe {
       this.globe = undefined;
     });
 
-    this.ready.set(true);
+    this.status.set('live');
     this.focusSelected();
     this.schedule();
+  }
+
+  /** A new drawing on the canvas, or the failure message when WebGL cannot give one. */
+  private draw(): boolean {
+    const canvas = this.canvas().nativeElement;
+    try {
+      if (!canvas.getContext('webgl2') && !canvas.getContext('webgl')) throw new Error('WebGL unavailable');
+      this.globe = createGlobe(canvas, {
+        width: 1,
+        height: 1,
+        devicePixelRatio: Math.min(devicePixelRatio || 1, innerWidth < 768 ? 1.5 : 2),
+        phi: this.phi,
+        theta: this.theta,
+        scale: 0.98,
+        mapSamples: 32000,
+        // Required, but unused: the markers are HTML over the canvas, none of the library's.
+        markerColor: this.land(),
+        markers: [],
+        ...palette(this.theme.dark()),
+      });
+      return true;
+    }
+    catch {
+      this.status.set('lost');
+      return false;
+    }
   }
 
   /** A new selection, new markers, zoom, pause or theme: the globe turns or redraws. */
@@ -216,7 +223,7 @@ export class Globe {
   }
 
   private schedule(): void {
-    if (!this.globe || !this.onScreen || !this.tabVisible || this.running) return;
+    if (!this.live() || !this.globe || !this.onScreen || !this.tabVisible || this.running) return;
     this.running = true;
     this.lastTime = performance.now();
     const tick = (time: number) => {
@@ -413,7 +420,15 @@ export class Globe {
 
   protected showWebGlFailure(event: Event): void {
     event.preventDefault();
-    this.failed.set(true);
+    this.status.set('lost');
     this.pause();
+  }
+
+  /** The browser gave the context back (a phone, returning to the tab): a new drawing, its GL objects are gone. */
+  protected restoreGlobe(): void {
+    if (!this.draw()) return;
+    this.status.set('live');
+    this.resized = true;
+    this.schedule();
   }
 }

@@ -11,7 +11,7 @@
 <canvas
   #canvas
   [class.is-light]="!theme.dark()"
-  [hidden]="failed()"
+  [hidden]="lost()"
   tabindex="0"
   role="img"
   aria-label="Contributors around the world. Arrow keys rotate the globe, plus and minus zoom, zero resets. Every country is also in the list."
@@ -23,9 +23,10 @@
   (lostpointercapture)="endDrag($event)"
   (keydown)="moveWithKeys($event)"
   (webglcontextlost)="showWebGlFailure($event)"
+  (webglcontextrestored)="restoreGlobe()"
 ></canvas>
 
-@if (ready() && !failed()) {
+@if (live()) {
   @for (ship of SHIPS; track $index) {
     <span class="globe__ship" [attr.data-ship]="$index" data-visible="false" aria-hidden="true"><ng-icon name="vikingLongship" size="1.75rem" /></span>
   }
@@ -64,11 +65,11 @@
   }
 }
 
-@if (failed()) {
+@if (lost()) {
   <p class="absolute inset-[20%] grid place-content-center text-center text-sm text-muted-foreground" role="status">The globe needs WebGL. Every country is in the list.</p>
 }
 
-@if (ready() && !failed()) {
+@if (live()) {
   <div class="absolute bottom-1 left-1/2 flex -translate-x-1/2 gap-0.5 rounded-lg bg-background/80 p-1 ring-1 ring-border backdrop-blur" role="group" aria-label="Globe controls">
     <button hlmBtn variant="ghost" size="icon-sm" type="button" [attr.aria-label]="paused() ? 'Resume rotation' : 'Pause rotation'" [attr.aria-pressed]="paused()" (click)="togglePause()">
       <ng-icon [name]="paused() ? 'remixPlayLine' : 'remixPauseLine'" aria-hidden="true" />

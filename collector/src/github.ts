@@ -53,9 +53,9 @@ export async function request(url: string, init: RequestInit = {}): Promise<Resp
   const target = url.startsWith('http') ? url : `${API}${url}`
   for (let attempt = 1; ; attempt++) {
     let response: Response
-    // Each attempt asks again: a GitHub App's token may have been renewed while this one waited.
-    const token = await currentToken()
     try {
+      // Each attempt asks again: a GitHub App's token may have been renewed while this one waited.
+      const token = await currentToken()
       response = await fetch(target, { ...init, headers: { ...headers(token), ...init.headers as Record<string, string> } })
     }
     catch (error) {

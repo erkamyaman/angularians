@@ -1,7 +1,7 @@
 // Ported from nuxt.com `app/pages/nuxters/[username].vue` (MIT, Copyright (c) 2022-2023 NuxtLabs).
 // Without the Nuxt-only parts: modules, blog posts, hackathons, the share card and the signed-in owner view.
 import { DOCUMENT, NgTemplateOutlet } from '@angular/common';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, linkedSignal } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
 import { type RouteMeta } from '@analogjs/router';
@@ -90,7 +90,7 @@ export default class Profile {
   /** GitHub's rule for a username; anything else is not found, not a failed load. */
   protected readonly validUsername = computed(() => GITHUB_USERNAME_RE.test(this.username()));
   protected readonly failedToLoad = computed(() => !!this.profile.error() && this.validUsername());
-  private readonly promptClosed = signal(false);
+  private readonly promptClosed = linkedSignal({ source: () => this.username(), computation: () => false });
   /** The "Is this your profile?" prompt, until closed: `showsSignInPrompt`. */
   protected readonly signedOut = computed(() => !this.promptClosed() && showsSignInPrompt(this.auth.state(), this.auth.wasSignedIn()));
   protected readonly isAngularian = computed(() => {
@@ -115,7 +115,7 @@ export default class Profile {
   protected readonly PACKAGES_SHOWN = 12;
   /** Phones show fewer packages before "Show all". */
   protected readonly PACKAGES_SHOWN_PHONE = 5;
-  protected readonly allPackages = signal(false);
+  protected readonly allPackages = linkedSignal({ source: () => this.username(), computation: () => false });
   /** Misspelled scopes (`platform-brower`) folded into the package they mean. */
   protected readonly packages = computed(() => foldPackages(this.loaded()?.packages ?? []));
   protected readonly packagesToggleLabel = computed(() => (this.allPackages() ? 'Show less' : `Show all ${this.packages().length}`));
