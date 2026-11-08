@@ -59,7 +59,7 @@ describe('scoreBreakdown', () => {
       ['reviewComments', 4, 1, 4],
       ['comments', 7, 0.5, 3.5],
     ])
-    expect(rows).toHaveLength(12)
+    expect(rows).toHaveLength(13)
     expect(rows.find(row => row.key === 'reactions')?.total).toBe(1.2)
     expect(Math.round(rows.reduce((sum, row) => sum + row.total, 0))).toBe(score(counts))
   })
@@ -227,6 +227,12 @@ describe('ContributorsAccumulator', () => {
     expect(files.get('all')?.map(r => [r.username, r.translations, r.score])).toEqual([['eve', 2, 40], ['fay', 1, 20]])
     expect(files.get('2026')?.map(r => [r.username, r.translations])).toEqual([['eve', 1], ['fay', 1]])
     expect(files.get('all')?.[0]?.firstContributionAt).toBe('2025-05-26T00:00:00.000Z')
+  })
+
+  it('scores a translation helper as a contribution, below the lead', () => {
+    const acc = new ContributorsAccumulator(now)
+    acc.addTranslation({ language: '日本語', code: 'ja', flag: 'jp', site: 'https://angular.jp', repository: 'https://github.com/angular/angular-ja', joinedAt: '2026-03-07', translators: [{ githubId: 7, username: 'eve' }, { githubId: 8, username: 'fay', helper: true }] })
+    expect(acc.records().get('all')?.map(r => [r.username, r.translations, r.translationContributions, r.score])).toEqual([['eve', 1, 0, 20], ['fay', 0, 1, 10]])
   })
 
   it('leaves out bots and deleted accounts', () => {

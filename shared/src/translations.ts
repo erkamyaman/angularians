@@ -15,7 +15,8 @@ export interface Translation {
   repository: string
   /** ISO date: when the commit linking it landed in angular.dev's footer, or when a pull request asked for that link. */
   joinedAt: string
-  translators: ReadonlyArray<{ githubId: number, username: string }>
+  /** `helper`: not its lead, five or more translation commits. Their badge says contributor, not translator. */
+  translators: ReadonlyArray<{ githubId: number, username: string, helper?: true }>
 }
 
 /** As of November 2026, in the footer's order, then those a pull request asks the footer to add. */
@@ -25,7 +26,7 @@ export const TRANSLATIONS: readonly Translation[] = [
   ] },
   { language: 'Español', code: 'es', flag: 'es', site: 'https://docs.angular.lat', repository: 'https://github.com/angular-hispano/angular-docs-es', joinedAt: '2026-05-27', translators: [
     { githubId: 35105981, username: 'ricardochl' },
-    { githubId: 1909643, username: 'oidacra' },
+    { githubId: 1909643, username: 'oidacra', helper: true },
   ] },
   { language: 'Oʻzbekcha', code: 'uz', flag: 'uz', site: 'https://ilyoskhuja.github.io/angular-uz/', repository: 'https://github.com/Ilyoskhuja/angular-uz', joinedAt: '2026-10-24', translators: [
     { githubId: 30035451, username: 'Ilyoskhuja' },
@@ -41,8 +42,8 @@ export const TRANSLATIONS: readonly Translation[] = [
   ] },
   { language: '日本語', code: 'ja', flag: 'jp', site: 'https://angular.jp', repository: 'https://github.com/angular/angular-ja', joinedAt: '2023-11-06', translators: [
     { githubId: 1529180, username: 'lacolaco' },
-    { githubId: 114789857, username: 'darkss-xyzzy' },
-    { githubId: 86603334, username: 'ist-h-i' },
+    { githubId: 114789857, username: 'darkss-xyzzy', helper: true },
+    { githubId: 86603334, username: 'ist-h-i', helper: true },
   ] },
   // 正體中文 (dev.angular.tw) is converted from this one, so its translator is this one's.
   { language: '简体中文', code: 'zh-cn', flag: 'cn', site: 'https://angular.cn', repository: 'https://github.com/ng-docs', joinedAt: '2023-11-06', translators: [

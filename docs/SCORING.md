@@ -31,7 +31,8 @@ a feat, `documentation` docs), else counts as a chore: these are mostly version 
 | Security advisory: `finder` or `reporter` | 20 |
 | Security advisory: `remediation_reviewer` | 10 |
 | Security advisory: `coordinator`, `remediation_verifier`, `tool`, `sponsor` or `other` | 1 |
-| Translation (translating angular.dev into a language, one of its community translations, on the day the commit linking it landed in the footer, or a pull request asked for that link) | 20 |
+| Leading a translation (a community translation of angular.dev, on the day the commit linking it landed in the footer, or a pull request asked for that link) | 20 |
+| Contributing to a translation (five or more translation commits on one, without leading it) | 10 |
 
 Advisory values above are base points. Every credited role uses the same severity multiplier, applied per advisory:
 
@@ -69,7 +70,7 @@ GitHub ids; new recipients appear after collection. Its total can be higher than
 
 Translations are the community translations of angular.dev, in its footer or with a pull request open to add them, from the hand-kept list in
 `shared/src/translations.ts`: the lead of each, and everyone with five or more translation commits in its repository,
-counts it once. The run of angular/angular counts them, with the advisories. Each translator also wears its badge.
+scores it once. The run of angular/angular counts them, with the advisories. A lead wears its "translator" badge, the others its "contributor" badge.
 
 The sum is rounded once.
 

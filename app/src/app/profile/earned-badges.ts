@@ -42,7 +42,10 @@ export function earnedBadges(person: ContributorProfile): EarnedBadge[] {
   if (NX_CHAMPIONS.has(person.githubId)) badges.push({ label: 'Nx Champion', title: '', href: 'https://nx.dev/community', icon: 'simpleNx', tone: 'nx' })
   const advisories = person.advisories + (ANGULARJS_SECURITY.get(person.githubId) ?? 0)
   if (advisories) badges.push({ label: 'Shieldwall', title: `Credited on ${plural(advisories, 'Angular security advisory', 'Angular security advisories')}`, href: `https://github.com/advisories?query=credit%3A${person.username}`, icon: 'octShield', tone: 'shieldwall' })
-  for (const { language, code, flag, site } of translationsOf(person.githubId)) badges.push({ label: `${language} translator`, title: `Translated angular.dev into ${language}`, href: site, icon: 'logo', logo: flagUrl(flag), tone: `lang-${code}` })
+  for (const { language, code, flag, site, translators } of translationsOf(person.githubId)) {
+    const helper = translators.some(translator => translator.githubId === person.githubId && translator.helper)
+    badges.push({ label: `${language} ${helper ? 'contributor' : 'translator'}`, title: helper ? `Contributed to the ${language} translation of angular.dev` : `Translated angular.dev into ${language}`, href: site, icon: 'logo', logo: flagUrl(flag), tone: `lang-${code}` })
+  }
   const projects = projectBadgesOf(person.githubId)
   for (const { project, role } of projects) badges.push(projectBadge(project, role))
   const forged = projects.filter(({ project, role }) => project.builtOn && (role === 'creator' || role === 'co-creator')).map(({ project }) => project.name)

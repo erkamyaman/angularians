@@ -36,6 +36,7 @@ export class ScoreRules {
     { what: 'Security discovery', when: 'Finder or reporter.', value: `${ADVISORY_ROLE_POINTS.finder}`, unit: 'pts', icon: 'octShield', color: 'red' },
     { what: 'Security review', when: 'Remediation reviewer.', value: `${ADVISORY_ROLE_POINTS.remediation_reviewer}`, unit: 'pts', icon: 'octShield', color: 'red' },
     { what: 'Other security credit', when: 'Coordinator, remediation verifier, tool, sponsor or other. One highest role counts per advisory.', value: `${ADVISORY_ROLE_POINTS.other}`, unit: 'pt', icon: 'octShield', color: 'red' },
-    { what: 'Translation', when: "Translating angular.dev into a language, one of its community translations.", value: `${ACTIVITY_POINTS.translations}`, unit: 'pts', icon: 'remixTranslate2', color: 'blue' },
+    { what: 'Translation', when: 'Leading a community translation of angular.dev.', value: `${ACTIVITY_POINTS.translations}`, unit: 'pts', icon: 'remixTranslate2', color: 'blue' },
+    { what: 'Translation contribution', when: 'Five or more translation commits on one, without leading it.', value: `${ACTIVITY_POINTS.translationContributions}`, unit: 'pts', icon: 'remixTranslate2', color: 'blue' },
   ] satisfies readonly { color: GithubColor, [key: string]: unknown }[]
 }

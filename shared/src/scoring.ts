@@ -216,10 +216,10 @@ export class ContributorsAccumulator {
     }
   }
 
-  /** A community translation of angular.dev counts for each of its translators, on its `joinedAt`. */
+  /** A community translation of angular.dev counts for its lead and its helpers, each their own kind, on its `joinedAt`. */
   addTranslation(translation: Translation): void {
-    for (const { githubId, username } of translation.translators) {
-      this.add({ login: username, id: githubId }, translation.joinedAt, true, counts => (counts.translations += 1))
+    for (const { githubId, username, helper } of translation.translators) {
+      this.add({ login: username, id: githubId }, translation.joinedAt, true, counts => (counts[helper ? 'translationContributions' : 'translations'] += 1))
     }
   }
 

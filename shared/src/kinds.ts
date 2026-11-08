@@ -25,8 +25,10 @@ export const KINDS = [
   { key: 'reactions', pullRequest: false, points: 0.1, label: 'Reactions received', icon: 'smile-plus' },
   // Variable points, calculated from the credited role and severity.
   { key: 'advisories', pullRequest: false, points: null, label: 'Security advisories', icon: 'shield' },
-  // Community translations of angular.dev they translated (`TRANSLATIONS`), on each one's `joinedAt`.
+  // Community translations of angular.dev they lead (`TRANSLATIONS`), on each one's `joinedAt`.
   { key: 'translations', pullRequest: false, points: 20, label: 'Translations', icon: 'languages' },
+  // Those they helped with: five or more translation commits, not the lead.
+  { key: 'translationContributions', pullRequest: false, points: 10, label: 'Translation contributions', icon: 'languages' },
 ] as const
 
 export type Kind = typeof KINDS[number]

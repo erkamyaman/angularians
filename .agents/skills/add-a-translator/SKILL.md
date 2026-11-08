@@ -5,7 +5,7 @@ description: Give a translator of angular.dev the translator badge and its point
 
 # Add a translator
 
-The translator badge ("Türkçe translator") and a translation's points (20 for each translator, see `docs/SCORING.md`) come from `TRANSLATIONS` in `shared/src/translations.ts`: one entry per community translation of angular.dev, with who translated it. The points reach the board with the next nightly collection.
+The translator badge ("Türkçe translator") and a translation's points (20 for its lead, 10 for a helper, see `docs/SCORING.md`) come from `TRANSLATIONS` in `shared/src/translations.ts`: one entry per community translation of angular.dev, with who translated it. The points reach the board with the next nightly collection.
 
 ## 1. Confirm it
 
@@ -17,7 +17,7 @@ Done when you hold the footer link, the date of the angular/angular commit that 
 ## 2. Add it
 
 1. Get each id: `gh api users/<username> -q .id`.
-2. A new translation: an entry in `TRANSLATIONS`, in the footer's order, with `language` in that language, its `code` and `flag` (a country in `COUNTRIES` of `shared/src/countries.ts`), `site`, `repository` and `joinedAt` (the day the footer commit landed: its committer date), and its `.tone-lang-<code>` in `badge-pill.css`, built from the flag's main colour as the other languages' are, added to the dark `:is()` list above them too. A new translator: `{ githubId: <id>, username: '<username>' }` in its `translators`.
+2. A new translation: an entry in `TRANSLATIONS`, in the footer's order, with `language` in that language, its `code` and `flag` (a country in `COUNTRIES` of `shared/src/countries.ts`), `site`, `repository` and `joinedAt` (the day the footer commit landed: its committer date), and its `.tone-lang-<code>` in `badge-pill.css`, built from the flag's main colour as the other languages' are, added to the dark `:is()` list above them too. A new translator: `{ githubId: <id>, username: '<username>' }` in its `translators`, with `helper: true` unless they lead it (their badge then says contributor, and they score 10).
 3. Update the list's "as of <month year>" line.
 
 Done when the ids are in, `pnpm test` passes, and `/<username>` with `pnpm dev` shows "<language> translator".

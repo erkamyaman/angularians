@@ -10,6 +10,19 @@ const person = (changes: Partial<ContributorProfile> = {}): ContributorProfile =
 })
 const shieldwall = (profile: ContributorProfile) => earnedBadges(profile).find(badge => badge.label === 'Shieldwall')
 
+describe('translation badges', () => {
+  const labels = (githubId: number) => earnedBadges(person({ githubId })).map(badge => badge.label)
+
+  it('calls a lead a translator', () => {
+    expect(labels(1529180)).toContain('日本語 translator')
+  })
+
+  it('calls a helper a contributor, not a translator', () => {
+    expect(labels(114789857)).toContain('日本語 contributor')
+    expect(labels(114789857)).not.toContain('日本語 translator')
+  })
+})
+
 describe('Shieldwall', () => {
   it('awards a newly collected recipient without adding their GitHub id to a list', () => {
     expect(shieldwall(person({ advisories: 1 }))).toMatchObject({
