@@ -8,16 +8,15 @@
     <div class="invisible" aria-hidden="true"><ng-container [ngTemplateOutlet]="skeleton" /></div>
     <section class="card" aria-label="Your Angularian profile">
       <div class="flex flex-col gap-6">
-        <div class="flex items-center gap-4">
+        <div class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-3 sm:gap-x-4 sm:gap-y-0">
           @if (me.angularian; as person) {
-            <a [routerLink]="['/', person.username]" [attr.aria-label]="'Profile of ' + person.username" class="shrink-0 rounded-full transition hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
-              <img [src]="avatar(me.githubId)" alt="" width="72" height="72" class="size-18 rounded-full bg-muted ring-1 ring-border" />
+            <a [routerLink]="['/', person.username]" [attr.aria-label]="'Profile of ' + person.username" class="shrink-0 rounded-full transition hover:opacity-80 sm:row-span-2 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+              <img [src]="avatar(me.githubId)" alt="" width="72" height="72" class="size-14 rounded-full bg-muted ring-1 ring-border sm:size-18" />
             </a>
           } @else {
-            <img [src]="avatar(me.githubId)" [alt]="me.login" width="72" height="72" class="size-18 shrink-0 rounded-full bg-muted ring-1 ring-border" />
+            <img [src]="avatar(me.githubId)" [alt]="me.login" width="72" height="72" class="size-14 shrink-0 rounded-full bg-muted ring-1 ring-border sm:row-span-2 sm:size-18" />
           }
-          <div class="min-w-0 flex-1">
-            <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <div class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
               @if (me.angularian; as person) {
                 <a [routerLink]="['/', person.username]" class="min-w-0 truncate rounded-sm text-lg font-semibold transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">{{ me.login }}</a>
               } @else {
@@ -37,7 +36,8 @@
                   </span>
                 }
               }
-            </div>
+          </div>
+          <div class="col-span-2 min-w-0 sm:col-span-1 sm:col-start-2">
             @if (me.angularian; as person) {
               <p class="mt-1 flex flex-wrap items-center gap-x-2">
                 <span class="brand text-3xl leading-none text-primary">{{ rank(person.rank) }}</span>
@@ -119,13 +119,13 @@
 <ng-template #skeleton>
   <div class="card" aria-hidden="true">
     <div class="flex flex-col gap-6">
-      <div class="flex items-center gap-4">
-        <div hlmSkeleton class="size-18 shrink-0 rounded-full"></div>
-        <div class="min-w-0 flex-1">
-          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+      <div class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-3 sm:gap-x-4 sm:gap-y-0">
+        <div hlmSkeleton class="size-14 shrink-0 rounded-full sm:row-span-2 sm:size-18"></div>
+        <div class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
             <span hlmSkeleton class="inline-block text-lg font-semibold text-transparent">angularian</span>
             <span hlmSkeleton class="inline-block h-8 w-32"></span>
-          </div>
+        </div>
+        <div class="col-span-2 min-w-0 sm:col-span-1 sm:col-start-2">
           <p class="mt-1 flex flex-wrap items-center gap-x-2">
             <span hlmSkeleton class="inline-block brand text-3xl leading-none text-transparent">#000</span>
             <span hlmSkeleton class="inline-block text-transparent">0,000 pts</span>

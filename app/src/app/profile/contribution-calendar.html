@@ -57,14 +57,14 @@
             <span>{{ weekday }}</span>
           }
         </div>
-        <div class="scroller">
+        <div class="scroller" (scroll)="closeDay()">
           <div class="calendar">
             <div class="months">
               @for (month of grid().months; track month.week) {
                 <span [style.grid-column]="month.week + 1">{{ month.label }}</span>
               }
             </div>
-            <div class="days" (pointerover)="showDay($event)" (pointerleave)="hideDay()">
+            <div class="days" (pointerover)="showDay($event)" (pointerleave)="hideDay($event)" (click)="tapDay($any($event))">
               @for (week of grid().weeks; track $index) {
                 @for (cell of week; track $index) {
                   @if (cell) {

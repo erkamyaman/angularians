@@ -243,3 +243,8 @@
     @apply bg-background text-foreground min-h-dvh;
   }
 }
+
+/* An open dropdown scrolls alone: a short one has nothing to contain its scroll, so the page stops while it is open */
+html:has(hlm-select-content) {
+  overflow: hidden;
+}

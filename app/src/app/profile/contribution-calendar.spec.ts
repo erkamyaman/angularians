@@ -40,6 +40,24 @@ describe('ContributionCalendar', () => {
     expect(element.querySelector('.plot')?.getAttribute('aria-hidden')).toBe('true');
   });
 
+  it('on a touch screen shows a day only when it is tapped, and closes on another tap or outside', () => {
+    const element = summaryOf({ '2026-03-04': 3 }, '2026');
+    const day = element.querySelector<HTMLElement>('[data-label="3 contributions on 4 March 2026"]')!;
+    const touch = (type: string) => Object.assign(new MouseEvent(type, { bubbles: true }), { pointerType: 'touch' });
+    day.dispatchEvent(touch('pointerover'));
+    TestBed.tick();
+    expect(element.querySelector('.tip')).toBeNull();
+    day.dispatchEvent(touch('click'));
+    TestBed.tick();
+    expect(element.querySelector('.tip')?.textContent?.trim()).toBe('3 contributions on 4 March 2026');
+    element.querySelector('.days')!.dispatchEvent(Object.assign(new MouseEvent('pointerleave'), { pointerType: 'touch' }));
+    TestBed.tick();
+    expect(element.querySelector('.tip')).not.toBeNull();
+    day.dispatchEvent(touch('click'));
+    TestBed.tick();
+    expect(element.querySelector('.tip')).toBeNull();
+  });
+
   it('lists the last 12 months and each year, newest first, with the shown one pressed, and asks for the one clicked', () => {
     const fixture = TestBed.createComponent(ContributionCalendar);
     fixture.componentRef.setInput('years', ['2024', 'all', '30d', '2026', '2025']);
