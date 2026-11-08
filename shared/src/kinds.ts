@@ -25,7 +25,7 @@ export const KINDS = [
   { key: 'reactions', pullRequest: false, points: 0.1, label: 'Reactions received', icon: 'smile-plus' },
   // Angular security advisories credited to them as reporter or finder.
   { key: 'advisories', pullRequest: false, points: 20, label: 'Security reports', icon: 'shield' },
-  // Community translations of angular.dev they translated (`TRANSLATIONS`), on the day each joined its footer.
+  // Community translations of angular.dev they translated (`TRANSLATIONS`), on each one's `joinedAt`.
   { key: 'translations', pullRequest: false, points: 20, label: 'Translations', icon: 'languages' },
 ] as const
 

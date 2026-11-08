@@ -5,7 +5,7 @@ import { HlmTooltip } from '@spartan-ng/helm/tooltip'
 import { AngularLogo } from '../layout/angular-logo'
 import type { EarnedBadge } from './earned-badges'
 
-/** A badge's colours: each is a `tone-*` class of `badge-pill.css`, so a name that has no class fails the typecheck. */
+/** A badge's colours: each is a `tone-*` class of `badge-pill.css`. A name outside `lang-*` that has no class fails the typecheck. */
 export type BadgeTone =
   | 'team' | 'gde' | 'star' | 'nx' | 'shieldwall' | 'primary' | 'gold' | 'green' | 'purple' | 'foreground'
   | `lang-${string}`

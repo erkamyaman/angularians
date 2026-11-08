@@ -32,6 +32,6 @@ export class ScoreRules {
     { what: 'Review comment', when: 'Every comment on the code of a pull request.', value: `${ACTIVITY_POINTS.reviewComments}`, unit: 'pt', icon: 'remixFileCodeLine', color: 'purple' },
     { what: 'Reaction', when: 'Received on your issues, pull requests, discussions and comments.', value: `${ACTIVITY_POINTS.reactions}`, unit: 'pt', icon: 'octSmiley', color: 'orange' },
     { what: 'Security report', when: 'Credited as reporter or finder on an Angular security advisory, on the day it is published.', value: `${ACTIVITY_POINTS.advisories}`, unit: 'pts', icon: 'octShield', color: 'red' },
-    { what: 'Translation', when: "Translating angular.dev into a language, on the day it joins angular.dev's community translations.", value: `${ACTIVITY_POINTS.translations}`, unit: 'pts', icon: 'remixTranslate2', color: 'blue' },
+    { what: 'Translation', when: "Translating angular.dev into a language, one of its community translations.", value: `${ACTIVITY_POINTS.translations}`, unit: 'pts', icon: 'remixTranslate2', color: 'blue' },
   ] satisfies readonly { color: GithubColor, [key: string]: unknown }[]
 }

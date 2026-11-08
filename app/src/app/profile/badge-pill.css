@@ -170,14 +170,14 @@
   --pill-ring: color-mix(in oklab, #90A4AE 40%, transparent);
 }
 
-/* The translations: each in its flag's colour, its text dark enough on light and light enough on dark */
+/* The translations: each in its flag's colour, its text 4.5:1 on the tint in both themes */
 :host-context(.dark) :is(.tone-lang-az, .tone-lang-es, .tone-lang-uz, .tone-lang-tr, .tone-lang-ru, .tone-lang-ko, .tone-lang-ja, .tone-lang-zh-cn, .tone-lang-zh-tw, .tone-lang-fr) {
   --pill-ring: color-mix(in oklab, var(--pill) 40%, transparent);
 }
 
 .tone-lang-az {
   --pill: #00B5E2;
-  --pill-text: #0081A0;
+  --pill-text: #007795;
 }
 :host-context(.dark) .tone-lang-az {
   --pill-text: #00B5E2;
@@ -185,15 +185,14 @@
 
 .tone-lang-es {
   --pill: #C60B1E;
-  --pill-text: #C60B1E;
 }
 :host-context(.dark) .tone-lang-es {
-  --pill-text: #D44654;
+  --pill-text: #D64F5D;
 }
 
 .tone-lang-uz {
   --pill: #0099B5;
-  --pill-text: #00829A;
+  --pill-text: #00778D;
 }
 :host-context(.dark) .tone-lang-uz {
   --pill-text: #0099B5;
@@ -201,56 +200,52 @@
 
 .tone-lang-tr {
   --pill: #E30A17;
-  --pill-text: #C4161C;
+  --pill-text: #D30915;
 }
 :host-context(.dark) .tone-lang-tr {
-  --pill-text: #FF7B72;
+  --pill-text: #E93B45;
 }
 
 .tone-lang-ru {
   --pill: #0039A6;
-  --pill-text: #0039A6;
 }
 :host-context(.dark) .tone-lang-ru {
-  --pill-text: #5278C2;
+  --pill-text: #577CC4;
 }
 
 .tone-lang-ko {
   --pill: #CD2E3A;
-  --pill-text: #CD2E3A;
+  --pill-text: #C92D39;
 }
 :host-context(.dark) .tone-lang-ko {
-  --pill-text: #D34752;
+  --pill-text: #D6525B;
 }
 
 .tone-lang-ja {
   --pill: #BC002D;
-  --pill-text: #BC002D;
 }
 :host-context(.dark) .tone-lang-ja {
-  --pill-text: #CF4A6A;
+  --pill-text: #D14F6E;
 }
 
 .tone-lang-zh-cn {
   --pill: #DE2910;
-  --pill-text: #DE2910;
+  --pill-text: #CC260F;
 }
 :host-context(.dark) .tone-lang-zh-cn {
-  --pill-text: #E13A23;
+  --pill-text: #E34731;
 }
 
 .tone-lang-zh-tw {
   --pill: #000095;
-  --pill-text: #000095;
 }
 :host-context(.dark) .tone-lang-zh-tw {
-  --pill-text: #7070C4;
+  --pill-text: #7373C5;
 }
 
 .tone-lang-fr {
   --pill: #0055A4;
-  --pill-text: #0055A4;
 }
 :host-context(.dark) .tone-lang-fr {
-  --pill-text: #3D7EBA;
+  --pill-text: #4281BC;
 }

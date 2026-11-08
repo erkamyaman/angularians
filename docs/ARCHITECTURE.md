@@ -22,7 +22,7 @@ types and the build on every pull request and every push to `development`.
 ## Site
 
 Each profile has an Angular-only contribution graph: `calendar.json` holds every contributor's contributions of their own
-per UTC day (merged PRs on the day they landed, issues, discussions, comments, review comments, security reports; not
+per UTC day (merged PRs on the day they landed, issues, discussions, comments, review comments, security reports, translations; not
 reactions received), as day numbers from 1 January 2014 and counts (`encodeCalendar` in `shared/src/calendar.ts`). The
 profile sends a person their days with their profile; `profile/contribution-grid.ts` lays out the year picked, or the
 days the 12-month stats count (`periodDays` in `shared/src/periods.ts`), in weeks, each day shaded against that person's
@@ -100,7 +100,7 @@ does not set; `@theme inline` in `styles.css` unmaps them, so `bg-sidebar` makes
 
 Fixed hex stays only where no theme applies, in four cases (AGENTS.md lists the same):
 
-1. another project's own colour (a badge's tone in `badge-pill.css`, the Discord and YouTube guides), set once in a
+1. another project's own colour (a badge's tone in `badge-pill.css`, a translation's flag there, the Discord and YouTube guides), set once in a
    variable on the element when it is used more than once;
 2. the artwork of a logo (`angular-logo.html`, YouTube's);
 3. black or white as a shade, a mask or over a photo (the rank shield's darker half, the globe's fade, the leaderboard's

@@ -195,7 +195,7 @@ export class ContributorsAccumulator {
     }
   }
 
-  /** A community translation of angular.dev counts for each of its translators, on the day it joined the footer. */
+  /** A community translation of angular.dev counts for each of its translators, on its `joinedAt`. */
   addTranslation(translation: Translation): void {
     for (const { githubId, username } of translation.translators) {
       this.add({ login: username, id: githubId }, translation.joinedAt, true, counts => (counts.translations += 1))

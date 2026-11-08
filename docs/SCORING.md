@@ -28,7 +28,7 @@ a feat, `documentation` docs), else counts as a chore: these are mostly version 
 | Helpful comment (3+ reactions, or marked as a discussion's answer) | +2 |
 | Reaction received (on an issue, a PR, a discussion or a comment, not on a review comment; on the day of what got it) | 0.1 |
 | Security report (credited as `reporter` or `finder` on an Angular security advisory, on the day it is published) | 20 |
-| Translation (translating angular.dev into a language, one of its community translations, on the day its footer first linked it, or a pull request asked it to) | 20 |
+| Translation (translating angular.dev into a language, one of its community translations, on the day the commit linking it landed in the footer, or a pull request asked for that link) | 20 |
 
 Discussions (in every repository that has them, such as angular/angular's RFCs) come from GitHub's GraphQL API: they are
 counted as issues and comments are, in the issue and comment totals.
@@ -38,7 +38,7 @@ packages: the repositories' own advisories and GitHub's reviewed npm advisories,
 person, however many reporter and finder credits they have on it. Credits for fixing, reviewing or analysing an advisory
 give no points: the fix's PR and its reviews already count. The run of angular/angular collects them (`collector/src/advisories.ts`).
 
-Translations are the community translations of angular.dev, in its footer, from the hand-kept list in
+Translations are the community translations of angular.dev, in its footer or with a pull request open to add them, from the hand-kept list in
 `shared/src/translations.ts`: the lead of each, and everyone with five or more translation commits in its repository,
 counts it once. The run of angular/angular counts them, with the advisories. Each translator also wears its badge.
 

@@ -23,7 +23,7 @@ _Avoid_: alias, old user
 ## Contributions
 
 **Contribution**:
-One thing an Angularian did in a repository on the board that the score counts: a landed pull request, an issue, a comment, a review comment, a security report or a translation. It belongs to the day it was made. A reaction received earns points but is not a contribution.
+One thing an Angularian did for Angular that the score counts: a landed pull request, an issue, a comment, a review comment, a security report or a translation. It belongs to the day it was made. A reaction received earns points but is not a contribution.
 _Avoid_: activity, event, commit
 
 **Landed pull request**:
@@ -63,7 +63,7 @@ An inline comment on the code of a pull request; a review's summary is not one.
 _Avoid_: review, code comment
 
 **Translation**:
-A community translation of angular.dev into a language, credited to each of the people who translated it, on the day angular.dev first linked it.
+A community translation of angular.dev into a language, credited to each of the people who translated it.
 _Avoid_: localization, i18n
 
 **Reaction received**:

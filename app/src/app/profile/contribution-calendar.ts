@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common'
 import { afterNextRender, afterRenderEffect, Component, computed, ElementRef, inject, input, output, signal, viewChild } from '@angular/core'
 import { NgIcon, provideIcons } from '@ng-icons/core'
 import { octComment, octGitMerge, octIssueOpened, octShield } from '@ng-icons/octicons'
-import { remixArrowRightUpLine, remixInformationLine } from '@ng-icons/remixicon'
+import { remixArrowRightUpLine, remixInformationLine, remixTranslate2 } from '@ng-icons/remixicon'
 import { simpleGithub } from '@ng-icons/simple-icons'
 import { HlmButton } from '@spartan-ng/helm/button'
 import { HlmDialogImports } from '@spartan-ng/helm/dialog'
@@ -19,7 +19,7 @@ const GREEN_CLASS = 'graph-green'
 @Component({
   selector: 'app-contribution-calendar',
   imports: [HlmButton, HlmDialogImports, HlmSelectImports, NgIcon],
-  providers: [provideIcons({ octComment, octGitMerge, octIssueOpened, octShield, remixArrowRightUpLine, remixInformationLine, simpleGithub })],
+  providers: [provideIcons({ octComment, octGitMerge, octIssueOpened, octShield, remixArrowRightUpLine, remixInformationLine, remixTranslate2, simpleGithub })],
   templateUrl: './contribution-calendar.html',
   styleUrl: './contribution-calendar.css',
 })
@@ -60,6 +60,7 @@ export class ContributionCalendar {
     { icon: 'octIssueOpened', tone: 'green', name: 'Issues and discussions', detail: 'The ones they opened' },
     { icon: 'octComment', tone: 'blue', name: 'Comments and reviews', detail: 'On issues, pull requests, discussions and code' },
     { icon: 'octShield', tone: 'red', name: 'Security reports', detail: 'Credited to them on an Angular advisory' },
+    { icon: 'remixTranslate2', tone: 'blue', name: 'Translations', detail: 'Of angular.dev, on the day it was linked' },
   ]
   protected readonly green = signal(false)
 
