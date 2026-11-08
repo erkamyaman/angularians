@@ -33,7 +33,7 @@
 <!-- The card floats on the globe: picking a country moves nothing on the page -->
 <!-- `when`, not `on viewport`: Angular's viewport trigger creates its IntersectionObserver during server rendering too
      (after-render hooks run there in this app), where none exists. -->
-<div #globeBox class="relative mx-auto aspect-square w-full max-w-[36rem]">
+<div #globeBox class="relative mx-auto aspect-square w-full max-w-[min(50rem,85svh)]">
   @defer (when inView()) {
     <app-globe [countries]="map().countries" [selected]="selected()" (select)="select.emit($event)" />
   } @placeholder {
