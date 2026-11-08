@@ -122,9 +122,8 @@ The home page credits the Angular community projects the site is built on with t
 as the projects show them (ngxtension: its Angular-coloured mark, as on its GitHub), in `app/public/credits/`. They are
 their projects' marks, used only to credit them.
 
-The special badges also show, unchanged, the marks of Pangular Inspector (https://pangular-inspector.dev), slide.ng
-(https://slide-ng.dev) and Angular Docs TR (https://angular-docs.tr), projects of this site's author, in
-`app/public/credits/`.
+The special badges also show, unchanged, the marks of Pangular Inspector (https://pangular-inspector.dev) and slide.ng
+(https://slide-ng.dev), projects of this site's author, in `app/public/credits/`.
 
 The badges of Ashley Hunter's Angular Native (https://ng-native.com) and Angular Primitives
 (https://angularprimitives.com) show their marks, unchanged, in `app/public/credits/`. Santosh Yadav's ngx-builders

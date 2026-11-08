@@ -28,7 +28,7 @@ a feat, `documentation` docs), else counts as a chore: these are mostly version 
 | Helpful comment (3+ reactions, or marked as a discussion's answer) | +2 |
 | Reaction received (on an issue, a PR, a discussion or a comment, not on a review comment; on the day of what got it) | 0.1 |
 | Security report (credited as `reporter` or `finder` on an Angular security advisory, on the day it is published) | 20 |
-| Translation (translating angular.dev into a language, one of its community translations, on the day its footer first linked it) | 20 |
+| Translation (translating angular.dev into a language, one of its community translations, on the day its footer first linked it, or a pull request asked it to) | 20 |
 
 Discussions (in every repository that has them, such as angular/angular's RFCs) come from GitHub's GraphQL API: they are
 counted as issues and comments are, in the issue and comment totals.

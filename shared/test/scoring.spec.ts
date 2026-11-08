@@ -137,7 +137,7 @@ describe('ContributorsAccumulator', () => {
 
   it('counts a translation once for each of its translators, on the day it joined the footer', () => {
     const acc = new ContributorsAccumulator(now)
-    const translation = { language: 'Türkçe', site: 'https://angular-docs.tr', repository: 'https://github.com/erkamyaman/angular-tr', joinedAt: '2026-03-07', translators: [{ githubId: 7, username: 'eve' }, { githubId: 8, username: 'fay' }] }
+    const translation = { language: 'Türkçe', code: 'tr', flag: 'tr', site: 'https://angular-docs.tr', repository: 'https://github.com/erkamyaman/angular-tr', joinedAt: '2026-03-07', translators: [{ githubId: 7, username: 'eve' }, { githubId: 8, username: 'fay' }] }
     acc.addTranslation(translation)
     acc.addTranslation({ ...translation, language: 'Español', joinedAt: '2025-05-26', translators: [{ githubId: 7, username: 'eve' }] })
     const files = acc.records()

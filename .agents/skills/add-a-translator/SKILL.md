@@ -9,7 +9,7 @@ The translator badge ("Türkçe translator") and a translation's points (20 for 
 
 ## 1. Confirm it
 
-1. The translation is in angular.dev's footer, under "Community translations". One still waiting for its link there waits for the badge too.
+1. The translation is in angular.dev's footer, under "Community translations", or an open angular/angular pull request adds it there (then `joinedAt` is that pull request's date, and the entry goes after the footer's).
 2. Find who translated it in its repository, counting translation work only: these repositories carry Angular's own history, so leave out commits that are Angular's, bots' and syncs with upstream. The lead gets it, and so does everyone with five or more translation commits.
 
 Done when you hold the footer link, the date of the angular/angular commit that added it, the repository and each translator's username with their count of translation commits. Missing one: stop and report which.
@@ -17,7 +17,7 @@ Done when you hold the footer link, the date of the angular/angular commit that 
 ## 2. Add it
 
 1. Get each id: `gh api users/<username> -q .id`.
-2. A new translation: an entry in `TRANSLATIONS`, in the footer's order, with `language` written as the footer writes it, its `site`, `repository` and `joinedAt` (the footer commit's date). A new translator: `{ githubId: <id>, username: '<username>' }` in its `translators`.
+2. A new translation: an entry in `TRANSLATIONS`, in the footer's order, with `language` written as the footer writes it, its `code` and `flag`, `site`, `repository` and `joinedAt` (the footer commit's date), and its `.tone-lang-<code>` in `badge-pill.css`, built from the flag's main colour as the other languages' are. A new translator: `{ githubId: <id>, username: '<username>' }` in its `translators`.
 3. Update the list's "as of <month year>" line.
 
 Done when the ids are in, `pnpm test` passes, and `/<username>` with `pnpm dev` shows "<language> translator".

@@ -81,7 +81,7 @@ that are not variables are the fixed hex listed below.
 | Angular | `--angular-pink`, `--angular-purple` (utilities `*-angular-pink`, `*-angular-purple`) | the team badge, the Angular guide |
 | GitHub | `--github-purple`, `-red`, `-blue`, `-gold`, `-green`, `-pink`, `-orange`; `--github-*-on-light`, GitHub's light-theme value in both themes; `--github-gold-text`, `--github-green-text`, a shade darker on light for text on a tint | the kinds of contribution, with the `github-*` classes of `styles/github-colors.css`; the profile's stat tints; the gold and green badges |
 | Medals | `--medal-gold`, `--medal-silver`, `--medal-bronze` and their `-text` | the top three, through the classes of `styles/podium.css` (which set `--podium-ring` and `--podium-text`) |
-| Badges | `--shieldwall`, `--translator` | the Shieldwall badge, for Angular's security advisories, and the translator badge, for angular.dev's community translations (`badge-pill.css`) |
+| Badges | `--shieldwall` | the Shieldwall badge, for Angular's security advisories (`badge-pill.css`) |
 | Projects | `--idea-library`, `--idea-tool`, `--idea-meetup`, `--idea-teaching` | the kinds of project in "Forged something for Angular?" |
 | The globe | `--globe-base`, `--globe-glow` (and `--primary` for its land) | the world globe's WebGL colours, read by `world/globe.ts` |
 | GitHub's graph | `--graph-green-0` to `--graph-green-4`: GitHub's own contribution greens, another project's colours | the contribution graph in green, when a visitor picks it |
@@ -89,7 +89,7 @@ that are not variables are the fixed hex listed below.
 | The storm | `--lightning`, `--lightning-inner`, `--angie-shadow` (the same in both themes) | Angie's storm, `layout/hammer-strike.css` |
 
 A token that means another one is written as it (`--primary: var(--mark-2)`, `--idea-library: var(--github-pink)`,
-`--shieldwall: var(--github-red)`, `--translator: var(--github-blue)`). Some share a hex but not a meaning, and stay separate so that one can change
+`--shieldwall: var(--github-red)`). Some share a hex but not a meaning, and stay separate so that one can change
 alone: GitHub's gold (`--github-gold`) and the brand (`--primary`), the gold medal (`--medal-gold`, `--medal-gold-text`)
 and both, the tool kind of project (`--idea-tool`) and the silver medal's text.
 

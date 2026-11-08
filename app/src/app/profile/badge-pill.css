@@ -6,7 +6,7 @@
  * One badge, in its tone's colours: `tone-*` sets `--pill`, its colour, for the background, the ring and the text; a
  * tone whose text differs sets `--pill-text`, and one that mixes them otherwise `--pill-bg` or `--pill-ring`. The
  * earned badges pick theirs in `earned-badges.ts`, the projects in `project-badges.ts`. A project's colour is its own
- * brand's, so a hex. A parent can set `--pill-font-size` and `--pill-line-height` for a smaller badge. Each tone's
+ * brand's and a translation's its flag's, so a hex. A parent can set `--pill-font-size` and `--pill-line-height` for a smaller badge. Each tone's
  * dark rule follows its light one; `BadgeTone` (`badge-pill.ts`) lists them.
  */
 .pill {
@@ -75,10 +75,6 @@
   --pill: var(--shieldwall);
 }
 
-.tone-translator {
-  --pill: var(--translator);
-}
-
 .tone-primary {
   --pill: var(--primary);
 }
@@ -105,7 +101,7 @@
 }
 
 /* The projects: on dark, a lighter text and a stronger ring (ngx-builders sets its own) */
-:host-context(.dark) :is(.tone-analog, .tone-ng-icons, .tone-ngxtension, .tone-pangular, .tone-docs-tr, .tone-slide-ng, .tone-ng-native, .tone-ng-primitives) {
+:host-context(.dark) :is(.tone-analog, .tone-ng-icons, .tone-ngxtension, .tone-pangular, .tone-slide-ng, .tone-ng-native, .tone-ng-primitives) {
   --pill-ring: color-mix(in oklab, var(--pill) 40%, transparent);
 }
 
@@ -141,14 +137,6 @@
   --pill-text: #FBBF24;
 }
 
-.tone-docs-tr {
-  --pill: #E30A17;
-  --pill-text: #C4161C;
-}
-:host-context(.dark) .tone-docs-tr {
-  --pill-text: #FF7B72;
-}
-
 .tone-slide-ng {
   --pill: #CC4209;
   --pill-text: #A33A08;
@@ -180,4 +168,89 @@
 :host-context(.dark) .tone-ngx-builders {
   --pill-text: #B0BEC5;
   --pill-ring: color-mix(in oklab, #90A4AE 40%, transparent);
+}
+
+/* The translations: each in its flag's colour, its text dark enough on light and light enough on dark */
+:host-context(.dark) :is(.tone-lang-az, .tone-lang-es, .tone-lang-uz, .tone-lang-tr, .tone-lang-ru, .tone-lang-ko, .tone-lang-ja, .tone-lang-zh-cn, .tone-lang-zh-tw, .tone-lang-fr) {
+  --pill-ring: color-mix(in oklab, var(--pill) 40%, transparent);
+}
+
+.tone-lang-az {
+  --pill: #00B5E2;
+  --pill-text: #0081A0;
+}
+:host-context(.dark) .tone-lang-az {
+  --pill-text: #00B5E2;
+}
+
+.tone-lang-es {
+  --pill: #C60B1E;
+  --pill-text: #C60B1E;
+}
+:host-context(.dark) .tone-lang-es {
+  --pill-text: #D44654;
+}
+
+.tone-lang-uz {
+  --pill: #0099B5;
+  --pill-text: #00829A;
+}
+:host-context(.dark) .tone-lang-uz {
+  --pill-text: #0099B5;
+}
+
+.tone-lang-tr {
+  --pill: #E30A17;
+  --pill-text: #C4161C;
+}
+:host-context(.dark) .tone-lang-tr {
+  --pill-text: #FF7B72;
+}
+
+.tone-lang-ru {
+  --pill: #0039A6;
+  --pill-text: #0039A6;
+}
+:host-context(.dark) .tone-lang-ru {
+  --pill-text: #5278C2;
+}
+
+.tone-lang-ko {
+  --pill: #CD2E3A;
+  --pill-text: #CD2E3A;
+}
+:host-context(.dark) .tone-lang-ko {
+  --pill-text: #D34752;
+}
+
+.tone-lang-ja {
+  --pill: #BC002D;
+  --pill-text: #BC002D;
+}
+:host-context(.dark) .tone-lang-ja {
+  --pill-text: #CF4A6A;
+}
+
+.tone-lang-zh-cn {
+  --pill: #DE2910;
+  --pill-text: #DE2910;
+}
+:host-context(.dark) .tone-lang-zh-cn {
+  --pill-text: #E13A23;
+}
+
+.tone-lang-zh-tw {
+  --pill: #000095;
+  --pill-text: #000095;
+}
+:host-context(.dark) .tone-lang-zh-tw {
+  --pill-text: #7070C4;
+}
+
+.tone-lang-fr {
+  --pill: #0055A4;
+  --pill-text: #0055A4;
+}
+:host-context(.dark) .tone-lang-fr {
+  --pill-text: #3D7EBA;
 }

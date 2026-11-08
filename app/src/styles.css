@@ -102,9 +102,6 @@
   /* The Shieldwall badge, for Angular's security advisories (badge-pill.css): GitHub's red, softer on dark. */
   --shieldwall: var(--github-red);
 
-  /* The translator badge, for angular.dev's community translations (badge-pill.css): GitHub's blue. */
-  --translator: var(--github-blue);
-
   /*
    * The world globe (world/globe.ts), drawn in WebGL: the sphere's colour and its glow. Percentages, which it reads
    * exactly; on dark, the sphere is the brand, dimmed.
