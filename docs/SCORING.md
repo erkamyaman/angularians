@@ -2,7 +2,7 @@
 
 Every contribution counts for its author, on the day it was made (a pull request on the day it landed). The base weights are those of [Nuxters](https://nuxt.com/nuxters),
 plus review comments, security advisory credits and translations; GitHub Discussions count too, as issues and comments. Unlike Nuxters, no repository counts double,
-a translation counts once for each of its translators rather than by segment, and a pull request without a type is a chore, not a feat ([how they compare](research/score-vs-other-leaderboards.md)). The points of each kind of contribution are in `KINDS` (`shared/src/kinds.ts`); advisory roles and severity multipliers are in `shared/src/advisory-scoring.ts`. The other rules are in `shared/src/scoring.ts` and `shared/src/pull-requests.ts`.
+a translation counts once for each person credited on it rather than by segment, and a pull request without a type is a chore, not a feat ([how they compare](research/score-vs-other-leaderboards.md)). The points of each kind of contribution are in `KINDS` (`shared/src/kinds.ts`); advisory roles and severity multipliers are in `shared/src/advisory-scoring.ts`. The other rules are in `shared/src/scoring.ts` and `shared/src/pull-requests.ts`.
 
 ## Merged pull requests, by type
 

@@ -25,20 +25,21 @@
 .globe__marker {
   position: absolute; inset: 0 auto auto 0; will-change: transform;
   display: flex; align-items: center; justify-content: center; width: 18px; height: 18px;
-  border-radius: 999px; color: var(--foreground);
-  font: 600 11px/1 var(--font-sans); font-variant-numeric: tabular-nums; white-space: nowrap;
+  border-radius: 999px; white-space: nowrap;
   opacity: 0; visibility: hidden; pointer-events: none;
   transition: opacity 160ms ease-out, visibility 0s linear 160ms;
 }
 .globe__marker[data-visible="true"] { opacity: 1; visibility: visible; pointer-events: auto; transition-delay: 0s; }
 .globe__marker:hover, .globe__marker:focus-visible, .globe__marker.is-selected {
-  z-index: 2; outline: 2px solid color-mix(in oklab, var(--primary) 35%, transparent); outline-offset: 2px;
+  z-index: 2; outline: 2px solid var(--foreground); outline-offset: 1px;
 }
 .globe__label {
   position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); pointer-events: none;
   display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 1px solid var(--border); border-radius: var(--radius-md);
   background: var(--popover); color: var(--popover-foreground); font-size: var(--text-xs); font-weight: 500;
 }
+/* A bigger target than the flag it holds */
+.globe__marker:not(.is-avatars)::before { content: ""; position: absolute; inset: -3px; border-radius: 50%; }
 .globe__flag { width: 16px; height: 16px; border-radius: 50%; box-shadow: 0 0 0 1.5px var(--background); }
 .globe__label-count { color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
 .globe__marker.is-avatars { width: auto; height: 32px; }

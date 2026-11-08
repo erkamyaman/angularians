@@ -118,7 +118,7 @@ A badge for a title someone else gives: Angular GDE, GitHub Star or Nx Champion.
 _Avoid_: certification
 
 **Translator**:
-A badge for the lead of a community translation of angular.dev. The others with five or more translation commits wear its contributor badge.
+A badge for the lead of a community translation of angular.dev. The others with five or more translation commits are its helpers, and wear its contributor badge.
 _Avoid_: localizer, i18n badge
 
 **Shieldwall**:

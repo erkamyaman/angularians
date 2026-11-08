@@ -22,7 +22,7 @@ const DEFAULT_CAMERA = { ...faceOnGlobe([20, -30]), zoom: 1 };
 const MAX_ZOOM = 3;
 /** One press of a zoom button or of + and −. */
 const ZOOM_STEP = 0.25;
-/** Zoomed in, countries show their best ranked contributors instead of a count. */
+/** Zoomed in, countries show their best ranked contributors instead of a flag. */
 const AVATAR_ZOOM = 1.6;
 /** Zoomed in, the globe outgrows the canvas and fades out from 82% of the radius: markers stay inside. */
 const FRAME = 0.88;
@@ -30,8 +30,8 @@ const FRAME = 0.88;
 const SHIPS: ReadonlyArray<readonly [number, number]> = [[42, -40], [8, -32], [-32, -18], [20, -145], [-22, -120], [32, 165], [-25, 78], [8, 65]];
 const SAIL_MS = 36000;
 const SAIL_DEGREES = 11;
-/** A country on the globe is its flag, this wide. */
-const FLAG_MARKER = 18;
+/** The room a country's flag claims on the globe: less than its size, so close neighbours overlap a little and both show. */
+const FLAG_ROOM = 11;
 const KEY_MOVES: Record<string, [number, number]> = { ArrowLeft: [-0.15, 0], ArrowRight: [0.15, 0], ArrowUp: [0, -0.15], ArrowDown: [0, 0.15] };
 
 const clamp = (value: number, low: number, high: number) => Math.min(high, Math.max(low, value));
@@ -259,12 +259,12 @@ export class Globe {
       const y = height / 2 + this.projection.y * height / 2;
       const markerWidth = avatars
         ? (country.code === this.selected() ? 32 + (country.top.length - 1) * 24 : 32)
-        : FLAG_MARKER;
-      const markerHeight = avatars ? 32 : FLAG_MARKER;
+        : FLAG_ROOM;
+      const markerHeight = avatars ? 32 : FLAG_ROOM;
       const wasVisible = marker.dataset['visible'] === 'true';
       const front = this.projection.depth > (wasVisible ? 0.1 : 0.14);
       const fits = Math.hypot(x - width / 2, y - height / 2) < frame - Math.max(markerWidth, markerHeight) / 2;
-      const gap = avatars ? (wasVisible ? 4 : 8) : (wasVisible ? 0 : 2);
+      const gap = avatars ? (wasVisible ? 4 : 8) : (wasVisible ? 0 : 1);
       const hasRoom = occupied.every(other => Math.abs(other.x - x) > (other.width + markerWidth) / 2 + gap || Math.abs(other.y - y) > (other.height + markerHeight) / 2 + gap);
       const show = front && fits && hasRoom;
       if (show !== wasVisible) {

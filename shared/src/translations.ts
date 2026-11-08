@@ -1,7 +1,7 @@
 /**
  * The community translations of angular.dev (its footer's "Community translations"), and who translated each: the lead,
- * and everyone with five or more translation commits in its repository. Each translator scores a translation once, on
- * its `joinedAt`, and wears its badge. By GitHub id: a username can change. A list, not data the collector
+ * and everyone with five or more translation commits in its repository. Each scores a translation once, on its
+ * `joinedAt` (the lead more), and wears its badge. By GitHub id: a username can change. A list, not data the collector
  * finds: update it by hand, as in the `add-a-translator` skill.
  */
 export interface Translation {
