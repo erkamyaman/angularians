@@ -6,7 +6,7 @@ Everyone who has contributed to the Angular repositories, ranked by a score of w
 
 **Angularian**:
 A person on the board: anyone whose work in a repository on the board earned points.
-_Avoid_: contributor (outside the code), user, member, developer
+_Avoid_: contributor (outside the code and the translation badge), user, member, developer
 
 **Angular team**:
 The public members of the Angular organization on GitHub.
@@ -120,6 +120,10 @@ _Avoid_: certification
 **Translator**:
 A badge for the lead of a community translation of angular.dev. The others with five or more translation commits are its helpers, and wear its contributor badge.
 _Avoid_: localizer, i18n badge
+
+**Translation contribution**:
+A helper's part in a community translation of angular.dev: five or more translation commits, without leading it. It scores less than a translation.
+_Avoid_: partial translation
 
 **Shieldwall**:
 The badge of an Angularian credited on an Angular security advisory, in any role, using their collected all-time advisory count.

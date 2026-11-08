@@ -41,7 +41,7 @@
     <div class="grid size-full place-items-center"><div class="size-[78%] rounded-full bg-muted/50 ring-1 ring-border"></div></div>
   }
   @if (current(); as shown) {
-    <div class="absolute right-0 bottom-0 w-80 max-sm:hidden">
+    <div class="absolute right-0 bottom-0 w-80 max-sm:hidden [@media(max-height:36rem)]:hidden">
       <ng-container [ngTemplateOutlet]="card" [ngTemplateOutletContext]="{ $implicit: shown }" />
     </div>
   }
@@ -88,7 +88,7 @@
 
 <!-- Phones: the globe is too small to float on, and often scrolled away from the list. A card at the bottom of the screen. -->
 @if (current(); as shown) {
-  <div class="sticky bottom-4 z-10 sm:hidden">
+  <div class="sticky bottom-4 z-10 sm:[@media(min-height:36rem)]:hidden">
     <ng-container [ngTemplateOutlet]="card" [ngTemplateOutletContext]="{ $implicit: shown }" />
   </div>
 }

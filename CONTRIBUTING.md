@@ -52,7 +52,7 @@ Each common change has a skill in [`.agents/skills/`](.agents/skills): the steps
 | --- | --- | --- |
 | A custom badge for your project | [`add-a-custom-badge`](.agents/skills/add-a-custom-badge/SKILL.md) | [Badge request](https://github.com/erkamyaman/angularians/issues/new?template=badge-request.yml) |
 | The Angular GDE, GitHub Star or Nx Champion badge | [`add-a-recognition`](.agents/skills/add-a-recognition/SKILL.md) | [Recognition request](https://github.com/erkamyaman/angularians/issues/new?template=recognition-request.yml) |
-| The translator badge, for angular.dev's community translations | [`add-a-translator`](.agents/skills/add-a-translator/SKILL.md) | [an issue](https://github.com/erkamyaman/angularians/issues/new/choose) |
+| The translator and contributor badges, for angular.dev's community translations | [`add-a-translator`](.agents/skills/add-a-translator/SKILL.md) | [an issue](https://github.com/erkamyaman/angularians/issues/new/choose) |
 | A bot on the board | [`flag-a-bot`](.agents/skills/flag-a-bot/SKILL.md) | [Bot report](https://github.com/erkamyaman/angularians/issues/new?template=bot-report.yml) |
 | A repository on the board | [`add-a-repository`](.agents/skills/add-a-repository/SKILL.md) | an issue first: the maintainer decides |
 | The score | [`change-the-score`](.agents/skills/change-the-score/SKILL.md) | an issue first: it moves every rank |
