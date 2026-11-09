@@ -6,6 +6,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core'
 import { remixLogoutBoxRLine } from '@ng-icons/remixicon'
 import { HlmPopoverImports } from '@spartan-ng/helm/popover'
 import { AuthService } from '../auth/auth.service'
+import { AngieService } from './angie.service'
 import { LogoMark } from './logo-mark'
 import { avatarUrl } from '../contributors/avatar-url'
 
@@ -18,7 +19,9 @@ import { avatarUrl } from '../contributors/avatar-url'
 })
 export class UserMenu {
   private readonly auth = inject(AuthService)
+  protected readonly angie = inject(AngieService)
   protected readonly user = computed(() => this.auth.state()?.user ?? null)
+  protected readonly angieLabel = computed(() => (this.angie.on() ? 'Turn off Angie’s lightning' : 'Turn on Angie’s lightning'))
   protected readonly avatar = (githubId: number) => avatarUrl(githubId, 28)
 
   /** Following the profile link closes the menu, which would stay open over the new page. */

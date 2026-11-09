@@ -20,6 +20,7 @@ export const BADGE_ICONS = { octShield, remixStarFill, simpleNx, vikingAnvil, vi
  */
 export interface EarnedBadge {
   label: string
+  officialLabel?: string
   title: string
   icon: 'angular' | 'gde' | 'logo' | keyof typeof BADGE_ICONS
   tone: BadgeTone
@@ -29,7 +30,7 @@ export interface EarnedBadge {
 
 /** A project's badge for one of its people: its title, logo and colour, linked to the project. */
 export function projectBadge(project: ProjectBadge, role: ProjectRole): EarnedBadge {
-  return { label: project.badge, title: `${role[0]!.toUpperCase()}${role.slice(1)} of ${project.name}`, icon: 'logo', logo: project.logo, href: project.href, tone: project.tone }
+  return { label: project.badge, ...(project.realName ? {} : { officialLabel: `${project.name} ${role}` }), title: `${role[0]!.toUpperCase()}${role.slice(1)} of ${project.name}`, icon: 'logo', logo: project.logo, href: project.href, tone: project.tone }
 }
 
 /** Every badge a contributor has, in the order the profile and the card show them. */

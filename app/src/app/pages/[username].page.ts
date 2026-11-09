@@ -15,6 +15,7 @@ import {
   simpleBluesky, simpleFacebook, simpleGithub, simpleInstagram, simpleMastodon, simpleNpm, simpleReddit, simpleThreads, simpleTwitch, simpleX,
   simpleYoutube,
 } from '@ng-icons/simple-icons';
+import { badgeNames, hiddenBadgeKeys } from '../profile/card-badges';
 import { BADGE_ICONS, earnedBadges } from '../profile/earned-badges';
 import { BadgePill } from '../profile/badge-pill';
 import { injectParams } from 'ngxtension/inject-params';
@@ -83,6 +84,8 @@ export default class Profile {
   private readonly fromCountry = injectQueryParams(params => countryCode(params['country']));
   /** The country the owner picked for the shared card, for this link's preview image. */
   private readonly cardFlag = injectQueryParams(params => countryCode(params['flag']));
+  private readonly cardHidden = injectQueryParams(params => hiddenBadgeKeys(params['hide']).join(','));
+  private readonly cardNames = injectQueryParams(params => badgeNames(params['names']));
   /** Every period is in the profile: switching period needs no request. */
   protected readonly profile = injectSeededServerFn(getContributor, () => ({ username: this.username() }));
 
@@ -239,7 +242,7 @@ export default class Profile {
       title,
       description,
       url: `${SITE_URL}/${person.username}${shareQuery(this.period())}`,
-      image: `${SITE_URL}/${person.username}/card.png${shareQuery(this.period(), this.cardFlag())}`,
+      image: `${SITE_URL}/${person.username}/card.png${shareQuery(this.period(), this.cardFlag(), { ...(this.cardHidden() ? { hide: this.cardHidden() } : {}), ...(this.cardNames() !== 'fun' ? { names: this.cardNames() } : {}) })}`,
       canonical: `/${person.username}`,
     });
     setJsonLd(this.document, profileJsonLd(person, { title, description }));

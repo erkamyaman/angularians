@@ -13,7 +13,7 @@
   <!-- Your own profile: share it (the period on screen). In the browser only, as the page is cached for everyone; so
        here, in the breadcrumb's row and as tall as it, where it moves nothing when it appears. -->
   @if (ownProfile(); as person) {
-    <app-share class="hidden shrink-0 lg:flex" [username]="person.username" [period]="period()" [periods]="available()" [country]="person.country" />
+    <app-share class="hidden shrink-0 lg:flex" [username]="person.username" [period]="period()" [periods]="available()" [country]="person.country" [badges]="badges()" />
   }
 </app-container>
 

@@ -1,5 +1,6 @@
 import { useStorage } from 'nitropack/runtime'
 import type { CardFonts } from './card'
+import { TAG_FONTS } from './card-tags'
 import { avatarUrl } from '../../app/contributors/avatar-url'
 import { flagUrl } from '../../app/contributors/flag-url'
 
@@ -16,7 +17,8 @@ export function cardFonts(): Promise<CardFonts> {
     if (!regular || !semibold) throw new Error('The card fonts are missing from the server assets')
     // Optional: only there when the build could download it.
     const brand = await useStorage('assets:brand-font').getItemRaw<Buffer>('Norse-Bold.otf').catch(() => null)
-    return { regular, semibold, brand: brand ?? null }
+    const tags = await Promise.all(TAG_FONTS.map(async ({ name, file }) => ({ name, data: await storage.getItemRaw<Buffer>(file) })))
+    return { regular, semibold, brand: brand ?? null, tags: tags.flatMap(({ name, data }) => data ? [{ name, data }] : []) }
   })().catch((error: unknown) => {
     fonts = undefined
     throw error

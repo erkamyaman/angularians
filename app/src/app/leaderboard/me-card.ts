@@ -15,6 +15,7 @@ import { AuthService } from '../auth/auth.service'
 import { AngularLogo } from '../layout/angular-logo'
 import { AngularianPill } from '../layout/angularian-pill'
 import { ContributorSince } from '../profile/contributor-since'
+import { earnedBadges } from '../profile/earned-badges'
 import { ScoreDialog } from '../profile/score-dialog'
 import { JoinLinks } from './join-links'
 import { Share, SHARE_BUTTONS } from '../profile/share'
@@ -47,6 +48,10 @@ export class MeCard {
   protected readonly loginUrl = this.auth.loginUrl('/')
   protected readonly lastYear = computed(() => this.me()?.angularian?.periods.find(row => row.period === '12m') ?? null)
   protected readonly periods = computed(() => this.me()?.angularian?.periods.map(row => row.period) ?? [])
+  protected readonly earned = computed(() => {
+    const person = this.me()?.angularian
+    return person ? earnedBadges(person) : []
+  })
   protected readonly unlocks = computed(() => {
     const person = this.me()?.angularian
     return [

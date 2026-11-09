@@ -1,5 +1,6 @@
 import { isPlatformBrowser } from '@angular/common'
 import { afterNextRender, Component, DestroyRef, inject, PLATFORM_ID, signal } from '@angular/core'
+import { AngieService } from './angie.service'
 import { lightning, type Strike } from './lightning'
 
 /** The thunder follows the flash (`--strike` in the CSS), a quarter of a second later: the light arrives first. */
@@ -13,7 +14,8 @@ const ANGIE = '/angie/angie-hammer.png'
  * The word "Angularian(s)" or "ng-halla", or a logo, calls Angie: she comes in with her hammer and calls down lightning
  * somewhere on the page, with thunder. A click on the word calls her any time, a click on a logo once a visit (the tab's
  * session); the mouse coming onto the word does once a visit too, and only after a first click or key on the page, so
- * the browser lets the thunder play. Never on touch screens, a link or button that holds the word, or with reduced motion.
+ * the browser lets the thunder play. Never on touch screens, a link or button that holds the word (unless marked
+ * `data-calls-angie`), with reduced motion, or once the visitor has turned her off in the account menu.
  */
 @Component({
   selector: 'app-hammer-strike',
@@ -22,6 +24,7 @@ const ANGIE = '/angie/angie-hammer.png'
   styleUrl: './hammer-strike.css',
 })
 export class HammerStrike {
+  private readonly angie = inject(AngieService)
   protected readonly strike = signal<Strike | null>(null)
 
   /** Angie has gone: the storm is over. */
@@ -42,7 +45,7 @@ export class HammerStrike {
       let angie: HTMLImageElement | undefined
       let calling = false
       const call = (started?: () => void) => {
-        if (calling || this.strike()) return
+        if (!this.angie.on() || calling || this.strike()) return
         calling = true
         angie ??= Object.assign(new Image(), { src: ANGIE })
         angie.decode().then(() => {
@@ -82,7 +85,7 @@ export class HammerStrike {
       }
       const onClick = (event: MouseEvent) => {
         if ((event as PointerEvent).pointerType === 'touch' || this.strike()) return
-        if (angularian(event.target)) call()
+        if (angularian(event.target) || (event.target as Element | null)?.closest?.('[data-calls-angie]')) call()
         else if (headerLogo(event.target) && !usedThisVisit(LOGO)) call(() => remember(LOGO))
       }
       document.addEventListener('pointerover', onOver)

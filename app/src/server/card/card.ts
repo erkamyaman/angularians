@@ -7,6 +7,7 @@ import satori from 'satori'
 import { formatMonth } from '../../app/text/date-format'
 import { formatNumber, formatPoints, formatRank } from '../../app/text/number-format'
 import { statWord } from '../../app/text/stat-names'
+import { TAG_FONT_SIZE, TAG_FONTS, TAG_GAP, TAG_HEIGHT, TAG_ICON_SIZE, TAG_ICON_WIDTH, TAG_LARGE_ICON, TAG_LARGE_SIZE, TAG_PADDING, type CardTag } from './card-tags'
 
 export const CARD_WIDTH = 1200
 export const CARD_HEIGHT = 630
@@ -45,11 +46,24 @@ const ICONS = {
   comments: ['M1 2.75C1 1.784 1.784 1 2.75 1h10.5c.966 0 1.75.784 1.75 1.75v7.5A1.75 1.75 0 0 1 13.25 12H9.06l-2.573 2.573A1.458 1.458 0 0 1 4 13.543V12H2.75A1.75 1.75 0 0 1 1 10.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h4.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z'],
   reactions: ['M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm3.82 1.636a.75.75 0 0 1 1.038.175l.007.009c.103.118.22.222.35.31.264.178.683.37 1.285.37.602 0 1.02-.192 1.285-.371.13-.088.247-.192.35-.31l.007-.008a.75.75 0 0 1 1.222.87l-.022-.015c.02.013.021.015.021.015v.001l-.001.002-.002.003-.005.007-.014.019a2.066 2.066 0 0 1-.184.213c-.16.166-.338.316-.53.445-.63.418-1.37.638-2.127.629-.946 0-1.652-.308-2.126-.63a3.331 3.331 0 0 1-.715-.657l-.014-.02-.005-.006-.002-.003v-.002h-.001l.613-.432-.614.43a.75.75 0 0 1 .183-1.044ZM12 7a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM5 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm5.25 2.25.592.416a97.71 97.71 0 0 0-.592-.416Z'],
 }
-const STAT_ICON_SIZE = 40
-const statIcon = (paths: string[], color: string): Node =>
-  h('svg', { width: STAT_ICON_SIZE, height: STAT_ICON_SIZE }, paths.map(d => h('path', {}, undefined, { d })), {
-    viewBox: '0 0 16 16', width: STAT_ICON_SIZE, height: STAT_ICON_SIZE, fill: color,
+const TILES = { gap: 24, height: 196, padding: 24, icon: 40, value: 58, label: 26 }
+const TILES_WITH_TAGS = { gap: 20, height: 164, padding: 18, icon: 32, value: 50, label: 24 }
+const TILES_WITH_THREE_ROWS = { gap: 16, height: 140, padding: 14, icon: 26, value: 40, label: 20 }
+const statIcon = (paths: string[], color: string, size: number): Node =>
+  h('svg', { width: size, height: size }, paths.map(d => h('path', {}, undefined, { d })), {
+    viewBox: '0 0 16 16', width: size, height: size, fill: color,
   })
+
+const largeIcon = ({ src, colors }: CardTag): Node =>
+  h('div', { width: TAG_LARGE_SIZE, height: TAG_LARGE_SIZE, alignItems: 'center', justifyContent: 'center', borderRadius: 14, backgroundColor: `${colors.pill}1a`, border: `1px solid ${colors.pill}66` }, [
+    h('img', { width: TAG_LARGE_ICON, height: TAG_LARGE_ICON }, undefined, { src, width: TAG_LARGE_ICON, height: TAG_LARGE_ICON }),
+  ])
+
+const badgeTag = ({ src, label, colors }: CardTag): Node =>
+  h('div', { height: TAG_HEIGHT, ...(label ? { paddingLeft: TAG_PADDING, paddingRight: TAG_PADDING, gap: TAG_GAP } : { width: TAG_ICON_WIDTH, justifyContent: 'center' }), alignItems: 'center', borderRadius: 10, backgroundColor: `${colors.pill}1a`, border: `1px solid ${colors.pill}66`, fontFamily: ['Manrope', ...TAG_FONTS.map(font => font.name)].join(', '), fontSize: TAG_FONT_SIZE, fontWeight: 600, color: colors.text, whiteSpace: 'nowrap' }, [
+    h('img', { width: TAG_ICON_SIZE, height: TAG_ICON_SIZE }, undefined, { src, width: TAG_ICON_SIZE, height: TAG_ICON_SIZE }),
+    ...(label ? [h('div', {}, label)] : []),
+  ])
 
 
 /**
@@ -83,7 +97,8 @@ export function cardPeriod(profile: ContributorProfile, requested: unknown): Per
 }
 
 /** `avatar`: a data URL, or `null` when GitHub did not send it (a grey circle instead). */
-export function cardTree(profile: ContributorProfile, period: Period, avatar: string | null, flag: { src: string, name: string } | null = null, badges: readonly string[] = []): Node {
+export function cardTree(profile: ContributorProfile, period: Period, avatar: string | null, flag: { src: string, name: string } | null = null, tags: readonly CardTag[] = []): Node {
+  const tiles = !tags.length ? TILES : tags.some(tag => tag.row === 3) ? TILES_WITH_THREE_ROWS : TILES_WITH_TAGS
   const stats = period === 'all' ? profile : profile.periods.find(row => row.period === period)!
   const since = profile.firstContributionAt ? formatMonth(profile.firstContributionAt) : null
   const rows = [
@@ -119,23 +134,22 @@ export function cardTree(profile: ContributorProfile, period: Period, avatar: st
           ]),
         ]),
       ]),
-      h('div', { flexDirection: 'column', flex: 1, gap: 24 }, rows.map(row =>
-        h('div', { flexDirection: 'row', gap: 24 }, row.map(stat =>
-          h('div', { flexDirection: 'column', justifyContent: 'space-between', flex: 1, height: 196, borderRadius: 24, padding: 24, border: `2px solid ${stat.color}`, backgroundColor: `${stat.color}12` }, [
-            statIcon(stat.icon, stat.color),
-            h('div', { flexDirection: 'column' }, [
-              h('div', { fontSize: 58, fontWeight: 600, lineHeight: 1.1 }, formatNumber(stat.value)),
-              h('div', { fontSize: 26, marginTop: 2, color: stat.color }, stat.label),
-            ]),
-          ])),
-        ))),
+      h('div', { flexDirection: 'column', flex: 1, gap: tiles.gap }, [
+        ...rows.map(row =>
+          h('div', { flexDirection: 'row', gap: tiles.gap }, row.map(stat =>
+            h('div', { flexDirection: 'column', justifyContent: 'space-between', flex: 1, height: tiles.height, borderRadius: 24, padding: tiles.padding, border: `2px solid ${stat.color}`, backgroundColor: `${stat.color}12` }, [
+              statIcon(stat.icon, stat.color, tiles.icon),
+              h('div', { flexDirection: 'column' }, [
+                h('div', { fontSize: tiles.value, fontWeight: 600, lineHeight: 1.1 }, formatNumber(stat.value)),
+                h('div', { fontSize: tiles.label, marginTop: 2, color: stat.color }, stat.label),
+              ]),
+            ])),
+          )),
+        ...(tags.length ? [h('div', { flexDirection: 'row', flexWrap: 'wrap', gap: TAG_GAP }, tags.map(tag => (tags.every(({ label }) => !label) ? largeIcon(tag) : badgeTag(tag))))] : []),
+      ]),
     ]),
     // The footer's left stays empty: X lays the page's title over a card's bottom-left corner.
     h('div', { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 40, borderTop: '1px solid #262626', paddingTop: 18 }, [
-      ...(badges.length ? [h('div', { flexDirection: 'row', gap: 10 }, badges.map(src =>
-        h('div', { width: 48, height: 48, borderRadius: 12, backgroundColor: '#171717', border: '1px solid #262626', alignItems: 'center', justifyContent: 'center' }, [
-          h('img', { width: 28, height: 28 }, undefined, { src, width: 28, height: 28 }),
-        ])))] : []),
       h('div', { flexDirection: 'row', alignItems: 'center', gap: 12 }, [
         markSvg(68),
         h('div', { flexDirection: 'column' }, [
@@ -173,7 +187,7 @@ export function homeTree(input: { title: string, description: string, avatars: A
   ])
 }
 
-export interface CardFonts { regular: ArrayBuffer | Buffer, semibold: ArrayBuffer | Buffer, brand?: ArrayBuffer | Buffer | null }
+export interface CardFonts { regular: ArrayBuffer | Buffer, semibold: ArrayBuffer | Buffer, brand?: ArrayBuffer | Buffer | null, tags?: ReadonlyArray<{ name: string, data: ArrayBuffer | Buffer }> }
 
 export async function renderCard(tree: Node, fonts: CardFonts): Promise<Buffer> {
   const svg = await satori(tree as never, {
@@ -183,6 +197,7 @@ export async function renderCard(tree: Node, fonts: CardFonts): Promise<Buffer> 
       { name: 'Manrope', data: fonts.regular, weight: 400, style: 'normal' },
       { name: 'Manrope', data: fonts.semibold, weight: 600, style: 'normal' },
       ...(fonts.brand ? [{ name: 'Norse', data: fonts.brand, weight: 700 as const, style: 'normal' as const }] : []),
+      ...(fonts.tags ?? []).map(({ name, data }) => ({ name, data, weight: 600 as const, style: 'normal' as const })),
     ],
   })
   return new Resvg(svg, { fitTo: { mode: 'width', value: CARD_WIDTH * PIXEL_RATIO } }).render().asPng()

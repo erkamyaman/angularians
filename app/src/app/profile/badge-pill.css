@@ -101,7 +101,7 @@
 }
 
 /* The projects: on dark, a lighter text and a stronger ring (ngx-builders sets its own) */
-:host-context(.dark) :is(.tone-analog, .tone-ng-icons, .tone-ngxtension, .tone-pangular, .tone-slide-ng, .tone-ng-native, .tone-ng-primitives) {
+:host-context(.dark) :is(.tone-analog, .tone-ng-icons, .tone-ngxtension, .tone-pangular, .tone-slide-ng, .tone-ng-native, .tone-ng-primitives, .tone-ng-baguette, .tone-angular-devs-france, .tone-openng, .tone-ng-poland, .tone-ng-asia, .tone-ng-tunisia, .tone-angular-space, .tone-angular-wroclaw) {
   --pill-ring: color-mix(in oklab, var(--pill) 40%, transparent);
 }
 
@@ -159,6 +159,70 @@
 }
 :host-context(.dark) .tone-ng-primitives {
   --pill-text: #FF5C9A;
+}
+
+.tone-ng-baguette {
+  --pill: #D6336C;
+  --pill-text: #B0245A;
+}
+:host-context(.dark) .tone-ng-baguette {
+  --pill-text: #FF7BA5;
+}
+
+.tone-angular-devs-france {
+  --pill: #1E4FB0;
+  --pill-text: #1E4FB0;
+}
+:host-context(.dark) .tone-angular-devs-france {
+  --pill-text: #7FA6F5;
+}
+
+.tone-openng {
+  --pill: #D6249F;
+  --pill-text: #A81B7E;
+}
+:host-context(.dark) .tone-openng {
+  --pill-text: #FF6FD0;
+}
+
+.tone-ng-poland {
+  --pill: #DC143C;
+  --pill-text: #B8102F;
+}
+:host-context(.dark) .tone-ng-poland {
+  --pill-text: #F2627D;
+}
+
+.tone-ng-asia {
+  --pill: #8B2FE0;
+  --pill-text: #7A22CC;
+}
+:host-context(.dark) .tone-ng-asia {
+  --pill-text: #C58BFF;
+}
+
+.tone-ng-tunisia {
+  --pill: #E70013;
+  --pill-text: #C00010;
+}
+:host-context(.dark) .tone-ng-tunisia {
+  --pill-text: #F2555F;
+}
+
+.tone-angular-space {
+  --pill: #6D3BBF;
+  --pill-text: #5B2FA8;
+}
+:host-context(.dark) .tone-angular-space {
+  --pill-text: #B79CF0;
+}
+
+.tone-angular-wroclaw {
+  --pill: #C2258E;
+  --pill-text: #A81E7A;
+}
+:host-context(.dark) .tone-angular-wroclaw {
+  --pill-text: #FF77C8;
 }
 
 .tone-ngx-builders {

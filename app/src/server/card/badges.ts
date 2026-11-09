@@ -1,7 +1,10 @@
 import type { ContributorProfile } from '@angularians/shared'
+import { cardBadgeLabel, shownBadges, type BadgeNames } from '../../app/profile/card-badges'
 import { BADGE_ICONS, earnedBadges } from '../../app/profile/earned-badges'
 import { siteImage } from './assets'
 import { ANGULAR_LOGO } from './card'
+import { drawableLabel, fitTags, TAG_ROW_WIDTH, TAG_ROWS, type CardTag } from './card-tags'
+import { tagColors } from './tag-colors'
 
 /** The badge icons' colours on the card, which has no theme: the dark theme's. */
 const COLORS: Record<keyof typeof BADGE_ICONS, string> = {
@@ -14,17 +17,16 @@ const COLORS: Record<keyof typeof BADGE_ICONS, string> = {
   vikingAxes: '#A371F7',
 }
 
-/** The card shows this many badges at most, so the row stays clear of the footer's left corner. */
-const MAX_BADGES = 10
-
 const isIcon = (icon: string): icon is keyof typeof BADGE_ICONS => icon in BADGE_ICONS
 
-/** The profile's badges as images for the card, in the profile's order; one whose image is missing is left out. */
-export async function cardBadgeImages(profile: ContributorProfile): Promise<string[]> {
-  const images = await Promise.all(earnedBadges(profile).slice(0, MAX_BADGES).map(({ icon, logo }) =>
-    icon === 'angular' ? ANGULAR_LOGO
+/** The profile's badges as tags for the card, in the profile's order; one whose image is missing is left out. */
+export async function cardBadgeTags(profile: ContributorProfile, hidden: readonly string[] = [], names: BadgeNames = 'fun'): Promise<CardTag[]> {
+  const images = await Promise.all(shownBadges(earnedBadges(profile), hidden).map(async (badge) => {
+    const { icon, logo, tone } = badge
+    const src = icon === 'angular' ? ANGULAR_LOGO
       : isIcon(icon) ? `data:image/svg+xml,${encodeURIComponent(BADGE_ICONS[icon].replaceAll('currentColor', COLORS[icon]))}`
-        : logo ? siteImage(logo) : null,
-  ))
-  return images.filter((src): src is string => !!src)
+        : logo ? await siteImage(logo) : null
+    return src ? { src, label: drawableLabel(cardBadgeLabel(badge, names)), colors: tagColors(tone) } : null
+  }))
+  return fitTags(images.filter(badge => badge !== null), names === 'none' ? 1 : TAG_ROWS, TAG_ROW_WIDTH, names === 'none')
 }

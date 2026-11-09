@@ -7,12 +7,15 @@ import { remixCheckLine, remixDownloadLine, remixFileCopyLine, remixImageLine, r
 import { simpleBluesky, simpleX } from '@ng-icons/simple-icons'
 import { HlmButton } from '@spartan-ng/helm/button'
 import { HlmDialogImports } from '@spartan-ng/helm/dialog'
+import { HlmSelectImports } from '@spartan-ng/helm/select'
 import { CountrySelect } from '../leaderboard/country-select'
 import { PeriodTabs } from '../leaderboard/period-tabs'
 import { HlmSkeleton } from '@spartan-ng/helm/skeleton'
 import { SITE_URL } from '../site'
 import { shareQuery } from './share-query'
+import { badgeKey, cardBadgeLabel, type BadgeNames } from './card-badges'
 import { CARD_DESIGN } from './card-design'
+import type { EarnedBadge } from './earned-badges'
 
 /** The skeleton shows at least this long, so a fast card does not flicker it. */
 const MIN_LOADING_MS = 500
@@ -26,7 +29,7 @@ export const SHARE_BUTTONS = { link: 'Copy profile link', card: 'Share card', re
 /** Copy the profile link, or the Markdown of the Angularian card for a GitHub profile README. */
 @Component({
   selector: 'app-share',
-  imports: [CountrySelect, HlmButton, HlmDialogImports, HlmSkeleton, NgIcon, NgTemplateOutlet, PeriodTabs],
+  imports: [CountrySelect, HlmButton, HlmDialogImports, HlmSelectImports, HlmSkeleton, NgIcon, NgTemplateOutlet, PeriodTabs],
   providers: [provideIcons({ remixCheckLine, remixDownloadLine, remixFileCopyLine, remixImageLine, remixLinkedinBoxFill, remixShareLine, simpleBluesky, simpleX, remixLinkM, remixMarkdownLine })],
   templateUrl: './share.html',
   styleUrl: './share.css',
@@ -39,6 +42,7 @@ export class Share {
   readonly periods = input<readonly Period[]>([])
   /** The country of the GitHub location, when it has one. */
   readonly country = input<string | null | undefined>(null)
+  readonly badges = input<readonly EarnedBadge[]>([])
 
   protected readonly buttons = SHARE_BUTTONS
   protected readonly copied = signal<'link' | 'markdown' | null>(null)
@@ -56,6 +60,22 @@ export class Share {
   protected readonly cardPeriod = linkedSignal(() => this.period())
   /** A country picked for this card only. `null`: the GitHub location. */
   protected readonly flag = signal<string | null>(null)
+  protected readonly hiddenBadges = signal<readonly string[]>([])
+  protected readonly names = signal<BadgeNames>('fun')
+  protected readonly nameChoices = computed((): ReadonlyArray<{ value: BadgeNames, label: string }> => this.badges().some(badge => badge.officialLabel)
+    ? [{ value: 'fun', label: 'Fun names' }, { value: 'official', label: 'Official names' }, { value: 'none', label: 'No names' }]
+    : [{ value: 'fun', label: 'Names' }, { value: 'none', label: 'No names' }])
+  protected readonly nameLabel = (value: BadgeNames) => this.nameChoices().find(choice => choice.value === value)?.label ?? ''
+  protected readonly badgeChoices = computed(() => this.badges().map(badge => ({ key: badgeKey(badge.label), label: cardBadgeLabel(badge, this.names()) })))
+  protected readonly shownKeys = computed(() => this.badgeChoices().map(choice => choice.key).filter(key => !this.hiddenBadges().includes(key)))
+  protected readonly badgesLabel = computed(() => {
+    const total = this.badgeChoices().length
+    const shown = this.shownKeys().length
+    if (shown === total) return 'All badges'
+    return shown ? `${shown} of ${total} badges` : 'No badges'
+  })
+  protected readonly noneShown = computed(() => !this.shownKeys().length)
+  protected readonly badgeName = (key: string) => this.badgeChoices().find(choice => choice.key === key)?.label ?? key
   protected readonly allCountries = Object.keys(COUNTRIES).map(code => ({ code, count: 0, top: [] }))
   protected readonly name = countryName
   protected readonly flagLabel = computed(() => {
@@ -64,12 +84,16 @@ export class Share {
   })
   protected readonly cardPeriods = computed(() => sortPeriods(['all', ...this.periods()]))
 
+  private readonly badgeQuery = computed((): Record<string, string> => ({
+    ...(this.hiddenBadges().length ? { hide: [...this.hiddenBadges()].sort().join(',') } : {}),
+    ...(this.names() !== 'fun' && !this.noneShown() ? { names: this.names() } : {}),
+  }))
   private readonly profileUrl = computed(() => `${SITE_URL}/${this.username()}${shareQuery(this.period())}`)
   /** The profile with the card's period and flag: what a post links to, and the README card's link. */
-  private readonly cardProfileUrl = computed(() => `${SITE_URL}/${this.username()}${shareQuery(this.cardPeriod(), this.flag())}`)
-  private readonly cardUrl = computed(() => `${SITE_URL}/${this.username()}/card.png${shareQuery(this.cardPeriod(), this.flag())}`)
+  private readonly cardProfileUrl = computed(() => `${SITE_URL}/${this.username()}${shareQuery(this.cardPeriod(), this.flag(), this.badgeQuery())}`)
+  private readonly cardUrl = computed(() => `${SITE_URL}/${this.username()}/card.png${shareQuery(this.cardPeriod(), this.flag(), this.badgeQuery())}`)
   /** The same card from this site: right on a preview deploy or locally too. The Markdown keeps the public address. */
-  protected readonly previewUrl = computed(() => `/${this.username()}/card.png${shareQuery(this.cardPeriod(), this.flag(), { v: String(CARD_DESIGN) })}`)
+  protected readonly previewUrl = computed(() => `/${this.username()}/card.png${shareQuery(this.cardPeriod(), this.flag(), { v: String(CARD_DESIGN), ...this.badgeQuery() })}`)
   protected readonly fileName = computed(() => `${this.username()}-angularian${this.cardPeriod() === 'all' ? '' : `-${this.cardPeriod()}`}.png`)
   /** The profile's link preview is this card, so a post only needs the link. */
   protected readonly shareLinks = computed(() => {
@@ -95,6 +119,8 @@ export class Share {
     if (state !== 'open') return
     this.cardPeriod.set(this.period())
     this.flag.set(null)
+    this.hiddenBadges.set([])
+    this.names.set('fun')
     this.shownUrl.set(null)
     this.startLoading()
   }
@@ -109,6 +135,22 @@ export class Share {
     if (code === this.flag()) return
     this.flag.set(code)
     this.startLoading()
+  }
+
+  protected pickBadges(keys: readonly string[] | null | undefined): void {
+    const shown = keys ?? []
+    this.hiddenBadges.set(this.badgeChoices().map(choice => choice.key).filter(key => !shown.includes(key)))
+    this.startLoading()
+  }
+
+  protected pickNames(value: BadgeNames | null | undefined): void {
+    if (!value || value === this.names()) return
+    this.names.set(value)
+    this.startLoading()
+  }
+
+  protected toggleNoBadges(): void {
+    this.pickBadges(this.noneShown() ? this.badgeChoices().map(choice => choice.key) : [])
   }
 
   protected showLoadedCard(url: string): void {

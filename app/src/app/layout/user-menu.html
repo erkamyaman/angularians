@@ -11,7 +11,7 @@
       </div>
       <div class="my-1 h-px bg-border" role="separator"></div>
       @if (me.angularian; as person) {
-        <a class="menu-item" [routerLink]="['/', person.username]" (click)="closeMenu(ctx)">
+        <a class="menu-item" [routerLink]="['/', person.username]" (click)="closeMenu(ctx)" data-calls-angie>
           <app-logo-mark class="size-4 shrink-0 text-primary" compact />
           <!-- One text run, so the word sits on the line with the rest, not centred as a separate box -->
           <span>My <span class="brand text-primary">Angularian</span> profile</span>
@@ -20,6 +20,7 @@
         <p class="px-2 py-1.5 text-sm text-muted-foreground">No contributions on record yet.</p>
       }
       <div class="my-1 h-px bg-border" role="separator"></div>
+      <button type="button" class="menu-item" (click)="angie.toggle()"><img src="/angie/angie-hammer.png" alt="" width="20" height="20" class="size-5 shrink-0 object-contain" /> {{ angieLabel() }}</button>
       <form method="post" action="/api/auth/logout">
         <button type="submit" class="menu-item"><ng-icon name="remixLogoutBoxRLine" aria-hidden="true" /> Sign out</button>
       </form>
