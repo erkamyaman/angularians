@@ -1,0 +1,7 @@
+<a hlmBtn variant="ghost" class="repo" [href]="repoUrl" target="_blank" rel="noopener" [attr.aria-label]="label()" [title]="label()">
+  <ng-icon name="simpleGithub" aria-hidden="true" />
+  @if (stars(); as stars) {
+    <span class="divider" aria-hidden="true"></span>
+    <span class="stars"><ng-icon name="remixStarFill" size="0.9375rem" aria-hidden="true" />{{ stars }}</span>
+  }
+</a>

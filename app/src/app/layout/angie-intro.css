@@ -1,0 +1,26 @@
+.sponsor {
+  border: 1px solid var(--github-red);
+  color: var(--github-red);
+  background-color: color-mix(in oklab, var(--github-red) 12%, transparent);
+}
+
+.sponsor:hover {
+  background-color: color-mix(in oklab, var(--github-red) 22%, transparent);
+}
+
+.quiet {
+  justify-self: center;
+  font-size: var(--text-xs);
+  color: var(--muted-foreground);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.quiet:hover {
+  color: var(--foreground);
+}
+
+.quiet:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}

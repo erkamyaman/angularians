@@ -4,9 +4,9 @@ import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { remixHeartLine, remixLoginBoxLine } from '@ng-icons/remixicon';
-import { simpleGithub } from '@ng-icons/simple-icons';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { Container } from './container';
+import { GithubStars } from './github-stars';
 import { scrollHomeToTop } from './home-top';
 import { LogoMark } from './logo-mark';
 import { ThemeToggle } from './theme-toggle';
@@ -15,8 +15,8 @@ import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-site-header',
-  imports: [Container, HlmButton, LogoMark, NgIcon, RouterLink, ThemeToggle, UserMenu],
-  providers: [provideIcons({ remixHeartLine, remixLoginBoxLine, simpleGithub })],
+  imports: [Container, GithubStars, HlmButton, LogoMark, NgIcon, RouterLink, ThemeToggle, UserMenu],
+  providers: [provideIcons({ remixHeartLine, remixLoginBoxLine })],
   host: { role: 'banner' },
   templateUrl: './site-header.html',
   styleUrl: './site-header.css',

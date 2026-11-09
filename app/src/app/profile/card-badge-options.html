@@ -1,0 +1,23 @@
+@if (choices().length) {
+  <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+    <hlm-select-multiple class="shrink-0 sm:w-52" [value]="shownKeys()" [itemToString]="choiceLabel" (valueChange)="pickBadges($any($event))">
+      <hlm-select-trigger class="w-full" buttonAriaLabel="Badges on the card"><span class="truncate">{{ summary() }}</span></hlm-select-trigger>
+      <hlm-select-content *hlmSelectPortal>
+        @for (choice of choices(); track choice.key) {
+          <hlm-select-item [value]="choice.key">{{ choice.label }}</hlm-select-item>
+        }
+      </hlm-select-content>
+    </hlm-select-multiple>
+    <button hlmBtn variant="ghost" size="sm" type="button" class="self-start sm:self-auto" (click)="toggleNoBadges()">{{ toggleLabel() }}</button>
+    @if (!noneShown()) {
+      <hlm-select class="shrink-0 sm:w-40" [value]="names()" [itemToString]="nameLabel" (valueChange)="pickNames($any($event))">
+        <hlm-select-trigger class="w-full" buttonAriaLabel="Badge names on the card"><hlm-select-value /></hlm-select-trigger>
+        <hlm-select-content *hlmSelectPortal>
+          @for (choice of nameChoices(); track choice.value) {
+            <hlm-select-item [value]="choice.value">{{ choice.label }}</hlm-select-item>
+          }
+        </hlm-select-content>
+      </hlm-select>
+    }
+  </div>
+}

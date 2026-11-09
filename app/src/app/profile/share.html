@@ -22,29 +22,7 @@
           @if (country(); as code) { says {{ name(code) }}. From elsewhere? Pick yours. } @else { is empty. Pick a country for a flag. }
         </p>
       </div>
-      @if (badgeChoices().length) {
-        <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
-          <hlm-select-multiple class="shrink-0 sm:w-52" [value]="shownKeys()" [itemToString]="badgeName" (valueChange)="pickBadges($any($event))">
-            <hlm-select-trigger class="w-full" buttonAriaLabel="Badges on the card"><span class="truncate">{{ badgesLabel() }}</span></hlm-select-trigger>
-            <hlm-select-content *hlmSelectPortal>
-              @for (choice of badgeChoices(); track choice.key) {
-                <hlm-select-item [value]="choice.key">{{ choice.label }}</hlm-select-item>
-              }
-            </hlm-select-content>
-          </hlm-select-multiple>
-          <button hlmBtn variant="ghost" size="sm" type="button" class="self-start sm:self-auto" (click)="toggleNoBadges()">{{ noneShown() ? 'Show all badges' : 'No badges' }}</button>
-          @if (!noneShown()) {
-            <hlm-select class="shrink-0 sm:w-40" [value]="names()" [itemToString]="nameLabel" (valueChange)="pickNames($any($event))">
-              <hlm-select-trigger class="w-full" buttonAriaLabel="Badge names on the card"><hlm-select-value /></hlm-select-trigger>
-              <hlm-select-content *hlmSelectPortal>
-                @for (choice of nameChoices(); track choice.value) {
-                  <hlm-select-item [value]="choice.value">{{ choice.label }}</hlm-select-item>
-                }
-              </hlm-select-content>
-            </hlm-select>
-          }
-        </div>
-      }
+      <app-card-badge-options [badges]="badges()" [(hidden)]="hiddenBadges" [(names)]="names" (changed)="startLoading()" />
       <!-- The card's own background while it loads. Changing the period keeps the card on screen (the avatar and the
            name do not change) and only the parts that do (the rank, the points, the four stats) shimmer until the
            new one fades in over it. -->

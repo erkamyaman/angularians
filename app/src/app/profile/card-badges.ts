@@ -2,7 +2,7 @@ const MAX_KEYS = 30
 const MAX_KEY_LENGTH = 60
 
 export const badgeKey = (label: string): string =>
-  label.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '')
+  label.startsWith('#1 in ') ? 'number-one' : label.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '')
 
 export function hiddenBadgeKeys(value: unknown): string[] {
   if (typeof value !== 'string') return []
@@ -16,7 +16,14 @@ export function shownBadges<T extends { label: string }>(badges: readonly T[], h
 
 export type BadgeNames = 'fun' | 'official' | 'none'
 
-export const badgeNames = (value: unknown): BadgeNames => (value === 'official' || value === 'none' ? value : 'fun')
+export const parseBadgeNames = (value: unknown): BadgeNames => (value === 'official' || value === 'none' ? value : 'fun')
 
 export const cardBadgeLabel = (badge: { label: string, officialLabel?: string }, names: BadgeNames): string =>
   (names === 'official' && badge.officialLabel) || badge.label
+
+export function badgeQuery(hidden: readonly string[], names: BadgeNames): Record<string, string> {
+  return {
+    ...(hidden.length ? { hide: [...hidden].sort().join(',') } : {}),
+    ...(names !== 'fun' ? { names } : {}),
+  }
+}

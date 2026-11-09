@@ -1,11 +1,15 @@
-import { badgeKey, cardBadgeLabel, hiddenBadgeKeys, shownBadges, badgeNames } from './card-badges'
+import { badgeKey, badgeQuery, cardBadgeLabel, hiddenBadgeKeys, parseBadgeNames, shownBadges } from './card-badges'
 
 describe('badgeKey', () => {
   it('makes a label safe for a URL, keeping its letters', () => {
     expect(badgeKey('NG Baguette organizer')).toBe('ng-baguette-organizer')
-    expect(badgeKey('#1 in 2018, 2020')).toBe('1-in-2018-2020')
+    expect(badgeKey('Top 10 all time')).toBe('top-10-all-time')
     expect(badgeKey('Русский translator')).toBe('русский-translator')
     expect(badgeKey('Français translator')).toBe('français-translator')
+  })
+
+  it('keeps one key for the #1 badge as its years grow', () => {
+    expect(badgeKey('#1 in 2024')).toBe(badgeKey('#1 in 2024–2025'))
   })
 })
 
@@ -37,10 +41,10 @@ describe('shownBadges', () => {
 
 describe('badge names', () => {
   it('reads official and none, and anything else is fun', () => {
-    expect(badgeNames('official')).toBe('official')
-    expect(badgeNames('none')).toBe('none')
-    expect(badgeNames('x')).toBe('fun')
-    expect(badgeNames(undefined)).toBe('fun')
+    expect(parseBadgeNames('official')).toBe('official')
+    expect(parseBadgeNames('none')).toBe('none')
+    expect(parseBadgeNames('x')).toBe('fun')
+    expect(parseBadgeNames(undefined)).toBe('fun')
   })
 
   it('uses the official label when asked and there is one', () => {
@@ -48,5 +52,15 @@ describe('badge names', () => {
     expect(cardBadgeLabel(fun, 'fun')).toBe('Analog alchemist')
     expect(cardBadgeLabel(fun, 'official')).toBe('AnalogJS creator')
     expect(cardBadgeLabel({ label: 'NG Poland organizer' }, 'official')).toBe('NG Poland organizer')
+  })
+})
+
+describe('badgeQuery', () => {
+  it('leaves out the defaults', () => {
+    expect(badgeQuery([], 'fun')).toEqual({})
+  })
+
+  it('sorts what is hidden and names the choice', () => {
+    expect(badgeQuery(['reviewer', 'creator'], 'none')).toEqual({ hide: 'creator,reviewer', names: 'none' })
   })
 })

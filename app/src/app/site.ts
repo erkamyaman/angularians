@@ -4,6 +4,8 @@ export const SITE_URL = 'https://angularians.dev'
 /** The site's repository on GitHub. */
 export const REPO_URL = 'https://github.com/erkamyaman/angularians'
 
+export const SPONSOR_URL = 'https://github.com/sponsors/erkamyaman'
+
 /** Who made the site, for search engines (schema.org `Person`): the author of every page. */
 export const SITE_AUTHOR = {
   '@type': 'Person',

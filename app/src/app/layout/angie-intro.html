@@ -1,0 +1,21 @@
+<hlm-dialog [state]="state()" [closeOnOutsidePointerEvents]="false" [disableClose]="true" (stateChanged)="closeWhenDismissed($event)">
+  <hlm-dialog-content *hlmDialogPortal [showCloseButton]="canClose()" class="max-h-[90dvh] overflow-y-auto sm:max-w-md">
+    <hlm-dialog-header class="items-center text-center">
+      <img src="/angie/angie-hammer.png" alt="" width="112" height="112" class="size-28 translate-x-3" />
+      <h2 hlmDialogTitle>That was Angie</h2>
+      <p hlmDialogDescription>She is <a [href]="pressKitUrl" target="_blank" rel="noopener" class="font-medium text-foreground underline underline-offset-2">Angular’s official mascot</a>. Here she guards <span class="brand text-primary">ng-halla</span>, the hall of every <span class="brand text-primary">Angularian</span>. Click that word or a logo and she comes back.</p>
+    </hlm-dialog-header>
+    <p class="text-center text-sm text-pretty text-muted-foreground" aria-live="polite">
+      @if (starred()) {
+        If you can, a sponsor helps pay for the hosting and keeps the hall open.
+      } @else {
+        It is free, has no ads and is run by <a [href]="authorUrl" target="_blank" rel="noopener" class="font-medium text-foreground underline underline-offset-2">one maintainer</a>. A star helps other <span class="ml-0.5 inline-flex items-baseline gap-1 font-medium whitespace-nowrap text-foreground"><app-angular-logo class="size-[1.1em] self-center" />Angular</span> developers find it, and a sponsor helps pay for the hosting.
+      }
+    </p>
+    <div class="grid gap-2 sm:grid-cols-2">
+      <a hlmBtn [variant]="starred() ? 'secondary' : 'default'" [href]="repoUrl" target="_blank" rel="noopener" (click)="markStarred()"><ng-icon [name]="starIcon()" aria-hidden="true" /> {{ starLabel() }}</a>
+      <a hlmBtn variant="ghost" class="sponsor" [href]="sponsorUrl" target="_blank" rel="noopener"><ng-icon name="remixHeartLine" aria-hidden="true" /> Sponsor</a>
+    </div>
+    <button type="button" class="quiet" (click)="turnOff()">Too loud? Turn off Angie’s lightning</button>
+  </hlm-dialog-content>
+</hlm-dialog>

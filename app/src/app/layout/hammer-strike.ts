@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common'
-import { afterNextRender, Component, DestroyRef, inject, PLATFORM_ID, signal } from '@angular/core'
+import { afterNextRender, Component, DestroyRef, effect, inject, PLATFORM_ID, signal } from '@angular/core'
 import { AngieService } from './angie.service'
 import { lightning, type Strike } from './lightning'
 
@@ -14,8 +14,8 @@ const ANGIE = '/angie/angie-hammer.png'
  * The word "Angularian(s)" or "ng-halla", or a logo, calls Angie: she comes in with her hammer and calls down lightning
  * somewhere on the page, with thunder. A click on the word calls her any time, a click on a logo once a visit (the tab's
  * session); the mouse coming onto the word does once a visit too, and only after a first click or key on the page, so
- * the browser lets the thunder play. Never on touch screens, a link or button that holds the word (unless marked
- * `data-calls-angie`), with reduced motion, or once the visitor has turned her off in the account menu.
+ * the browser lets the thunder play. Never on touch screens, a link, button or dialog that holds the word (a link
+ * can opt in with `data-calls-angie`), with reduced motion, or once the visitor has turned her off in the account menu.
  */
 @Component({
   selector: 'app-hammer-strike',
@@ -26,32 +26,36 @@ const ANGIE = '/angie/angie-hammer.png'
 export class HammerStrike {
   private readonly angie = inject(AngieService)
   protected readonly strike = signal<Strike | null>(null)
+  private thunder: HTMLAudioElement | undefined
 
   /** Angie has gone: the storm is over. */
   protected end(): void {
+    if (!this.strike()) return
     this.strike.set(null)
+    this.angie.stormEnded()
   }
 
   constructor() {
     const destroyRef = inject(DestroyRef)
     if (!isPlatformBrowser(inject(PLATFORM_ID))) return
+    this.stopWhenTurnedOff()
     afterNextRender(() => {
       if (matchMedia('(prefers-reduced-motion: reduce), (hover: none)').matches) return
       let current: Element | null = null
       let thunderTimer: ReturnType<typeof setTimeout> | undefined
       let endTimer: ReturnType<typeof setTimeout> | undefined
-      let thunder: HTMLAudioElement | undefined
       let strikes = 0
-      let angie: HTMLImageElement | undefined
+      let portrait: HTMLImageElement | undefined
       let calling = false
       const call = (started?: () => void) => {
         if (!this.angie.on() || calling || this.strike()) return
         calling = true
-        angie ??= Object.assign(new Image(), { src: ANGIE })
-        angie.decode().then(() => {
+        portrait ??= Object.assign(new Image(), { src: ANGIE })
+        portrait.decode().then(() => {
+          if (!this.angie.on()) return
           storm()
           started?.()
-        }, () => (angie = undefined)).finally(() => (calling = false))
+        }, () => (portrait = undefined)).finally(() => (calling = false))
       }
       const storm = () => {
         const x = innerWidth * (0.2 + Math.random() * 0.5)
@@ -61,19 +65,19 @@ export class HammerStrike {
         endTimer = setTimeout(() => this.end(), STORM)
         remember(HOVERED)
         thunderTimer = setTimeout(() => {
-          if (!thunder) return
-          thunder.currentTime = 0
-          thunder.play().catch(() => {
+          if (!this.thunder || !this.angie.on()) return
+          this.thunder.currentTime = 0
+          this.thunder.play().catch(() => {
             // Not allowed yet: no click or key on the page so far.
           })
         }, THUNDER)
       }
       // The first click or key wakes the hover up, and loads the thunder ahead of the first storm.
       const wake = () => {
-        if (thunder) return
-        thunder = new Audio('/sounds/thunder.mp3')
-        thunder.preload = 'auto'
-        thunder.volume = 0.6
+        if (this.thunder) return
+        this.thunder = new Audio('/sounds/thunder.mp3')
+        this.thunder.preload = 'auto'
+        this.thunder.volume = 0.6
       }
       const onOver = (event: PointerEvent) => {
         if (event.pointerType !== 'mouse') return
@@ -81,7 +85,7 @@ export class HammerStrike {
         // Once per entry into a word: moving inside it, or over its letters, does not call her again.
         if (word === current) return
         current = word
-        if (word && thunder && !usedThisVisit(HOVERED)) call()
+        if (word && this.thunder && !usedThisVisit(HOVERED)) call()
       }
       const onClick = (event: MouseEvent) => {
         if ((event as PointerEvent).pointerType === 'touch' || this.strike()) return
@@ -102,13 +106,21 @@ export class HammerStrike {
       })
     })
   }
+
+  private stopWhenTurnedOff(): void {
+    effect(() => {
+      if (this.angie.on()) return
+      this.end()
+      this.thunder?.pause()
+    })
+  }
 }
 
-/** The word "Angularian(s)" or "ng-halla" under the pointer, not in a link or a button, or `null`. Ranks and headings share its font. */
+/** The word "Angularian(s)" or "ng-halla" under the pointer, not in a link, a button or a dialog, or `null`. Ranks and headings share its font. */
 function angularian(target: EventTarget | null): Element | null {
   const element = target as Element | null
   const word = element?.closest?.('.brand')
-  if (!word || word.closest('a, button')) return null
+  if (!word || word.closest('a, button, hlm-dialog-content')) return null
   return [element!, word].find(candidate => /^(angularians?|ng-halla)$/i.test(candidate.textContent?.trim() ?? '')) ?? null
 }
 

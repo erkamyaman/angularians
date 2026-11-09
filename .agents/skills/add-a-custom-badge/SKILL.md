@@ -13,7 +13,7 @@ Ask for anything missing; never guess it. The "Badge request" issue form asks fo
 
 | What | Why |
 | --- | --- |
-| Each person's GitHub username and role (`creator`, `co-creator`, `maintainer` or `organizer`) | who wears it |
+| Each person's GitHub username and role (`creator`, `co-creator`, `founder`, `co-founder`, `maintainer`, `organizer` or `lead organizer`) | who wears it |
 | Project name | the tooltip |
 | Website, its main page | where the badge links |
 | GitHub repository (required for a library or a tool) | to check the project and the role |
@@ -39,7 +39,7 @@ Done when every row not marked optional has an answer (the repository only for a
    ] },
    ```
 
-   - **`badge`.** Two or three words, playful, about what the project does ("Analog alchemist", "Icon smith", "Slide master"). Use a word other badges don't already use. Don't use the plain role ("Creator"): the one exception is the badge of Angularians' own creator. A conference or a community is different: its badge is its real name and the role ("NG Poland organizer"), never a joke.
+   - **`badge`.** Two or three words, playful, about what the project does ("Analog alchemist", "Icon smith", "Slide master"). Use a word other badges don't already use. Don't use the plain role ("Creator"): the one exception is the badge of Angularians' own creator. A conference or a community is different: its badge is its real name and the role ("NG Poland organizer"), never a joke, with `officialTitle: true`.
    - **`tone`.** The project's name in kebab case. Add its colours to `app/src/app/profile/badge-pill.css`, after the other projects, built from the brand colour `C` like theirs: `--pill-bg: color-mix(in oklab, C 10%, transparent)`, `--pill-text: L`, `--pill-ring: color-mix(in oklab, C 30%, transparent)` in `.tone-<project>`, then `--pill-text: D` and `--pill-ring: color-mix(in oklab, C 40%, transparent)` in `:host-context(.dark) .tone-<project>`. `L` is `C` darkened until it has 4.5:1 contrast on white. `D` is `C` lightened until it has 4.5:1 on `#0a0a0a`. Add the same `C` and `D` to `TAG_COLORS` in `app/src/server/card/tag-colors.ts`: the card has no theme.
    - **`builtOn`.** Leave it out. It is only for the tools Angularians itself runs on.
 4. **Notices.** Add the logo's credit to `THIRD_PARTY_NOTICES.md`, under "Credited logos".

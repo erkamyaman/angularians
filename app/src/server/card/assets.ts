@@ -1,6 +1,6 @@
 import { useStorage } from 'nitropack/runtime'
 import type { CardFonts } from './card'
-import { TAG_FONTS } from './card-tags'
+import { TAG_FONTS } from './tag-fonts'
 import { avatarUrl } from '../../app/contributors/avatar-url'
 import { flagUrl } from '../../app/contributors/flag-url'
 

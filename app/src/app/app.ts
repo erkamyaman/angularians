@@ -1,6 +1,7 @@
 import { isPlatformBrowser, Location } from '@angular/common';
 import { afterNextRender, Component, DestroyRef, inject, Injector, PLATFORM_ID, signal } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router, RouterOutlet } from '@angular/router';
+import { AngieIntro } from './layout/angie-intro';
 import { HammerStrike } from './layout/hammer-strike';
 import { SiteFooter } from './layout/site-footer';
 import { SiteHeader } from './layout/site-header';
@@ -8,7 +9,7 @@ import { ThemeService } from './theme.service';
 
 @Component({
   selector: 'app-root',
-  imports: [HammerStrike, RouterOutlet, SiteFooter, SiteHeader],
+  imports: [AngieIntro, HammerStrike, RouterOutlet, SiteFooter, SiteHeader],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

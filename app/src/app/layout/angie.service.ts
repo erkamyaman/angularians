@@ -2,12 +2,16 @@ import { isPlatformBrowser } from '@angular/common'
 import { inject, PLATFORM_ID, Service, signal } from '@angular/core'
 
 export const ANGIE_OFF_KEY = 'angularians-angie-off'
+export const ANGIE_MET_KEY = 'angularians-angie-met'
 
 @Service()
 export class AngieService {
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID))
 
+  private met = false
+
   readonly on = signal(true)
+  readonly introOpen = signal(false)
 
   constructor() {
     if (this.browser) this.restoreChoice()
@@ -24,8 +28,25 @@ export class AngieService {
     }
   }
 
+  stormEnded(): void {
+    if (!this.on() || this.met) return
+    this.met = true
+    this.introOpen.set(true)
+    try {
+      localStorage.setItem(ANGIE_MET_KEY, '1')
+    }
+    catch {
+      // Not remembered: she introduces herself again next visit.
+    }
+  }
+
+  closeIntro(): void {
+    this.introOpen.set(false)
+  }
+
   private restoreChoice(): void {
     try {
+      this.met = localStorage.getItem(ANGIE_MET_KEY) === '1'
       if (localStorage.getItem(ANGIE_OFF_KEY) === '1') this.on.set(false)
     }
     catch {

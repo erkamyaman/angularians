@@ -7,7 +7,8 @@ import satori from 'satori'
 import { formatMonth } from '../../app/text/date-format'
 import { formatNumber, formatPoints, formatRank } from '../../app/text/number-format'
 import { statWord } from '../../app/text/stat-names'
-import { TAG_FONT_SIZE, TAG_FONTS, TAG_GAP, TAG_HEIGHT, TAG_ICON_SIZE, TAG_ICON_WIDTH, TAG_LARGE_ICON, TAG_LARGE_SIZE, TAG_PADDING, type CardTag } from './card-tags'
+import { TAG_FONT_SIZE, TAG_GAP, TAG_HEIGHT, TAG_ICON_SIZE, TAG_ICON_WIDTH, TAG_LARGE_ICON, TAG_LARGE_SIZE, TAG_PADDING, type CardTag } from './card-tags'
+import { TAG_FONTS } from './tag-fonts'
 
 export const CARD_WIDTH = 1200
 export const CARD_HEIGHT = 630
@@ -65,6 +66,10 @@ const badgeTag = ({ src, label, colors }: CardTag): Node =>
     ...(label ? [h('div', {}, label)] : []),
   ])
 
+
+const tagRows = (tags: readonly CardTag[]): Node[] =>
+  [...new Set(tags.map(tag => tag.row))].map(row =>
+    h('div', { flexDirection: 'row', gap: TAG_GAP }, tags.filter(tag => tag.row === row).map(tag => (tag.large ? largeIcon(tag) : badgeTag(tag)))))
 
 /**
  * Text with the word "Angularian(s)" set in the brand font (its capitals are about as tall as Manrope's):
@@ -145,7 +150,7 @@ export function cardTree(profile: ContributorProfile, period: Period, avatar: st
               ]),
             ])),
           )),
-        ...(tags.length ? [h('div', { flexDirection: 'row', flexWrap: 'wrap', gap: TAG_GAP }, tags.map(tag => (tags.every(({ label }) => !label) ? largeIcon(tag) : badgeTag(tag))))] : []),
+        ...(tags.length ? [h('div', { flexDirection: 'column', gap: TAG_GAP }, tagRows(tags))] : []),
       ]),
     ]),
     // The footer's left stays empty: X lays the page's title over a card's bottom-left corner.

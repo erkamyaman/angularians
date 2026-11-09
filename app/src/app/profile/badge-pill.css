@@ -161,6 +161,15 @@
   --pill-text: #FF5C9A;
 }
 
+.tone-ngx-builders {
+  --pill: #455A64;
+  --pill-text: #37474F;
+}
+:host-context(.dark) .tone-ngx-builders {
+  --pill-text: #B0BEC5;
+  --pill-ring: color-mix(in oklab, #90A4AE 40%, transparent);
+}
+
 .tone-ng-baguette {
   --pill: #D6336C;
   --pill-text: #B0245A;
@@ -223,15 +232,6 @@
 }
 :host-context(.dark) .tone-angular-wroclaw {
   --pill-text: #FF77C8;
-}
-
-.tone-ngx-builders {
-  --pill: #455A64;
-  --pill-text: #37474F;
-}
-:host-context(.dark) .tone-ngx-builders {
-  --pill-text: #B0BEC5;
-  --pill-ring: color-mix(in oklab, #90A4AE 40%, transparent);
 }
 
 /* The translations: each in its flag's colour, its text 4.5:1 on the tint in both themes */
