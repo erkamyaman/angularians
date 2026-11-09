@@ -36,6 +36,9 @@
       <a class="hover:text-foreground" [href]="repo + '/blob/main/LICENSE'" target="_blank" rel="noopener">MIT licence</a> ·
       Inspired by <a class="hover:text-foreground" href="https://nuxt.com/nuxters" target="_blank" rel="noopener">Nuxters</a> ·
       <a class="hover:text-foreground" [href]="repo + '/blob/main/THIRD_PARTY_NOTICES.md'" target="_blank" rel="noopener">Credits</a>
+      @if (!angie.on()) {
+        · <button type="button" class="hover:text-foreground" (click)="angie.toggle()">Turn on Angie’s lightning</button>
+      }
     </p>
     <p>Community project, not affiliated with Google or the Angular team. Angular is a trademark of Google LLC.</p>
   </div>

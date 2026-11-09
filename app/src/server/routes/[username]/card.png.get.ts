@@ -2,7 +2,7 @@ import { sendPng } from '../../data/http'
 import { createError, defineEventHandler, getQuery, getRouterParam } from 'h3'
 import * as v from 'valibot'
 import { countryCode, countryName } from '@angularians/shared'
-import { hiddenBadgeKeys, parseBadgeNames } from '../../../app/profile/card-badges'
+import { parseBadgeOptions } from '../../../app/profile/card-badges'
 import { avatarData, cardFonts, flagData } from '../../card/assets'
 import { cardBadgeTags } from '../../card/badges'
 import { cardPeriod, cardTree, renderCard } from '../../card/card'
@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
   const period = cardPeriod(profile, getQuery(event)['period'])
   // `?flag=TR`: the country the owner picked for this card. Otherwise their GitHub location.
   const code = countryCode(getQuery(event)['flag']) ?? profile.country ?? null
-  const [avatar, flagSrc, fonts, tags] = await Promise.all([avatarData(profile.githubId), code ? flagData(code) : null, cardFonts(), cardBadgeTags(profile, hiddenBadgeKeys(getQuery(event)['hide']), parseBadgeNames(getQuery(event)['names']))])
+  const [avatar, flagSrc, fonts, tags] = await Promise.all([avatarData(profile.githubId), code ? flagData(code) : null, cardFonts(), cardBadgeTags(profile, parseBadgeOptions(getQuery(event)['hide'], getQuery(event)['names']))])
   const png = await renderCard(cardTree(profile, period, avatar, code && flagSrc ? { src: flagSrc, name: countryName(code) } : null, tags), fonts)
   // A day in shared caches (GitHub's image proxy too): each night's deploy clears the CDN.
   return sendPng(event, png)

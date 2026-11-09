@@ -108,6 +108,7 @@ MIT, Copyright (c) 2026 HatScripts. The full licence ships with the package.
 
 - [Manrope](https://github.com/sharanda/manrope), the site's font: SIL Open Font License 1.1, Copyright 2019 The Manrope
   Project Authors, through `@fontsource-variable/manrope` (and, for the cards, `app/src/server/card/fonts`).
+- [Noto Sans KR, JP, SC and TC](https://fonts.google.com/noto), for the language names on the cards: SIL Open Font License 1.1, Copyright 2014-2021 Adobe, reduced by Google Fonts to the letters used, in `app/src/server/card/fonts`.
 - [cobe](https://github.com/shuding/cobe), the globe: MIT, Copyright (c) 2021 Shu Ding.
 - [satori](https://github.com/vercel/satori) and [resvg-js](https://github.com/yisibl/resvg-js), which draw the cards:
   MPL 2.0, unmodified.

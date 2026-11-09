@@ -231,6 +231,11 @@
   cursor: url(/cursors/hammer.png) 3 3, auto;
 }
 
+hlm-dialog-content .brand,
+html.angie-off .brand {
+  cursor: inherit;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

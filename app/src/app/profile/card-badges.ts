@@ -14,14 +14,21 @@ export function shownBadges<T extends { label: string }>(badges: readonly T[], h
   return badges.filter(badge => !hidden.includes(badgeKey(badge.label)))
 }
 
-export type BadgeNames = 'fun' | 'official' | 'none'
+export type BadgeNameStyle = 'fun' | 'official' | 'none'
 
-export const parseBadgeNames = (value: unknown): BadgeNames => (value === 'official' || value === 'none' ? value : 'fun')
+export const parseBadgeNames = (value: unknown): BadgeNameStyle => (value === 'official' || value === 'none' ? value : 'fun')
 
-export const cardBadgeLabel = (badge: { label: string, officialLabel?: string }, names: BadgeNames): string =>
+export const cardBadgeLabel = (badge: { label: string, officialLabel?: string }, names: BadgeNameStyle): string =>
   (names === 'official' && badge.officialLabel) || badge.label
 
-export function badgeQuery(hidden: readonly string[], names: BadgeNames): Record<string, string> {
+export interface BadgeOptions {
+  hidden: readonly string[]
+  names: BadgeNameStyle
+}
+
+export const parseBadgeOptions = (hide: unknown, names: unknown): BadgeOptions => ({ hidden: hiddenBadgeKeys(hide), names: parseBadgeNames(names) })
+
+export function badgeQuery({ hidden, names }: BadgeOptions): Record<string, string> {
   return {
     ...(hidden.length ? { hide: [...hidden].sort().join(',') } : {}),
     ...(names !== 'fun' ? { names } : {}),

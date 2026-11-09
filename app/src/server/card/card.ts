@@ -8,6 +8,7 @@ import { formatMonth } from '../../app/text/date-format'
 import { formatNumber, formatPoints, formatRank } from '../../app/text/number-format'
 import { statWord } from '../../app/text/stat-names'
 import { TAG_FONT_SIZE, TAG_GAP, TAG_HEIGHT, TAG_ICON_SIZE, TAG_ICON_WIDTH, TAG_LARGE_ICON, TAG_LARGE_SIZE, TAG_PADDING, type CardTag } from './card-tags'
+import type { TagColors } from './tag-colors'
 import { TAG_FONTS } from './tag-fonts'
 
 export const CARD_WIDTH = 1200
@@ -55,13 +56,15 @@ const statIcon = (paths: string[], color: string, size: number): Node =>
     viewBox: '0 0 16 16', width: size, height: size, fill: color,
   })
 
+const tagSurface = (colors: TagColors) => ({ backgroundColor: `${colors.pill}1a`, border: `1px solid ${colors.pill}66` })
+
 const largeIcon = ({ src, colors }: CardTag): Node =>
-  h('div', { width: TAG_LARGE_SIZE, height: TAG_LARGE_SIZE, alignItems: 'center', justifyContent: 'center', borderRadius: 14, backgroundColor: `${colors.pill}1a`, border: `1px solid ${colors.pill}66` }, [
+  h('div', { width: TAG_LARGE_SIZE, height: TAG_LARGE_SIZE, alignItems: 'center', justifyContent: 'center', borderRadius: 14, ...tagSurface(colors) }, [
     h('img', { width: TAG_LARGE_ICON, height: TAG_LARGE_ICON }, undefined, { src, width: TAG_LARGE_ICON, height: TAG_LARGE_ICON }),
   ])
 
 const badgeTag = ({ src, label, colors }: CardTag): Node =>
-  h('div', { height: TAG_HEIGHT, ...(label ? { paddingLeft: TAG_PADDING, paddingRight: TAG_PADDING, gap: TAG_GAP } : { width: TAG_ICON_WIDTH, justifyContent: 'center' }), alignItems: 'center', borderRadius: 10, backgroundColor: `${colors.pill}1a`, border: `1px solid ${colors.pill}66`, fontFamily: ['Manrope', ...TAG_FONTS.map(font => font.name)].join(', '), fontSize: TAG_FONT_SIZE, fontWeight: 600, color: colors.text, whiteSpace: 'nowrap' }, [
+  h('div', { height: TAG_HEIGHT, ...(label ? { paddingLeft: TAG_PADDING, paddingRight: TAG_PADDING, gap: TAG_GAP } : { width: TAG_ICON_WIDTH, justifyContent: 'center' }), alignItems: 'center', borderRadius: 10, ...tagSurface(colors), fontFamily: ['Manrope', ...TAG_FONTS.map(font => font.name)].join(', '), fontSize: TAG_FONT_SIZE, fontWeight: 600, color: colors.text, whiteSpace: 'nowrap' }, [
     h('img', { width: TAG_ICON_SIZE, height: TAG_ICON_SIZE }, undefined, { src, width: TAG_ICON_SIZE, height: TAG_ICON_SIZE }),
     ...(label ? [h('div', {}, label)] : []),
   ])

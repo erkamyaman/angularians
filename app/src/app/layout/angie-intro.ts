@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core'
+import { Component, computed, effect, inject, linkedSignal, signal } from '@angular/core'
 import { NgIcon, provideIcons } from '@ng-icons/core'
 import { remixCheckLine, remixHeartLine, remixStarLine } from '@ng-icons/remixicon'
 import { HlmButton } from '@spartan-ng/helm/button'
@@ -20,7 +20,7 @@ const PRESS_KIT_URL = 'https://angular.dev/press-kit'
 export class AngieIntro {
   private readonly angie = inject(AngieService)
   protected readonly state = computed(() => (this.angie.introOpen() ? 'open' : 'closed'))
-  protected readonly canClose = signal(false)
+  protected readonly canClose = linkedSignal({ source: this.angie.introOpen, computation: () => false })
   protected readonly starred = signal(false)
   protected readonly starLabel = computed(() => (this.starred() ? 'Thanks for the star' : 'Star on GitHub'))
   protected readonly starIcon = computed(() => (this.starred() ? 'remixCheckLine' : 'remixStarLine'))
@@ -42,13 +42,11 @@ export class AngieIntro {
   }
 
   protected turnOff(): void {
-    if (this.angie.on()) this.angie.toggle()
-    this.angie.closeIntro()
+    this.angie.turnOff()
   }
 
   private revealCloseButtonLater(): void {
     effect((onCleanup) => {
-      this.canClose.set(false)
       if (!this.angie.introOpen()) return
       const timer = setTimeout(() => this.canClose.set(true), CLOSE_BUTTON_DELAY)
       onCleanup(() => clearTimeout(timer))

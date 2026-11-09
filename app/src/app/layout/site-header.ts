@@ -12,6 +12,7 @@ import { LogoMark } from './logo-mark';
 import { ThemeToggle } from './theme-toggle';
 import { UserMenu } from './user-menu';
 import { AuthService } from '../auth/auth.service';
+import { SPONSOR_URL } from '../site';
 
 @Component({
   selector: 'app-site-header',
@@ -26,6 +27,7 @@ export class SiteHeader {
   private readonly router = inject(Router);
   private readonly url = toSignal(this.router.events.pipe(filter(event => event instanceof NavigationEnd), map(() => this.router.url)), { initialValue: this.router.url });
 
+  protected readonly sponsorUrl = SPONSOR_URL;
   protected readonly signedIn = computed(() => !!this.auth.state()?.user);
   /** Signed in, or last time (the hint): the avatar's place. */
   protected readonly avatarSlot = computed(() => this.signedIn() || this.auth.wasSignedIn());

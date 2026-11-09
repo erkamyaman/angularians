@@ -68,8 +68,11 @@ body:
       options:
         - Creator
         - Co-creator
+        - Founder
+        - Co-founder
         - Maintainer
         - Organizer
+        - Lead organizer
     validations:
       required: true
   - type: textarea

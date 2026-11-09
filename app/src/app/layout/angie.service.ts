@@ -1,11 +1,12 @@
-import { isPlatformBrowser } from '@angular/common'
-import { inject, PLATFORM_ID, Service, signal } from '@angular/core'
+import { DOCUMENT, isPlatformBrowser } from '@angular/common'
+import { effect, inject, PLATFORM_ID, Service, signal } from '@angular/core'
 
 export const ANGIE_OFF_KEY = 'angularians-angie-off'
 export const ANGIE_MET_KEY = 'angularians-angie-met'
 
 @Service()
 export class AngieService {
+  private readonly document = inject(DOCUMENT)
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID))
 
   private met = false
@@ -14,7 +15,9 @@ export class AngieService {
   readonly introOpen = signal(false)
 
   constructor() {
-    if (this.browser) this.restoreChoice()
+    if (!this.browser) return
+    this.restoreChoice()
+    this.markPage()
   }
 
   toggle(): void {
@@ -40,6 +43,11 @@ export class AngieService {
     }
   }
 
+  turnOff(): void {
+    if (this.on()) this.toggle()
+    this.closeIntro()
+  }
+
   closeIntro(): void {
     this.introOpen.set(false)
   }
@@ -52,5 +60,9 @@ export class AngieService {
     catch {
       // Storage can be blocked: on, the default.
     }
+  }
+
+  private markPage(): void {
+    effect(() => this.document.documentElement.classList.toggle('angie-off', !this.on()))
   }
 }

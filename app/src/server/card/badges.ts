@@ -1,5 +1,5 @@
 import type { ContributorProfile } from '@angularians/shared'
-import { cardBadgeLabel, shownBadges, type BadgeNames } from '../../app/profile/card-badges'
+import { cardBadgeLabel, shownBadges, type BadgeOptions } from '../../app/profile/card-badges'
 import { BADGE_ICONS, earnedBadges } from '../../app/profile/earned-badges'
 import { siteImage } from './assets'
 import { ANGULAR_LOGO } from './card'
@@ -21,14 +21,14 @@ const COLORS: Record<keyof typeof BADGE_ICONS, string> = {
 const isIcon = (icon: string): icon is keyof typeof BADGE_ICONS => icon in BADGE_ICONS
 
 /** The profile's badges as tags for the card, in the profile's order; one whose image is missing is left out. */
-export async function cardBadgeTags(profile: ContributorProfile, hidden: readonly string[], names: BadgeNames): Promise<CardTag[]> {
+export async function cardBadgeTags(profile: ContributorProfile, { hidden, names }: BadgeOptions): Promise<CardTag[]> {
   const iconsOnly = names === 'none'
-  const images = await Promise.all(shownBadges(earnedBadges(profile), hidden).map(async (badge) => {
+  const candidates = await Promise.all(shownBadges(earnedBadges(profile), hidden).map(async (badge) => {
     const { icon, logo, tone } = badge
     const src = icon === 'angular' ? ANGULAR_LOGO
       : isIcon(icon) ? `data:image/svg+xml,${encodeURIComponent(BADGE_ICONS[icon].replaceAll('currentColor', COLORS[icon]))}`
         : logo ? await siteImage(logo) : null
     return src ? { src, label: drawableLabel(cardBadgeLabel(badge, names)), colors: tagColors(tone) } : null
   }))
-  return fitTags(images.filter(badge => badge !== null), iconsOnly ? 1 : TAG_ROWS, TAG_ROW_WIDTH, iconsOnly)
+  return fitTags(candidates.filter(badge => badge !== null), iconsOnly ? 1 : TAG_ROWS, TAG_ROW_WIDTH, iconsOnly)
 }

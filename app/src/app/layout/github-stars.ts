@@ -5,6 +5,7 @@ import { simpleGithub } from '@ng-icons/simple-icons'
 import { HlmButton } from '@spartan-ng/helm/button'
 import { REPO_URL } from '../site'
 import { formatNumber } from '../text/number-format'
+import { plural } from '../text/plural'
 
 export const STARS_KEY = 'angularians-repo-stars'
 const API_URL = REPO_URL.replace('https://github.com/', 'https://api.github.com/repos/')
@@ -24,8 +25,8 @@ export class GithubStars {
     return count === null ? null : formatNumber(count)
   })
   protected readonly label = computed(() => {
-    const stars = this.stars()
-    return stars === null ? 'Angularians on GitHub' : `Angularians on GitHub, ${stars} stars`
+    const count = this.count()
+    return count === null ? 'Angularians on GitHub' : `Angularians on GitHub, ${plural(count, 'star', 'stars')}`
   })
 
   constructor() {
@@ -54,7 +55,7 @@ export class GithubStars {
   private rememberedCount(): number | null {
     try {
       const saved = sessionStorage.getItem(STARS_KEY)
-      return saved === null ? null : Number(saved)
+      return saved && Number.isFinite(Number(saved)) ? Number(saved) : null
     }
     catch {
       return null

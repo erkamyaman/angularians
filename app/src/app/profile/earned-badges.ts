@@ -30,7 +30,7 @@ export interface EarnedBadge {
 
 /** A project's badge for one of its people: its title, logo and colour, linked to the project. */
 export function projectBadge(project: ProjectBadge, role: ProjectRole): EarnedBadge {
-  return { label: project.badge, ...(project.officialTitle ? {} : { officialLabel: `${project.name} ${role}` }), title: `${role[0]!.toUpperCase()}${role.slice(1)} of ${project.name}`, icon: 'logo', logo: project.logo, href: project.href, tone: project.tone }
+  return { label: project.badge, ...(project.badgeIsOfficial ? {} : { officialLabel: `${project.name} ${role}` }), title: `${role[0]!.toUpperCase()}${role.slice(1)} of ${project.name}`, icon: 'logo', logo: project.logo, href: project.href, tone: project.tone }
 }
 
 /** Every badge a contributor has, in the order the profile and the card show them. */

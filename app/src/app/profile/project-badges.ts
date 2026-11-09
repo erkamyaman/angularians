@@ -16,7 +16,7 @@ export interface ProjectBadge {
   logo: string
   does: string
   builtOn?: true
-  officialTitle?: true
+  badgeIsOfficial?: true
   /** Its colours: a `tone-*` class of `badge-pill.css`. */
   tone: BadgeTone
   people: readonly ProjectPerson[]
@@ -36,7 +36,7 @@ export const PROJECT_BADGES: readonly ProjectBadge[] = [
     { githubId: 25516557, username: 'nartc', name: 'Chau Tran', role: 'creator' },
     { githubId: 25394362, username: 'eneajaho', name: 'Enea Jahollari', role: 'creator' },
   ] },
-  { name: 'Angularians', officialTitle: true, badge: 'Creator', tone: 'primary', href: 'https://angularians.dev', logo: '/logo.svg', does: 'Everyone who has contributed to Angular, ranked', people: [
+  { name: 'Angularians', badgeIsOfficial: true, badge: 'Creator', tone: 'primary', href: 'https://angularians.dev', logo: '/logo.svg', does: 'Everyone who has contributed to Angular, ranked', people: [
     { githubId: 88717125, username: 'erkamyaman', name: 'Erkam Yaman', role: 'creator' },
   ] },
   { name: 'Pangular Inspector', badge: 'Chief inspector', tone: 'pangular', href: 'https://pangular-inspector.dev', logo: '/credits/pangular.svg', does: 'Angular DevTools: components, signals, DI and routes', people: [
@@ -55,28 +55,28 @@ export const PROJECT_BADGES: readonly ProjectBadge[] = [
   { name: 'ngx-builders', badge: 'Builder baron', tone: 'ngx-builders', href: 'https://github.com/ngx-builders', logo: '/credits/ngx-builders.png', does: 'Angular CLI builders: Netlify deploys, bundle analysis', people: [
     { githubId: 11923975, username: 'santoshyadavdev', name: 'Santosh Yadav', role: 'creator' },
   ] },
-  { name: 'NG Baguette', officialTitle: true, badge: 'NG Baguette organizer', tone: 'ng-baguette', href: 'https://ngbaguette.angulardevs.fr', logo: '/credits/ng-baguette.png', does: 'The French Angular conference', people: [
+  { name: 'NG Baguette', badgeIsOfficial: true, badge: 'NG Baguette organizer', tone: 'ng-baguette', href: 'https://ngbaguette.angulardevs.fr', logo: '/credits/ng-baguette.png', does: 'The French Angular conference', people: [
     { githubId: 32737308, username: 'geromegrignon', name: 'Gérôme Grignon', role: 'organizer' },
   ] },
-  { name: 'Angular Devs France', officialTitle: true, badge: 'Angular Devs France co-founder', tone: 'angular-devs-france', href: 'https://angulardevs.fr', logo: '/credits/angular-devs-france.png', does: 'The French-speaking Angular community', people: [
+  { name: 'Angular Devs France', badgeIsOfficial: true, badge: 'Angular Devs France co-founder', tone: 'angular-devs-france', href: 'https://angulardevs.fr', logo: '/credits/angular-devs-france.png', does: 'The French-speaking Angular community', people: [
     { githubId: 32737308, username: 'geromegrignon', name: 'Gérôme Grignon', role: 'co-founder' },
   ] },
   { name: 'OpenNG', badge: 'OpenNG sorcerer', tone: 'openng', href: 'https://www.openng.org', logo: '/credits/openng.png', does: 'Keeps abandoned Angular libraries maintained', people: [
     { githubId: 32737308, username: 'geromegrignon', name: 'Gérôme Grignon', role: 'maintainer' },
   ] },
-  { name: 'NG Poland', officialTitle: true, badge: 'NG Poland organizer', tone: 'ng-poland', href: 'https://ng-poland.pl', logo: '/credits/ng-poland.png', does: 'The Angular conference in Poland', people: [
+  { name: 'NG Poland', badgeIsOfficial: true, badge: 'NG Poland organizer', tone: 'ng-poland', href: 'https://ng-poland.pl', logo: '/credits/ng-poland.png', does: 'The Angular conference in Poland', people: [
     { githubId: 6573939, username: 'kalbarczyk', name: 'Dariusz Kalbarczyk', role: 'organizer' },
   ] },
-  { name: 'NG Asia', officialTitle: true, badge: 'NG Asia founder', tone: 'ng-asia', href: 'https://ng-asia.org', logo: '/credits/ng-asia.png', does: 'The Angular conference and community across Asia', people: [
+  { name: 'NG Asia', badgeIsOfficial: true, badge: 'NG Asia founder', tone: 'ng-asia', href: 'https://ng-asia.org', logo: '/credits/ng-asia.png', does: 'The Angular conference and community across Asia', people: [
     { githubId: 30035451, username: 'Ilyoskhuja', name: 'Ilyoskhuja Ikromkhujaev', role: 'founder' },
   ] },
-  { name: 'NG Tunisia', officialTitle: true, badge: 'NG Tunisia lead organizer', tone: 'ng-tunisia', href: 'https://ng-tunisia.org', logo: '/credits/ng-tunisia.png', does: 'The Angular community of Tunisia', people: [
+  { name: 'NG Tunisia', badgeIsOfficial: true, badge: 'NG Tunisia lead organizer', tone: 'ng-tunisia', href: 'https://ng-tunisia.org', logo: '/credits/ng-tunisia.png', does: 'The Angular community of Tunisia', people: [
     { githubId: 192744266, username: 'azizaydi23', name: 'Mohamed Aziz Aydi', role: 'lead organizer' },
   ] },
-  { name: 'Angular Space', officialTitle: true, badge: 'Angular Space founder', tone: 'angular-space', href: 'https://www.angularspace.com', logo: '/credits/angular-space.png', does: 'Articles and podcasts for Angular developers', people: [
+  { name: 'Angular Space', badgeIsOfficial: true, badge: 'Angular Space founder', tone: 'angular-space', href: 'https://www.angularspace.com', logo: '/credits/angular-space.png', does: 'Articles and podcasts for Angular developers', people: [
     { githubId: 69144223, username: 'danielglejzner', name: 'Daniel Glejzner', role: 'founder' },
   ] },
-  { name: 'Angular Wrocław', officialTitle: true, badge: 'Angular Wrocław organizer', tone: 'angular-wroclaw', href: 'https://www.meetup.com/angularwroclaw/', logo: '/credits/angular-wroclaw.png', does: 'The Angular meetup in Wrocław', people: [
+  { name: 'Angular Wrocław', badgeIsOfficial: true, badge: 'Angular Wrocław organizer', tone: 'angular-wroclaw', href: 'https://www.meetup.com/angularwroclaw/', logo: '/credits/angular-wroclaw.png', does: 'The Angular meetup in Wrocław', people: [
     { githubId: 69144223, username: 'danielglejzner', name: 'Daniel Glejzner', role: 'organizer' },
   ] },
 ]

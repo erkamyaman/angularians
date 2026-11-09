@@ -1,4 +1,4 @@
-import { badgeKey, badgeQuery, cardBadgeLabel, hiddenBadgeKeys, parseBadgeNames, shownBadges } from './card-badges'
+import { badgeKey, badgeQuery, cardBadgeLabel, hiddenBadgeKeys, parseBadgeNames, parseBadgeOptions, shownBadges } from './card-badges'
 
 describe('badgeKey', () => {
   it('makes a label safe for a URL, keeping its letters', () => {
@@ -57,10 +57,16 @@ describe('badge names', () => {
 
 describe('badgeQuery', () => {
   it('leaves out the defaults', () => {
-    expect(badgeQuery([], 'fun')).toEqual({})
+    expect(badgeQuery({ hidden: [], names: 'fun' })).toEqual({})
   })
 
   it('sorts what is hidden and names the choice', () => {
-    expect(badgeQuery(['reviewer', 'creator'], 'none')).toEqual({ hide: 'creator,reviewer', names: 'none' })
+    expect(badgeQuery({ hidden: ['reviewer', 'creator'], names: 'none' })).toEqual({ hide: 'creator,reviewer', names: 'none' })
+  })
+})
+
+describe('parseBadgeOptions', () => {
+  it('reads both card choices', () => {
+    expect(parseBadgeOptions('reviewer', 'none')).toEqual({ hidden: ['reviewer'], names: 'none' })
   })
 })

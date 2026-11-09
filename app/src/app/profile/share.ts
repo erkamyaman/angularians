@@ -13,7 +13,7 @@ import { HlmSkeleton } from '@spartan-ng/helm/skeleton'
 import { SITE_URL } from '../site'
 import { shareQuery } from './share-query'
 import { CardBadgeOptions } from './card-badge-options'
-import { badgeQuery, type BadgeNames } from './card-badges'
+import { badgeQuery, type BadgeNameStyle } from './card-badges'
 import { CARD_DESIGN } from './card-design'
 import type { EarnedBadge } from './earned-badges'
 
@@ -61,7 +61,7 @@ export class Share {
   /** A country picked for this card only. `null`: the GitHub location. */
   protected readonly flag = signal<string | null>(null)
   protected readonly hiddenBadges = signal<readonly string[]>([])
-  protected readonly names = signal<BadgeNames>('fun')
+  protected readonly names = signal<BadgeNameStyle>('fun')
   protected readonly allCountries = Object.keys(COUNTRIES).map(code => ({ code, count: 0, top: [] }))
   protected readonly name = countryName
   protected readonly flagLabel = computed(() => {
@@ -70,7 +70,7 @@ export class Share {
   })
   protected readonly cardPeriods = computed(() => sortPeriods(['all', ...this.periods()]))
 
-  private readonly badgeOptions = computed(() => badgeQuery(this.hiddenBadges(), this.names()))
+  private readonly badgeOptions = computed(() => badgeQuery({ hidden: this.hiddenBadges(), names: this.names() }))
   private readonly profileUrl = computed(() => `${SITE_URL}/${this.username()}${shareQuery(this.period())}`)
   /** The profile with the card's period and flag: what a post links to, and the README card's link. */
   private readonly cardProfileUrl = computed(() => `${SITE_URL}/${this.username()}${shareQuery(this.cardPeriod(), this.flag(), this.badgeOptions())}`)
